@@ -11,6 +11,9 @@
 | 成员                                                | 说明                                                         |
 | --------------------------------------------------- | ------------------------------------------------------------ |
 | `new Vector3f(x: float, y: float, z: float)`        | 创建一个 Vector3f。                                          |
+| `new Vector3f(other: Vector3f)` | 创建一个新的 Vector3f，它和原来的矢量是完全相同的。 |
+| `new Vector3f(blockPos: BlockPos)` | 从一个 BlockPos 创建一个 Vector3f。 |
+| `new Vector3f(vec3: Vec3)` | 从一个 Vec3 创建一个 Vector3f。 |
 | `Vector3f.x(): float`                               | 获取它的 X 坐标。Y/Z 同理。                                  |
 | `Vector3f.copy(): Vector3f`                         | 复制一个 Vector3f，以便独立地进行一些修改。                  |
 | `Vector3f.normalize(): void`                        | 标准化为一个单位矢量，即保持它的方向，但让它的长度变为 1。   |
@@ -28,8 +31,9 @@
 | `Vector3f.toBlockPos(): BlockPos`                   | 取整转换成 Minecraft 原版的 BlockPos。                       |
 | `static Vector3f.ZERO: Vector3f`                    | 一个零矢量。不要对他做操作。                                 |
 | `static Vector3f.XP: Vector3f`                      | (1, 0, 0)。Y/Z 同理。                                        |
+| `Vector3f.toString(): String`                       | 转换成字符串。                                               |
 
-
+注意传入 `BlockPos` 和 `Vec3` 创建 `Vector3f` 和 `Vector3f.toString()` 在以往的版本中是不支持的。由于变量名已被混淆，如有需求请更新 NTE 版本或使用类似 `Vec3.toSring()` 的方法转换为字符串再提取坐标。
 
 ## Matrix4f
 
@@ -42,11 +46,12 @@
 | 成员                                                         | 说明                                                         |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | `new Matrix4f()`                                             | 创建一个 Matrix4f。初始的是一个单位矩阵，它不做任何变换。    |
+| `new Matrix4f(other: Matrix4f)`                              | 创建一个新的 Matrix4f，它和原来的矩阵是完全相同的。        |
 | `Matrix4f.copy(): Matrix4f`                                  | 复制一个 Matrix4f，以便独立地进行一些修改。                  |
 | `Matrix4f.translate(x: float, y: float, z: float): void`     | 增加一个平移 (x,y,z) 的变换。                                |
 | `Matrix4f.rotate(axis: Vector3f, rad: float): void`          | 增加一个在原点绕某个方向旋转的变换。角度采用弧度制，正值为逆时针，axis 需要是单位矢量。 |
 | `Matrix4f.rotateX(rad: float): void`                         | 按照 X 轴旋转，角度采取弧度制。Y/Z 同理。                    |
-| `Matrix4f.multiply(other: Vector3f): void`                   | 右乘另一个变换矩阵，即把那个矩阵的变换接在这个的后面。       |
+| `Matrix4f.multiply(other: Matrix4f): void`                   | 右乘另一个变换矩阵，即把那个矩阵的变换接在这个的后面。       |
 | `Matrix4f.transform(vec: Vector3f): Vector3f`                | 计算一个坐标按照这个变换进行之后会到哪一个坐标。会返回一个新的 Vector3f，不会动输入值。 |
 | `Matrix4f.transform3(vec: Vector3f): Vector3f`               | 同上，但只计入旋转不计入平移。                               |
 | `Matrix4f.getTranslationPart(): Vector3f`                    | (0,0,0) 按照这个变换进行之后会到哪一个坐标。                 |
@@ -73,3 +78,5 @@ Matrices 实现一个堆栈，可以存储多个变换状态。push 和 pop 是�
 | `Matrices.popPushPose(): void`                           | 先恢复再保存。                                               |
 | `Matrices.clear(): boolean`                              | 现在是否只有一项。                                           |
 | `Matrices.setIdentity(): void`                           | 将当前状态重设为单位矩阵。                                   |
+
+如果需要使用 Matrix4f 的 multiply 或其他 Matrices 没有打包的方法，可以用 `Matrices.last().multiply(other)` 这样的方法对当前状态进行操作。

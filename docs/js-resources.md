@@ -22,6 +22,18 @@ Minecraft 采取一个叫做资源位置的东西来标识资源包内的文件�
 
 
 
+## 加载代码与类库
+
+- `static importPackage(src: String): void`
+
+加载一个 java 类库
+
+- `static include(src: Resources): void`
+
+加载一个 JavaScript 文件。
+
+
+
 ## 载入 AWT 资源
 
 这些函数加载用于通过 Java AWT 来绘制动态贴图的资源。
