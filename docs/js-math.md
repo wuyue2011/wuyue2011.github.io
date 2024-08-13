@@ -31,9 +31,11 @@
 | `Vector3f.toBlockPos(): BlockPos`                   | 取整转换成 Minecraft 原版的 BlockPos。                       |
 | `static Vector3f.ZERO: Vector3f`                    | 一个零矢量。不要对他做操作。                                 |
 | `static Vector3f.XP: Vector3f`                      | (1, 0, 0)。Y/Z 同理。                                        |
+| `Vector3f.toVec3(): Vec3`                            | 转换为Vec3                                               |
+| `Vector3f.toBlockPos(): BlockPos`                   | 转换为BlockPose                                           |
 | `Vector3f.toString(): String`                       | 转换成字符串。                                               |
 
-注意传入 `BlockPos` 和 `Vec3` 创建 `Vector3f` 和 `Vector3f.toString()` 在以往的版本中是不支持的。由于变量名已被混淆，如有需求请更新 NTE 版本或使用类似 `Vec3.toSring()` 的方法转换为字符串再提取坐标。
+注意有关 `BlockPos` 和 `Vec3` 的一些方法和 `Vector3f.toString()` 在以往的版本中是不支持的。由于变量名已被混淆，如有需求请更新 NTE 版本或使用类似 `Vec3.toSring()` 的方法转换为字符串再提取坐标。
 
 ## Matrix4f
 
