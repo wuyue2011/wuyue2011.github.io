@@ -153,6 +153,10 @@ public class Vector3f {
         return impl.hashCode();
     }
 
+    public String toString() {
+        return "(" + x() + ", " + y() + ", " + z() + ")";
+    }
+
     public float distance(Vector3f other) {
         float dx = x() - other.x();
         float dy = y() - other.y();
