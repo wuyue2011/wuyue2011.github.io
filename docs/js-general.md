@@ -83,15 +83,3 @@ Rhino 脚本引擎不支持所有最新的 JavaScript 功能。对于具体支�
 当脚本运行出错时，NTE 会在 Minecraft 日志中打出报错信息（以 “Error in NTE Resource Pack JavaScript” 开头），而在游戏内没有信息显示。报错信息中会说明错误发生在哪个脚本文件中的哪一行代码。大多启动器有将日志实时显示在单独窗口的功能。
 
 同时，NTE 会暂停脚本运行 4 秒钟，然后再试运行脚本。
-
-
-
-### 运行另一个脚本文件
-
-- `static include(relPath: String): void` 
-
-  载入并运行位置相对于这个 JS 文件的另一个 JS 文件。
-
-- `static include(path: ResourceLocation): void`
-
-  载入并运行资源包中一个位置的 JS 文件。如 `include(Resources.id("mtr:path/absolute.js"))`
