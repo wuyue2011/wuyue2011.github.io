@@ -24,14 +24,17 @@ Minecraft 采取一个叫做资源位置的东西来标识资源包内的文件�
 
 ## 加载代码与类库
 
-- `static include(src: Resources): void`
+- `static include(relPath: String): void` 
 
-加载一个 JavaScript 文件。
+  载入并运行位置相对于这个 JS 文件的另一个 JS 文件。
 
+- `static include(path: ResourceLocation): void`
+
+  载入并运行资源包中一个位置的 JS 文件。如 `include(Resources.id("mtr:path/absolute.js"))`
 
 - `static importPackage(src: String): void`
 
-加载一个 java 类库。
+加载一个 java 类库。如 importPackage(java.util.Set)
 
 
 
