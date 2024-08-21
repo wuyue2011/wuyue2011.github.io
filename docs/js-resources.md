@@ -34,7 +34,7 @@ Minecraft 采取一个叫做资源位置的东西来标识资源包内的文件�
 
 - `static importPackage(src: String): void`
 
-加载一个 java 类库。如 importPackage(java.util.Set)
+加载一个 Java 类库。如 `importPackage(java.util.Set)`
 
 
 
