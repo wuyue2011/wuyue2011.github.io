@@ -5,8 +5,10 @@ import com.mojang.text2speech.Narrator;
 import mtr.mappings.Text;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
 
 public class MinecraftClientUtil {
