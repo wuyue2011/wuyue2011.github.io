@@ -7,21 +7,21 @@ import net.minecraft.sounds.SoundSource;
 import cn.zbx1425.sowcer.math.Vector3f;
 
 public class TickableSound extends TickableSoundInstanceMapper{
-    public TickableSound(SoundEvent event){
-        super(event, SoundSource.BLOCKS);
-    }
+    public TickableSound(SoundEvent event){
+        super(event, SoundSource.BLOCKS);
+    }
 
     public TickableSound(SoundEvent event, SoundSource source){
-        super(event, source);
-    }
+        super(event, source);
+    }
 
-    public void setVolume(float volume){
-        this.volume = volume;
-    }
+    public void setVolume(float volume){
+        this.volume = volume;
+    }
 
-    public void setPitch(float pitch){
-        this.pitch = pitch;
-    }
+    public void setPitch(float pitch){
+        this.pitch = pitch;
+    }
 
     public void play(){
         Minecraft.getInstance().getSoundManager().play(this);
@@ -66,31 +66,31 @@ public class TickableSound extends TickableSoundInstanceMapper{
         this.z = z;
     }
 
-    public void setX(double x){
-        this.x = x;
-    }
+    public void setX(double x){
+        this.x = x;
+    }
 
-    public void setY(double y){
-        this.y = y;
-    }
+    public void setY(double y){
+        this.y = y;
+    }
 
-    public void setZ(double z){
-        this.z = z;
-    }
+    public void setZ(double z){
+        this.z = z;
+    }
 
-    public void setLooping(boolean looping){
-        this.looping = looping;
-    }
+    public void setLooping(boolean looping){
+        this.looping = looping;
+    }
 
-    public void setDelay(int delay){
-        this.delay = delay;
-    }
+    public void setDelay(int delay){
+        this.delay = delay;
+    }
 
-    public void setRelative(boolean relative){
-        this.relative = relative;
-    }
+    public void setRelative(boolean relative){
+        this.relative = relative;
+    }
 
-    public void stop(){
-        stop();
-    }
+    public void stop(){
+        stop();
+    }
 }
