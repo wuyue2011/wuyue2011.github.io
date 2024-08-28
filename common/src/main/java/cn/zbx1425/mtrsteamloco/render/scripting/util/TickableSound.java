@@ -11,6 +11,10 @@ public class TickableSound extends TickableSoundInstanceMapper{
         super(event, SoundSource.BLOCKS);
     }
 
+    public TickableSound(SoundEvent event, SoundSource source){
+        super(event, source);
+    }
+
     public void setVolume(float volume){
         this.volume = volume;
     }
