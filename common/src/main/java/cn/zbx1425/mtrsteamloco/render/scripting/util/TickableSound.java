@@ -90,8 +90,4 @@ public class TickableSound extends TickableSoundInstanceMapper{
     public void setRelative(boolean relative1){
         relative = relative1;
     }
-
-    public void stop(){
-        stop();
-    }
 }
