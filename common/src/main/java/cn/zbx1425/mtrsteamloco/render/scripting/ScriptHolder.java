@@ -80,8 +80,8 @@ public class ScriptHolder {
             scope.put("Matrices", scope, new NativeJavaClass(scope, Matrices.class));
             scope.put("Matrix4f", scope, new NativeJavaClass(scope, Matrix4f.class));
             scope.put("Vector3f", scope, new NativeJavaClass(scope, Vector3f.class));
-            scope.put("SoundEvent", scope, new NativeJavaClass(scope, SoundEvent.class))
-            scope.put("TrainLoopingSoundInstance", scope, new NativeJavaClass(scope, TrainLoopingSoundInstance.class))
+            scope.put("SoundEvent", scope, new NativeJavaClass(scope, SoundEvent.class));
+            scope.put("TrainLoopingSoundInstance", scope, new NativeJavaClass(scope, TrainLoopingSoundInstance.class));
 
             scope.put("MTRClientData", scope, new NativeJavaClass(scope, ClientData.class));
 
