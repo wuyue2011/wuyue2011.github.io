@@ -19,6 +19,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import mtr.sound.TrainLoopingSoundInstance;
 import net.minecraft.core.BlockPos;
+import cn.zbx1425.mtrsteamloco.render.scripting.util.TickableSound;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +85,8 @@ public class ScriptHolder {
             scope.put("SoundEvent", scope, new NativeJavaClass(scope, SoundEvent.class));
             scope.put("TrainLoopingSoundInstance", scope, new NativeJavaClass(scope, TrainLoopingSoundInstance.class));
             scope.put("BlockPos", scope, new NativeJavaClass(scope, BlockPos.class));
+            scope.put("TickableSound", scope, new NativeJavaClass(scope, TickableSound.class));
+            scope.put("SoundSource", scope, new NativeJavaClass(scope, SoundSource.class));
 //114514119
             scope.put("MTRClientData", scope, new NativeJavaClass(scope, ClientData.class));
 

@@ -4,6 +4,9 @@ import cn.zbx1425.sowcer.math.Vector3f;
 import com.mojang.text2speech.Narrator;
 import mtr.mappings.Text;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 
 public class MinecraftClientUtil {
@@ -36,5 +39,21 @@ public class MinecraftClientUtil {
                 player.displayClientMessage(Text.literal(message), actionBar);
             });
         }
+    }
+
+    public static void stopAllSound() {
+        Minecraft.getInstance().getSoundManager().stop();
+    }
+
+    public static void stopSound(SoundInstance sound) {
+        Minecraft.getInstance().getSoundManager().stop(sound);
+    }
+
+    public static void stopSound(ResourceLocation sound, SoundSource source) {
+        Minecraft.getInstance().getSoundManager().stop(sound, source);
+    }
+
+    public static void stopSound(ResourceLocation sound){
+        Minecraft.getInstance().getSoundManager().stop(sound, SoundSource.BLOCKS);
     }
 }
