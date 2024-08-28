@@ -121,4 +121,8 @@ public class TrainScriptContext extends AbstractScriptContext {
     public TrainLoopingSoundInstance createTrainLoopingSoundInstance(SoundEvent event, TrainClient train) {
         return new TrainLoopingSoundInstance(event, train);
     }
+
+    public void queueTickingSound(TrainLoopingSoundInstance sound) {
+        Minecraft.getInstance().getSoundManager().queueTickingSound(sound);
+    }
 }
