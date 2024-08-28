@@ -86,7 +86,7 @@ public class ScriptHolder {
             scope.put("TrainLoopingSoundInstance", scope, new NativeJavaClass(scope, TrainLoopingSoundInstance.class));
             scope.put("BlockPos", scope, new NativeJavaClass(scope, BlockPos.class));
             scope.put("TickableSound", scope, new NativeJavaClass(scope, TickableSound.class));
-            scope.put("SoundSource", scope, new NativeJavaClass(scope, SoundSource.class));
+            //scope.put("SoundSource", scope, new NativeJavaClass(scope, SoundSource.class));
 //11451411919810
             scope.put("MTRClientData", scope, new NativeJavaClass(scope, ClientData.class));
 
