@@ -115,9 +115,9 @@ public class TrainScriptContext extends AbstractScriptContext {
     public SoundEvent creatSoundEvent(ResourceLocation sound) {
         return
 #if MC_VERSION >= "11903"
-                SoundEvent.createVariableRangeEvent(sound)
+                SoundEvent.createVariableRangeEvent(sound);
 #else
-                new SoundEvent(sound)
+                new SoundEvent(sound);
 #endif
     }
 }
