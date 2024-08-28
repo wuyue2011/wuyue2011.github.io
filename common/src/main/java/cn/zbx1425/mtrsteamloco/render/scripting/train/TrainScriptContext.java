@@ -109,20 +109,7 @@ public class TrainScriptContext extends AbstractScriptContext {
         });
     }
 
-    public SoundEvent creatSoundEvent(ResourceLocation sound) {
-        return
-#if MC_VERSION >= "11903"
-                SoundEvent.createVariableRangeEvent(sound);
-#else
-                new SoundEvent(sound);
-#endif
-    }
-
-    public TrainLoopingSoundInstance createTrainLoopingSoundInstance(SoundEvent event, TrainClient train) {
-        return new TrainLoopingSoundInstance(event, train);
-    }
-
     public void queueTickingSound(TrainLoopingSoundInstance sound) {
-        Minecraft.getInstance().getSoundManager().queueTickingSound(sound);
+        Minecraft.getInstance().getSoundManager().play(sound);
     }
 }
