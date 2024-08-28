@@ -85,7 +85,13 @@ public class TrainScriptContext extends AbstractScriptContext {
     }
 
     public void playCarSound(ResourceLocation sound, int carIndex, float x, float y, float z, float volume, float pitch) {
-        scriptResultWriting.addCarSound(carIndex, this.creatSoundEvent(sound), new Vector3f(x, y, z), volume, pitch
+        scriptResultWriting.addCarSound(carIndex, 
+#if MC_VERSION >= "11903"
+        SoundEvent.createVariableRangeEvent(sound)
+#else
+        new SoundEvent(sound)
+#endif
+        , new Vector3f(x, y, z), volume, pitch
         );
     }
 
@@ -107,9 +113,5 @@ public class TrainScriptContext extends AbstractScriptContext {
                 ));
             }
         });
-    }
-
-    public void queueTickingSound(TrainLoopingSoundInstance sound) {
-        Minecraft.getInstance().getSoundManager().play(sound);
     }
 }
