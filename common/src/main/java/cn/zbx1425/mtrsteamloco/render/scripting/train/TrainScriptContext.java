@@ -85,15 +85,12 @@ public class TrainScriptContext extends AbstractScriptContext {
     }
 
     public void playCarSound(ResourceLocation sound, int carIndex, float x, float y, float z, float volume, float pitch) {
-        scriptResultWriting.addCarSound(
-                carIndex,
-#if MC_VERSION >= "11903"
-                SoundEvent.createVariableRangeEvent(sound),
-#else
-                new SoundEvent(sound),
-#endif
-                new Vector3f(x, y, z), volume, pitch
+        scriptResultWriting.addCarSound(carIndex, this.creatSoundEvent(sound), new Vector3f(x, y, z), volume, pitch
         );
+    }
+
+    public void playCarSound(SoundEvent event, int carIndex, float x, float y, float z, float volume, float pitch){
+        scriptResultWriting.addCarSound(carIndex, event, new Vector3f(x, y, z), volume, pitch);
     }
 
     public void playAnnSound(ResourceLocation sound, float volume, float pitch) {
@@ -123,6 +120,5 @@ public class TrainScriptContext extends AbstractScriptContext {
 
     public TrainLoopingSoundInstance createTrainLoopingSoundInstance(SoundEvent event, TrainClient train) {
         return new TrainLoopingSoundInstance(event, train);
-        //114514
     }
 }
