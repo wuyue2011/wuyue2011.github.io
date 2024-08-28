@@ -1,6 +1,7 @@
 package cn.zbx1425.mtrsteamloco.render.scripting.util;
 
 import mtr.mappings.TickableSoundInstanceMapper;
+import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
