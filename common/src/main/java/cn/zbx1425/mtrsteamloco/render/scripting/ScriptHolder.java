@@ -18,6 +18,7 @@ import vendor.cn.zbx1425.mtrsteamloco.org.mozilla.javascript.*;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import mtr.sound.TrainLoopingSoundInstance;
+import net.minecraft.core.BlockPos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +83,7 @@ public class ScriptHolder {
             scope.put("Vector3f", scope, new NativeJavaClass(scope, Vector3f.class));
             scope.put("SoundEvent", scope, new NativeJavaClass(scope, SoundEvent.class));
             scope.put("TrainLoopingSoundInstance", scope, new NativeJavaClass(scope, TrainLoopingSoundInstance.class));
+            scope.put("BlockPos", scope, new NativeJavaClass(scope, BlockPos.class));
 
             scope.put("MTRClientData", scope, new NativeJavaClass(scope, ClientData.class));
 
