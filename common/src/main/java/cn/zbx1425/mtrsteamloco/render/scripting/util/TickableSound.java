@@ -16,82 +16,82 @@ public class TickableSound extends TickableSoundInstanceMapper{
         super(event, source);
     }
 
-    public void setVolume(float volume){
-        super.volume = volume;
+    public void setVolume(float volume1){
+        volume = volume1;
     }
 
-    public void setPitch(float pitch){
-        super.pitch = pitch;
+    public void setPitch(float pitch1){
+        pitch = pitch1;
     }
 
     public void play(){
         Minecraft.getInstance().getSoundManager().play(this);
     }
 
-    public void setData(float volume, float pitch, Vector3f position, boolean looping, int delay, boolean relative){
-        super.volume = volume;
-        super.pitch = pitch;
-        super.x = position.x();
-        super.y = position.y();
-        super.z = position.z();
-        super.looping = looping;
-        super.delay = delay;
-        super.relative = relative;
+    public void setData(float volume1, float pitch1, Vector3f position, boolean looping1, int delay1, boolean relative1){
+        volume = volume1;
+        pitch = pitch1;
+        x = position.x();
+        y = position.y();
+        z = position.z();
+        looping = looping1;
+        delay = delay1;
+        relative = relative1;
     }
 
-    public void setData(float volume, float pitch, double x, double y, double z, boolean looping, int delay, boolean relative){
-        super.volume = volume;
-        super.pitch = pitch;
-        super.x = x;
-        super.y = y;
-        super.z = z;
-        super.looping = looping;
-        super.delay = delay;
-        super.relative = relative;
+    public void setData(float volume1, float pitch1, double x1, double y1, double z1, boolean looping1, int delay1, boolean relative1){
+        volume = volume1;
+        pitch = pitch1;
+        x = x1;
+        y = y1;
+        z = z1;
+        looping = looping1;
+        delay = delay1;
+        relative = relative1;
     }
 
-    public void setData(float volume, float pitch){
-        super.volume = volume;
-        super.pitch = pitch;
+    public void setData(float volume1, float pitch1){
+        volume = volume1;
+        pitch = pitch1;
     }
 
     public void setPosition(Vector3f position){
-        super.x = position.x();
-        super.y = position.y();
-        super.z = position.z();
+        x = position.x();
+        y = position.y();
+        z = position.z();
     }
 
-    public void setPosition(double x, double y, double z){
-        super.x = x;
-        super.y = y;
-        super.z = z;
+    public void setPosition(double x1, double y1, double z1){
+        x = x1;
+        y = y1;
+        z = z1;
     }
 
-    public void setX(double x){
-        super.x = x;
+    public void setX(double x1){
+        x = x1;
     }
 
-    public void setY(double y){
-        super.y = y;
+    public void setY(double y1){
+        y = y1;
     }
 
-    public void setZ(double z){
-        super.z = z;
+    public void setZ(double z1){
+        z = z1;
     }
 
-    public void setLooping(boolean looping){
-        super.looping = looping;
+    public void setLooping(boolean looping1){
+        looping = looping1;
     }
 
-    public void setDelay(int delay){
-        super.delay = delay;
+    public void setDelay(int delay1){
+        delay = delay1;
     }
 
-    public void setRelative(boolean relative){
-        super.relative = relative;
+    public void setRelative(boolean relative1){
+        relative = relative1;
     }
 
     public void stop(){
-        super.stop();
+        stop();
     }
 }
