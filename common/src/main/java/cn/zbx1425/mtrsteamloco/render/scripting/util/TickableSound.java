@@ -17,11 +17,11 @@ public class TickableSound extends TickableSoundInstanceMapper{
     }
 
     public void setVolume(float volume){
-        this.volume = volume;
+        super.volume = volume;
     }
 
     public void setPitch(float pitch){
-        this.pitch = pitch;
+        super.pitch = pitch;
     }
 
     public void play(){
@@ -29,69 +29,69 @@ public class TickableSound extends TickableSoundInstanceMapper{
     }
 
     public void setData(float volume, float pitch, Vector3f position, boolean looping, int delay, boolean relative){
-        this.volume = volume;
-        this.pitch = pitch;
-        this.x = position.x();
-        this.y = position.y();
-        this.z = position.z();
-        this.looping = looping;
-        this.delay = delay;
-        this.relative = relative;
+        super.volume = volume;
+        super.pitch = pitch;
+        super.x = position.x();
+        super.y = position.y();
+        super.z = position.z();
+        super.looping = looping;
+        super.delay = delay;
+        super.relative = relative;
     }
 
     public void setData(float volume, float pitch, double x, double y, double z, boolean looping, int delay, boolean relative){
-        this.volume = volume;
-        this.pitch = pitch;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.looping = looping;
-        this.delay = delay;
-        this.relative = relative;
+        super.volume = volume;
+        super.pitch = pitch;
+        super.x = x;
+        super.y = y;
+        super.z = z;
+        super.looping = looping;
+        super.delay = delay;
+        super.relative = relative;
     }
 
     public void setData(float volume, float pitch){
-        this.volume = volume;
-        this.pitch = pitch;
+        super.volume = volume;
+        super.pitch = pitch;
     }
 
     public void setPosition(Vector3f position){
-        this.x = position.x();
-        this.y = position.y();
-        this.z = position.z();
+        super.x = position.x();
+        super.y = position.y();
+        super.z = position.z();
     }
 
     public void setPosition(double x, double y, double z){
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        super.x = x;
+        super.y = y;
+        super.z = z;
     }
 
     public void setX(double x){
-        this.x = x;
+        super.x = x;
     }
 
     public void setY(double y){
-        this.y = y;
+        super.y = y;
     }
 
     public void setZ(double z){
-        this.z = z;
+        super.z = z;
     }
 
     public void setLooping(boolean looping){
-        this.looping = looping;
+        super.looping = looping;
     }
 
     public void setDelay(int delay){
-        this.delay = delay;
+        super.delay = delay;
     }
 
     public void setRelative(boolean relative){
-        this.relative = relative;
+        super.relative = relative;
     }
 
     public void stop(){
-        stop();
+        super.stop();
     }
 }
