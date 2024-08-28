@@ -120,4 +120,8 @@ public class TrainScriptContext extends AbstractScriptContext {
                 new SoundEvent(sound);
 #endif
     }
+
+    public TrainLoopingSoundInstance createTrainLoopingSoundInstance(SoundEvent event, TrainClient train) {
+        return new TrainLoopingSoundInstance(event, train);
+    }
 }
