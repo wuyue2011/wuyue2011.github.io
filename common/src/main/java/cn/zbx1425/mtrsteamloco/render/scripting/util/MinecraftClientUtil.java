@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
-#if MC_VERSION = "11802"
+#if MC_VERSION == "11802"
 import net.minecraft.client.gui.chat.NarratorChatListener;
 #endif
 
@@ -37,7 +37,7 @@ public class MinecraftClientUtil {
             Narrator.getNarrator().say(message, true);
         });
     }
-#if MC_VERSION = "11802"
+#if MC_VERSION == "11802"
     public static void narrate1(String message){
         NarratorChatListener.INSTANCE.sayNow(message);
     }
