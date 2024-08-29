@@ -45,7 +45,9 @@ public class MinecraftClientUtil {
     }
 
     public static void stopAllSounds() {
-        Minecraft.getInstance().getSoundManager().stop();
+        Minecraft.getInstance().execute(() -> {
+            Minecraft.getInstance().getSoundManager().stop();
+        });
     }
 
     public static void stopSound(SoundInstance sound) {
