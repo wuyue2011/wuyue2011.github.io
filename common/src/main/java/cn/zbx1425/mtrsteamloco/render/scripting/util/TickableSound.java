@@ -16,4 +16,19 @@ public class TickableSound extends TickableSoundInstanceMapper {
     public TickableSound(SoundEvent event, SoundSource source){
         super(event, source);
     }
+
+    @Override
+	public void tick() {
+        stop();
+	}
+
+    @Override
+	public boolean canStartSilent() {
+		return true;
+	}
+
+	@Override
+	public boolean canPlaySound() {
+		return true;
+	}
 }
