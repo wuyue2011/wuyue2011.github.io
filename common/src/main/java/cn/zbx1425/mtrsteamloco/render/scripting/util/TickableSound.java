@@ -1,4 +1,4 @@
-package cn.zbx1425.mtrsteamloco.render.scripting.util;
+package cn.zbx1425.mtrsteamloco.test;//render.scripting.util1
 
 import mtr.mappings.TickableSoundInstanceMapper;
 import net.minecraft.client.Minecraft;
