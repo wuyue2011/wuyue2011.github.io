@@ -47,10 +47,14 @@ public class TickableSound extends TickableSoundInstanceMapper {
         Minecraft.getInstance().getSoundManager().play(this);
     }
 
-    public void stop1(){
+    public void quit(){
         Minecraft.getInstance().execute(() -> {
             Minecraft.getInstance().getSoundManager().stop(this);
         });
+    }
+
+    public void pause(){
+        stop();
     }
 
     @Override
