@@ -25,7 +25,11 @@ public class TickableSound extends TickableSoundInstanceMapper {
 		y = pos.y();
 		z = pos.z();
 	}
-    
+
+    public void setLooping(boolean looping){
+        this.looping = looping;
+    }
+
     public void play(){
         Minecraft.getInstance().getSoundManager().play(this);
     }
