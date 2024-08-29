@@ -18,11 +18,6 @@ public class TickableSound extends TickableSoundInstanceMapper {
     }
 
     @Override
-	public void tick() {
-        stop();
-	}
-
-    @Override
 	public boolean canStartSilent() {
 		return true;
 	}
