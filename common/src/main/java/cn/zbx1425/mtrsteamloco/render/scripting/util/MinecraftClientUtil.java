@@ -42,4 +42,20 @@ public class MinecraftClientUtil {
             });
         }
     }
+
+    public static void stopAllSound() {
+        Minecraft.getInstance().getSoundManager().stop();
+    }
+
+    public static void stopSound(SoundInstance sound) {
+        Minecraft.getInstance().getSoundManager().stop(sound);
+    }
+
+    public static void stopSound(ResourceLocation sound, SoundSource source) {
+        Minecraft.getInstance().getSoundManager().stop(sound, source);
+    }
+
+    public static void stopSound(ResourceLocation sound){
+        Minecraft.getInstance().getSoundManager().stop(sound, SoundSource.BLOCKS);
+    }
 }
