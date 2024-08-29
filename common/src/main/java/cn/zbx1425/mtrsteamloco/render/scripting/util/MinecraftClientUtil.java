@@ -34,10 +34,6 @@ public class MinecraftClientUtil {
         });
     }
 
-    public static void narrate1(String message){
-        
-    }
-
     public static void displayMessage(String message, boolean actionBar) {
         final Player player = Minecraft.getInstance().player;
         if (player != null) {
@@ -48,7 +44,7 @@ public class MinecraftClientUtil {
     }
 
     public static void stopAllSound() {
-        Minecraft.getInstance().getSoundManager().stop();//会崩游戏，不知道为啥
+        Minecraft.getInstance().getSoundManager().stop();
     }
 
     public static void stopSound(SoundInstance sound) {
