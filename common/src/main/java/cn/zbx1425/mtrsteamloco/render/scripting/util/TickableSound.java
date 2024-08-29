@@ -1,4 +1,4 @@
-package cn.zbx1425.mtrsteamloco.test;//render.scripting.util1
+package cn.zbx1425.mtrsteamloco.render.scripting.util;
 
 import mtr.mappings.TickableSoundInstanceMapper;
 import net.minecraft.client.Minecraft;
@@ -106,4 +106,9 @@ public class TickableSound extends TickableSoundInstanceMapper {
 	public boolean canPlaySound() {
 		return true;
 	}
+
+    @Override
+    public void tick() {
+        
+    }
 }
