@@ -35,10 +35,6 @@ public class MinecraftClientUtil {
         });
     }
 
-    public static void narrate1(String message){
-        Narrator.getNarrator().say(message, true);
-    }
-
     public static void displayMessage(String message, boolean actionBar) {
         final Player player = Minecraft.getInstance().player;
         if (player != null) {
