@@ -52,6 +52,11 @@ public class TickableSound extends TickableSoundInstanceMapper {
 		return true;
 	}
 
+    @Override
+    public void stop(){
+        Minecraft.getInstance().getSoundManager().stop(this);
+    }
+
 	@Override
 	public boolean canPlaySound() {
 		return true;
