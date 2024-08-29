@@ -37,7 +37,7 @@ public class MinecraftClientUtil {
     }
 
     public static void narrate1(String message){
-        NarratorChatListener.sayNow(message);
+        NarratorChatListener.INSTANCE.sayNow(message);
     }
 
     public static void displayMessage(String message, boolean actionBar) {
