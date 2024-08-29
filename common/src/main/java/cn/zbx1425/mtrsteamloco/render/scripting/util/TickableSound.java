@@ -30,11 +30,7 @@ public class TickableSound extends TickableSoundInstanceMapper {
 	}
 
     public void play(){
-        final SoundManager soundManager = Minecraft.getInstance().getSoundManager();
-		if (soundManager != null && !train.isRemoved && volume > 0 && !soundManager.isActive(this)) {
-			looping = true;
-			soundManager.play(this);
-		}
+        Minecraft.getInstance().getSoundManager().play(this);
     }
 
     @Override
