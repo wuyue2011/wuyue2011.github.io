@@ -49,7 +49,7 @@ public class MinecraftClientUtil {
     }
 
     public static void stopAllSound() {
-        Minecraft.getInstance().getSoundManager().stop();
+        Minecraft.getInstance().getSoundManager().stop();//会崩游戏，不知道为啥
     }
 
     public static void stopSound(SoundInstance sound) {
