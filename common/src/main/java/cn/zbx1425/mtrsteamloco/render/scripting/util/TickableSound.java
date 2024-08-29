@@ -46,16 +46,16 @@ public class TickableSound extends TickableSoundInstanceMapper {
     public void play(){
         Minecraft.getInstance().getSoundManager().play(this);
     }
+    
+    public void stop(){
+        Minecraft.getInstance().getSoundManager().stop(this);
+    }
 
     @Override
 	public boolean canStartSilent() {
 		return true;
 	}
 
-    @Override
-    public void stop(){
-        Minecraft.getInstance().getSoundManager().stop(this);
-    }
 
 	@Override
 	public boolean canPlaySound() {
