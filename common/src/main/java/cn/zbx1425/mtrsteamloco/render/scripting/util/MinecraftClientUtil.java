@@ -10,7 +10,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.client.gui.chat.NarratorChatListener;
 
 public class MinecraftClientUtil {
 
@@ -36,7 +35,7 @@ public class MinecraftClientUtil {
     }
 
     public static void narrate1(String message){
-        NarratorChatListener.INSTANCE.sayNow(message);
+        
     }
 
     public static void displayMessage(String message, boolean actionBar) {
