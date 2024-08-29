@@ -2,6 +2,7 @@ package cn.zbx1425.mtrsteamloco.render.scripting.util;
 
 import mtr.mappings.TickableSoundInstanceMapper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
@@ -28,6 +29,18 @@ public class TickableSound extends TickableSoundInstanceMapper {
 
     public void setLooping(boolean looping){
         this.looping = looping;
+    }
+
+    public void setDelay(int delay){
+        this.delay = delay;
+    }
+
+    public void setAttenuation(SoundInstance.Attenuation attenuation){
+        this.attenuation = attenuation;
+    }
+
+    public void setRelative(boolean relative){
+        this.relative = relative;
     }
 
     public void play(){
