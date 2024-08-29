@@ -17,6 +17,26 @@ public class TickableSound extends TickableSoundInstanceMapper {
         super(event, source);
     }
 
+    public void setData(float volume, float pitch, BlockPos pos) {
+		this.pitch = pitch;
+		if (this.pitch == 0) {
+			this.pitch = 1;
+		}
+		this.volume = volume;
+
+		x = pos.getX();
+		y = pos.getY();
+		z = pos.getZ();
+	}
+
+    public void play(){
+        final SoundManager soundManager = Minecraft.getInstance().getSoundManager();
+		if (soundManager != null && !train.isRemoved && volume > 0 && !soundManager.isActive(this)) {
+			looping = true;
+			soundManager.play(this);
+		}
+    }
+
     @Override
 	public boolean canStartSilent() {
 		return true;
