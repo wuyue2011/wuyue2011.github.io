@@ -83,8 +83,12 @@ public class ScriptHolder {
             scope.put("Vector3f", scope, new NativeJavaClass(scope, Vector3f.class));
             scope.put("SoundEvent", scope, new NativeJavaClass(scope, SoundEvent.class));
             scope.put("TrainLoopingSoundInstance", scope, new NativeJavaClass(scope, TrainLoopingSoundInstance.class));
+<<<<<<< HEAD
             //scope.put("TickableSound", scope, new NativeJavaClass(scope, TickableSound.class));//114514
 
+=======
+            scope.put("TickableSound", scope, new NativeJavaClass(scope, TickableSound.class));
+>>>>>>> a7a784bb10a3a67188e0ccc26935ca780d8e8a62
             scope.put("MTRClientData", scope, new NativeJavaClass(scope, ClientData.class));
 
             scope.put("MinecraftClient", scope, new NativeJavaClass(scope, MinecraftClientUtil.class));
