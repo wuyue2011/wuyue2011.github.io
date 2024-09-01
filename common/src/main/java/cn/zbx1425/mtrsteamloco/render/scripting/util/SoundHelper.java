@@ -14,25 +14,25 @@ import net.minecraft.world.entity.player.Player;
 
 public class SoundHelper {
 
-    public static void stopAllSounds() {
+    public static void stop() {
         Minecraft.getInstance().execute(() -> {
             Minecraft.getInstance().getSoundManager().stop();
         });
     }
 
-    public static void stopSound(SoundInstance sound) {
+    public static void stop(SoundInstance sound) {
         Minecraft.getInstance().execute(() -> {
             Minecraft.getInstance().getSoundManager().stop(sound);
         });
     }
 
-    public static void stopSound(ResourceLocation sound, SoundSource source) {
+    public static void stop(ResourceLocation sound, SoundSource source) {
         Minecraft.getInstance().execute(() -> {
             Minecraft.getInstance().getSoundManager().stop(sound, source);
         });
     }
 
-    public static void stopSound(ResourceLocation sound){
+    public static void stop(ResourceLocation sound){
         Minecraft.getInstance().execute(() -> {
             Minecraft.getInstance().getSoundManager().stop(sound, SoundSource.BLOCKS);
         });
