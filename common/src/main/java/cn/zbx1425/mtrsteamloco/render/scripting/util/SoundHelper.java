@@ -33,7 +33,9 @@ public class SoundHelper {
     }
 
     public static void play(SoundEvent sound, Vector3f pos, float volume, float pitch) {
-        this.play(sound, pos, SoundSource.BLOCKS, volume, pitch);
+        Minecraft.getInstance().execute(() -> {
+            Minecraft.getInstance().level.playLocalSound(pos.x(), pos.y(), pos.z(), sound, SoundSource.BLOCKS, volume, pitch, false);
+        });
     }
 
     public static void stop() {
