@@ -10,7 +10,7 @@ import net.minecraft.commands.synchronization.brigadier.StringArgumentSerializer
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.client.multiplayer.ClientLevel;
 
 public class SoundHelper {
 
@@ -24,6 +24,16 @@ public class SoundHelper {
         Minecraft.getInstance().execute(() -> {
             Minecraft.getInstance().getSoundManager().playDelayed(sound, delay);
         });
+    }
+
+    public static void play(SoundEvent sound, Vector3f pos, SoundSource source, float volume, float pitch) {
+        Minecraft.getInstance().execute(() -> {
+            Minecraft.getInstance().level.playLocalSound(pos.x(), pos.y(), pos.z(), sound, source, volume, pitch, false);
+        });
+    }
+
+    public static void play(SoundEvent sound, Vector3f pos, float volume, float pitch) {
+        this.play(sound, pos, SoundSource.BLOCKS, volume, pitch);
     }
 
     public static void stop() {
