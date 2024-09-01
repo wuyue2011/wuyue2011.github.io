@@ -11,4 +11,10 @@ public class ParticleHelper {
             Minecraft.getInstance().level.addParticle(particle, pos.x(), pos.y(), pos.z(), speed.x(), speed.y(), speed.z());
         });
     }
+
+    public static void addParticle(ParticleOptions particle, boolean overrideLimiter, Vector3f pos, Vector3f speed){
+        Minecraft.getInstance().execute(() -> {
+            Minecraft.getInstance().level.addParticle(particle, overrideLimiter, pos.x(), pos.y(), pos.z(), speed.x(), speed.y(), speed.z());
+        });
+    }
 }
