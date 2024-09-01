@@ -81,10 +81,12 @@ public class ScriptHolder {
             scope.put("DynamicModelHolder", scope, new NativeJavaClass(scope, DynamicModelHolder.class));
             scope.put("Matrices", scope, new NativeJavaClass(scope, Matrices.class));
             scope.put("Matrix4f", scope, new NativeJavaClass(scope, Matrix4f.class));
-            scope.put("Vector3f", scope, new NativeJavaClass(scope, Vector3f.class));
-            scope.put("SoundEvent", scope, new NativeJavaClass(scope, SoundEvent.class));
+            scope.put("Vector3f", scope, new NativeJavaClass(scope, Vector3f.class));   
             scope.put("TrainLoopingSoundInstance", scope, new NativeJavaClass(scope, TrainLoopingSoundInstance.class));
-            scope.put("TickableSound", scope, new NativeJavaClass(scope, TickableSound.class));//114514
+            scope.put("TickableSound", scope, new NativeJavaClass(scope, TickableSound.class));
+            
+            scope.put("SoundEvent", scope, new NativeJavaClass(scope, SoundEvent.class));
+            scope.put("SoundSource", scope, new NativeJavaClass(scope, SoundSource.class));
 
             scope.put("MTRClientData", scope, new NativeJavaClass(scope, ClientData.class));
 
