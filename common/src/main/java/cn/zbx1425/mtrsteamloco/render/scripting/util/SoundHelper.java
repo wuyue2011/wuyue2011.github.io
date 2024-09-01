@@ -20,6 +20,12 @@ public class SoundHelper {
         });
     }
 
+    public static void play(SoundInstance sound, int delay) {
+        Minecraft.getInstance().execute(() -> {
+            Minecraft.getInstance().getSoundManager().playDelayed(sound, delay);
+        });
+    }
+
     public static void stop() {
         Minecraft.getInstance().execute(() -> {
             Minecraft.getInstance().getSoundManager().stop();
