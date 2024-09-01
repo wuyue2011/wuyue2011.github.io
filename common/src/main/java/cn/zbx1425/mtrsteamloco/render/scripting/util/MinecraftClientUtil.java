@@ -43,28 +43,4 @@ public class MinecraftClientUtil {
             });
         }
     }
-
-    public static void stopAllSounds() {
-        Minecraft.getInstance().execute(() -> {
-            Minecraft.getInstance().getSoundManager().stop();
-        });
-    }
-
-    public static void stopSound(SoundInstance sound) {
-        Minecraft.getInstance().execute(() -> {
-            Minecraft.getInstance().getSoundManager().stop(sound);
-        });
-    }
-
-    public static void stopSound(ResourceLocation sound, SoundSource source) {
-        Minecraft.getInstance().execute(() -> {
-            Minecraft.getInstance().getSoundManager().stop(sound, source);
-        });
-    }
-
-    public static void stopSound(ResourceLocation sound){
-        Minecraft.getInstance().execute(() -> {
-            Minecraft.getInstance().getSoundManager().stop(sound, SoundSource.BLOCKS);
-        });
-    }
 }
