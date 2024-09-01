@@ -14,6 +14,12 @@ import net.minecraft.world.entity.player.Player;
 
 public class SoundHelper {
 
+    public static void play(SoundInstance sound) {
+        Minecraft.getInstance().execute(() -> {
+            Minecraft.getInstance().getSoundManager().play(sound);            
+        });
+    }
+
     public static void stop() {
         Minecraft.getInstance().execute(() -> {
             Minecraft.getInstance().getSoundManager().stop();
