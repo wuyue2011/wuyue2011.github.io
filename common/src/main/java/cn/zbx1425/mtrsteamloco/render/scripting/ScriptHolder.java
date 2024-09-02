@@ -74,6 +74,7 @@ public class ScriptHolder {
             scope.put("RateLimit", scope, new NativeJavaClass(scope, RateLimit.class));
             scope.put("TextUtil", scope, new NativeJavaClass(scope, TextUtil.class));
             scope.put("SoundHelper", scope, new NativeJavaClass(scope, SoundHelper.class));
+            scope.put("ParticleHelper", scope, new NativeJavaClass(scope, ParticleHelper.class));
 
             scope.put("RawModel", scope, new NativeJavaClass(scope, RawModel.class));
             scope.put("RawMesh", scope, new NativeJavaClass(scope, RawMesh.class));
