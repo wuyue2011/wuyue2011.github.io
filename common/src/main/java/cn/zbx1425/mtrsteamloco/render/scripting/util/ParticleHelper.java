@@ -3,6 +3,7 @@ package cn.zbx1425.mtrsteamloco.render.scripting.util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.client.renderer.LevelRenderer;
 import cn.zbx1425.sowcer.math.Vector3f;
 
 public class ParticleHelper {
