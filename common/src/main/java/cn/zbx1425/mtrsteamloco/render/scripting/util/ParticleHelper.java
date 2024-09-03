@@ -28,186 +28,186 @@ public class ParticleHelper {
         });
     }
 
-    public static ParticleType<?> getParticleType(String particleName) {
+    public static <T> T getParticleType(String particleName) {
         switch (particleName.toUpperCase()) {
         case "AMBIENT_ENTITY_EFFECT":
-            return ParticleTypes.AMBIENT_ENTITY_EFFECT;
+            return (T)  ParticleTypes.AMBIENT_ENTITY_EFFECT;
         case "ANGRY_VILLAGER":
-            return ParticleTypes.ANGRY_VILLAGER;
+            return (T)  ParticleTypes.ANGRY_VILLAGER;
         case "BLOCK":
-            return ParticleTypes.BLOCK;
+            return (T)  ParticleTypes.BLOCK;
         case "BLOCK_MARKER":
-            return ParticleTypes.BLOCK_MARKER;
+            return (T)  ParticleTypes.BLOCK_MARKER;
         case "BUBBLE":
-            return ParticleTypes.BUBBLE;
+            return (T)  ParticleTypes.BUBBLE;
         case "CLOUD":
-            return ParticleTypes.CLOUD;
+            return (T)  ParticleTypes.CLOUD;
         case "CRIT":
-            return ParticleTypes.CRIT;
+            return (T)  ParticleTypes.CRIT;
         case "DAMAGE_INDICATOR":
-            return ParticleTypes.DAMAGE_INDICATOR;
+            return (T)  ParticleTypes.DAMAGE_INDICATOR;
         case "DRAGON_BREATH":
-            return ParticleTypes.DRAGON_BREATH;
+            return (T)  ParticleTypes.DRAGON_BREATH;
         case "DRIPPING_LAVA":
-            return ParticleTypes.DRIPPING_LAVA;
+            return (T)  ParticleTypes.DRIPPING_LAVA;
         case "FALLING_LAVA":
-            return ParticleTypes.FALLING_LAVA;
+            return (T)  ParticleTypes.FALLING_LAVA;
         case "LANDING_LAVA":
-            return ParticleTypes.LANDING_LAVA;
+            return (T)  ParticleTypes.LANDING_LAVA;
         case "DRIPPING_WATER":
-            return ParticleTypes.DRIPPING_WATER;
+            return (T)  ParticleTypes.DRIPPING_WATER;
         case "FALLING_WATER":
-            return ParticleTypes.FALLING_WATER;
+            return (T)  ParticleTypes.FALLING_WATER;
         case "DUST":
-            return ParticleTypes.DUST;
+            return (T)  ParticleTypes.DUST;
         case "DUST_COLOR_TRANSITION":
-            return ParticleTypes.DUST_COLOR_TRANSITION;
+            return (T)  ParticleTypes.DUST_COLOR_TRANSITION;
         case "EFFECT":
-            return ParticleTypes.EFFECT;
+            return (T)  ParticleTypes.EFFECT;
         case "ELDER_GUARDIAN":
-            return ParticleTypes.ELDER_GUARDIAN;
+            return (T)  ParticleTypes.ELDER_GUARDIAN;
         case "ENCHANTED_HIT":
-            return ParticleTypes.ENCHANTED_HIT;
+            return (T)  ParticleTypes.ENCHANTED_HIT;
         case "ENCHANT":
-            return ParticleTypes.ENCHANT;
+            return (T)  ParticleTypes.ENCHANT;
         case "END_ROD":
-            return ParticleTypes.END_ROD;
+            return (T)  ParticleTypes.END_ROD;
         case "ENTITY_EFFECT":
-            return ParticleTypes.ENTITY_EFFECT;
+            return (T)  ParticleTypes.ENTITY_EFFECT;
         case "EXPLOSION_EMITTER":
-            return ParticleTypes.EXPLOSION_EMITTER;
+            return (T)  ParticleTypes.EXPLOSION_EMITTER;
         case "EXPLOSION":
-            return ParticleTypes.EXPLOSION;
+            return (T)  ParticleTypes.EXPLOSION;
         case "FALLING_DUST":
-            return ParticleTypes.FALLING_DUST;
+            return (T)  ParticleTypes.FALLING_DUST;
         case "FIREWORK":
-            return ParticleTypes.FIREWORK;
+            return (T)  ParticleTypes.FIREWORK;
         case "FISHING":
-            return ParticleTypes.FISHING;
+            return (T)  ParticleTypes.FISHING;
         case "FLAME":
-            return ParticleTypes.FLAME;
+            return (T)  ParticleTypes.FLAME;
         case "SOUL_FIRE_FLAME":
-            return ParticleTypes.SOUL_FIRE_FLAME;
+            return (T)  ParticleTypes.SOUL_FIRE_FLAME;
         case "SOUL":
-            return ParticleTypes.SOUL;
+            return (T)  ParticleTypes.SOUL;
         case "FLASH":
-            return ParticleTypes.FLASH;
+            return (T)  ParticleTypes.FLASH;
         case "HAPPY_VILLAGER":
-            return ParticleTypes.HAPPY_VILLAGER;
+            return (T)  ParticleTypes.HAPPY_VILLAGER;
         case "COMPOSTER":
-            return ParticleTypes.COMPOSTER;
+            return (T)  ParticleTypes.COMPOSTER;
         case "HEART":
-            return ParticleTypes.HEART;
+            return (T)  ParticleTypes.HEART;
         case "INSTANT_EFFECT":
-            return ParticleTypes.INSTANT_EFFECT;
+            return (T)  ParticleTypes.INSTANT_EFFECT;
         case "ITEM":
-            return ParticleTypes.ITEM;
+            return (T)  ParticleTypes.ITEM;
         case "VIBRATION":
-            return ParticleTypes.VIBRATION;
+            return (T)  ParticleTypes.VIBRATION;
         case "ITEM_SLIME":
-            return ParticleTypes.ITEM_SLIME;
+            return (T)  ParticleTypes.ITEM_SLIME;
         case "ITEM_SNOWBALL":
-            return ParticleTypes.ITEM_SNOWBALL;
+            return (T)  ParticleTypes.ITEM_SNOWBALL;
         case "LARGE_SMOKE":
-            return ParticleTypes.LARGE_SMOKE;
+            return (T)  ParticleTypes.LARGE_SMOKE;
         case "LAVA":
-            return ParticleTypes.LAVA;
+            return (T)  ParticleTypes.LAVA;
         case "MYCELIUM":
-            return ParticleTypes.MYCELIUM;
+            return (T)  ParticleTypes.MYCELIUM;
         case "NOTE":
-            return ParticleTypes.NOTE;
+            return (T)  ParticleTypes.NOTE;
         case "POOF":
-            return ParticleTypes.POOF;
+            return (T)  ParticleTypes.POOF;
         case "PORTAL":
-            return ParticleTypes.PORTAL;
+            return (T)  ParticleTypes.PORTAL;
         case "RAIN":
-            return ParticleTypes.RAIN;
+            return (T)  ParticleTypes.RAIN;
         case "SMOKE":
-            return ParticleTypes.SMOKE;
+            return (T)  ParticleTypes.SMOKE;
         case "SNEEZE":
-            return ParticleTypes.SNEEZE;
+            return (T)  ParticleTypes.SNEEZE;
         case "SPIT":
-            return ParticleTypes.SPIT;
+            return (T)  ParticleTypes.SPIT;
         case "SQUID_INK":
-            return ParticleTypes.SQUID_INK;
+            return (T)  ParticleTypes.SQUID_INK;
         case "SWEEP_ATTACK":
-            return ParticleTypes.SWEEP_ATTACK;
+            return (T)  ParticleTypes.SWEEP_ATTACK;
         case "TOTEM_OF_UNDYING":
-            return ParticleTypes.TOTEM_OF_UNDYING;
+            return (T)  ParticleTypes.TOTEM_OF_UNDYING;
         case "UNDERWATER":
-            return ParticleTypes.UNDERWATER;
+            return (T)  ParticleTypes.UNDERWATER;
         case "SPLASH":
-            return ParticleTypes.SPLASH;
+            return (T)  ParticleTypes.SPLASH;
         case "WITCH":
-            return ParticleTypes.WITCH;
+            return (T)  ParticleTypes.WITCH;
         case "BUBBLE_POP":
-            return ParticleTypes.BUBBLE_POP;
+            return (T)  ParticleTypes.BUBBLE_POP;
         case "CURRENT_DOWN":
-            return ParticleTypes.CURRENT_DOWN;
+            return (T)  ParticleTypes.CURRENT_DOWN;
         case "BUBBLE_COLUMN_UP":
-            return ParticleTypes.BUBBLE_COLUMN_UP;
+            return (T)  ParticleTypes.BUBBLE_COLUMN_UP;
         case "NAUTILUS":
-            return ParticleTypes.NAUTILUS;
+            return (T)  ParticleTypes.NAUTILUS;
         case "DOLPHIN":
-            return ParticleTypes.DOLPHIN;
+            return (T)  ParticleTypes.DOLPHIN;
         case "CAMPFIRE_COSY_SMOKE":
-            return ParticleTypes.CAMPFIRE_COSY_SMOKE;
+            return (T)  ParticleTypes.CAMPFIRE_COSY_SMOKE;
         case "CAMPFIRE_SIGNAL_SMOKE":
-            return ParticleTypes.CAMPFIRE_SIGNAL_SMOKE;
+            return (T)  ParticleTypes.CAMPFIRE_SIGNAL_SMOKE;
         case "DRIPPING_HONEY":
-            return ParticleTypes.DRIPPING_HONEY;
+            return (T)  ParticleTypes.DRIPPING_HONEY;
         case "FALLING_HONEY":
-            return ParticleTypes.FALLING_HONEY;
+            return (T)  ParticleTypes.FALLING_HONEY;
         case "LANDING_HONEY":
-            return ParticleTypes.LANDING_HONEY;
+            return (T)  ParticleTypes.LANDING_HONEY;
         case "FALLING_NECTAR":
-            return ParticleTypes.FALLING_NECTAR;
+            return (T)  ParticleTypes.FALLING_NECTAR;
         case "FALLING_SPORE_BLOSSOM":
-            return ParticleTypes.FALLING_SPORE_BLOSSOM;
+            return (T)  ParticleTypes.FALLING_SPORE_BLOSSOM;
         case "ASH":
-            return ParticleTypes.ASH;
+            return (T)  ParticleTypes.ASH;
         case "CRIMSON_SPORE":
-            return ParticleTypes.CRIMSON_SPORE;
+            return (T)  ParticleTypes.CRIMSON_SPORE;
         case "WARPED_SPORE":
-            return ParticleTypes.WARPED_SPORE;
+            return (T)  ParticleTypes.WARPED_SPORE;
         case "SPORE_BLOSSOM_AIR":
-            return ParticleTypes.SPORE_BLOSSOM_AIR;
+            return (T)  ParticleTypes.SPORE_BLOSSOM_AIR;
         case "DRIPPING_OBSIDIAN_TEAR":
-            return ParticleTypes.DRIPPING_OBSIDIAN_TEAR;
+            return (T)  ParticleTypes.DRIPPING_OBSIDIAN_TEAR;
         case "FALLING_OBSIDIAN_TEAR":
-            return ParticleTypes.FALLING_OBSIDIAN_TEAR;
+            return (T)  ParticleTypes.FALLING_OBSIDIAN_TEAR;
         case "LANDING_OBSIDIAN_TEAR":
-            return ParticleTypes.LANDING_OBSIDIAN_TEAR;
+            return (T)  ParticleTypes.LANDING_OBSIDIAN_TEAR;
         case "REVERSE_PORTAL":
-            return ParticleTypes.REVERSE_PORTAL;
+            return (T)  ParticleTypes.REVERSE_PORTAL;
         case "WHITE_ASH":
-            return ParticleTypes.WHITE_ASH;
+            return (T)  ParticleTypes.WHITE_ASH;
         case "SMALL_FLAME":
-            return ParticleTypes.SMALL_FLAME;
+            return (T)  ParticleTypes.SMALL_FLAME;
         case "SNOWFLAKE":
-            return ParticleTypes.SNOWFLAKE;
+            return (T)  ParticleTypes.SNOWFLAKE;
         case "DRIPPING_DRIPSTONE_LAVA":
-            return ParticleTypes.DRIPPING_DRIPSTONE_LAVA;
+            return (T)  ParticleTypes.DRIPPING_DRIPSTONE_LAVA;
         case "FALLING_DRIPSTONE_LAVA":
-            return ParticleTypes.FALLING_DRIPSTONE_LAVA;
+            return (T)  ParticleTypes.FALLING_DRIPSTONE_LAVA;
         case "DRIPPING_DRIPSTONE_WATER":
-            return ParticleTypes.DRIPPING_DRIPSTONE_WATER;
+            return (T)  ParticleTypes.DRIPPING_DRIPSTONE_WATER;
         case "FALLING_DRIPSTONE_WATER":
-            return ParticleTypes.FALLING_DRIPSTONE_WATER;
+            return (T)  ParticleTypes.FALLING_DRIPSTONE_WATER;
         case "GLOW_SQUID_INK":
-            return ParticleTypes.GLOW_SQUID_INK;
+            return (T)  ParticleTypes.GLOW_SQUID_INK;
         case "GLOW":
-            return ParticleTypes.GLOW;
+            return (T)  ParticleTypes.GLOW;
         case "WAX_ON":
-            return ParticleTypes.WAX_ON;
+            return (T)  ParticleTypes.WAX_ON;
         case "WAX_OFF":
-            return ParticleTypes.WAX_OFF;
+            return (T)  ParticleTypes.WAX_OFF;
         case "ELECTRIC_SPARK":
-            return ParticleTypes.ELECTRIC_SPARK;
+            return (T)  ParticleTypes.ELECTRIC_SPARK;
         case "SCRAPE":
-            return ParticleTypes.SCRAPE;
+            return (T)  ParticleTypes.SCRAPE;
         default:
-            return null;
+            return (T)  null;
         }
     }
 }
