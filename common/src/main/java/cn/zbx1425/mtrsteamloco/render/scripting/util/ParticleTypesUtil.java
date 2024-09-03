@@ -3,6 +3,7 @@ package cn.zbx1425.mtrsteamloco.render.scripting.util;
 import com.mojang.serialization.Codec;
 import java.util.function.Function;
 import net.minecraft.core.Registry;
+import net.minecraft.core.particles.*;
 
 public class ParticleTypesUtil {
    public static final SimpleParticleType AMBIENT_ENTITY_EFFECT = register("ambient_entity_effect", false);
