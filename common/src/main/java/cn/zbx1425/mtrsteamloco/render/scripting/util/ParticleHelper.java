@@ -29,7 +29,7 @@ public class ParticleHelper {
     }
 
     public static SimpleParticleType getParticleType(String particleName) {
-        switch (name.toUpperCase()) {
+        switch (particleName.toUpperCase()) {
         case "AMBIENT_ENTITY_EFFECT":
             return ParticleTypes.AMBIENT_ENTITY_EFFECT;
         case "ANGRY_VILLAGER":
