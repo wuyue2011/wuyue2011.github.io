@@ -28,7 +28,7 @@ public class ParticleHelper {
         });
     }
 
-    public static <T> T getParticleType(String particleName) {
+    public static ParticleType<?> getParticleType(String particleName) {
         switch (particleName.toUpperCase()) {
         case "AMBIENT_ENTITY_EFFECT":
             return ParticleTypes.AMBIENT_ENTITY_EFFECT;
