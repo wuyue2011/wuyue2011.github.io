@@ -30,6 +30,7 @@ public class ParticleHelper {
 
     public static <T> T getParticleType(String particleName) {
         switch (particleName.toUpperCase()) {
+#if MC_VERSION != "11701"
         case "AMBIENT_ENTITY_EFFECT":
             return (T)  ParticleTypes.AMBIENT_ENTITY_EFFECT;
         case "ANGRY_VILLAGER":
@@ -206,6 +207,7 @@ public class ParticleHelper {
             return (T)  ParticleTypes.ELECTRIC_SPARK;
         case "SCRAPE":
             return (T)  ParticleTypes.SCRAPE;
+#endif
         default:
             return (T)  null;
         }
