@@ -124,5 +124,9 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public Vector3f getWorldPosVector3f() {
             return new Vector3f(this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ());
         }
+
+        public Vector3f getTransformPosVector3f() {
+            return new Vector3f(this.worldPosition.getX() + translateX, this.worldPosition.getY() + translateY, this.worldPosition.getZ() + translateZ);
+        }
     }
 }
