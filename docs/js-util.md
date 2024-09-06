@@ -166,3 +166,44 @@ MTR 的客户端数据，可以用来读取换乘线路等。参见 MTR 源码 C
 - `static MinecraftClient.displayMessage(message: String,actionBar :boolean): void`
 
   在聊天框或在操作栏（物品栏上方）显示一段文本。当 `actionBar` 为 `true` 时，显示在操作栏，否则显示在聊天框。
+
+
+## SoundHelper
+
+顾名思义，这个类提供了一些声音相关的功能。
+
+- `static SoundHelper.play(sound :SoundInstance): void`
+
+  播放一个声音实例，如 `TickableSound` 或 `TrainLoopingSoundInstance`
+
+- `static SoundHelper.play(sound :SoundInstance, delay :int): void`
+
+  延迟一段时间后播放声音。
+
+- `static SoundHelper.play(sound :SoundEvent, pos :Vector3f,  volume :float, pitch :float): void`
+
+  播放一个 `SoundEvent`, 类似 ctx.playSound......
+
+- `static SoundHelper.play(sound :SoundEvent, pos :Vector3f, source :SoundSource, volume :float, pitch :float): void`
+
+  以指定声源播播放一个 `SoundEvent。`
+
+- `static SoundHelper.stop(): void`
+
+  停止所有声音。
+
+- `static SoundHelper.stop(sound :SoundInstance): void`
+
+  停止某个声音实例。
+
+- `static SoundHelper.stop(sound :SoundEvent, source :SoundSource): void`
+
+  停止使用某个声源播放的某一个 `SoundEvent` 的所有声音。
+
+- `static SoundHelper.stop(sound :SoundEvent): void`
+
+ 停止使用 BLOCK 声源播放的某一个 `SoundEvent` 的所有声音。
+
+- `static SoundHelper.getSoundSource(str :String): SoundSource`
+
+  根据字符串获取一个 `SoundSource`。

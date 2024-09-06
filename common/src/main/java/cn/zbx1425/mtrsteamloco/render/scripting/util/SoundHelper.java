@@ -61,4 +61,31 @@ public class SoundHelper {
             Minecraft.getInstance().getSoundManager().stop(sound, SoundSource.BLOCKS);
         });
     }
+
+    public static void getSoundSource(String str) {
+        switch (str.toUpperCase()) {
+            case "MASTER":
+                return SoundSource.MASTER;
+            case "MUSIC":
+                return SoundSource.MUSIC;
+            case "RECORDS":
+                return SoundSource.RECORDS;
+            case "WEATHER":
+                return SoundSource.WEATHER;
+            case "BLOCKS":
+                return SoundSource.BLOCKS;
+            case "HOSTILE":
+                return SoundSource.HOSTILE;
+            case "NEUTRAL":
+                return SoundSource.NEUTRAL;
+            case "PLAYERS":
+                return SoundSource.PLAYERS;
+            case "AMBIENT":
+                return SoundSource.AMBIENT;
+            case "VOICE":
+                return SoundSource.VOICE;
+            default:
+                return SoundSource.BLOCKS;
+        }
+    }
 }
