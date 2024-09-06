@@ -62,7 +62,7 @@ public class SoundHelper {
         });
     }
 
-    public static void getSoundSource(String str) {
+    public static SoundSource getSoundSource(String str) {
         switch (str.toUpperCase()) {
             case "MASTER":
                 return SoundSource.MASTER;
