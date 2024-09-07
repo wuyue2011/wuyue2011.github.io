@@ -168,6 +168,105 @@ MTR 的客户端数据，可以用来读取换乘线路等。参见 MTR 源码 C
   在聊天框或在操作栏（物品栏上方）显示一段文本。当 `actionBar` 为 `true` 时，显示在操作栏，否则显示在聊天框。
 
 
+
+## TickableSound
+
+这个类提供了一个可以实时更新参数的声音方法。
+
+- `new TickableSound(event :SoundEvent, source :SoundSource)`
+
+  以 BLOCK声源 创建一个 `TickableSound`。
+
+- `new TickableSound(event :SoundEvent, source :SoundSource)`
+
+  以指定声源创建 `TickableSound`。
+
+- `TickableSound.setData(volume :float, pitch :float, pos :Vector3f): void`
+
+  设置声音的音量、音调、位置。
+
+- `TickableSound.setLooping(looping :boolean): void`
+
+  设置是否循环播放。
+
+- `TickableSound.setDelay(delay :int): void`
+
+  设置延迟播放的时间。
+
+- `TickableSound.setAttenuation(attenuation :boolean): void`
+
+  设置声音衰减。
+
+- `TickableSound.setRelative(relative :boolean): void`
+
+  设置声音是否相对于玩家。
+
+- `TickableSound.play(): void`
+
+  播放声音。(相当于 `SoundHelper.play(this)`)
+
+- `TickableSound.quit(): void`
+
+  停止播放声音。(相当于 `SoundHelper.stop(this)`)
+
+- `TickableSound.pause(): void`
+
+  暂停播放声音。(与上一个效果相近)
+
+- `TickableSound.getSound(): Sound`
+
+  获取声音。
+
+- `TickableSound.getLocation(): ResourceLocation`
+
+  获取声音的标签位置。
+
+- `TickableSound.getSource(): SoundSource`
+
+  获取声音的声源。
+
+- `TickableSound.isLooping(): boolean`
+
+  是否循环播放。
+
+- `TickableSound.getVolume(): float`
+
+  获取声音的音量。
+
+- `TickableSound.getPitch(): float`
+
+  获取声音的音调。
+
+- `TickableSound.getDelay(): int`
+
+  获取延迟播放的时间。
+
+- `TickableSound。getAttenuation(): SoundInstance.Attenuation`
+
+  获取声音衰减。
+
+- `TickableSound.isRelative(): boolean`
+
+  是否声音相对于玩家。
+
+- `TickableSound.toString(): (): String`
+
+  转为字符串（调试时自动调用）。
+
+
+
+## TrainLoopingSoundInstance
+
+这个类与上一个类相似，是从 MTR 中挪来的。
+
+- `new TrainLoopingSoundInstance(event :SoundEvent, train :TrainClient)`
+
+  以指定 `TrainClient` 创建一个 `TrainLoopingSoundInstance`。
+
+- `TrainLoopingSoundInstance.setData(volume :float, pitch :float, pos :BlockPos): void`
+
+  设置声音的音量、音调、位置。
+
 ## SoundHelper
 
 顾名思义，这个类提供了一些声音相关的功能。

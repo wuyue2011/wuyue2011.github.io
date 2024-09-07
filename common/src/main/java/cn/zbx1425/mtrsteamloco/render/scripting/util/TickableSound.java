@@ -35,8 +35,13 @@ public class TickableSound extends TickableSoundInstanceMapper {
         this.delay = delay;
     }
 
-    public void setAttenuation(SoundInstance.Attenuation attenuation){
-        this.attenuation = attenuation;
+    public void setAttenuation(boolean attenuation){
+        if(attenuation){
+            this.attenuation = SoundInstance.Attenuation.LINEAR;
+        }else{
+
+            this.attenuation = SoundInstance.Attenuation.NONE;
+        }
     }
 
     public void setRelative(boolean relative){

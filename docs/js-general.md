@@ -83,3 +83,21 @@ Rhino 脚本引擎不支持所有最新的 JavaScript 功能。对于具体支�
 当脚本运行出错时，NTE 会在 Minecraft 日志中打出报错信息（以 “Error in NTE Resource Pack JavaScript” 开头），而在游戏内没有信息显示。报错信息中会说明错误发生在哪个脚本文件中的哪一行代码。大多启动器有将日志实时显示在单独窗口的功能。
 
 同时，NTE 会暂停脚本运行 4 秒钟，然后再试运行脚本。
+
+
+
+## 一些偷懒的方法
+
+在 NTE 中，为更好的传达类的作用，类名通常都很长，比如说 `MinecraftClient` 这个工具类，又或者 `StateTracker` 这个工具类，如果需要重复使用，打起来比较麻烦。所以在 js 中，如果你是个懒人且不喜欢记单词，可以用下面的这个方法:
+
+```javascript
+const m = MinecraftClient;
+const s = StateTracker;
+
+m.narrate(...);
+
+let a = new s();
+a.setState(...);
+```
+
+这样，你就可以直接用 `m` 和 `s` 来代替 `MinecraftClient` 和 `StateTracker`，而且可以省去一些打字的麻烦。请注意，这种方法会降低代码的可读性。

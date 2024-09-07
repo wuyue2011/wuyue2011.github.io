@@ -115,6 +115,9 @@ NTE 调用这几个函数时会使用三个参数，稍后介绍其各自的内�
 
   在屏幕左上角输出调试信息。需在设置中开启 “显示JS调试信息” 才会显示。`key` 为值的名称，`value` 为内容（`GraphicsTexture` 类型的会被显示出来，其他的会被转为字符串显示）。
 
+- `TrainScriptContext.train :TrainClient`
+
+  获取 TrainClient。
 
 
 
