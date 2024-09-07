@@ -207,3 +207,23 @@ MTR 的客户端数据，可以用来读取换乘线路等。参见 MTR 源码 C
 - `static SoundHelper.getSoundSource(str :String): SoundSource`
 
   根据字符串获取一个 `SoundSource`。
+
+## ParticleHelper
+
+这个类提供了一些粒子相关的功能。
+
+- `static ParticleHelper.addParticle(particle :ParticleOptions, pos :Vector3f, config :Vector3f): void`
+
+  在某个位置添加一个粒子。
+
+- `static ParticleHelper.addParticle(particle :ParticleOptions, isOverrideLimiter :boolean, pos :Vector3f, config :Vector3f): void`
+
+  在某个位置添加一个粒子，并忽略粒子限制器。
+
+- `static ParticleHelper.addParticle(particle :ParticleOptions, isOverrideLimiter :boolean, isOnGround :boolean, pos :Vector3f, config :Vector3f): void`
+
+  在某个位置添加一个粒子，并忽略粒子限制器和是否在地上。
+
+- `static ParticleHelper.getParticleType(particleName :String): <T> SimpleParticleType`
+
+  根据名字获取一个 `SimpleParticleType` 或 `ParticleType`。名称可以查看 [我的世界wiki]( https://minecraft.fandom.com/zh/wiki/%E7%B2%92%E5%AD%90#:~:text=%E7%B2%92%E5%AD%90%EF%BC%88Particl) 的 `JAVA版ID名` 一栏。
