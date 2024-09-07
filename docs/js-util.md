@@ -259,7 +259,7 @@ MTR 的客户端数据，可以用来读取换乘线路等。参见 MTR 源码 C
 
   是否声音相对于玩家。
 
-- `TickableSound.toString(): (): String`
+- `TickableSound.toString(): String`
 
   转为字符串（调试时自动调用）。
 
