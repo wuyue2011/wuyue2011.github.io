@@ -185,7 +185,7 @@ MTR 的客户端数据，可以用来读取换乘线路等。参见 MTR 源码 C
 
 - `new TickableSound(event :SoundEvent, source :SoundSource)`
 
-  以 BLOCK声源 创建一个 `TickableSound`。
+  以 BLOCK 声源 创建一个 `TickableSound`。
 
 - `new TickableSound(event :SoundEvent, source :SoundSource)`
 
