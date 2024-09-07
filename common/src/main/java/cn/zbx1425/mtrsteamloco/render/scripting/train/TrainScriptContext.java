@@ -15,7 +15,6 @@ import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import mtr.sound.TrainLoopingSoundInstance;
 
 @SuppressWarnings("unused")
 public class TrainScriptContext extends AbstractScriptContext {
