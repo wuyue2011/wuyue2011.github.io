@@ -16,10 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import vendor.cn.zbx1425.mtrsteamloco.org.mozilla.javascript.*;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 import mtr.sound.TrainLoopingSoundInstance;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +74,6 @@ public class ScriptHolder {
             scope.put("SoundHelper", scope, new NativeJavaClass(scope, SoundHelper.class));
             scope.put("ParticleHelper", scope, new NativeJavaClass(scope, ParticleHelper.class));
             scope.put("TickableSound", scope, new NativeJavaClass(scope, TickableSound.class));
-            //scope.put("ParticleTypesUtil", scope, new NativeJavaClass(scope, ParticleTypesUtil.class));
 
             scope.put("RawModel", scope, new NativeJavaClass(scope, RawModel.class));
             scope.put("RawMesh", scope, new NativeJavaClass(scope, RawMesh.class));
@@ -88,10 +84,8 @@ public class ScriptHolder {
             scope.put("Vector3f", scope, new NativeJavaClass(scope, Vector3f.class));   
             
             scope.put("TrainLoopingSoundInstance", scope, new NativeJavaClass(scope, TrainLoopingSoundInstance.class));
-            
-            scope.put("ParticleTypes", scope, new NativeJavaClass(scope, ParticleTypes.class));
+
             scope.put("SoundEvent", scope, new NativeJavaClass(scope, SoundEvent.class));
-            scope.put("SoundSource", scope, new NativeJavaClass(scope, SoundSource.class));
 
             scope.put("MTRClientData", scope, new NativeJavaClass(scope, ClientData.class));
 

@@ -169,6 +169,16 @@ MTR 的客户端数据，可以用来读取换乘线路等。参见 MTR 源码 C
 
 
 
+## SoundEvent
+
+这是 Mincraft 自带的声音事件。
+
+- `new SoundEvent(name :ResourceLocation)`
+
+  创建一个声音事件。
+
+
+
 ## TickableSound
 
 这个类提供了一个可以实时更新参数的声音方法。
