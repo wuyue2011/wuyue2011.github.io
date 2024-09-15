@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import cn.zbx1425.sowcer.math.Vector3f;
+import net.minecraft.resources.ResourceLocation;
 
 public class TickableSound extends TickableSoundInstanceMapper {
     public TickableSound(ResourceLocation sound){
