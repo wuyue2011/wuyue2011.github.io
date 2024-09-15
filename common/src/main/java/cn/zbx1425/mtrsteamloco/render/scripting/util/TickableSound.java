@@ -21,7 +21,7 @@ public class TickableSound extends TickableSoundInstanceMapper {
         , SoundSource.BLOCKS);
     }
 
-    public TickableSound(ResourceLocation sound, SoundSource source){
+    public TickableSound(ResourceLocation sound, SoundSource source) {
         super(
 #if MC_VERSION >= "11903"
         SoundEvent.createVariableRangeEvent(sound)
@@ -40,15 +40,15 @@ public class TickableSound extends TickableSoundInstanceMapper {
 		z = pos.z();
 	}
 
-    public void setLooping(boolean looping){
+    public void setLooping(boolean looping) {
         this.looping = looping;
     }
 
-    public void setDelay(int delay){
+    public void setDelay(int delay) {
         this.delay = delay;
     }
 
-    public void setAttenuation(boolean attenuation){
+    public void setAttenuation(boolean attenuation) {
         if(attenuation){
             this.attenuation = SoundInstance.Attenuation.LINEAR;
         }else{
@@ -57,21 +57,21 @@ public class TickableSound extends TickableSoundInstanceMapper {
         }
     }
 
-    public void setRelative(boolean relative){
+    public void setRelative(boolean relative) {
         this.relative = relative;
     }
 
-    public void play(){
+    public void play() {
         Minecraft.getInstance().getSoundManager().play(this);
     }
 
-    public void quit(){
+    public void quit() {
         Minecraft.getInstance().execute(() -> {
             Minecraft.getInstance().getSoundManager().stop(this);
         });
     }
 
-    public void pause(){
+    public void pause() {
         stop();
     }
 
