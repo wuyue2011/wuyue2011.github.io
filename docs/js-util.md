@@ -313,4 +313,4 @@ MTR 的客户端数据，可以用来读取换乘线路等。参见 MTR 源码 C
 
 - `static ParticleHelper.getParticleType(particleName :String): <T> SimpleParticleType`
 
-  根据名字获取一个 `SimpleParticleType` 或 `ParticleType`。名称可以查看 [我的世界wiki]( https://minecraft.fandom.com/zh/wiki/%E7%B2%92%E5%AD%90#:~:text=%E7%B2%92%E5%AD%90%EF%BC%88Particl) 的 `JAVA版ID名` 一栏。
+  根据名字获取一个 `SimpleParticleType` 或 `ParticleType`。名称可以查看 [Minecraft Wiki](https://zh.minecraft.wiki/wiki/%E7%B2%92%E5%AD%90) 的 `JAVA版ID名` 一栏。
