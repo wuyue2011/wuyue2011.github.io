@@ -22,7 +22,9 @@ Minecraft 采取一个叫做资源位置的东西来标识资源包内的文件�
 
 
 
-## 加载代码与类库
+## 加载代码与资源
+
+此处是一些 Rhino 引擎内置的函数，用于加载代码和资源，更多的方法请查看[Rhino 文档](https://p-bakker.github.io/rhino/tutorials/scripting_java/)。
 
 - `static include(relPath: String): void` 
 
@@ -34,7 +36,8 @@ Minecraft 采取一个叫做资源位置的东西来标识资源包内的文件�
 
 - `static importPackage(src: String): void`
 
-加载一个 Java 类库。如 `importPackage(java.util.Set)`
+加载一个 Java 包。如 `importPackage(java.util.Set)` 相当于 `java` 中的 `import java.util.Set` 
+                或 `importPackage(java.awt)` 相当于 `java` 中的 `import java.awt.*`
 
 
 
