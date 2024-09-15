@@ -2472,7 +2472,7 @@ public class NativeRegExp extends IdScriptableObject {
              * in scalar contexts, and unintentionally for the string.match "list"
              * psuedo-context.  On "hi there bye", the following would result:
              *
-             * Language     while(/ /g){print("$`");}   s/ /$`/g
+             * Language     while(/ /g) {print("$`");}   s/ /$`/g
              * perl4.036    "hi", "there"               "hihitherehi therebye"
              * perl5        "hi", "hi there"            "hihitherehi therebye"
              * js1.2        "hi", "there"               "hihitheretherebye"

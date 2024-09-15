@@ -56,7 +56,7 @@ public class SoundHelper {
         });
     }
 
-    public static void stop(ResourceLocation sound){
+    public static void stop(ResourceLocation sound) {
         Minecraft.getInstance().execute(() -> {
             Minecraft.getInstance().getSoundManager().stop(sound, SoundSource.BLOCKS);
         });

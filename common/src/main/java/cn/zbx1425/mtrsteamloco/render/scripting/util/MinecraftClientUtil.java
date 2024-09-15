@@ -44,7 +44,7 @@ public class MinecraftClientUtil {
         }
     }
     
-    public static void levelEvent(int p_109534_, Vector3f p_109535_, int p_109536_){
+    public static void levelEvent(int p_109534_, Vector3f p_109535_, int p_109536_) {
         final Player player = Minecraft.getInstance().player;
         if (player != null) {
             Minecraft.getInstance().execute(() -> {

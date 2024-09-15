@@ -345,7 +345,7 @@ function create(ctx, state, block) {
 
 function render(ctx, state, block) {
     //得到ModelCluster
-    if(state.dynamicModelHolder.getUploadedModel()!= null){
+    if(state.dynamicModelHolder.getUploadedModel()!= null) {
     state.model = dynamicModelHolder.getUploadedModel();
     }
 }

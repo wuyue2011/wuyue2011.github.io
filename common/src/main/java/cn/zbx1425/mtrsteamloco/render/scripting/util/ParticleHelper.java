@@ -10,19 +10,19 @@ import net.minecraft.core.particles.SimpleParticleType;
 import java.lang.reflect.Field;
 
 public class ParticleHelper {
-    public static void addParticle(ParticleOptions particle, Vector3f pos, Vector3f speed){
+    public static void addParticle(ParticleOptions particle, Vector3f pos, Vector3f speed) {
         Minecraft.getInstance().execute(() -> {
             Minecraft.getInstance().level.addParticle(particle, pos.x(), pos.y(), pos.z(), speed.x(), speed.y(), speed.z());
         });
     }
 
-    public static void addParticle(ParticleOptions particle, boolean overrideLimiter, Vector3f pos, Vector3f speed){
+    public static void addParticle(ParticleOptions particle, boolean overrideLimiter, Vector3f pos, Vector3f speed) {
         Minecraft.getInstance().execute(() -> {
             Minecraft.getInstance().level.addParticle(particle, overrideLimiter, pos.x(), pos.y(), pos.z(), speed.x(), speed.y(), speed.z());
         });
     }
 
-    public static void addParticle(ParticleOptions particle, boolean b1, boolean b2,Vector3f pos, Vector3f speed){
+    public static void addParticle(ParticleOptions particle, boolean b1, boolean b2,Vector3f pos, Vector3f speed) {
         Minecraft.getInstance().execute(() -> {
             Minecraft.getInstance().levelRenderer.addParticle(particle, b1, b2, pos.x(), pos.y(), pos.z(), speed.x(), speed.y(), speed.z());
         });

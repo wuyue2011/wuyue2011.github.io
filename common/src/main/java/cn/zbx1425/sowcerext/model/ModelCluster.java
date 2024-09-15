@@ -91,7 +91,7 @@ public class ModelCluster implements Closeable {
     }
 
     @Override
-    public void close(){
+    public void close() {
         uploadedOpaqueParts.close();
         uploadedTranslucentParts.close();
     }

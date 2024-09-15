@@ -11,7 +11,7 @@ import cn.zbx1425.sowcer.math.Vector3f;
 import net.minecraft.resources.ResourceLocation;
 
 public class TickableSound extends TickableSoundInstanceMapper {
-    public TickableSound(ResourceLocation sound){
+    public TickableSound(ResourceLocation sound) {
         super(
 #if MC_VERSION >= "11903"
         SoundEvent.createVariableRangeEvent(sound)
@@ -49,7 +49,7 @@ public class TickableSound extends TickableSoundInstanceMapper {
     }
 
     public void setAttenuation(boolean attenuation) {
-        if(attenuation){
+        if(attenuation) {
             this.attenuation = SoundInstance.Attenuation.LINEAR;
         }else{
 
