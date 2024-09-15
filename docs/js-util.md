@@ -257,7 +257,7 @@ MTR 的客户端数据，可以用来读取换乘线路等。参见 MTR 源码 C
 
 ## SoundHelper
 
-顾名思义，这个类提供了一些声音相关的功能。
+这个类提供了一些声音相关的功能。
 
 - `static SoundHelper.play(sound :SoundInstance): void`
 
