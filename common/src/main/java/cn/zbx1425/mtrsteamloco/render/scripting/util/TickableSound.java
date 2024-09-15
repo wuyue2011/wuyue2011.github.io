@@ -10,12 +10,24 @@ import net.minecraft.sounds.SoundSource;
 import cn.zbx1425.sowcer.math.Vector3f;
 
 public class TickableSound extends TickableSoundInstanceMapper {
-    public TickableSound(SoundEvent event){
-        super(event, SoundSource.BLOCKS);
+    public TickableSound(ResourceLocation sound){
+        super(
+#if MC_VERSION >= "11903"
+        SoundEvent.createVariableRangeEvent(sound)
+#else
+        new SoundEvent(sound)
+#endif
+        , SoundSource.BLOCKS);
     }
 
-    public TickableSound(SoundEvent event, SoundSource source){
-        super(event, source);
+    public TickableSound(ResourceLocation sound, SoundSource source){
+        super(
+#if MC_VERSION >= "11903"
+        SoundEvent.createVariableRangeEvent(sound)
+#else
+        new SoundEvent(sound)
+#endif
+        , source);
     }
 
     public void setData(float volume, float pitch, Vector3f pos) {
