@@ -94,10 +94,6 @@ public class TrainScriptContext extends AbstractScriptContext {
         );
     }
 
-    public void playCarSound(SoundEvent event, int carIndex, float x, float y, float z, float volume, float pitch){
-        scriptResultWriting.addCarSound(carIndex, event, new Vector3f(x, y, z), volume, pitch);
-    }
-
     public void playAnnSound(ResourceLocation sound, float volume, float pitch) {
         Minecraft.getInstance().execute(() -> {
             LocalPlayer player = Minecraft.getInstance().player;
