@@ -169,25 +169,15 @@ MTR 的客户端数据，可以用来读取换乘线路等。参见 MTR 源码 C
 
 
 
-## SoundEvent
-
-这是 Mincraft 自带的声音事件。
-
-- `new SoundEvent(name :ResourceLocation)`
-
-  创建一个声音事件。
-
-
-
 ## TickableSound
 
 这个类提供了一个可以实时更新参数的声音方法。
 
-- `new TickableSound(event :SoundEvent, source :SoundSource)`
+- `new TickableSound(sound :ResourceLocation)`
 
   以 BLOCK 声源 创建一个 `TickableSound`。
 
-- `new TickableSound(event :SoundEvent, source :SoundSource)`
+- `new TickableSound(sound :ResourceLocation, source :SoundSource)`
 
   以指定声源创建 `TickableSound`。
 
@@ -264,18 +254,6 @@ MTR 的客户端数据，可以用来读取换乘线路等。参见 MTR 源码 C
   转为字符串（调试时自动调用）。
 
 
-
-## TrainLoopingSoundInstance
-
-这个类与上一个类相似，是从 MTR 中挪来的。
-
-- `new TrainLoopingSoundInstance(event :SoundEvent, train :TrainClient)`
-
-  以指定 `TrainClient` 创建一个 `TrainLoopingSoundInstance`。
-
-- `TrainLoopingSoundInstance.setData(volume :float, pitch :float, pos :BlockPos): void`
-
-  设置声音的音量、音调、位置。
 
 ## SoundHelper
 
