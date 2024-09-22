@@ -28,4 +28,8 @@ public abstract class AbstractScriptContext {
         debugInfo.put(key, value);
     }
 
+    public void clearDebugInfo() {
+        debugInfo.clear();
+    }
+
 }
