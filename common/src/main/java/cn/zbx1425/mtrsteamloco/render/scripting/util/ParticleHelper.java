@@ -8,6 +8,8 @@ import cn.zbx1425.sowcer.math.Vector3f;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import java.lang.reflect.Field;
+import cn.zbx1425.mtrsteamloco.fabric.RegistriesWrapperImpl;
+import cn.zbx1425.mtrsteamloco.forge.RegistriesWrapperImpl;
 
 public class ParticleHelper {
     public static void addParticle(ParticleOptions particle, Vector3f pos, Vector3f speed) {
@@ -26,6 +28,20 @@ public class ParticleHelper {
         Minecraft.getInstance().execute(() -> {
             Minecraft.getInstance().levelRenderer.addParticle(particle, b1, b2, pos.x(), pos.y(), pos.z(), speed.x(), speed.y(), speed.z());
         });
+    }
+
+    public static SimpleParticleType registerParticleType(String name, boolean overrideLimiter) {
+        try {
+            RegistriesWrapperImpl registries = new cn.zbx1425.mtrsteamloco.fabric.RegistriesWrapperImpl();
+            SimpleParticleType particleType = registries.createParticleType(overrideLimiter);
+            register.registerParticleType(name, particleType);
+            return particleType;
+        }catch (Exception e) {
+            RegistriesWrapperImpl registries = new cn.zbx1425.mtrsteamloco.forge.RegistriesWrapperImpl();
+            SimpleParticleType particleType = registries.createParticleType(overrideLimiter);
+            register.registerParticleType(name, particleType);
+            return particleType;
+        }
     }
 
     public static <T> T getParticleType(String particleName) {
