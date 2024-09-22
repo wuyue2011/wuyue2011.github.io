@@ -85,7 +85,7 @@ public class ScriptDebugOverlay {
 #if MC_VERSION >= "12000"
     private static int drawText(GuiGraphics guiGraphics, Font font, String text, int x, int y, int color) {
         FormattedText formattedText = FormattedText.of(text);
-        List<FormattedCharSequence> lines = font.split(formattedText, Minecraft.getInstance().getWindow().getGuiScaledWidth());
+        List<FormattedCharSequence> lines = font.split(formattedText, Minecraft.getInstance().getWindow().getGuiScaledWidth() - 40);
         for (FormattedCharSequence line : lines) {
             guiGraphics.drawString(font, line, x, y, color);
             y += Mth.ceil(font.lineHeight * 1.2f);
@@ -98,7 +98,7 @@ public class ScriptDebugOverlay {
 #else
     private static int drawText(PoseStack matrices, Font font, String text, int x, int y, int color) {
         FormattedText formattedText = FormattedText.of(text);
-        List<FormattedCharSequence> lines = font.split(formattedText, Minecraft.getInstance().getWindow().getGuiScaledWidth());
+        List<FormattedCharSequence> lines = font.split(formattedText, Minecraft.getInstance().getWindow().getGuiScaledWidth() - 40);
         for (FormattedCharSequence line : lines) {
             font.drawShadow(matrices, line, x, y, color);
             y += Mth.ceil(font.lineHeight * 1.2f);
