@@ -17,6 +17,7 @@ import net.minecraft.client.gui.GuiComponent;
 #endif
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.network.chat.Component;
 
 import java.util.HashMap;
 import java.util.List;
@@ -80,7 +81,8 @@ public class ScriptDebugOverlay {
 
 #if MC_VERSION >= "12000"
     private static int drawText(GuiGraphics guiGraphics, Font font, String text, int x, int y, int color) {
-        List<String> lines = font.split(text, Minecraft.getInstance().getWindow().getGuiScaledWidth());
+        Component formattedText = Component.text(text);
+        List<String> lines = font.split(formattedText, Minecraft.getInstance().getWindow().getGuiScaledWidth());
         for (String line : lines) {
             guiGraphics.drawString(font, line, x, y, color);
             y += Mth.ceil(font.lineHeight * 1.2f);
@@ -92,7 +94,8 @@ public class ScriptDebugOverlay {
     }
 #else
     private static int drawText(PoseStack matrices, Font font, String text, int x, int y, int color) {
-        List<String> lines = font.split(text, Minecraft.getInstance().getWindow().getGuiScaledWidth());
+        Component formattedText = Component.text(text);
+        List<String> lines = font.split(formattedText, Minecraft.getInstance().getWindow().getGuiScaledWidth());
         for (String line : lines) {
             font.drawShadow(matrices, line, x, y, color);
             y += Mth.ceil(font.lineHeight * 1.2f);
