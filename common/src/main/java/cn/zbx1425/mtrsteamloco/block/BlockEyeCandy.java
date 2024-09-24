@@ -142,13 +142,14 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
             for (int j = 1; j < aspects; j++) {
                 final Map<BlockPos, Float> newNodesToScan = new HashMap<>();
-
+                occupiedAspect = -2;
                 for (final Map.Entry<BlockPos, Float> checkNode : nodesToScan.entrySet()) {
                     final Map<BlockPos, Rail> railMap = ClientData.RAILS.get(checkNode.getKey());
-
+                    occupiedAspect = -3;
                     if (railMap != null) {
                         for (final BlockPos endPos : railMap.keySet()) {
                             final Rail rail = railMap.get(endPos);
+                            occupiedAspect = -4;
                             if (rail.facingStart.similarFacing(checkNode.getValue())) {
                                 if (ClientData.SIGNAL_BLOCKS.isOccupied(PathData.getRailProduct(checkNode.getKey(), endPos))) {
                                     return j;
