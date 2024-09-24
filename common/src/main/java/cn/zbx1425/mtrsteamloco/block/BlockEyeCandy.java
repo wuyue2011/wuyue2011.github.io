@@ -28,6 +28,7 @@ import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.phys.BlockHitResult;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import mtr.data.Rail;
 
 public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlockMapper {
 
@@ -127,6 +128,43 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public Vector3f getTransformPosVector3f() {
             return new Vector3f(this.worldPosition.getX() + translateX, this.worldPosition.getY() + translateY, this.worldPosition.getZ() + translateZ);
+        }
+        
+        public int getOccupiedAspect(float facing) {
+            Map<BlockPos, Float> nodesToScan = new HashMap<>();
+            nodesToScan.put(getWorldPos(), facing);
+            int occupiedAspect = -1;
+
+            for (int j = 1; j < aspects; j++) {
+                final Map<BlockPos, Float> newNodesToScan = new HashMap<>();
+
+                for (final Map.Entry<BlockPos, Float> checkNode : nodesToScan.entrySet()) {
+                    final Map<BlockPos, Rail> railMap = ClientData.RAILS.get(checkNode.getKey());
+
+                    if (railMap != null) {
+                        for (final BlockPos endPos : railMap.keySet()) {
+                            final Rail rail = railMap.get(endPos);
+                            if (rail.facingStart.similarFacing(checkNode.getValue())) {
+                                if (ClientData.SIGNAL_BLOCKS.isOccupied(PathData.getRailProduct(checkNode.getKey(), endPos))) {
+                                    return j;
+                                } else {
+                                    final Boolean isOccupied = ClientData.OCCUPIED_RAILS.get(PathData.getRailProduct(checkNode.getKey(), endPos));
+                                    if (isOccupied != null && isOccupied) {
+                                        return j;
+                                    }
+                                }
+
+                                newNodesToScan.put(endPos, rail.facingEnd.getOpposite().angleDegrees);
+                                occupiedAspect = 0;
+                            }
+                        }
+                    }
+                }
+
+                nodesToScan = newNodesToScan;
+            }
+
+            return occupiedAspect;
         }
     }
 }
