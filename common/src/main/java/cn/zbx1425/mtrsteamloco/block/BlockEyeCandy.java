@@ -30,6 +30,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import mtr.data.Rail;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlockMapper {
 
     public BlockEyeCandy() {
