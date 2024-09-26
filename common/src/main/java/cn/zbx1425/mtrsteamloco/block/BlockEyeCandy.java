@@ -33,6 +33,7 @@ import cn.zbx1425.mtrsteamloco.network.util.MapSerializer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.io.IOException;
 
 public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlockMapper {
 
