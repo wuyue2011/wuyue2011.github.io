@@ -98,7 +98,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
 
         @Override
-        public void readCompoundTag(CompoundTag compoundTag) {
+        public void readCompoundTag(CompoundTag compoundTag) throws IOException {
             prefabId = compoundTag.getString("prefabId");
             if (StringUtils.isEmpty(prefabId)) prefabId = null;
             fullLight = compoundTag.getBoolean("fullLight");
@@ -114,7 +114,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
 
         @Override
-        public void writeCompoundTag(CompoundTag compoundTag) {
+        public void writeCompoundTag(CompoundTag compoundTag) throws IOException {
             compoundTag.putString("prefabId", prefabId == null ? "" : prefabId);
             compoundTag.putBoolean("fullLight", fullLight);
             byte[] dataBytes = MapSerializer.serialize(data);
