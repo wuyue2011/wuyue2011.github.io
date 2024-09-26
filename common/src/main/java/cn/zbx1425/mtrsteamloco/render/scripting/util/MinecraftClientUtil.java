@@ -15,6 +15,9 @@ import mtr.data.Rail;
 import mtr.path.PathData;
 import net.minecraft.core.BlockPos;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MinecraftClientUtil {
 
     public static boolean worldIsRaining() {
