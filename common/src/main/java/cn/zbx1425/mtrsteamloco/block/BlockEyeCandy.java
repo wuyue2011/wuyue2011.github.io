@@ -29,6 +29,7 @@ import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.phys.BlockHitResult;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import cn.zbx1425.mtrsteamloco.network.util.MapSerializer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -101,6 +102,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             prefabId = compoundTag.getString("prefabId");
             if (StringUtils.isEmpty(prefabId)) prefabId = null;
             fullLight = compoundTag.getBoolean("fullLight");
+            data = MapSerializer.deserialize(compoundTag.getByteArray("data"));
 
             translateX = compoundTag.contains("translateX") ? compoundTag.getFloat("translateX") : 0;
             translateY = compoundTag.contains("translateY") ? compoundTag.getFloat("translateY") : 0;
@@ -114,6 +116,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public void writeCompoundTag(CompoundTag compoundTag) {
             compoundTag.putString("prefabId", prefabId == null ? "" : prefabId);
             compoundTag.putBoolean("fullLight", fullLight);
+            compoundTag.putByteArray("data", MapSerializer.serialize(data));
             
             compoundTag.putFloat("translateX", translateX);
             compoundTag.putFloat("translateY", translateY);

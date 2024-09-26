@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class MapSerializer {
 
-    public static byte[] mapToByteArray(Map<String, String> map) throws IOException {
+    public static byte[] serialize(Map<String, String> map) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
 
@@ -25,7 +25,7 @@ public class MapSerializer {
         return baos.toByteArray();
     }
 
-    public static Map<String, String> byteArrayToMap(byte[] bytes) throws IOException {
+    public static Map<String, String> deserialize(byte[] bytes) throws IOException {
         Map<String, String> map = new HashMap<>();
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         DataInputStream dis = new DataInputStream(bais);
