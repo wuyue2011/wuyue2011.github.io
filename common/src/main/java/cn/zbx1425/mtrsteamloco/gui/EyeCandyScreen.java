@@ -11,6 +11,7 @@ import mtr.client.IDrawing;
 import mtr.mappings.Text;
 import mtr.mappings.UtilitiesClient;
 import mtr.screen.WidgetBetterCheckbox;
+import mtr.screen.WidgetBetterTextField;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 #if MC_VERSION >= "12000"
@@ -140,6 +141,9 @@ public class EyeCandyScreen extends SelectListScreen {
         IDrawing.setPositionAndWidth(addRenderableWidget(UtilitiesClient.newButton(
                 Text.literal("X"), sender -> this.onClose()
         )), width - SQUARE_SIZE * 2, height - SQUARE_SIZE * 2, SQUARE_SIZE);
+
+        WidgetBetterTextField textField = new WidgetBetterTextField("");
+        IDrawing.setPositionAndWidth(addRenderableWidget(textField), SQUARE_SIZE, SQUARE_SIZE * 6, COLUMN_WIDTH * 2);
     }
 
     private void updateBlockEntity(Consumer<BlockEyeCandy.BlockEntityEyeCandy> modifier) {
