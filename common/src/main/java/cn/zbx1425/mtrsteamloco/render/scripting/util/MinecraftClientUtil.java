@@ -14,6 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import mtr.data.Rail;
 import mtr.path.PathData;
 import net.minecraft.core.BlockPos;
+import mtr.client.ClientData;
 
 import java.util.HashMap;
 import java.util.Map;
