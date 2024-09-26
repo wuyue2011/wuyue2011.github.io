@@ -99,13 +99,17 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
 
         @Override
-        public void readCompoundTag(CompoundTag compoundTag) throws IOException {
+        public void readCompoundTag(CompoundTag compoundTag) {
             prefabId = compoundTag.getString("prefabId");
             if (StringUtils.isEmpty(prefabId)) prefabId = null;
             fullLight = compoundTag.getBoolean("fullLight");
-            byte[] dataBytes = compoundTag.getByteArray("data");
-            data = MapSerializer.deserialize(dataBytes) ? data : new HashMap<String, String>();
-
+            try {
+                byte[] dataBytes = compoundTag.getByteArray("data");
+                data = MapSerializer.deserialize(dataBytes) ? data : new HashMap<String, String>();
+            }catch (IOException e) {
+                data = new HashMap<String, String>();
+            }
+            
             translateX = compoundTag.contains("translateX") ? compoundTag.getFloat("translateX") : 0;
             translateY = compoundTag.contains("translateY") ? compoundTag.getFloat("translateY") : 0;
             translateZ = compoundTag.contains("translateZ") ? compoundTag.getFloat("translateZ") : 0;
@@ -115,11 +119,15 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
 
         @Override
-        public void writeCompoundTag(CompoundTag compoundTag) throws IOException {
+        public void writeCompoundTag(CompoundTag compoundTag) {
             compoundTag.putString("prefabId", prefabId == null ? "" : prefabId);
             compoundTag.putBoolean("fullLight", fullLight);
-            byte[] dataBytes = MapSerializer.serialize(data);
-            compoundTag.putByteArray("data", dataBytes);
+            try {
+                byte[] dataBytes = MapSerializer.serialize(data);
+                compoundTag.putByteArray("data", dataBytes);
+            }catch (IOException e) {
+                compoundTag.putByteArray("data", new byte[0]);
+            }
             
             compoundTag.putFloat("translateX", translateX);
             compoundTag.putFloat("translateY", translateY);
