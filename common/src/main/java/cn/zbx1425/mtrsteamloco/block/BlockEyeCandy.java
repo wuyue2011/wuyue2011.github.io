@@ -102,7 +102,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             prefabId = compoundTag.getString("prefabId");
             if (StringUtils.isEmpty(prefabId)) prefabId = null;
             fullLight = compoundTag.getBoolean("fullLight");
-            data = MapSerializer.deserialize(compoundTag.getByteArray("data"));
+            byte[] dataBytes = compoundTag.getByteArray("data");
+            data = MapSerializer.deserialize(dataBytes);
 
             translateX = compoundTag.contains("translateX") ? compoundTag.getFloat("translateX") : 0;
             translateY = compoundTag.contains("translateY") ? compoundTag.getFloat("translateY") : 0;
@@ -116,7 +117,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public void writeCompoundTag(CompoundTag compoundTag) {
             compoundTag.putString("prefabId", prefabId == null ? "" : prefabId);
             compoundTag.putBoolean("fullLight", fullLight);
-            compoundTag.putByteArray("data", MapSerializer.serialize(data));
+            byte[] dataBytes = MapSerializer.serialize(data);
+            compoundTag.putByteArray("data", dataBytes);
             
             compoundTag.putFloat("translateX", translateX);
             compoundTag.putFloat("translateY", translateY);
