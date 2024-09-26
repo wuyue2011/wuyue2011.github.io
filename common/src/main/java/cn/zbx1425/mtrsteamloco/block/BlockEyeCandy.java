@@ -88,6 +88,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public boolean fullLight = false;
 
+        public Map<String, String> data = new HashMap<>();
+
         public EyeCandyScriptContext scriptContext = new EyeCandyScriptContext(this);
 
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
