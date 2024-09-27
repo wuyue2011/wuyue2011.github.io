@@ -52,7 +52,14 @@ public class EyeCandyScreen extends SelectListScreen {
     protected void init() {
         super.init();
 
+        textField = new WidgetBetterTextField("114514");
+        textField.setResponder(changed -> updateBlockEntity((be) -> be.translateX = Float.parseFloat(changed)));
+
         loadPage();
+
+        addDrawableChild(textField);
+
+        addRenderableWidget(textField);
     }
 
     @Override
@@ -140,8 +147,6 @@ public class EyeCandyScreen extends SelectListScreen {
                 checked -> updateBlockEntity((be) -> be.fullLight = checked)
         )).setChecked(blockEntity.fullLight);
 
-        textField = new WidgetBetterTextField("114514");
-        textField.setResponder(changed -> updateBlockEntity((be) -> be.translateX = Float.parseFloat(changed)));
         IDrawing.setPositionAndWidth(addRenderableWidget(textField), SQUARE_SIZE, SQUARE_SIZE * 6, COLUMN_WIDTH * 2);
 
         IDrawing.setPositionAndWidth(addRenderableWidget(UtilitiesClient.newButton(
