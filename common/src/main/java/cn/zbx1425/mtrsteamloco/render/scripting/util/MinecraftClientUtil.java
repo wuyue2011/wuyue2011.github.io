@@ -60,42 +60,42 @@ public class MinecraftClientUtil {
         }
     }
 
-    public int getOccupiedAspect(Vector3f pos1, float facing, int aspects) {
-            BlockPos pos = pos1.toBlockPos();
-            Map<BlockPos, Float> nodesToScan = new HashMap<>();
-            nodesToScan.put(pos, facing);
-            int occupiedAspect = -1;
+    public static int getOccupiedAspect(Vector3f pos1, float facing, int aspects) {
+        BlockPos pos = pos1.toBlockPos();
+        Map<BlockPos, Float> nodesToScan = new HashMap<>();
+        nodesToScan.put(pos, facing);
+        int occupiedAspect = -1;
 
-            for (int j = 1; j < aspects; j++) {
-                final Map<BlockPos, Float> newNodesToScan = new HashMap<>();
+        for (int j = 1; j < aspects; j++) {
+            final Map<BlockPos, Float> newNodesToScan = new HashMap<>();
 
-                for (final Map.Entry<BlockPos, Float> checkNode : nodesToScan.entrySet()) {
-                    final Map<BlockPos, Rail> railMap = ClientData.RAILS.get(checkNode.getKey());
+            for (final Map.Entry<BlockPos, Float> checkNode : nodesToScan.entrySet()) {
+                final Map<BlockPos, Rail> railMap = ClientData.RAILS.get(checkNode.getKey());
 
-                    if (railMap != null) {
-                        for (final BlockPos endPos : railMap.keySet()) {
-                            final Rail rail = railMap.get(endPos);
+                if (railMap != null) {
+                    for (final BlockPos endPos : railMap.keySet()) {
+                        final Rail rail = railMap.get(endPos);
 
-                            if (rail.facingStart.similarFacing(checkNode.getValue())) {
-                                if (ClientData.SIGNAL_BLOCKS.isOccupied(PathData.getRailProduct(checkNode.getKey(), endPos))) {
+                        if (rail.facingStart.similarFacing(checkNode.getValue())) {
+                            if (ClientData.SIGNAL_BLOCKS.isOccupied(PathData.getRailProduct(checkNode.getKey(), endPos))) {
+                                return j;
+                            } else {
+                                final Boolean isOccupied = ClientData.OCCUPIED_RAILS.get(PathData.getRailProduct(checkNode.getKey(), endPos));
+                                if (isOccupied != null && isOccupied) {
                                     return j;
-                                } else {
-                                    final Boolean isOccupied = ClientData.OCCUPIED_RAILS.get(PathData.getRailProduct(checkNode.getKey(), endPos));
-                                    if (isOccupied != null && isOccupied) {
-                                        return j;
-                                    }
                                 }
-
-                                newNodesToScan.put(endPos, rail.facingEnd.getOpposite().angleDegrees);
-                                occupiedAspect = 0;
                             }
+
+                            newNodesToScan.put(endPos, rail.facingEnd.getOpposite().angleDegrees);
+                            occupiedAspect = 0;
                         }
                     }
                 }
-
-                nodesToScan = newNodesToScan;
             }
 
-            return occupiedAspect;
+            nodesToScan = newNodesToScan;
         }
+
+        return occupiedAspect;
+    }
 }
