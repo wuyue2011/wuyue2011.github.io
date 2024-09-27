@@ -92,6 +92,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public Map<String, String> data = new HashMap<>();
 
+        public byte[] bytes = new byte[0];
+
         public EyeCandyScriptContext scriptContext = new EyeCandyScriptContext(this);
 
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
@@ -104,8 +106,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             if (StringUtils.isEmpty(prefabId)) prefabId = null;
             fullLight = compoundTag.getBoolean("fullLight");
             try {
-                byte[] dataBytes = compoundTag.getByteArray("data");
-                data = MapSerializer.deserialize(dataBytes);
+                bytes = compoundTag.getByteArray("data");
+                data = MapSerializer.deserialize(bytes);
             }catch (IOException e) {
                 data = new HashMap<String, String>();
             }
@@ -123,8 +125,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putString("prefabId", prefabId == null ? "" : prefabId);
             compoundTag.putBoolean("fullLight", fullLight);
             try {
-                byte[] dataBytes = MapSerializer.serialize(data);
-                compoundTag.putByteArray("data", dataBytes);
+                bytes = MapSerializer.serialize(data);
+                compoundTag.putByteArray("data", bytes);
             }catch (IOException e) {
                 compoundTag.putByteArray("data", new byte[0]);
             }
