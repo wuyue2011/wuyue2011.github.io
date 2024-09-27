@@ -30,6 +30,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import cn.zbx1425.mtrsteamloco.network.util.MapSerializer;
+import cn.zbx1425.mtrsteamloco.network.PacketUpdateBlockEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -147,6 +148,10 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public Vector3f getTransformPosVector3f() {
             return new Vector3f(this.worldPosition.getX() + translateX, this.worldPosition.getY() + translateY, this.worldPosition.getZ() + translateZ);
+        }
+
+        public void sendUpdateC2S() {
+            PacketUpdateBlockEntity.sendUpdateC2S(this);
         }
     }
 }
