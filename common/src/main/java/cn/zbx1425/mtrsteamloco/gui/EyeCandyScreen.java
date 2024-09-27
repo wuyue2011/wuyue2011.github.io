@@ -147,7 +147,7 @@ public class EyeCandyScreen extends SelectListScreen {
         IDrawing.setPositionAndWidth(addRenderableWidget(UtilitiesClient.newButton(
                 Text.literal("X"), sender -> this.onClose()
         )), width - SQUARE_SIZE * 2, height - SQUARE_SIZE * 2, SQUARE_SIZE);
-    }114
+    }
 
     private void updateBlockEntity(Consumer<BlockEyeCandy.BlockEntityEyeCandy> modifier) {
         getBlockEntity().ifPresent(blockEntity -> {
