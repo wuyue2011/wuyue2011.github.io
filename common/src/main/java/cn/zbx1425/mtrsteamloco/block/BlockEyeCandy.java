@@ -105,7 +105,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             fullLight = compoundTag.getBoolean("fullLight");
             try {
                 byte[] dataBytes = compoundTag.getByteArray("data");
-                data = MapSerializer.deserialize(dataBytes) ? data : new HashMap<String, String>();
+                data = MapSerializer.deserialize(dataBytes);
             }catch (IOException e) {
                 data = new HashMap<String, String>();
             }
