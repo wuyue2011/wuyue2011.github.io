@@ -52,14 +52,7 @@ public class EyeCandyScreen extends SelectListScreen {
     protected void init() {
         super.init();
 
-        textField = new WidgetBetterTextField("114514");
-        textField.setResponder(changed -> updateBlockEntity((be) -> be.translateX = Float.parseFloat(changed)));
-
         loadPage();
-
-        addDrawableChild(textField);
-
-        addRenderableWidget(textField);
     }
 
     @Override
@@ -83,6 +76,13 @@ public class EyeCandyScreen extends SelectListScreen {
         Optional<BlockEyeCandy.BlockEntityEyeCandy> optionalBlockEntity = getBlockEntity();
         if (optionalBlockEntity.isEmpty()) { this.onClose(); return; }
         BlockEyeCandy.BlockEntityEyeCandy blockEntity = optionalBlockEntity.get();
+
+        textField = new WidgetBetterTextField("114514");
+        textField.setResponder(changed -> blockEntity.data.put("input", changed));
+
+        addDrawableChild(textField);
+
+        addRenderableWidget(textField);
 
         if (isSelectingModel) {
             scrollList.visible = true;
