@@ -78,6 +78,8 @@ public class EyeCandyScreen extends SelectListScreen {
         BlockEyeCandy.BlockEntityEyeCandy blockEntity = optionalBlockEntity.get();
 
         textField = new WidgetBetterTextField("114514");
+
+        textField.setValue(blockEntity.data.get("input", ""))
         textField.setResponder(changed -> blockEntity.data.put("input", changed));
 
         addDrawableChild(textField);
