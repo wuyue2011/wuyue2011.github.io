@@ -41,6 +41,8 @@ public class EyeCandyScreen extends SelectListScreen {
 
     private final BlockPos editingBlockPos;
 
+    WidgetBetterTextField textField;
+
     public EyeCandyScreen(BlockPos blockPos) {
         super(Text.literal("Select EyeCandy"));
         this.editingBlockPos = blockPos;
@@ -138,14 +140,14 @@ public class EyeCandyScreen extends SelectListScreen {
                 checked -> updateBlockEntity((be) -> be.fullLight = checked)
         )).setChecked(blockEntity.fullLight);
 
+        textField = new WidgetBetterTextField("114514");
+        textField.setResponder(changed -> updateBlockEntity((be) -> be.translateX = Float.parseFloat(changed)));
+        IDrawing.setPositionAndWidth(addRenderableWidget(textField), SQUARE_SIZE, SQUARE_SIZE * 6, COLUMN_WIDTH * 2);
+
         IDrawing.setPositionAndWidth(addRenderableWidget(UtilitiesClient.newButton(
                 Text.literal("X"), sender -> this.onClose()
         )), width - SQUARE_SIZE * 2, height - SQUARE_SIZE * 2, SQUARE_SIZE);
-
-        WidgetBetterTextField textField = new WidgetBetterTextField("");
-        textField.setResponder(changed -> updateBlockEntity((be) -> be.translateX = Float.parseFloat(changed)));
-        IDrawing.setPositionAndWidth(addRenderableWidget(textField), SQUARE_SIZE, SQUARE_SIZE * 6, COLUMN_WIDTH * 2);
-    }
+    }114
 
     private void updateBlockEntity(Consumer<BlockEyeCandy.BlockEntityEyeCandy> modifier) {
         getBlockEntity().ifPresent(blockEntity -> {
@@ -173,5 +175,11 @@ public class EyeCandyScreen extends SelectListScreen {
     @Override
     public boolean isPauseScreen() {
         return false;
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        textField.tick();
     }
 }
