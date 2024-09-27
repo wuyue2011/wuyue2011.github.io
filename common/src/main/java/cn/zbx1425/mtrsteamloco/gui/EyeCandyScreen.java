@@ -143,8 +143,8 @@ public class EyeCandyScreen extends SelectListScreen {
         )), width - SQUARE_SIZE * 2, height - SQUARE_SIZE * 2, SQUARE_SIZE);
 
         WidgetBetterTextField textField = new WidgetBetterTextField("");
-        IDrawing.setPositionAndWidth(addRenderableWidget(textField), SQUARE_SIZE, SQUARE_SIZE * 6, COLUMN_WIDTH * 2);
         textField.setResponder(changed -> updateBlockEntity((be) -> be.translateX = Float.parseFloat(changed)));
+        IDrawing.setPositionAndWidth(addRenderableWidget(textField), SQUARE_SIZE, SQUARE_SIZE * 6, COLUMN_WIDTH * 2);
     }
 
     private void updateBlockEntity(Consumer<BlockEyeCandy.BlockEntityEyeCandy> modifier) {
