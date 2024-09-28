@@ -168,27 +168,27 @@ public class EyeCandyScreen extends SelectListScreen {
                     String[] parts = str.split("=");
                     if(parts.length == 2){
                         switch (parts[0]){
-                            case "translateX":
+                            case "TX":
                                 be.translateX = Float.parseFloat(parts[1]);
                                 tx.setValue((int)Math.round(be.translateX * 100 / 5f) + 20);
                                 break;
-                            case "translateY":
+                            case "TY":
                                 be.translateY = Float.parseFloat(parts[1]);
                                 ty.setValue((int)Math.round(be.translateY * 100 / 5f) + 20);
                                 break;
-                            case "translateZ":
+                            case "TZ":
                                 be.translateZ = Float.parseFloat(parts[1]);
                                 tz.setValue((int)Math.round(be.translateZ * 100 / 5f) + 20);
                                 break;
-                            case "rotateX":
+                            case "RX":
                                 be.rotateX = (float)Math.toRadians(Float.parseFloat(parts[1]));
                                 rx.setValue((int)Math.round(Math.toDegrees(be.rotateX) / 5f) + 18);
                                 break;
-                            case "rotateY":
+                            case "RY":
                                 be.rotateY = (float)Math.toRadians(Float.parseFloat(parts[1]));
                                 ry.setValue((int)Math.round(Math.toDegrees(be.rotateY) / 5f) + 18);
                                 break;
-                            case "rotateZ":
+                            case "RZ":
                                 be.rotateZ = (float)Math.toRadians(Float.parseFloat(parts[1]));
                                 rz.setValue((int)Math.round(Math.toDegrees(be.rotateZ) / 5f) + 18);
                                 break;
