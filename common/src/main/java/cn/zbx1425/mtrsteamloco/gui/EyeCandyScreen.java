@@ -160,9 +160,9 @@ public class EyeCandyScreen extends SelectListScreen {
         addDrawableChild(textField);
         addRenderableWidget(textField);
 
-        textField2 = new WidgetBetterTextField("调整设置 如“translateX=0.241#”", 128);
+        textField2 = new WidgetBetterTextField("调整设置 如“TX=0.241#”", 128);
         textField2.setResponder(changed -> updateBlockEntity(be -> {
-            if(changed.contains("#")){
+           t if(changed.contains("#")){
                 try{
                     String str = changed.replaceAll("\\s", "").replaceAll("#", "");
                     String[] parts = str.split("=");
