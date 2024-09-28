@@ -153,7 +153,7 @@ public class EyeCandyScreen extends SelectListScreen {
         );
         IDrawing.setPositionAndWidth(addRenderableWidget(rz), SQUARE_SIZE + (width - SQUARE_SIZE * 2) / 3 * 2, SQUARE_SIZE * 4, (width - SQUARE_SIZE * 2) / 3);
 
-        textField = new WidgetBetterTextField(Text.translatable("gui.mtrsteamloco.eye_candy.text_field"), 128);
+        textField = new WidgetBetterTextField(Text.translatable("gui.mtrsteamloco.eye_candy.text_field").getString(), 128);
         textField.setResponder(changed -> updateBlockEntity(be -> {
             if(changed.contains("#")) {
                 try{
@@ -183,7 +183,7 @@ public class EyeCandyScreen extends SelectListScreen {
         addRenderableWidget(textField);
         textField.moveCursorToStart();
 
-        textField2 = new WidgetBetterTextField(Text.translatable("gui.mtrsteamloco.eye_candy.text_field2"), 128);
+        textField2 = new WidgetBetterTextField(Text.translatable("gui.mtrsteamloco.eye_candy.text_field2").getString(), 128);
         textField2.setResponder(changed -> updateBlockEntity(be -> {
             if(changed.contains("#")) {
                 try{
