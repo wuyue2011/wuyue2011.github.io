@@ -55,7 +55,7 @@ NTE 调用这几个函数时会使用三个参数，稍后介绍其各自的内�
 | ----------------- | ------------------------------------------------------------ |
 | 第一个 (`ctx`)    | 用于向 NTE 输出要如何渲染的相关操作。类型是 EyeCandyScriptContext |
 | 第二个 (`state`)  | 一个和某一个装饰物件方块关联的 JavaScript 对象。初始值是 `{}`，可随意设置其上的成员，用来存储一些需要每个方块都不同的内容。 |
-| 第三个 (`block`)  | 用于获取方块的状态。类型是 BlockEyeCandy.BlockEntityEyeCandy。                           |
+| 第三个 (`entity`)  | 用于获取方块的状态。类型是 BlockEyeCandy.BlockEntityEyeCandy。                           |
 
 
 接下来列出您可以进行的所有渲染控制操作，和可以获取到的所有关于方块的信息。
@@ -90,10 +90,10 @@ NTE 调用这几个函数时会使用三个参数，稍后介绍其各自的内�
 ## BlockEyeCandy
 | 属性                                          | 说明                                                         |
 | --------------------------------------------- | ------------------------------------------------------------ |
-| `block.getWorldPos(): BlockPos` | 获取方块坐标，返回的是原版的 BlockPos 类型。 |
-| `block.getWorldPosVector3f(): Vector3f` | 获取方块坐标，返回的是 Vector3f。 |
-| `block.getTransformPosVector3f(): Vector3f`| 获取方块坐标，返回的是 Vector3f，且已经应用了方块的变换。 |
-| `block.translateX: float` | 获取方块在 X 方向上的偏移量。YZ同理。 |
-| `block.rotateX: float` | 获取方块在 X 轴上的旋转。YZ同理。 |
-| `block.prefabId: String` | 获取方块的预制体 ID。 |
-| `block.fullLight: boolean` | 获取方块是否为全光照。 |
+| `BlockEyeCandy.getWorldPos(): BlockPos` | 获取方块坐标，返回的是原版的 BlockPos 类型。 |
+| `BlockEyeCandy.getWorldPosVector3f(): Vector3f` | 获取方块坐标，返回的是 Vector3f。 |
+| `BlockEyeCandy.getTransformPosVector3f(): Vector3f`| 获取方块坐标，返回的是 Vector3f，且已经应用了方块的变换。 |
+| `BlockEyeCandy.translateX: float` | 获取方块在 X 方向上的偏移量。YZ同理。 |
+| `BlockEyeCandy.rotateX: float` | 获取方块在 X 轴上的旋转。YZ同理。 |
+| `BlockEyeCandy.prefabId: String` | 获取方块的预制体 ID。 |
+| `BlockEyeCandy.fullLight: boolean` | 获取方块是否为全光照。 |
