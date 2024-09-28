@@ -99,7 +99,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public EyeCandyScriptContext scriptContext = new EyeCandyScriptContext(this);
 
-        BlockState blockState;
+        public BlockState blockState;
 
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
@@ -165,5 +165,24 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             final Direction facing = IBlock.getStatePropertySafe(blockState, HorizontalDirectionalBlock.FACING);
             return facing.toYRot();
         }
+
+        public Vector3f getNodePos(Vector3f vector3fPos, Float floatFacing) {
+            BlockPos pos = vector3fPos.toBlockPos();
+            Direction facing = Direction.fromYRot(floatFacing);
+            BlockGetter world = blockState.getBlock().getLevel();
+		    final int[] checkDistance = {0, 1, -1, 2, -2, 3, -3, 4, -4};
+		    for (final int z : checkDistance) {
+		    	for (final int x : checkDistance) {
+		    		for (int y = -5; y <= 0; y++) {
+		    			final BlockPos checkPos = pos.above(y).relative(facing.getClockWise(), x).relative(facing, z);
+		    			final BlockState checkState = world.getBlockState(checkPos);
+		    			if (checkState.getBlock() instanceof BlockNode) {
+		    				return new Vector3f(checkPos);
+		    			}
+		    		}
+		    	}
+		    }
+		    return null;
+	    }
     }
 }
