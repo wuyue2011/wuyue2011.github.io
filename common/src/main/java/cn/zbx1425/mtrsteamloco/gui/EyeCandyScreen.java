@@ -77,14 +77,18 @@ public class EyeCandyScreen extends SelectListScreen {
         if (optionalBlockEntity.isEmpty()) { this.onClose(); return; }
         BlockEyeCandy.BlockEntityEyeCandy blockEntity = optionalBlockEntity.get();
 
-        textField = new WidgetBetterTextField("114514");
+        textField = new WidgetBetterTextField("Input");
 
-        textField.setValue(blockEntity.data.get("input")?blockEntity.data.get("input"):"")
+        textField.setValue(blockEntity.data.get("input")?blockEntity.data.get("input"):"");
         textField.setResponder(changed -> blockEntity.data.put("input", changed));
+
+        IDrawing.setPositionAndWidth(addRenderableWidget(textField), SQUARE_SIZE, SQUARE_SIZE * 7, COLUMN_WIDTH * 2);
 
         addDrawableChild(textField);
 
         addRenderableWidget(textField);
+
+        
 
         if (isSelectingModel) {
             scrollList.visible = true;
@@ -148,8 +152,6 @@ public class EyeCandyScreen extends SelectListScreen {
                 Text.translatable("gui.mtrsteamloco.eye_candy.full_light"),
                 checked -> updateBlockEntity((be) -> be.fullLight = checked)
         )).setChecked(blockEntity.fullLight);
-
-        IDrawing.setPositionAndWidth(addRenderableWidget(textField), SQUARE_SIZE, SQUARE_SIZE * 6, COLUMN_WIDTH * 2);
 
         IDrawing.setPositionAndWidth(addRenderableWidget(UtilitiesClient.newButton(
                 Text.literal("X"), sender -> this.onClose()
