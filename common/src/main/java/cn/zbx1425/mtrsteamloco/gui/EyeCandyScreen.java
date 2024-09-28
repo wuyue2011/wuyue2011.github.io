@@ -41,6 +41,13 @@ public class EyeCandyScreen extends SelectListScreen {
 
     private final BlockPos editingBlockPos;
 
+    private WidgetSlider tx;
+    private WidgetSlider ty;
+    private WidgetSlider tz;
+    private WidgetSlider rx;
+    private WidgetSlider ry;
+    private WidgetSlider rz;
+
     private WidgetBetterTextField textField;
     private WidgetBetterTextField textField2;
 
@@ -110,31 +117,41 @@ public class EyeCandyScreen extends SelectListScreen {
                 sender -> { isSelectingModel = true; loadPage(); }
         )), SQUARE_SIZE, SQUARE_SIZE, COLUMN_WIDTH * 3);
 
-        IDrawing.setPositionAndWidth(addRenderableWidget(new WidgetSlider(
+        tx = new WidgetSlider(
                 20 * 2, (int)Math.round(blockEntity.translateX * 100 / 5f) + 20,
                 value -> { updateBlockEntity(be -> be.translateX = (value - 20) * 5f / 100f); return "TX " + ((value - 20) * 5) + "cm"; }
-        )), SQUARE_SIZE, SQUARE_SIZE * 3, (width - SQUARE_SIZE * 2) / 3);
-        IDrawing.setPositionAndWidth(addRenderableWidget(new WidgetSlider(
+        );
+        IDrawing.setPositionAndWidth(addRenderableWidget(tx), SQUARE_SIZE, SQUARE_SIZE * 3, (width - SQUARE_SIZE * 2) / 3);
+
+        ty = new WidgetSlider(
                 20 * 2, (int)Math.round(blockEntity.translateY * 100 / 5f) + 20,
                 value -> { updateBlockEntity(be -> be.translateY = (value - 20) * 5f / 100f); return "TY " + ((value - 20) * 5) + "cm"; }
-        )), SQUARE_SIZE + (width - SQUARE_SIZE * 2) / 3, SQUARE_SIZE * 3, (width - SQUARE_SIZE * 2) / 3);
-        IDrawing.setPositionAndWidth(addRenderableWidget(new WidgetSlider(
+        );
+        IDrawing.setPositionAndWidth(addRenderableWidget(ty), SQUARE_SIZE + (width - SQUARE_SIZE * 2) / 3, SQUARE_SIZE * 3, (width - SQUARE_SIZE * 2) / 3);
+
+        tz = new WidgetSlider(
                 20 * 2, (int)Math.round(blockEntity.translateZ * 100 / 5f) + 20,
                 value -> { updateBlockEntity(be -> be.translateZ = (value - 20) * 5f / 100f); return "TZ " + ((value - 20) * 5) + "cm"; }
-        )), SQUARE_SIZE + (width - SQUARE_SIZE * 2) / 3 * 2, SQUARE_SIZE * 3, (width - SQUARE_SIZE * 2) / 3);
+        ); 
+        IDrawing.setPositionAndWidth(addRenderableWidget(tz), SQUARE_SIZE + (width - SQUARE_SIZE * 2) / 3 * 2, SQUARE_SIZE * 3, (width - SQUARE_SIZE * 2) / 3);
 
-        IDrawing.setPositionAndWidth(addRenderableWidget(new WidgetSlider(
+        rx = new WidgetSlider(
                 18 * 2, (int)Math.round(Math.toDegrees(blockEntity.rotateX) / 5f) + 18,
                 value -> { updateBlockEntity(be -> be.rotateX = (float)Math.toRadians((value - 18) * 5f)); return "RX " + ((value - 18) * 5) + "°"; }
-        )), SQUARE_SIZE, SQUARE_SIZE * 4, (width - SQUARE_SIZE * 2) / 3);
-        IDrawing.setPositionAndWidth(addRenderableWidget(new WidgetSlider(
+        );
+        IDrawing.setPositionAndWidth(addRenderableWidget(rx), SQUARE_SIZE, SQUARE_SIZE * 4, (width - SQUARE_SIZE * 2) / 3);
+        
+        ry = new WidgetSlider(
                 18 * 2, (int)Math.round(Math.toDegrees(blockEntity.rotateY) / 5f) + 18,
                 value -> { updateBlockEntity(be -> be.rotateY = (float)Math.toRadians((value - 18) * 5f)); return "RY " + ((value - 18) * 5) + "°"; }
-        )), SQUARE_SIZE + (width - SQUARE_SIZE * 2) / 3, SQUARE_SIZE * 4, (width - SQUARE_SIZE * 2) / 3);
-        IDrawing.setPositionAndWidth(addRenderableWidget(new WidgetSlider(
+        );
+        IDrawing.setPositionAndWidth(addRenderableWidget(ry), SQUARE_SIZE + (width - SQUARE_SIZE * 2) / 3, SQUARE_SIZE * 4, (width - SQUARE_SIZE * 2) / 3);
+
+        rz = new WidgetSlider(
                 18 * 2, (int)Math.round(Math.toDegrees(blockEntity.rotateZ) / 5f) + 18,
                 value -> { updateBlockEntity(be -> be.rotateZ = (float)Math.toRadians((value - 18) * 5f)); return "RZ " + ((value - 18) * 5) + "°"; }
-        )), SQUARE_SIZE + (width - SQUARE_SIZE * 2) / 3 * 2, SQUARE_SIZE * 4, (width - SQUARE_SIZE * 2) / 3);
+        );
+        IDrawing.setPositionAndWidth(addRenderableWidget(rz), SQUARE_SIZE + (width - SQUARE_SIZE * 2) / 3 * 2, SQUARE_SIZE * 4, (width - SQUARE_SIZE * 2) / 3);
 
         textField = new WidgetBetterTextField(blockEntity.data.get("input"), "Input", 128);
         textField.setResponder(changed -> updateBlockEntity(be -> be.data.put("input", changed)));
@@ -152,21 +169,27 @@ public class EyeCandyScreen extends SelectListScreen {
                         switch (parts[0]){
                             case "translateX":
                                 be.translateX = Float.parseFloat(parts[1]);
+                                tx.setValue((int)Math.round(be.translateX * 100 / 5f) + 20);
                                 break;
                             case "translateY":
                                 be.translateY = Float.parseFloat(parts[1]);
+                                ty.setValue((int)Math.round(be.translateY * 100 / 5f) + 20);
                                 break;
                             case "translateZ":
                                 be.translateZ = Float.parseFloat(parts[1]);
+                                tz.setValue((int)Math.round(be.translateZ * 100 / 5f) + 20);
                                 break;
                             case "rotateX":
                                 be.rotateX = (float)Math.toRadians(Float.parseFloat(parts[1]));
+                                rx.setValue((int)Math.round(Math.toDegrees(be.rotateX) / 5f) + 18);
                                 break;
                             case "rotateY":
                                 be.rotateY = (float)Math.toRadians(Float.parseFloat(parts[1]));
+                                ry.setValue((int)Math.round(Math.toDegrees(be.rotateY) / 5f) + 18);
                                 break;
                             case "rotateZ":
                                 be.rotateZ = (float)Math.toRadians(Float.parseFloat(parts[1]));
+                                rz.setValue((int)Math.round(Math.toDegrees(be.rotateZ) / 5f) + 18);
                                 break;
                             default:
                                 break;
