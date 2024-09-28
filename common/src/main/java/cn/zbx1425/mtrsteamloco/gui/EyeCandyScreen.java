@@ -146,7 +146,7 @@ public class EyeCandyScreen extends SelectListScreen {
         textField2.setResponder(changed -> updateBlockEntity(be -> {
             if(changed.contains("#")){
                 textField2.setFocus(false);
-                String str = changed.replaceAll("\\s", "");
+                String str = changed.replaceAll("\\s", "").replaceAll("#", "");
                 String[] parts = str.split("=");
                 if(parts.length == 2){
                     switch (parts[0]){
