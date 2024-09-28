@@ -35,6 +35,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import mtr.block.IBlock;
+import mtr.block.BlockNode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -169,7 +170,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public Vector3f getNodePos(Vector3f vector3fPos, Float floatFacing) {
             BlockPos pos = vector3fPos.toBlockPos();
             Direction facing = Direction.fromYRot(floatFacing);
-            BlockGetter world = blockState.getBlock().getLevel();
+            BlockGetter world = Minecraft.getInstance().level;
 		    final int[] checkDistance = {0, 1, -1, 2, -2, 3, -3, 4, -4};
 		    for (final int z : checkDistance) {
 		    	for (final int x : checkDistance) {
