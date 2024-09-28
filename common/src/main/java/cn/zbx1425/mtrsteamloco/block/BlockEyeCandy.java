@@ -101,9 +101,9 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public BlockState blockState;
 
-        public BlockEyeCandy block;
+        public BlockDirectionalMapper block;
 
-        public BlockEntityEyeCandy(BlockPos pos, BlockState state, BlockEyeCandy block) {
+        public BlockEntityEyeCandy(BlockPos pos, BlockState state, BlockDirectionalMapper block) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
             blockState = state;
             this.block = block;
