@@ -160,7 +160,7 @@ public class EyeCandyScreen extends SelectListScreen {
         addDrawableChild(textField);
         addRenderableWidget(textField);
 
-        textField2 = new WidgetBetterTextField("调整设置 如“translateX=10#” 或 “rotateY=30#” ", 128);
+        textField2 = new WidgetBetterTextField("调整设置 如“translateX=0.241#”", 128);
         textField2.setResponder(changed -> updateBlockEntity(be -> {
             if(changed.contains("#")){
                 try{
