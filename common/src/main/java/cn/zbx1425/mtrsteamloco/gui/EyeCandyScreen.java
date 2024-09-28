@@ -174,10 +174,9 @@ public class EyeCandyScreen extends SelectListScreen {
                 textField2.setValue("");
             }
         }));
-        
-        IDrawing.setPositionAndWidth(addRenderableWidget(textField), SQUARE_SIZE, SQUARE_SIZE * 6, COLUMN_WIDTH * 4.2);
-        addDrawableChild(textField);
-        addRenderableWidget(textField);
+        IDrawing.setPositionAndWidth(addRenderableWidget(textField2), SQUARE_SIZE, SQUARE_SIZE * 6, COLUMN_WIDTH * 4 + SQUARE_SIZE);
+        addDrawableChild(textField2);
+        addRenderableWidget(textField2);
 
         addRenderableWidget(new WidgetBetterCheckbox(SQUARE_SIZE, SQUARE_SIZE * 8, COLUMN_WIDTH * 2, SQUARE_SIZE,
                 Text.translatable("gui.mtrsteamloco.eye_candy.full_light"),
