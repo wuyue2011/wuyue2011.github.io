@@ -223,6 +223,36 @@ public class EyeCandyScreen extends SelectListScreen {
                     
                 }
                 textField2.setValue("");
+            }else if(changed.contains("%")) {
+                String newStr = "";
+                try{
+                    String str = changed.replaceAll("\\s", "").replaceAll("%", "");
+                    switch (str){
+                        case "TX":
+                            newStr = "TX=" + blockEntity.translateX;
+                            break;
+                        case "TY":
+                            newStr = "TY=" + blockEntity.translateY;
+                            break;
+                        case "TZ":
+                            newStr = "TZ=" + blockEntity.translateZ;
+                            break;
+                        case "RX":
+                            newStr = "RX=" + Math.toDegrees(blockEntity.rotateX);
+                            break;
+                        case "RY":
+                            newStr = "RY=" + Math.toDegrees(blockEntity.rotateY);
+                            break;
+                        case "RZ":
+                            newStr = "RZ=" + Math.toDegrees(blockEntity.rotateZ);
+                            break;
+                        default:
+                            break;
+                    }
+                    textField2.setValue(newStr);
+                }catch (Exception e){
+
+                }
             }
         }));
         IDrawing.setPositionAndWidth(addRenderableWidget(textField2), SQUARE_SIZE * 2 + COLUMN_WIDTH * 2, SQUARE_SIZE * 6, COLUMN_WIDTH * 2);
