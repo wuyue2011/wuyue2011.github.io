@@ -101,6 +101,11 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public EyeCandyScriptContext scriptContext = new EyeCandyScriptContext(this);
 
+        public int open = 0;
+        public float openClient = 0;
+
+        protected static final float SMALL_OFFSET_16 = 0.05F;
+
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
         }
@@ -123,6 +128,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             rotateX = compoundTag.contains("rotateX") ? compoundTag.getFloat("rotateX") : 0;
             rotateY = compoundTag.contains("rotateY") ? compoundTag.getFloat("rotateY") : 0;
             rotateZ = compoundTag.contains("rotateZ") ? compoundTag.getFloat("rotateZ") : 0;
+            doorValue = compoundTag.contains("doorValue") ? compoundTag.getFloat("doorValue") : 0;
         }
 
         @Override
@@ -142,6 +148,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putFloat("rotateX", rotateX);
             compoundTag.putFloat("rotateY", rotateY);
             compoundTag.putFloat("rotateZ", rotateZ);
+            compoundTag.putFloat("doorValue", doorValue);
         }
 
         public BlockPos getWorldPos() {
@@ -186,6 +193,33 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public Map<String, String> getData() {
             return data;
+        }
+
+        public void setOpen(int open) {
+            if (open != this.open) {
+				this.open = open;
+                sendUpdateC2S();
+				//if (open == 1 && level != null) {
+				//	level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(TEMP, false));
+				//}
+			}
+        }
+
+        //MTRClient.getLastFrameDuration()
+        public float getOpen(float lastFrameDuration) {
+            final float change = lastFrameDuration * 0.95F;
+			if (Math.abs(open - SMALL_OFFSET_16 * 2 - openClient) < change) {
+				openClient = open - SMALL_OFFSET_16 * 2;
+			} else if (openClient < open) {
+				openClient += change;
+			} else {
+				openClient -= change;
+			}
+			return openClient / 32;
+        }
+
+        public boolean isOpen() {
+            return open > 0;
         }
     }
 }
