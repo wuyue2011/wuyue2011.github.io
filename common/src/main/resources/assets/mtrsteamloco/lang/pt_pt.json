@@ -17,6 +17,8 @@
     "rail.mtrsteamloco.builtin_depot": "NTE Built-in (Depot)",
     "rail.mtrsteamloco.builtin_flat": "NTE Built-in (Flat)",
     "gui.mtrsteamloco.eye_candy.full_light": "Full Light",
+    "gui.mtrsteamloco.eye_candy.text_field": "Dados relacionados: pode ser adicionado um par chave-valor em um formato como “key,value#”; Disponível para obter pares chave-valor em um formato como “key%”",
+    "gui.mtrsteamloco.eye_candy.text_field2": "Ajuste da posição: disponível como o formato de “TX=0.281#” para ajustar o valor numérico; Disponível para obter valores numéricos no formato “TX%”",
     "gui.mtrsteamloco.eye_candy.tip_resource_pack": "You can import objects via Resource Pack. Click here for details.",
     "gui.mtrsteamloco.brush_edit_rail.brush_hint": "This sets the function of the brush. Right-click on others to apply in batch.",
     "gui.mtrsteamloco.brush_edit_rail.enable_model_key": "Apply Model",

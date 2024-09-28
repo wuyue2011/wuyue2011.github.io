@@ -17,6 +17,8 @@
     "rail.mtrsteamloco.builtin_depot": "NTEビルドイン(車庫線用)",
     "rail.mtrsteamloco.builtin_flat": "NTEビルドイン(フラット)",
     "gui.mtrsteamloco.eye_candy.full_light": "発光",
+    "gui.mtrsteamloco.eye_candy.text_field": "データ依存性-キー値のペアはkey value#などの形式で追加できます。キー値のペアはkey%などの形式で取得できます。",
+    "gui.mtrsteamloco.eye_candy.text_field2": "位置設定数値は“TX= 0.281 #”などの形式で設定できます。数値は“TX%”などの形式で取得できます。",
     "gui.mtrsteamloco.eye_candy.tip_resource_pack": "リソースパック経由でオブジェクトをインポートできます。詳細はこちらをクリックしてください。",
     "gui.mtrsteamloco.brush_edit_rail.brush_hint": "ブラシの機能を設定します。他のレールの上で右クリックすると、一括で適用できます。",
     "gui.mtrsteamloco.brush_edit_rail.enable_model_key": "モデルを適用",

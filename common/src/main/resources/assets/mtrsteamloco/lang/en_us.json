@@ -24,6 +24,8 @@
     "rail.mtrsteamloco.builtin_flat": "NTE Built-in (Flat)",
 
     "gui.mtrsteamloco.eye_candy.full_light": "Full Light",
+    "gui.mtrsteamloco.eye_candy.text_field": "Data correlation: Key-value pairs can be added in formats such as “key,value#”; key-value pairs can be obtained in formats such as “key%” ",
+    "gui.mtrsteamloco.eye_candy.text_field2": "Location setting: Values can be set in a format such as “TX=0.281#”; values can be obtained in a format such as “TX%”",
     "gui.mtrsteamloco.eye_candy.tip_resource_pack": "You can import objects via Resource Pack. Click here for details.",
 
     "gui.mtrsteamloco.brush_edit_rail.brush_hint": "This sets the function of the brush. Right-click on others to apply in batch.",

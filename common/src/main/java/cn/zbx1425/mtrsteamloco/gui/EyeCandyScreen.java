@@ -153,7 +153,7 @@ public class EyeCandyScreen extends SelectListScreen {
         );
         IDrawing.setPositionAndWidth(addRenderableWidget(rz), SQUARE_SIZE + (width - SQUARE_SIZE * 2) / 3 * 2, SQUARE_SIZE * 4, (width - SQUARE_SIZE * 2) / 3);
 
-        textField = new WidgetBetterTextField("数据相关 : 可用如 “key,value#” 的格式添加键值对 ; 可用如 “key%” 的格式获取键值对", 128);
+        textField = new WidgetBetterTextField(Text.translatable("gui.mtrsteamloco.eye_candy.text_field"), 128);
         textField.setResponder(changed -> updateBlockEntity(be -> {
             if(changed.contains("#")) {
                 try{
@@ -183,7 +183,7 @@ public class EyeCandyScreen extends SelectListScreen {
         addRenderableWidget(textField);
         textField.moveCursorToStart();
 
-        textField2 = new WidgetBetterTextField("位置设置 : 可用如 “TX=0.281#” 的格式设置数据 ; 可用如 “TX%” 的格式获取数据", 128);
+        textField2 = new WidgetBetterTextField(Text.translatable("gui.mtrsteamloco.eye_candy.text_field2"), 128);
         textField2.setResponder(changed -> updateBlockEntity(be -> {
             if(changed.contains("#")) {
                 try{

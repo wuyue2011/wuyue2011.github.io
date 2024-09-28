@@ -17,6 +17,8 @@
     "rail.mtrsteamloco.builtin_depot": "NTE Built-in (Depot)",
     "rail.mtrsteamloco.builtin_flat": "NTE Built-in (Flat)",
     "gui.mtrsteamloco.eye_candy.full_light": "Volles Licht",
+    "gui.mtrsteamloco.eye_candy.text_field": "Datenabhängig: Schlüssel-Wert - Paare können im Format “key,value #” hinzugefügt werden; Schlüssel-Wert - Paare können im Format “key%” abgerufen werden",
+    "gui.mtrsteamloco.eye_candy.text_field2": "Standort-Einstellungen: Zahlen können im Format “TX=0,281#” festgelegt werden; Zahlen können im Format “TX%” abgerufen werden",
     "gui.mtrsteamloco.eye_candy.tip_resource_pack": "Du kannst Objekte mit Ressorcenpaketen importieren. Klicke hier für Details.",
     "gui.mtrsteamloco.brush_edit_rail.brush_hint": "This sets the function of the brush. Right-click on others to apply in batch.",
     "gui.mtrsteamloco.brush_edit_rail.enable_model_key": "Modell anwenden",

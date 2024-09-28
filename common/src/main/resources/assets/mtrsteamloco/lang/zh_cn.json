@@ -17,6 +17,8 @@
     "rail.mtrsteamloco.builtin_depot": "NTE 内置 (车厂)",
     "rail.mtrsteamloco.builtin_flat": "NTE 内置 (平面)",
     "gui.mtrsteamloco.eye_candy.full_light": "保持全亮度",
+    "gui.mtrsteamloco.eye_candy.text_field": "数据相关 : 可用如 “key,value#” 的格式添加键值对 ; 可用如 “key%” 的格式获取键值对",
+    "gui.mtrsteamloco.eye_candy.text_field2": "位置设置 : 可用如 “TX=0.281#” 的格式设置数值 ; 可用如 “TX%” 的格式获取数值",
     "gui.mtrsteamloco.eye_candy.tip_resource_pack": "您可通过资源包导入更多物件。请点击此处阅览详情。",
     "gui.mtrsteamloco.brush_edit_rail.brush_hint": "设置刷子的功能。接下来右击其他处可批量应用。",
     "gui.mtrsteamloco.brush_edit_rail.enable_model_key": "应用模型",
