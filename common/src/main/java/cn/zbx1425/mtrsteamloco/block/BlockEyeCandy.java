@@ -32,8 +32,8 @@ import org.jetbrains.annotations.NotNull;
 import cn.zbx1425.mtrsteamloco.network.util.MapSerializer;
 import cn.zbx1425.mtrsteamloco.network.PacketUpdateBlockEntity;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -98,8 +98,11 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public EyeCandyScriptContext scriptContext = new EyeCandyScriptContext(this);
 
+        BlockState blockState;
+
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
+            blockState = state;
         }
 
         @Override
@@ -158,10 +161,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
 
         public float getBlockYRot(){
-            BlockGetter world = getLevel();
-            final BlockPos pos = getWorldPos;
-		    final BlockState state = world.getBlockState(pos);
-            final Direction facing = IBlock.getStatePropertySafe(state, HorizontalDirectionalBlock.FACING);
+            final Direction facing = IBlock.getStatePropertySafe(blockState, HorizontalDirectionalBlock.FACING);
             return facing.toYRot();
         }
     }
