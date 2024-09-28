@@ -194,26 +194,32 @@ public class EyeCandyScreen extends SelectListScreen {
                             case "TX":
                                 be.translateX = Float.parseFloat(parts[1]);
                                 tx.setValue((int)Math.round(be.translateX * 100 / 5f) + 20);
+                                be.translateX = Float.parseFloat(parts[1]);
                                 break;
                             case "TY":
                                 be.translateY = Float.parseFloat(parts[1]);
                                 ty.setValue((int)Math.round(be.translateY * 100 / 5f) + 20);
+                                be.translateY = Float.parseFloat(parts[1]);
                                 break;
                             case "TZ":
                                 be.translateZ = Float.parseFloat(parts[1]);
                                 tz.setValue((int)Math.round(be.translateZ * 100 / 5f) + 20);
+                                be.translateZ = Float.parseFloat(parts[1]);
                                 break;
                             case "RX":
                                 be.rotateX = (float)Math.toRadians(Float.parseFloat(parts[1]));
                                 rx.setValue((int)Math.round(Math.toDegrees(be.rotateX) / 5f) + 18);
+                                be.rotateX = (float)Math.toRadians(Float.parseFloat(parts[1]));
                                 break;
                             case "RY":
                                 be.rotateY = (float)Math.toRadians(Float.parseFloat(parts[1]));
                                 ry.setValue((int)Math.round(Math.toDegrees(be.rotateY) / 5f) + 18);
+                                be.rotateY = (float)Math.toRadians(Float.parseFloat(parts[1]));
                                 break;
                             case "RZ":
                                 be.rotateZ = (float)Math.toRadians(Float.parseFloat(parts[1]));
                                 rz.setValue((int)Math.round(Math.toDegrees(be.rotateZ) / 5f) + 18);
+                                be.rotateZ = (float)Math.toRadians(Float.parseFloat(parts[1]));
                                 break;
                             default:
                                 break;
