@@ -178,7 +178,7 @@ public class EyeCandyScreen extends SelectListScreen {
                 textField2.setValue("");
             }
         }));
-        IDrawing.setPositionAndWidth(addRenderableWidget(textField2), SQUARE_SIZE * 2 + COLUMN_WIDTH * 2, SQUARE_SIZE * 6, COLUMN_WIDTH * 4);
+        IDrawing.setPositionAndWidth(addRenderableWidget(textField2), SQUARE_SIZE * 2 + COLUMN_WIDTH * 2, SQUARE_SIZE * 6, COLUMN_WIDTH * 2);
         addDrawableChild(textField2);
         addRenderableWidget(textField2);
 
@@ -218,5 +218,12 @@ public class EyeCandyScreen extends SelectListScreen {
     @Override
     public boolean isPauseScreen() {
         return false;
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        textField.tick();
+        textField2.tick();
     }
 }
