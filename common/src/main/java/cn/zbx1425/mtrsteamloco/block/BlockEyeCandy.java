@@ -101,11 +101,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public EyeCandyScriptContext scriptContext = new EyeCandyScriptContext(this);
 
-        public BlockState blockState;
-
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
-            blockState = state;
         }
 
         @Override
