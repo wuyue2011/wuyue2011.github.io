@@ -109,7 +109,8 @@ public class MinecraftClientUtil {
     public static Platform getPlatformAt(Vector3f pos, int radius, int lower, int upper) {
         Station station = RailwayData.getStation(ClientData.STATIONS, ClientData.DATA_CACHE, pos.toBlockPos());
         Map<Long, Platform> platformPositions = ClientData.DATA_CACHE.requestStationIdToPlatforms(station.id);
-        Platform platform = platformPositions.get(RailwayData.getClosePlatformId(ClientData.PLATFORMS, ClientData.DATA_CACHE, pos.toBlockPos(), radius, lower, upper));
+        Long id = RailwayData.getClosePlatformId(ClientData.PLATFORMS, ClientData.DATA_CACHE, pos.toBlockPos(), radius, lower, upper);
+        Platform platform = platformPositions.get(id);
         return platform;
     }
 }
