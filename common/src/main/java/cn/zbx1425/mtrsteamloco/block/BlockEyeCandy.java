@@ -101,11 +101,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public EyeCandyScriptContext scriptContext = new EyeCandyScriptContext(this);
 
-        public BlockState blockState;
-
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
-            blockState = state;
         }
 
         @Override
@@ -164,7 +161,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
 
         public float getBlockYRot(){
-            final Direction facing = IBlock.getStatePropertySafe(blockState, HorizontalDirectionalBlock.FACING);
+            final Direction facing = IBlock.getStatePropertySafe(Minecraft.getInstance().level.getBlockState(this.worldPosition), HorizontalDirectionalBlock.FACING);
             return facing.toYRot();
         }
 
