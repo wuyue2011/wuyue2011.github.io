@@ -153,8 +153,7 @@ public class EyeCandyScreen extends SelectListScreen {
         );
         IDrawing.setPositionAndWidth(addRenderableWidget(rz), SQUARE_SIZE + (width - SQUARE_SIZE * 2) / 3 * 2, SQUARE_SIZE * 4, (width - SQUARE_SIZE * 2) / 3);
 
-        textField = new WidgetBetterTextField("Input", 128);
-        textField.setValue(blockEntity.data.get("input"));
+        textField = new WidgetBetterTextField("数据输入", 128);
         textField.setResponder(changed -> updateBlockEntity(be -> {
             if(changed.contains("#")) {
                 try{
