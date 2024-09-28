@@ -34,6 +34,7 @@ import cn.zbx1425.mtrsteamloco.network.PacketUpdateBlockEntity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import mtr.block.IBlock;
 
 import java.util.HashMap;
 import java.util.Map;
