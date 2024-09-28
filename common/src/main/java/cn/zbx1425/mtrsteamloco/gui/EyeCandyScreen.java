@@ -178,7 +178,7 @@ public class EyeCandyScreen extends SelectListScreen {
             }
         }));
 
-        IDrawing.setPositionAndWidth(addRenderableWidget(textField), SQUARE_SIZE, SQUARE_SIZE * 6, width - SQUARE_SIZE * 2 );
+        IDrawing.setPositionAndWidth(addRenderableWidget(textField), SQUARE_SIZE, SQUARE_SIZE * 6, width - SQUARE_SIZE );
         addDrawableChild(textField);
         addRenderableWidget(textField);
         textField.moveCursorToStart();
@@ -255,7 +255,7 @@ public class EyeCandyScreen extends SelectListScreen {
                 }
             }
         }));
-        IDrawing.setPositionAndWidth(addRenderableWidget(textField2), SQUARE_SIZE, SQUARE_SIZE * 7 + 10, width - SQUARE_SIZE * 2 );
+        IDrawing.setPositionAndWidth(addRenderableWidget(textField2), SQUARE_SIZE, SQUARE_SIZE * 7 + 10, width - SQUARE_SIZE );
         addDrawableChild(textField2);
         addRenderableWidget(textField2);
         textField2.moveCursorToStart();
