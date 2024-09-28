@@ -15,6 +15,9 @@ import mtr.data.Rail;
 import mtr.path.PathData;
 import net.minecraft.core.BlockPos;
 import mtr.client.ClientData;
+import mtr.data.RailwayData;
+import mtr.data.Station;
+import mtr.data.Platform;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -97,5 +100,16 @@ public class MinecraftClientUtil {
         }
 
         return occupiedAspect;
+    }
+
+    public static getStationAt(Vector3f pos) {
+        return RailwayData.getStation(ClientData.STATIONS, ClientData.DATA_CACHE, pos.toBlockPos());
+    }
+
+    public static getPlatformAt(Vector3f pos, int radius, int lower, int upper) {
+        Station station = RailwayData.getStation(ClientData.STATIONS, ClientData.DATA_CACHE, pos.toBlockPos());
+        Map<Long, Platform> platformPositions = ClientData.DATA_CACHE.requestStationIdToPlatforms(station.id);
+        Platform platform = platformPositions.get(RailwayData.getClosePlatformId(ClientData.PLATFORMS, ClientData.DATA_CACHE, pos.toBlockPos(), radius, lower, upper));
+        return platform
     }
 }
