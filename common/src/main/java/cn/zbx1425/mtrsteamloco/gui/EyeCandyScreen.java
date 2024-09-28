@@ -77,19 +77,6 @@ public class EyeCandyScreen extends SelectListScreen {
         if (optionalBlockEntity.isEmpty()) { this.onClose(); return; }
         BlockEyeCandy.BlockEntityEyeCandy blockEntity = optionalBlockEntity.get();
 
-        textField = new WidgetBetterTextField("Input");
-
-        textField.setValue(blockEntity.data.get("input"));
-        textField.setResponder(changed -> blockEntity.data.put("input", changed));
-
-        IDrawing.setPositionAndWidth(addRenderableWidget(textField), SQUARE_SIZE, SQUARE_SIZE * 7, COLUMN_WIDTH * 2);
-
-        addDrawableChild(textField);
-
-        addRenderableWidget(textField);
-
-        
-
         if (isSelectingModel) {
             scrollList.visible = true;
             loadSelectPage(key -> !key.equals(blockEntity.prefabId));
@@ -148,7 +135,14 @@ public class EyeCandyScreen extends SelectListScreen {
                 value -> { updateBlockEntity(be -> be.rotateZ = (float)Math.toRadians((value - 18) * 5f)); return "RZ " + ((value - 18) * 5) + "°"; }
         )), SQUARE_SIZE + (width - SQUARE_SIZE * 2) / 3 * 2, SQUARE_SIZE * 4, (width - SQUARE_SIZE * 2) / 3);
 
-        addRenderableWidget(new WidgetBetterCheckbox(SQUARE_SIZE, SQUARE_SIZE * 6, COLUMN_WIDTH * 2, SQUARE_SIZE,
+        textField = new WidgetBetterTextField("Input");
+        textField.setValue(blockEntity.data.get("input"));
+        textField.setResponder(changed -> blockEntity.data.put("input", changed));
+        IDrawing.setPositionAndWidth(addRenderableWidget(textField), SQUARE_SIZE, SQUARE_SIZE * 6, COLUMN_WIDTH * 2);
+        addDrawableChild(textField);
+        addRenderableWidget(textField);
+
+        addRenderableWidget(new WidgetBetterCheckbox(SQUARE_SIZE, SQUARE_SIZE * 8, COLUMN_WIDTH * 2, SQUARE_SIZE,
                 Text.translatable("gui.mtrsteamloco.eye_candy.full_light"),
                 checked -> updateBlockEntity((be) -> be.fullLight = checked)
         )).setChecked(blockEntity.fullLight);
