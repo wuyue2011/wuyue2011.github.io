@@ -31,6 +31,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import cn.zbx1425.mtrsteamloco.network.util.MapSerializer;
 import cn.zbx1425.mtrsteamloco.network.PacketUpdateBlockEntity;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.Direction;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -152,6 +155,14 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public void sendUpdateC2S() {
             PacketUpdateBlockEntity.sendUpdateC2S(this);
+        }
+
+        public float getBlockYRot(){
+            BlockGetter world = getLevel();
+            final BlockPos pos = getWorldPos;
+		    final BlockState state = world.getBlockState(pos);
+            final Direction facing = IBlock.getStatePropertySafe(state, HorizontalDirectionalBlock.FACING);
+            return facing.toYRot();
         }
     }
 }
