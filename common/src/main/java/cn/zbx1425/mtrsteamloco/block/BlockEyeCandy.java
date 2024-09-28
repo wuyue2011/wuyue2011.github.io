@@ -78,7 +78,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
     @Override
     public BlockEntityMapper createBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new BlockEntityEyeCandy(blockPos, blockState);
+        return new BlockEntityEyeCandy(blockPos, blockState, this);
     }
 
     @Override
@@ -99,11 +99,14 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public EyeCandyScriptContext scriptContext = new EyeCandyScriptContext(this);
 
-        BlockState blockState;
+        public BlockState blockState;
 
-        public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
+        public BlockEyeCandy block;
+
+        public BlockEntityEyeCandy(BlockPos pos, BlockState state, BlockEyeCandy block) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
             blockState = state;
+            this.block = block;
         }
 
         @Override
