@@ -157,7 +157,7 @@ public class EyeCandyScreen extends SelectListScreen {
         textField.setResponder(changed -> updateBlockEntity(be -> {
             if(changed.contains("#")) {
                 try{
-                    String str = changed.replaceAll("\\s", "").replaceAll("#", "");
+                    String str = changed.replaceAll("#", "");
                     String[] parts = str.split(",");
                     if(parts.length == 2){
                         be.data.put(parts[0], parts[1]);
@@ -169,7 +169,7 @@ public class EyeCandyScreen extends SelectListScreen {
             }else if(changed.contains("%")){
                 String newStr = "";
                 try{
-                    String str = changed.replaceAll("\\s", "").replaceAll("%", "");
+                    String str = changed.replaceAll("%", "");
                     newStr = str + " , " + be.data.get(str);
                 }catch (Exception e){
 
@@ -187,7 +187,7 @@ public class EyeCandyScreen extends SelectListScreen {
         textField2.setResponder(changed -> updateBlockEntity(be -> {
             if(changed.contains("#")) {
                 try{
-                    String str = changed.replaceAll("\\s", "").replaceAll("#", "");
+                    String str = changed.replaceAll("#", "");
                     String[] parts = str.split("=");
                     if(parts.length == 2){
                         switch (parts[0]){
@@ -232,7 +232,7 @@ public class EyeCandyScreen extends SelectListScreen {
             }else if(changed.contains("%")) {
                 String newStr = "";
                 try{
-                    String str = changed.replaceAll("\\s", "").replaceAll("%", "");
+                    String str = changed.replaceAll("%", "");
                     switch (str){
                         case "TX":
                             newStr = "TX=" + blockEntity.translateX;
