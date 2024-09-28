@@ -220,5 +220,6 @@ public class EyeCandyScreen extends SelectListScreen {
     public void tick() {
         super.tick();
         textField.tick();
+        textField2.tick();
     }
 }
