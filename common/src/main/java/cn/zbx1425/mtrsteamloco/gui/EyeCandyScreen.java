@@ -171,7 +171,7 @@ public class EyeCandyScreen extends SelectListScreen {
                 String newStr = "";
                 try{
                     String str = changed.replaceAll("\\s", "").replaceAll("%", "");
-                    newStr = be.data.get(str);
+                    newStr = str + " , " + be.data.get(str);
                 }catch (Exception e){
 
                 }
