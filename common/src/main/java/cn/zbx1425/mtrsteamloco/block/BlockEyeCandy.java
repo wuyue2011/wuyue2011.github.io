@@ -183,5 +183,9 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 		    }
 		    return null;
 	    }
+
+        public Map<String, String> getData() {
+            return data;
+        }
     }
 }
