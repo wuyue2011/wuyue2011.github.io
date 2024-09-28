@@ -41,7 +41,8 @@ public class EyeCandyScreen extends SelectListScreen {
 
     private final BlockPos editingBlockPos;
 
-    WidgetBetterTextField textField;
+    private WidgetBetterTextField textField;
+    private WidgetBetterTextField textField2;
 
     public EyeCandyScreen(BlockPos blockPos) {
         super(Text.literal("Select EyeCandy"));
@@ -138,6 +139,43 @@ public class EyeCandyScreen extends SelectListScreen {
         textField = new WidgetBetterTextField(blockEntity.data.get("input"), "Input", 128);
         textField.setResponder(changed -> updateBlockEntity(be -> be.data.put("input", changed)));
         IDrawing.setPositionAndWidth(addRenderableWidget(textField), SQUARE_SIZE, SQUARE_SIZE * 6, COLUMN_WIDTH * 2);
+        addDrawableChild(textField);
+        addRenderableWidget(textField);
+
+        textField2 = new WidgetBetterTextField("调整设置 如“translateX=10#” 或 “rotateY=30#” ", 128);
+        textField2.setResponder(changed -> updateBlockEntity(be -> {
+            if(changed.contains("#")){
+                String str = changed.replaceAll("\\s", "");
+                String[] parts = str.split("=");
+                if(parts.length == 2){
+                    switch (parts[0]){
+                        case "translateX":
+                            be.translateX = Float.parseFloat(parts[1]);
+                            break;
+                        case "translateY":
+                            be.translateY = Float.parseFloat(parts[1]);
+                            break;
+                        case "translateZ":
+                            be.translateZ = Float.parseFloat(parts[1]);
+                            break;
+                        case "rotateX":
+                            be.rotateX = (float)Math.toRadians(Float.parseFloat(parts[1]));
+                            break;
+                        case "rotateY":
+                            be.rotateY = (float)Math.toRadians(Float.parseFloat(parts[1]));
+                            break;
+                        case "rotateZ":
+                            be.rotateZ = (float)Math.toRadians(Float.parseFloat(parts[1]));
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                textField2.setValue("");
+            }
+        }));
+        
+        IDrawing.setPositionAndWidth(addRenderableWidget(textField), SQUARE_SIZE, SQUARE_SIZE * 6, COLUMN_WIDTH * 4.2);
         addDrawableChild(textField);
         addRenderableWidget(textField);
 
