@@ -63,8 +63,8 @@ public class MinecraftClientUtil {
         }
     }
 
-    public static int getOccupiedAspect(Vector3f pos1, float facing, int aspects) {
-        BlockPos pos = pos1.toBlockPos();
+    public static int getOccupiedAspect(Vector3f vPos, float facing, int aspects) {
+        BlockPos pos = vPos.toBlockPos();
         Map<BlockPos, Float> nodesToScan = new HashMap<>();
         nodesToScan.put(pos, facing);
         int occupiedAspect = -1;
@@ -111,6 +111,6 @@ public class MinecraftClientUtil {
         Map<Long, Platform> platformPositions = ClientData.DATA_CACHE.requestStationIdToPlatforms(station.id);
         Long id = RailwayData.getClosePlatformId(ClientData.PLATFORMS, ClientData.DATA_CACHE, pos.toBlockPos(), radius, lower, upper);
         Platform platform = platformPositions.get(id);
-        return platform;
+        return platform;   
     }
 }
