@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(TrainServer.class)
 public abstract class TrainServerMixin extends Train {
     @Inject(method = "openDoors", at = @At("HEAD"))
-    public void onOpenDoors(Level world, Block block, BlockPos checkPos, int dwellTicks, CallbackInfo ci) {
+    protected void onOpenDoors(Level world, Block block, BlockPos checkPos, int dwellTicks, CallbackInfo ci) {
         if (block instanceof BlockEyeCandy) {
 			BlockEntity entity = world.getBlockEntity(checkPos);
 			final int doorStateValue = (int) Mth.clamp(doorValue * DOOR_MOVE_TIME, 0, 1);
