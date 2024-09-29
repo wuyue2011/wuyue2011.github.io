@@ -37,6 +37,7 @@ public abstract class TrainServerMixin extends Train {
 			final int doorStateValue = (int) Mth.clamp(doorValue * DOOR_MOVE_TIME, 0, 1);
 			((BlockEyeCandy.BlockEntityEyeCandy) entity).setOpen(doorStateValue);
             ((BlockEyeCandy.BlockEntityEyeCandy) entity).sendUpdateC2S();
+			((BlockEyeCandy.BlockEntityEyeCandy) entity).getData().put("setOpen", doorStateValue);
 		}
     }
 
