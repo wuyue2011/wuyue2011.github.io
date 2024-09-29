@@ -64,4 +64,4 @@ public abstract class TrainServerMixin {
         ci.setReturnValue(hasPlatform);
 		return;
     }
-}
+}//114514
