@@ -26,20 +26,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(TrainServer.class)
 public abstract class TrainServerMixin extends Train {
 
-    public TrainServerMixin(long id, long sidingId, float railLength, String trainId, String baseTrainType, int trainCars, List<PathData> path, List<Double> distances, int repeatIndex1, int repeatIndex2, float accelerationConstant, boolean isManualAllowed, int maxManualSpeed, int manualToAutomaticTime) {
+    /*public TrainServerMixin(long id, long sidingId, float railLength, String trainId, String baseTrainType, int trainCars, List<PathData> path, List<Double> distances, int repeatIndex1, int repeatIndex2, float accelerationConstant, boolean isManualAllowed, int maxManualSpeed, int manualToAutomaticTime) {
         super(id, sidingId, railLength, trainId, baseTrainType, trainCars, path, distances, repeatIndex1, repeatIndex2, accelerationConstant, isManualAllowed, maxManualSpeed, manualToAutomaticTime);
-    }
+    }*/
 
     @Inject(method = "openDoors", at = @At("HEAD"), remap = false)
     protected void onOpenDoors(Level world, Block block, BlockPos checkPos, int dwellTicks, CallbackInfo ci) {
         if (block instanceof BlockEyeCandy) {
-			BlockEntity entity = world.getBlockEntity(checkPos);
+			BlockEyeCandy.BlockEntityEyeCandy entity = world.getBlockEntity(checkPos);
 			final int doorStateValue = (int) Mth.clamp(doorValue * DOOR_MOVE_TIME, 0, 1);
-			((BlockEyeCandy.BlockEntityEyeCandy) entity).setOpen(doorStateValue);
-			((BlockEyeCandy.BlockEntityEyeCandy) entity).getData().put("setOpen", doorStateValue + "");
-			((BlockEyeCandy.BlockEntityEyeCandy) entity).openClient = doorValue;
-            ((BlockEyeCandy.BlockEntityEyeCandy) entity).sendUpdateC2S();
+			entity.setOpen(doorStateValue);
+			entity.getData().put("setOpen", doorStateValue + "");
+			entity.openClient = doorValue;
+            entity.sendUpdateC2S();
 		}
-		return;
     }
 }
