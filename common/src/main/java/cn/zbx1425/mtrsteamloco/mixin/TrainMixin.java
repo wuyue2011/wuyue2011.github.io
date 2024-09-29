@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(Train.class)
-public class TrainMixin {
+public abstract class TrainMixin {
 
     @Shadow
     protected abstract boolean skipScanBlocks(Level world, double trainX, double trainY, double trainZ);
