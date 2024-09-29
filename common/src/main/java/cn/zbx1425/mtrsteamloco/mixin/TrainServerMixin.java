@@ -15,6 +15,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.util.Mth;
 import mtr.path.PathData;
 
+import java.util.List;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
