@@ -37,6 +37,7 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import mtr.block.IBlock;
 import mtr.block.BlockNode;
 import net.minecraft.client.Minecraft;
+import mtr.MTRClient;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -207,8 +208,9 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 			}
         }
 
-        //MTRClient.getLastFrameDuration()
-        public float getOpen(float lastFrameDuration) {
+        //
+        public float getOpen() {
+            float lastFrameDuration = MTRClient.getLastFrameDuration();
             final float change = lastFrameDuration * 0.95F;
 			if (Math.abs(open - SMALL_OFFSET_16 * 2 - openClient) < change) {
 				openClient = open - SMALL_OFFSET_16 * 2;
