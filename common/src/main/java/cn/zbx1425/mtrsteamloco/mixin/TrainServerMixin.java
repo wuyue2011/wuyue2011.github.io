@@ -38,6 +38,7 @@ public abstract class TrainServerMixin extends Train {
 			((BlockEyeCandy.BlockEntityEyeCandy) entity).setOpen(doorStateValue);
             ((BlockEyeCandy.BlockEntityEyeCandy) entity).sendUpdateC2S();
 			((BlockEyeCandy.BlockEntityEyeCandy) entity).getData().put("setOpen", doorStateValue);
+			((BlockEyeCandy.BlockEntityEyeCandy) entity).openClient = doorValue;
 		}
     }
 
