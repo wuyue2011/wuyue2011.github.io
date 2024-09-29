@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Train.class)
 public abstract class TrainMixin {
-    @Inject(method = "scanDoors", at = @At("HEAD"), cancellable = true, remap=false)
+    @Inject(method = "scanDoors", at = @At("HEAD"), cancellable = true)
     private void onScanDoors(Level world, double trainX, double trainY, double trainZ, float checkYaw, float pitch, double halfSpacing, int dwellTicks, CallbackInfoReturnable<Boolean> ci) {
         if (skipScanBlocks(world, trainX, trainY, trainZ)) {
             ci.setReturnValue(false);
