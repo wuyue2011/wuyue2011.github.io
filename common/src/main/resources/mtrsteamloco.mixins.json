@@ -35,7 +35,8 @@
     "PackMixin",
     "RailActionsMixin",
     "RailMixin",
-    "RailwayDataAccessor"
+    "RailwayDataAccessor",
+    "TrainMixin"
   ],
   "server": [
     "TrainServerMixin"
