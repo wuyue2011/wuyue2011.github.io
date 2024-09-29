@@ -36,9 +36,9 @@ public abstract class TrainServerMixin extends Train {
 			BlockEntity entity = world.getBlockEntity(checkPos);
 			final int doorStateValue = (int) Mth.clamp(doorValue * DOOR_MOVE_TIME, 0, 1);
 			((BlockEyeCandy.BlockEntityEyeCandy) entity).setOpen(doorStateValue);
-            ((BlockEyeCandy.BlockEntityEyeCandy) entity).sendUpdateC2S();
 			((BlockEyeCandy.BlockEntityEyeCandy) entity).getData().put("setOpen", doorStateValue);
 			((BlockEyeCandy.BlockEntityEyeCandy) entity).openClient = doorValue;
+            ((BlockEyeCandy.BlockEntityEyeCandy) entity).sendUpdateC2S();
 		}
     }
 
