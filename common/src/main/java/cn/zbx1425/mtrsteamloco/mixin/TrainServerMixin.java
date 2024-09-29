@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(TrainServer.class)
-public abstract class TrainServerMixin extends Train {
+public abstract class TrainServerMixin {
     @Inject(method = "openDoors", at = @At("HEAD"), remap = false)
     protected void onOpenDoors(Level world, Block block, BlockPos checkPos, int dwellTicks, CallbackInfo ci) {
         if (block instanceof BlockEyeCandy) {
