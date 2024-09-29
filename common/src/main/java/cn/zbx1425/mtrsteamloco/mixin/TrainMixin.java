@@ -22,9 +22,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(Train.class)
 public class TrainMixin {
+
+    @Shadow
+    protected abstract boolean skipScanBlocks(Level world, double trainX, double trainY, double trainZ);
+
+    @Shadow
+    protected abstract boolean openDoors(Level world, Block block, BlockPos checkPos, int dwellTicks);
+
     @Inject(method = "scanDoors", at = @At("HEAD"), cancellable = true, remap = false)
     private void onScanDoors(Level world, double trainX, double trainY, double trainZ, float checkYaw, float pitch, double halfSpacing, int dwellTicks, CallbackInfoReturnable<Boolean> ci) {
         if (skipScanBlocks(world, trainX, trainY, trainZ)) {
