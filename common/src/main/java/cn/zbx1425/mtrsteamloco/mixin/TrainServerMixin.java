@@ -2,6 +2,9 @@ package cn.zbx1425.mtrsteamloco.mixin;
 
 import mtr.data.TrainServer;
 import mtr.data.Train;
+import mtr.data.RailwayData;
+import mtr.block.BlockPSDAPGBase;
+import mtr.block.BlockPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -9,6 +12,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.Level;
 import cn.zbx1425.mtrsteamloco.block.BlockEyeCandy;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.util.Mth;
+import mtr.path.PathData;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,6 +29,7 @@ public abstract class TrainServerMixin extends Train {
 			BlockEntity entity = world.getBlockEntity(checkPos);
 			final int doorStateValue = (int) Mth.clamp(doorValue * DOOR_MOVE_TIME, 0, 1);
 			((BlockEyeCandy.BlockEntityEyeCandy) entity).setOpen(doorStateValue);
+            ((BlockEyeCandy.BlockEntityEyeCandy) entity).sendUpdateC2S();
 		}
     }
 
