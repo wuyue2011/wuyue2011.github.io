@@ -63,6 +63,7 @@ public abstract class TrainMixin {
 								ci.setReturnValue(true);
 								return;
 							}
+							hasPlatform = true;
 						}
 					}
 				}
