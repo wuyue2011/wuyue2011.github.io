@@ -34,7 +34,9 @@ public abstract class TrainServerMixin extends Train {
     protected void onOpenDoors(Level world, Block block, BlockPos checkPos, int dwellTicks, CallbackInfo ci) {
         if (block instanceof BlockEyeCandy) {
 			BlockEntity entity = world.getBlockEntity(checkPos);
-            ((BlockEyeCandy.BlockEntityEyeCandy) entity).setDoorValue(doorValue);
+            if (((BlockEyeCandy.BlockEntityEyeCandy) entity).isPlatform()) {
+                ((BlockEyeCandy.BlockEntityEyeCandy) entity).setDoorValue(doorValue);
+            }
 		}
     }
 }
