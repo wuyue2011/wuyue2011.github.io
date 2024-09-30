@@ -72,6 +72,5 @@ public abstract class TrainMixin {
 
         ci.setReturnValue(hasPlatform);
 		return;
-		ci.cancel();
     }
 }
