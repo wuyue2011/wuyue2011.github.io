@@ -57,7 +57,7 @@ public abstract class TrainMixin {
 						}
 						hasPlatform = true;
 					}else if (block instanceof BlockEyeCandy) {
-						final BlockEntity entity = world.getBlockEntity(block);
+						final BlockEntity entity = world.getBlockEntity(checkPos);
 						if (((BlockEyeCandy.BlockEntityEyeCandy) entity).isPlatform()){
 							if (openDoors(world, block, checkPos, dwellTicks)) {
 								ci.setReturnValue(true);
