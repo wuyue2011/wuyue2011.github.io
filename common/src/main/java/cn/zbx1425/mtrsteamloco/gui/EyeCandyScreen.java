@@ -271,7 +271,7 @@ public class EyeCandyScreen extends SelectListScreen {
                 checked -> updateBlockEntity((be) -> be.fullLight = checked)
         )).setChecked(blockEntity.fullLight);
 
-        addRenderableWidget(new WidgetBetterCheckbox(SQUARE_SIZE * 2 + COLUMN_WIDTH * 4, SQUARE_SIZE * 9 + 10, COLUMN_WIDTH * 2, SQUARE_SIZE,
+        addRenderableWidget(new WidgetBetterCheckbox(SQUARE_SIZE, SQUARE_SIZE * 10 + 13, COLUMN_WIDTH * 2, SQUARE_SIZE,
         Text.literal("当作站台"),
         checked -> updateBlockEntity((be) -> be.platform = checked)
         )).setChecked(blockEntity.platform);
