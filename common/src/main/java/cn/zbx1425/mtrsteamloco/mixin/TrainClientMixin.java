@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(TrainClient.class)
-public class TrainClientMixin extends Train{
+public abstract class TrainClientMixin extends Train{
 
     public TrainClientMixin(long id, long sidingId, float railLength, String trainId, String baseTrainType, int trainCars, List<PathData> path, List<Double> distances, int repeatIndex1, int repeatIndex2, float accelerationConstant, boolean isManualAllowed, int maxManualSpeed, int manualToAutomaticTime) {
         super(id, sidingId, railLength, trainId, baseTrainType, trainCars, path, distances, repeatIndex1, repeatIndex2, accelerationConstant, isManualAllowed, maxManualSpeed, manualToAutomaticTime);
@@ -37,7 +37,7 @@ public class TrainClientMixin extends Train{
     protected boolean onOpenDoors(Level world, Block block, BlockPos checkPos, int dwellTicks, CallbackInfoReturnable<Boolean> ci) {
         if (block instanceof BlockEyeCandy) {
             final BlockEntity entity = world.getBlockEntity(block);
-            ((BlockEyeCandy.BlockEntityEyeCandy) entity).setDoorValue(doorValue)
+            ((BlockEyeCandy.BlockEntityEyeCandy) entity).setDoorValue(doorValue);
         }
         ci.setReturnValue(false);
         return;
