@@ -206,5 +206,9 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public boolean isOpen() {
             return doorValue > 0;
         }
+
+        public boolean isPlatform() {
+            return platform;
+        }
     }
 }

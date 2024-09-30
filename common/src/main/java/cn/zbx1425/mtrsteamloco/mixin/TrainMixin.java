@@ -50,12 +50,20 @@ public abstract class TrainMixin {
 					final BlockPos checkPos = RailwayData.newBlockPos(trainX + offsetVec.x * checkX + traverseVec.x * checkZ, trainY + checkY, trainZ + offsetVec.z * checkX + traverseVec.z * checkZ);
 					final Block block = world.getBlockState(checkPos).getBlock();
 
-					if (block instanceof BlockPlatform || block instanceof BlockPSDAPGBase || block instanceof BlockEyeCandy) {
+					if (block instanceof BlockPlatform || block instanceof BlockPSDAPGBase) {
 						if (openDoors(world, block, checkPos, dwellTicks)) {
                             ci.setReturnValue(true);
 							return;
 						}
 						hasPlatform = true;
+					}else if (block instanceof BlockEyeCandy) {
+						final BlockEntity entity = world.getBlockEntity(block);
+						if (((BlockEyeCandy.BlockEntityEyeCandy) entity).isPlatform()){
+							if (openDoors(world, block, checkPos, dwellTicks)) {
+								ci.setReturnValue(true);
+								return;
+							}
+						}
 					}
 				}
 			}
