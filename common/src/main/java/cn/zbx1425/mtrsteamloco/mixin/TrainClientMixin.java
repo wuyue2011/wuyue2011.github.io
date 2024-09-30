@@ -10,7 +10,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import mtr.data.train;
+import mtr.data.Train;
+import mtr.path.PathData;
 
 import java.util.List;
 
