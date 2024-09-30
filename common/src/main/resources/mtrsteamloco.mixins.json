@@ -36,9 +36,10 @@
     "RailActionsMixin",
     "RailMixin",
     "RailwayDataAccessor",
-    "TrainMixin"
+    "TrainMixin",
+    "TrainServerMixin"
+
   ],
   "server": [
-    "TrainServerMixin"
   ]
 }
