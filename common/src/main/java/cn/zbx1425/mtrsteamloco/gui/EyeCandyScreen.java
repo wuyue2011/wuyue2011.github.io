@@ -21,6 +21,7 @@ import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import net.minecraft.network.chat.TextComponent;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -272,8 +273,8 @@ public class EyeCandyScreen extends SelectListScreen {
         )).setChecked(blockEntity.fullLight);
 
         addRenderableWidget(new WidgetBetterCheckbox(SQUARE_SIZE, SQUARE_SIZE * 9 + 10, COLUMN_WIDTH * 4 + SQUARE_SIZE, SQUARE_SIZE,
-        Text.translatable("当作站台"),
-        checked -> updateBlockEntity((be) -> be.fullLight = checked)
+        new TextComponent("当作站台"),
+        checked -> updateBlockEntity((be) -> be.platform = checked)
         )).setChecked(blockEntity.platform);
 
         IDrawing.setPositionAndWidth(addRenderableWidget(UtilitiesClient.newButton(

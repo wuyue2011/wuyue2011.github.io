@@ -37,7 +37,7 @@ public abstract class TrainClientMixin extends Train{
     @Inject(method = "openDoors", at = @At("HEAD"), remap = false)
     protected void onOpenDoors(Level world, Block block, BlockPos checkPos, int dwellTicks, CallbackInfoReturnable<Boolean> ci) {
         if (block instanceof BlockEyeCandy) {
-            final BlockEntity entity = world.getBlockEntity(block);
+            final BlockEntity entity = world.getBlockEntity(checkPos);
             ((BlockEyeCandy.BlockEntityEyeCandy) entity).setDoorValue(doorValue);
         }
         ci.setReturnValue(false);
