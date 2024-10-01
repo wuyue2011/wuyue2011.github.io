@@ -64,6 +64,8 @@ public abstract class TrainMixin {
 								return;
 							}
 							hasPlatform = true;
+							BlockEntity entity = world.getBlockEntity(checkPos);
+							((BlockEyeCandy.BlockEntityEyeCandy) entity).setDoorValue(doorValue);
 						}
 					}
 				}

@@ -39,6 +39,6 @@
     "TrainMixin"
   ],
   "server": [
-    "TrainServerMixin"
+    
   ]
 }
