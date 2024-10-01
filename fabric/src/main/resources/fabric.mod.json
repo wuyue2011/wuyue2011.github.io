@@ -3,7 +3,7 @@
 	"id": "mtrsteamloco",
 	"version": "${version}",
 	"name": "Nemo's Transit Expansion",
-	"description": "Various experimental addon functionalities made by Zbx1425 for the Minecraft Transit Railway mod.",
+	"description": "Various experimental add-on functionalities for the Minecraft Transit Railway mod, made by Zbx1425 and Aphrodite281",
 	"authors": [
 		"Zbx1425", "Aphrodite281"
 	],
