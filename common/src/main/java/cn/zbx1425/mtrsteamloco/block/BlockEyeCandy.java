@@ -210,7 +210,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             doorTarget = target;
             sendUpdateC2S();
         }
-        }
 
         public boolean isOpen() {
             return doorValue > 0;
