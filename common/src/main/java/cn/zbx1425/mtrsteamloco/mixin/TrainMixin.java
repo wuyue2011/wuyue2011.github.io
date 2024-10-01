@@ -33,6 +33,9 @@ public abstract class TrainMixin {
     @Shadow
     protected abstract boolean openDoors(Level world, Block block, BlockPos checkPos, int dwellTicks);
 
+	@Shadow
+	protected float doorValue;
+
     @Inject(method = "scanDoors", at = @At("HEAD"), cancellable = true, remap = false)
     private void onScanDoors(Level world, double trainX, double trainY, double trainZ, float checkYaw, float pitch, double halfSpacing, int dwellTicks, CallbackInfoReturnable<Boolean> ci) {
         if (skipScanBlocks(world, trainX, trainY, trainZ)) {
