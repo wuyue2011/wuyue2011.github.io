@@ -36,6 +36,9 @@ public abstract class TrainMixin {
 	@Shadow
 	protected float doorValue;
 
+	@Shadow
+	protected boolean doorTarget;
+
     @Inject(method = "scanDoors", at = @At("HEAD"), cancellable = true, remap = false)
     private void onScanDoors(Level world, double trainX, double trainY, double trainZ, float checkYaw, float pitch, double halfSpacing, int dwellTicks, CallbackInfoReturnable<Boolean> ci) {
         if (skipScanBlocks(world, trainX, trainY, trainZ)) {
@@ -69,6 +72,7 @@ public abstract class TrainMixin {
 							hasPlatform = true;
 						}
 						((BlockEyeCandy.BlockEntityEyeCandy) entity).setDoorValue(doorValue);
+						((BlockEyeCandy.BlockEntityEyeCandy) entity).setDoorTarget(doorTarget);
 					}
 				}
 			}

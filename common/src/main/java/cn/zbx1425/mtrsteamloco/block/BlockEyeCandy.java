@@ -104,6 +104,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public boolean platform = true;
         public float doorValue = 0;
+        public boolean doorTarget = false;
 
         protected static final float SMALL_OFFSET_16 = 0.05F;
 
@@ -131,6 +132,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             rotateZ = compoundTag.contains("rotateZ") ? compoundTag.getFloat("rotateZ") : 0;
             platform = compoundTag.contains("platform") ? compoundTag.getBoolean("platform") : true;
             doorValue = compoundTag.contains("doorValue") ? compoundTag.getFloat("doorValue") : 0;
+            doorTarget = compoundTag.contains("doorTarget") ? compoundTag.getBoolean("doorTarget") : false;
         }
 
         @Override
@@ -152,6 +154,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putFloat("rotateZ", rotateZ);
             compoundTag.putBoolean("platform", platform);
             compoundTag.putFloat("doorValue", doorValue);
+            compoundTag.putBoolean("doorTarget", doorTarget);
         }
 
         public BlockPos getWorldPos() {
@@ -201,6 +204,12 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public void setDoorValue(float value) {
             doorValue = value;
             sendUpdateC2S();
+        }
+
+        public void setDoorTarget(boolean target) {
+            doorTarget = target;
+            sendUpdateC2S();
+        }
         }
 
         public boolean isOpen() {
