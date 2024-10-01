@@ -38,6 +38,9 @@ import mtr.block.IBlock;
 import mtr.block.BlockNode;
 import net.minecraft.client.Minecraft;
 import mtr.MTRClient;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -89,6 +92,14 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
+        BlockEntity Minecraft.getInstance().level.getBlockEntity(pos);
+        Vector3f minPos = ((BlockEyeCandy.BlockEntityEyeCandy) entity).minPos;
+        Vector3f maxPos = ((BlockEyeCandy.BlockEntityEyeCandy) entity).maxPos;
+        return Block.box(minPos.x(), minPos.y(), minPos.z(), maxPos.x(), maxPos.y(), maxPos.z());
+    }
+
     public static class BlockEntityEyeCandy extends BlockEntityClientSerializableMapper {
 
         public String prefabId = null;
@@ -105,6 +116,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public boolean platform = true;
         public float doorValue = 0;
         public boolean doorTarget = false;
+
+        public Vector3f minPos = new Vector3f(-16, -16, -16), maxPos = new Vector3f(16, 16, 16);
 
         protected static final float SMALL_OFFSET_16 = 0.05F;
 
