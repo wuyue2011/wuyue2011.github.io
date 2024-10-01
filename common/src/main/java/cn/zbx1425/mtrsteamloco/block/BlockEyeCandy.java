@@ -41,6 +41,7 @@ import mtr.MTRClient;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.shapes.CollisionContext;
 
 import java.util.HashMap;
 import java.util.Map;
