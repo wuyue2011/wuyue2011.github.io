@@ -96,9 +96,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
         BlockEntity entity = Minecraft.getInstance().level.getBlockEntity(pos);
-        Vector3f minPos = ((BlockEyeCandy.BlockEntityEyeCandy) entity).minPos;
-        Vector3f maxPos = ((BlockEyeCandy.BlockEntityEyeCandy) entity).maxPos;
-        return Block.box(minPos.x(), minPos.y(), minPos.z(), maxPos.x(), maxPos.y(), maxPos.z());
+        return Block.box(((BlockEyeCandy.BlockEntityEyeCandy) entity).minPosX, ((BlockEyeCandy.BlockEntityEyeCandy) entity).minPosY, ((BlockEyeCandy.BlockEntityEyeCandy) entity).minPosZ, ((BlockEyeCandy.BlockEntityEyeCandy) entity).maxPosX, ((BlockEyeCandy.BlockEntityEyeCandy) entity).maxPosY, ((BlockEyeCandy.BlockEntityEyeCandy) entity).maxPosZ);
     }
 
     public static class BlockEntityEyeCandy extends BlockEntityClientSerializableMapper {
@@ -118,7 +116,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public float doorValue = 0;
         public boolean doorTarget = false;
 
-        public Vector3f minPos = new Vector3f(-16, -16, -16), maxPos = new Vector3f(16, 16, 16);
+        public double minPosX = -16, minPosY = -16, minPosZ = -16;
+        public double maxPosX = 16, maxPosY = 16, maxPosZ = 16;
 
         protected static final float SMALL_OFFSET_16 = 0.05F;
 
@@ -147,10 +146,12 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             platform = compoundTag.contains("platform") ? compoundTag.getBoolean("platform") : true;
             doorValue = compoundTag.contains("doorValue") ? compoundTag.getFloat("doorValue") : 0;
             doorTarget = compoundTag.contains("doorTarget") ? compoundTag.getBoolean("doorTarget") : false;
-            byte[] minPosBytes = compoundTag.contains("minPos") ? compoundTag.getByteArray("minPos") : new byte[3];
-            byte[] maxPosBytes = compoundTag.contains("maxPos") ? compoundTag.getByteArray("maxPos") : new byte[3];
-            minPos = new Vector3f(minPosBytes);
-            maxPos = new Vector3f(maxPosBytes);
+            minPosX = compoundTag.contains("minPosX") ? compoundTag.getDouble("minPosX") : -16;
+            minPosY = compoundTag.contains("minPosY") ? compoundTag.getDouble("minPosY") : -16;
+            minPosZ = compoundTag.contains("minPosZ") ? compoundTag.getDouble("minPosZ") : -16;
+            maxPosX = compoundTag.contains("maxPosX") ? compoundTag.getDouble("maxPosX") : 16;
+            maxPosY = compoundTag.contains("maxPosY") ? compoundTag.getDouble("maxPosY") : 16;
+            maxPosZ = compoundTag.contains("maxPosZ") ? compoundTag.getDouble("maxPosZ") : 16;
         }
 
         @Override
@@ -173,8 +174,12 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putBoolean("platform", platform);
             compoundTag.putFloat("doorValue", doorValue);
             compoundTag.putBoolean("doorTarget", doorTarget);
-            compoundTag.putByteArray("minPos", minPos.toBytes());
-            compoundTag.putByteArray("maxPos", maxPos.toBytes());
+            compoundTag.putDouble("minPosX", minPosX);
+            compoundTag.putDouble("minPosY", minPosY);
+            compoundTag.putDouble("minPosZ", minPosZ);
+            compoundTag.putDouble("maxPosX", maxPosX);
+            compoundTag.putDouble("maxPosY", maxPosY);
+            compoundTag.putDouble("maxPosZ", maxPosZ);
         }
 
         public BlockPos getWorldPos() {

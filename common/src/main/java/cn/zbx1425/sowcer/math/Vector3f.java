@@ -26,10 +26,6 @@ public class Vector3f {
         this.impl = moj;
     }
 
-    public Vector3f(byte[] bytes) {
-        this(bytes[0] / 127f, bytes[1] / 127f, bytes[2] / 127f);
-    }
-
     public Vector3f copy() {
         return new Vector3f(this);
     }
@@ -189,10 +185,6 @@ public class Vector3f {
 
     public Vec3 toVec3() {
         return new Vec3(x(), y(), z());
-    }
-
-    public byte[] toBytes() {
-        return new byte[]{(byte)(int)(x() * 127), (byte)(int)(y() * 127), (byte)(int)(z() * 127)};
     }
 
     @Override
