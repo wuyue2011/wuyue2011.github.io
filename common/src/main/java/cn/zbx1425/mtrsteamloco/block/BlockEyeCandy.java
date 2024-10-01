@@ -147,8 +147,10 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             platform = compoundTag.contains("platform") ? compoundTag.getBoolean("platform") : true;
             doorValue = compoundTag.contains("doorValue") ? compoundTag.getFloat("doorValue") : 0;
             doorTarget = compoundTag.contains("doorTarget") ? compoundTag.getBoolean("doorTarget") : false;
-            minPos = new Vector3f(compoundTag.getByteArray("minPos"));
-            maxPos = new Vector3f(compoundTag.getByteArray("maxPos"));
+            byte[] minPosBytes = compoundTag.contains("minPos") ? compoundTag.getByteArray("minPos") : new byte[3];
+            byte[] maxPosBytes = compoundTag.contains("maxPos") ? compoundTag.getByteArray("maxPos") : new byte[3];
+            minPos = new Vector3f(minPosBytes);
+            maxPos = new Vector3f(maxPosBytes);
         }
 
         @Override
