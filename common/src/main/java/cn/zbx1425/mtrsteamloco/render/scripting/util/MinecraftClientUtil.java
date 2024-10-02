@@ -20,6 +20,7 @@ import mtr.data.Station;
 import mtr.data.Platform;
 import mtr.data.ScheduleEntry;
 import mtr.data.RailwayData;
+import net.minecraft.world.level.Level;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -130,5 +131,13 @@ public class MinecraftClientUtil {
 
     public static RailwayData getRailwayData() {
         return RailwayData.getInstance(Minecraft.getInstance().level);
+    }
+
+    public static Level gl1() {
+        return Minecraft.getInstance().level;
+    }
+
+    public static Level gl2() {
+        return Minecraft.getInstance().player.level;
     }
 }
