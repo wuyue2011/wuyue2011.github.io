@@ -124,7 +124,7 @@ public class MinecraftClientUtil {
 
     public static Map<Long, List<ScheduleEntry>> getSchedulesForStation(Station station) {
         Map<Long, List<ScheduleEntry>> schedules = new HashMap<>();
-        getRailwayData().getStationSchedules(schedules, station.id);
+        getRailwayData().getSchedulesForStation(schedules, station.id);
         return schedules;
     }
 
