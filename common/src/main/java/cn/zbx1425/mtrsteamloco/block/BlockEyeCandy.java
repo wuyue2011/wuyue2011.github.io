@@ -97,8 +97,11 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     @Override
 	public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext collisionContext) {
 		final BlockEntity entity = world.getBlockEntity(pos);
-        return Block.box(((BlockEyeCandy.BlockEntityEyeCandy) entity).minPosX, ((BlockEyeCandy.BlockEntityEyeCandy) entity).minPosY, ((BlockEyeCandy.BlockEntityEyeCandy) entity).minPosZ, ((BlockEyeCandy.BlockEntityEyeCandy) entity).maxPosX, ((BlockEyeCandy.BlockEntityEyeCandy) entity).maxPosY, ((BlockEyeCandy.BlockEntityEyeCandy) entity).maxPosZ);
-        //return Shapes.block();
+        if (entity instanceof BlockEntityEyeCandy) {
+            return Block.box(((BlockEyeCandy.BlockEntityEyeCandy) entity).minPosX, ((BlockEyeCandy.BlockEntityEyeCandy) entity).minPosY, ((BlockEyeCandy.BlockEntityEyeCandy) entity).minPosZ, ((BlockEyeCandy.BlockEntityEyeCandy) entity).maxPosX, ((BlockEyeCandy.BlockEntityEyeCandy) entity).maxPosY, ((BlockEyeCandy.BlockEntityEyeCandy) entity).maxPosZ);
+        }else {
+            return Shapes.block();
+        }
     }
 
     public static class BlockEntityEyeCandy extends BlockEntityClientSerializableMapper {
