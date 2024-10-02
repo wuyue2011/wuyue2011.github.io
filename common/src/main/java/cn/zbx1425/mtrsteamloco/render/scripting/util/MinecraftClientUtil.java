@@ -113,4 +113,8 @@ public class MinecraftClientUtil {
         Platform platform = platformPositions.get(id);
         return platform;   
     }
+
+    public static Set<ScheduleEntry> getSchedules(platform) {
+        return ClientData.SCHEDULES_FOR_PLATFORM.get(platform.id);
+	}
 }
