@@ -110,7 +110,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         if (entity instanceof BlockEntityEyeCandy) {
             return new AABB(((BlockEyeCandy.BlockEntityEyeCandy) entity).ABminX, ((BlockEyeCandy.BlockEntityEyeCandy) entity).ABminY, ((BlockEyeCandy.BlockEntityEyeCandy) entity).ABminZ, ((BlockEyeCandy.BlockEntityEyeCandy) entity).ABmaxX, ((BlockEyeCandy.BlockEntityEyeCandy) entity).ABmaxY, ((BlockEyeCandy.BlockEntityEyeCandy) entity).ABmaxZ);
         }else {
-            return new AABB(0, 0, 0, 16, 16, 16);
+            return super.getRenderBoundingBox();
         }
     }
 
@@ -137,8 +137,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public double ABminX = 0, ABminY = 0, ABminZ = 0;
         public double ABmaxX = 16, ABmaxY = 16, ABmaxZ = 16;
 
-        protected static final float SMALL_OFFSET_16 = 0.05F;
-
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
         }
@@ -164,12 +162,20 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             platform = compoundTag.contains("platform") ? compoundTag.getBoolean("platform") : true;
             doorValue = compoundTag.contains("doorValue") ? compoundTag.getFloat("doorValue") : 0;
             doorTarget = compoundTag.contains("doorTarget") ? compoundTag.getBoolean("doorTarget") : false;
-            minPosX = compoundTag.contains("minPosX") ? compoundTag.getDouble("minPosX") : 0;
-            minPosY = compoundTag.contains("minPosY") ? compoundTag.getDouble("minPosY") : 0;
-            minPosZ = compoundTag.contains("minPosZ") ? compoundTag.getDouble("minPosZ") : 0;
-            maxPosX = compoundTag.contains("maxPosX") ? compoundTag.getDouble("maxPosX") : 16;
-            maxPosY = compoundTag.contains("maxPosY") ? compoundTag.getDouble("maxPosY") : 16;
-            maxPosZ = compoundTag.contains("maxPosZ") ? compoundTag.getDouble("maxPosZ") : 16;
+            
+            CSminX = compoundTag.contains("CSminX") ? compoundTag.getDouble("CSminX") : 0;
+            CSminY = compoundTag.contains("CSminY") ? compoundTag.getDouble("CSminY") : 0;
+            CSminZ = compoundTag.contains("CSminZ") ? compoundTag.getDouble("CSminZ") : 0;
+            CSmaxX = compoundTag.contains("CSmaxX") ? compoundTag.getDouble("CSmaxX") : 16;
+            CSmaxY = compoundTag.contains("CSmaxY") ? compoundTag.getDouble("CSmaxY") : 16;
+            CSmaxZ = compoundTag.contains("CSmaxZ") ? compoundTag.getDouble("CSmaxZ") : 16;
+
+            ABminX = compoundTag.contains("ABminX") ? compoundTag.getDouble("ABminX") : 0;
+            ABminY = compoundTag.contains("ABminY") ? compoundTag.getDouble("ABminY") : 0;
+            ABminZ = compoundTag.contains("ABminZ") ? compoundTag.getDouble("ABminZ") : 0;
+            ABmaxX = compoundTag.contains("ABmaxX") ? compoundTag.getDouble("ABmaxX") : 16;
+            ABmaxY = compoundTag.contains("ABmaxY") ? compoundTag.getDouble("ABmaxY") : 16;
+            ABmaxZ = compoundTag.contains("ABmaxZ") ? compoundTag.getDouble("ABmaxZ") : 16;
         }
 
         @Override
@@ -192,12 +198,20 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putBoolean("platform", platform);
             compoundTag.putFloat("doorValue", doorValue);
             compoundTag.putBoolean("doorTarget", doorTarget);
-            compoundTag.putDouble("minPosX", minPosX);
-            compoundTag.putDouble("minPosY", minPosY);
-            compoundTag.putDouble("minPosZ", minPosZ);
-            compoundTag.putDouble("maxPosX", maxPosX);
-            compoundTag.putDouble("maxPosY", maxPosY);
-            compoundTag.putDouble("maxPosZ", maxPosZ);
+            
+            compoundTag.putDouble("CSminX", CSminX);
+            compoundTag.putDouble("CSminY", CSminY);
+            compoundTag.putDouble("CSminZ", CSminZ);
+            compoundTag.putDouble("CSmaxX", CSmaxX);
+            compoundTag.putDouble("CSmaxY", CSmaxY);
+            compoundTag.putDouble("CSmaxZ", CSmaxZ);
+
+            compoundTag.putDouble("ABminX", ABminX);
+            compoundTag.putDouble("ABminY", ABminY);
+            compoundTag.putDouble("ABminZ", ABminZ);
+            compoundTag.putDouble("ABmaxX", ABmaxX);
+            compoundTag.putDouble("ABmaxY", ABmaxY);
+            compoundTag.putDouble("ABmaxZ", ABmaxZ);
         }
 
         public BlockPos getWorldPos() {
