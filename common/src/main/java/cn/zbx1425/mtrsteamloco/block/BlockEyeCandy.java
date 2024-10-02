@@ -39,10 +39,10 @@ import mtr.block.BlockNode;
 import net.minecraft.client.Minecraft;
 import mtr.MTRClient;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.AABB;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -98,9 +98,19 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 	public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext collisionContext) {
 		final BlockEntity entity = world.getBlockEntity(pos);
         if (entity instanceof BlockEntityEyeCandy) {
-            return Block.box(((BlockEyeCandy.BlockEntityEyeCandy) entity).minPosX, ((BlockEyeCandy.BlockEntityEyeCandy) entity).minPosY, ((BlockEyeCandy.BlockEntityEyeCandy) entity).minPosZ, ((BlockEyeCandy.BlockEntityEyeCandy) entity).maxPosX, ((BlockEyeCandy.BlockEntityEyeCandy) entity).maxPosY, ((BlockEyeCandy.BlockEntityEyeCandy) entity).maxPosZ);
+            return Block.box(((BlockEyeCandy.BlockEntityEyeCandy) entity).CSminX, ((BlockEyeCandy.BlockEntityEyeCandy) entity).CSminY, ((BlockEyeCandy.BlockEntityEyeCandy) entity).CSminZ, ((BlockEyeCandy.BlockEntityEyeCandy) entity).CSmaxX, ((BlockEyeCandy.BlockEntityEyeCandy) entity).CSmaxY, ((BlockEyeCandy.BlockEntityEyeCandy) entity).CSmaxZ);
         }else {
             return Shapes.block();
+        }
+    }
+
+    @Override
+    public AABB getRenderBoundingBox() {
+        final BlockEntity entity = Minecraft.getInstance().level.getBlockEntity(pos);
+        if (entity instanceof BlockEntityEyeCandy) {
+            return new AABB(((BlockEyeCandy.BlockEntityEyeCandy) entity).ABminX, ((BlockEyeCandy.BlockEntityEyeCandy) entity).ABminY, ((BlockEyeCandy.BlockEntityEyeCandy) entity).ABminZ, ((BlockEyeCandy.BlockEntityEyeCandy) entity).ABmaxX, ((BlockEyeCandy.BlockEntityEyeCandy) entity).ABmaxY, ((BlockEyeCandy.BlockEntityEyeCandy) entity).ABmaxZ);
+        }else {
+            return new AABB(0, 0, 0, 16, 16, 16);
         }
     }
 
@@ -121,8 +131,11 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public float doorValue = 0;
         public boolean doorTarget = false;
 
-        public double minPosX = -16, minPosY = -16, minPosZ = -16;
-        public double maxPosX = 16, maxPosY = 16, maxPosZ = 16;
+        public double CSminX = 0, CSminY = 0, CSminZ = 0;
+        public double CSmaxX = 16, CSmaxY = 16, CSmaxZ = 16;
+
+        public double ABminX = 0, ABminY = 0, ABminZ = 0;
+        public double ABmaxX = 16, ABmaxY = 16, ABmaxZ = 16;
 
         protected static final float SMALL_OFFSET_16 = 0.05F;
 
@@ -151,9 +164,9 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             platform = compoundTag.contains("platform") ? compoundTag.getBoolean("platform") : true;
             doorValue = compoundTag.contains("doorValue") ? compoundTag.getFloat("doorValue") : 0;
             doorTarget = compoundTag.contains("doorTarget") ? compoundTag.getBoolean("doorTarget") : false;
-            minPosX = compoundTag.contains("minPosX") ? compoundTag.getDouble("minPosX") : -16;
-            minPosY = compoundTag.contains("minPosY") ? compoundTag.getDouble("minPosY") : -16;
-            minPosZ = compoundTag.contains("minPosZ") ? compoundTag.getDouble("minPosZ") : -16;
+            minPosX = compoundTag.contains("minPosX") ? compoundTag.getDouble("minPosX") : 0;
+            minPosY = compoundTag.contains("minPosY") ? compoundTag.getDouble("minPosY") : 0;
+            minPosZ = compoundTag.contains("minPosZ") ? compoundTag.getDouble("minPosZ") : 0;
             maxPosX = compoundTag.contains("maxPosX") ? compoundTag.getDouble("maxPosX") : 16;
             maxPosY = compoundTag.contains("maxPosY") ? compoundTag.getDouble("maxPosY") : 16;
             maxPosZ = compoundTag.contains("maxPosZ") ? compoundTag.getDouble("maxPosZ") : 16;
