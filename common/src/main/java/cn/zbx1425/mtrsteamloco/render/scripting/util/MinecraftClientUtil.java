@@ -117,9 +117,15 @@ public class MinecraftClientUtil {
         return platform;   
     }
 
-    public static Set<ScheduleEntry> getSchedules(Platform platform) {
+    public static List<ScheduleEntry> getSchedulesAtPlatform(Platform platform) {
         return getRailwayData().getSchedulesAtPlatform(platform.id);
 	}
+
+    public static Map<Long, List<ScheduleEntry>> getSchedulesForStation(Station station) {
+        Map<Long, List<ScheduleEntry>> schedules = new HashMap<>();
+        getRailwayData().getStationSchedules(schedules, station.id);
+        return schedules;
+    }
 
     public static RailwayData getRailwayData() {
         return RailwayData.getInstance(Minecraft.getInstance().level);
