@@ -114,7 +114,7 @@ public class MinecraftClientUtil {
         return platform;   
     }
 
-    public static Set<ScheduleEntry> getSchedules(platform) {
+    public static Set<ScheduleEntry> getSchedules(Plantform platform) {
         return ClientData.SCHEDULES_FOR_PLATFORM.get(platform.id);
 	}
 }
