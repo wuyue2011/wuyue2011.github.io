@@ -19,6 +19,7 @@ import mtr.data.RailwayData;
 import mtr.data.Station;
 import mtr.data.Platform;
 import mtr.data.ScheduleEntry;
+import mtr.data.RailwayData;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -117,6 +118,10 @@ public class MinecraftClientUtil {
     }
 
     public static Set<ScheduleEntry> getSchedules(Platform platform) {
-        return ClientData.SCHEDULES_FOR_PLATFORM.get(platform.id);
+        return getRailwayData().getSchedulesAtPlatform(platform.id);
 	}
+
+    public static RailwayData getRailwayData() {
+        return RailwayData.getInstance(Minecraft.getInstance().level);
+    }
 }
