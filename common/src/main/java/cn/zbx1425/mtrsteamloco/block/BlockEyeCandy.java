@@ -117,7 +117,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             Long platformId = railwayData.getClosePlatformId(railwayData.platforms, railwayData.dataCache, pos, 8, -3, 6);
             List<ScheduleEntry> schedules = railwayData.getSchedulesAtPlatform(platformId);
             ((BlockEyeCandy.BlockEntityEyeCandy) entity).schedules = schedules;
-            ((BlockEyeCandy.BlockEntityEyeCandy) entity).platform = platformId;
+            ((BlockEyeCandy.BlockEntityEyeCandy) entity).platformId = platformId;
             ((BlockEyeCandy.BlockEntityEyeCandy) entity).sendUpdateC2S();
         }
 	}
