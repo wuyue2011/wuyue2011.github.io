@@ -118,26 +118,4 @@ public class MinecraftClientUtil {
         Platform platform = platformPositions.get(id);
         return platform;   
     }
-
-    public static List<ScheduleEntry> getSchedulesAtPlatform(Platform platform) {
-        return getRailwayData().getSchedulesAtPlatform(platform.id);
-	}
-
-    public static Map<Long, List<ScheduleEntry>> getSchedulesForStation(Station station) {
-        Map<Long, List<ScheduleEntry>> schedules = new HashMap<>();
-        getRailwayData().getSchedulesForStation(schedules, station.id);
-        return schedules;
-    }
-
-    public static RailwayData getRailwayData() {
-        return RailwayData.getInstance(Minecraft.getInstance().level);
-    }
-
-    public static Level gl1() {
-        return Minecraft.getInstance().level;
-    }
-
-    public static Level gl2() {
-        return Minecraft.getInstance().player.level;
-    }
 }
