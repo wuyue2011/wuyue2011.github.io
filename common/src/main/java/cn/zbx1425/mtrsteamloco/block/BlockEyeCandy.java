@@ -119,7 +119,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             ((BlockEyeCandy.BlockEntityEyeCandy) entity).schedules = schedules;
             ((BlockEyeCandy.BlockEntityEyeCandy) entity).platformId = platformId;
             ((BlockEyeCandy.BlockEntityEyeCandy) entity).ticks++;
-            ((BlockEyeCandy.BlockEntityEyeCandy) entity).sendUpdateC2S();
+            //((BlockEyeCandy.BlockEntityEyeCandy) entity).sendUpdateC2S();
         }
 	}
 
