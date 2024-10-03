@@ -143,7 +143,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public double maxPosX = 16, maxPosY = 16, maxPosZ = 16;
 
         public List<ScheduleEntry> schedules = new ArrayList<>();
-        public Long platformId = null;
+        public Long platformId = 0;
 
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
@@ -182,7 +182,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             maxPosX = compoundTag.contains("maxPosX") ? compoundTag.getDouble("maxPosX") : 16;
             maxPosY = compoundTag.contains("maxPosY") ? compoundTag.getDouble("maxPosY") : 16;
             maxPosZ = compoundTag.contains("maxPosZ") ? compoundTag.getDouble("maxPosZ") : 16;
-            platformId = compoundTag.contains("platformId") ? compoundTag.getLong("platformId") : null;
+            platformId = compoundTag.contains("platformId") ? compoundTag.getLong("platformId") : 0;
         }
 
         @Override
