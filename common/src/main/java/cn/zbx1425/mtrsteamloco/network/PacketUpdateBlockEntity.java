@@ -72,7 +72,7 @@ public class PacketUpdateBlockEntity {
 					compoundTag.putLong("platformId", platformId);
             	    compoundTag.putInt("ticks", ticks);
 					try {
-						compoundTag.putByteArray("schedules", Serializer.deserialize(schedules));
+						compoundTag.putByteArray("schedules", Serializer.serialize(schedules));
 					}catch (IOException e) {}
                     blockEntity.load(compoundTag);
                     blockEntity.setChanged();
