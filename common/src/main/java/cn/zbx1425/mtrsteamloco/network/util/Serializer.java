@@ -54,7 +54,7 @@ public class Serializer {
 
         for (ScheduleEntry entry : list) {
             dos.writeLong(entry.arrivalMillis);
-            dos.writeInt(entity.trainCars);
+            dos.writeInt(entry.trainCars);
             dos.writeLong(entry.routeId);
             dos.writeInt(entry.currentStationIndex);
         }
