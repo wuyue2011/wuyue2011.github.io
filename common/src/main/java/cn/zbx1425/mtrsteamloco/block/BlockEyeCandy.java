@@ -110,7 +110,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     }
 
     @Override
-    	@Override
 	public void tick(BlockState state, ServerLevel world, BlockPos pos) {
 		final BlockEntity entity = world.getBlockEntity(pos);
 		if (entity instanceof BlockEntityEyeCandy) {
