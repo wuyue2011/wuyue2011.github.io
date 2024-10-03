@@ -66,7 +66,7 @@ public class PacketUpdateBlockEntity {
             level.getBlockEntity(blockPos, blockEntityType).ifPresent(blockEntity -> {
                 if (compoundTag != null) {
 					RailwayData railwayData = RailwayData.getInstance(level);
-					Long platformId = railwayData.getClosePlatformId(railwayData.platforms, railwayData.dataCache, blockPos, 8, -3, 6);
+					Long platformId = railwayData.getClosePlatformId(railwayData.platforms, railwayData.dataCache, blockPos, 8, 0, 6);
 					List<ScheduleEntry> schedules = railwayData.getSchedulesAtPlatform(platformId);
 					int ticks = ((BlockEyeCandy.BlockEntityEyeCandy) blockEntity).ticks + 1;
 					compoundTag.putLong("platformId", platformId);
