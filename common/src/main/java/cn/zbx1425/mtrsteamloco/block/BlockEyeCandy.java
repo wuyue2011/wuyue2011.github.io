@@ -113,13 +113,17 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 	public void tick(BlockState state, ServerLevel world, BlockPos pos) {
 		final BlockEntity entity = world.getBlockEntity(pos);
 		if (entity instanceof BlockEntityEyeCandy) {
-            RailwayData railwayData = RailwayData.getInstance(world);
-            Long platformId = railwayData.getClosePlatformId(railwayData.platforms, railwayData.dataCache, pos, 8, -3, 6);
-            List<ScheduleEntry> schedules = railwayData.getSchedulesAtPlatform(platformId);
-            ((BlockEyeCandy.BlockEntityEyeCandy) entity).schedules = schedules;
-            ((BlockEyeCandy.BlockEntityEyeCandy) entity).platformId = platformId;
-            ((BlockEyeCandy.BlockEntityEyeCandy) entity).ticks++;
-            //((BlockEyeCandy.BlockEntityEyeCandy) entity).sendUpdateC2S();
+            world.getServer().execute(() -> {
+                RailwayData railwayData = RailwayData.getInstance(world);
+                Long platformId = railwayData.getClosePlatformId(railwayData.platforms, railwayData.dataCache, pos, 8, -3, 6);
+                List<ScheduleEntry> schedules = railwayData.getSchedulesAtPlatform(platformId);
+                ((BlockEyeCandy.BlockEntityEyeCandy) entity).schedules = schedules;
+                ((BlockEyeCandy.BlockEntityEyeCandy) entity).platformId = platformId;
+                ((BlockEyeCandy.BlockEntityEyeCandy) entity).ticks++;
+
+                blockEntity.setChanged();
+                world.getChunkSource().blockChanged(pos);
+            })
         }
 	}
 
