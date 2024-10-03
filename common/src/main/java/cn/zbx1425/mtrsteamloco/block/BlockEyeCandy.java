@@ -29,7 +29,7 @@ import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.phys.BlockHitResult;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import cn.zbx1425.mtrsteamloco.network.util.MapSerializer;
+import cn.zbx1425.mtrsteamloco.network.util.Serializer;
 import cn.zbx1425.mtrsteamloco.network.PacketUpdateBlockEntity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.core.Direction;
@@ -43,10 +43,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
+import mtr.data.ScheduleEntry;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlockMapper {
 
@@ -124,7 +127,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public double minPosX = 0, minPosY = 0, minPosZ = 0;
         public double maxPosX = 16, maxPosY = 16, maxPosZ = 16;
 
-        protected static final float SMALL_OFFSET_16 = 0.05F;
+        public List<ScheduleEntry> schedule = new ArrayList<>();
 
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
@@ -137,7 +140,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             fullLight = compoundTag.getBoolean("fullLight");
             try {
                 byte[] dataBytes = compoundTag.getByteArray("data");
-                data = MapSerializer.deserialize(dataBytes);
+                data = Serializer.deserialize(dataBytes);
             }catch (IOException e) {
                 data = new HashMap<String, String>();
             }
@@ -164,7 +167,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putString("prefabId", prefabId == null ? "" : prefabId);
             compoundTag.putBoolean("fullLight", fullLight);
             try {
-                byte[] dataBytes = MapSerializer.serialize(data);
+                byte[] dataBytes = Serializer.serialize(data);
                 compoundTag.putByteArray("data", dataBytes);
             }catch (IOException e) {
                 compoundTag.putByteArray("data", new byte[0]);
