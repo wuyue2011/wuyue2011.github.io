@@ -18,3 +18,7 @@ Initially published at the [Teacon 2022 mod development jam](https://teacon.cn),
    1. Sync the Gradle Project
    2. In the root project, run the Gradle `setupLibrary` task
    3. Sync the Gradle Project again
+
+# Download Alpha Builds
+
+跳转至 [Build #462](https://github.com/aphrodite281/mtr-nte/actions/runs/11142916195) 页面，向下滚动，下载对应版本
