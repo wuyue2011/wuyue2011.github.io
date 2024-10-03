@@ -44,6 +44,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import mtr.data.ScheduleEntry;
+import mtr.data.RailwayData;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -107,6 +108,20 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
     }
 
+    @Override
+    	@Override
+	public void tick(BlockState state, ServerLevel world, BlockPos pos) {
+		final BlockEntity entity = world.getBlockEntity(pos);
+		if (entity instanceof BlockEntityEyeCandy) {
+            RailwayData railwayData = RailwayData.getInstance(world);
+            Long platformId = railwayData.getClosePlatformId(railwayData.platforms, railwayData.dataCache, pos, 8, -3, 6);
+            List<ScheduleEntry> schedules = railwayData.getSchedulesAtPlatform(platformId);
+            ((BlockEyeCandy.BlockEntityEyeCandy) entity).schedules = schedules;
+            ((BlockEyeCandy.BlockEntityEyeCandy) entity).platform = platformId;
+            ((BlockEyeCandy.BlockEntityEyeCandy) entity).sendUpdateC2S();
+        }
+	}
+
     public static class BlockEntityEyeCandy extends BlockEntityClientSerializableMapper {
 
         public String prefabId = null;
@@ -127,7 +142,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public double minPosX = 0, minPosY = 0, minPosZ = 0;
         public double maxPosX = 16, maxPosY = 16, maxPosZ = 16;
 
-        public List<ScheduleEntry> schedule = new ArrayList<>();
+        public List<ScheduleEntry> schedules = new ArrayList<>();
+        public Long platformId = null;
 
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
@@ -143,6 +159,12 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                 data = Serializer.deserialize(dataBytes);
             }catch (IOException e) {
                 data = new HashMap<String, String>();
+            }
+            try {
+                byte[] schedulesBytes = compoundTag.getByteArray("schedules");
+                schedules = Serializer.deserialize(schedulesBytes, true);
+            }catch (IOException e) {
+                schedules = new ArrayList<ScheduleEntry>();
             }
             
             translateX = compoundTag.contains("translateX") ? compoundTag.getFloat("translateX") : 0;
@@ -160,6 +182,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             maxPosX = compoundTag.contains("maxPosX") ? compoundTag.getDouble("maxPosX") : 16;
             maxPosY = compoundTag.contains("maxPosY") ? compoundTag.getDouble("maxPosY") : 16;
             maxPosZ = compoundTag.contains("maxPosZ") ? compoundTag.getDouble("maxPosZ") : 16;
+            platformId = compoundTag.contains("platformId") ? compoundTag.getLong("platformId") : null;
         }
 
         @Override
@@ -171,6 +194,13 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                 compoundTag.putByteArray("data", dataBytes);
             }catch (IOException e) {
                 compoundTag.putByteArray("data", new byte[0]);
+            }
+
+            try {
+                byte[] schedulesBytes = Serializer.serialize(schedules);
+                compoundTag.putByteArray("schedules", schedulesBytes);
+            }catch (IOException e) {
+                compoundTag.putByteArray("schedules", new byte[0]);
             }
             
             compoundTag.putFloat("translateX", translateX);
@@ -188,6 +218,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putDouble("maxPosX", maxPosX);
             compoundTag.putDouble("maxPosY", maxPosY);
             compoundTag.putDouble("maxPosZ", maxPosZ);
+            compoundTag.putLong("platformId", platformId);
         }
 
         public BlockPos getWorldPos() {
