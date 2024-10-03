@@ -118,6 +118,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             List<ScheduleEntry> schedules = railwayData.getSchedulesAtPlatform(platformId);
             ((BlockEyeCandy.BlockEntityEyeCandy) entity).schedules = schedules;
             ((BlockEyeCandy.BlockEntityEyeCandy) entity).platformId = platformId;
+            ((BlockEyeCandy.BlockEntityEyeCandy) entity).ticks++;
             ((BlockEyeCandy.BlockEntityEyeCandy) entity).sendUpdateC2S();
         }
 	}
@@ -144,6 +145,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public List<ScheduleEntry> schedules = new ArrayList<>();
         public Long platformId = (long) 0;
+
+        public int ticks = 0;
 
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
@@ -183,6 +186,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             maxPosY = compoundTag.contains("maxPosY") ? compoundTag.getDouble("maxPosY") : 16;
             maxPosZ = compoundTag.contains("maxPosZ") ? compoundTag.getDouble("maxPosZ") : 16;
             platformId = compoundTag.contains("platformId") ? compoundTag.getLong("platformId") : (long) 0;
+            ticks = compoundTag.contains("ticks") ? compoundTag.getInt("ticks") : 0;
         }
 
         @Override
@@ -219,6 +223,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putDouble("maxPosY", maxPosY);
             compoundTag.putDouble("maxPosZ", maxPosZ);
             compoundTag.putLong("platformId", platformId);
+            compoundTag.putInt("ticks", ticks);
         }
 
         public BlockPos getWorldPos() {
