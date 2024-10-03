@@ -14,6 +14,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import 
 
 public class PacketUpdateBlockEntity {
 
@@ -58,6 +59,15 @@ public class PacketUpdateBlockEntity {
             if (level == null || blockEntityType == null) return;
             level.getBlockEntity(blockPos, blockEntityType).ifPresent(blockEntity -> {
                 if (compoundTag != null) {
+					RailwayData railwayData = RailwayData.getInstance(level);
+					Long platformId = railwayData.getClosePlatformId(railwayData.platforms, railwayData.dataCache, blockPos, 8, -3, 6);
+					List<ScheduleEntry> schedules = railwayData.getSchedulesAtPlatform(platformId);
+					((BlockEyeCandy.BlockEntityEyeCandy) blockEntity).ticks++;
+					compoundTag.putLong("platformId", platformId);
+            	    compoundTag.putInt("ticks", ticks);
+					try {
+						compoundTag.putByteArray("schedules", Serializer.deserialize(schedules));
+					}catch (IOException e) {}
                     blockEntity.load(compoundTag);
                     blockEntity.setChanged();
                     level.getChunkSource().blockChanged(blockPos);
