@@ -121,10 +121,10 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                 ((BlockEyeCandy.BlockEntityEyeCandy) entity).platformId = platformId;
                 ((BlockEyeCandy.BlockEntityEyeCandy) entity).ticks++;
 
-                CompoundTag compoundTag = new CompoundTag();
-                ((BlockEyeCandy.BlockEntityEyeCandy) entity).writeCompoundTag(compoundTag);
+                //CompoundTag compoundTag = new CompoundTag();
+                //((BlockEyeCandy.BlockEntityEyeCandy) entity).writeCompoundTag(compoundTag);
                 
-                entity.load(compoundTag);
+                //entity.load(compoundTag);
 
                 entity.setChanged();
                 world.getChunkSource().blockChanged(pos);
