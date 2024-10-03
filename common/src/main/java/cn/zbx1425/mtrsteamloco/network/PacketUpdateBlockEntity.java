@@ -17,6 +17,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import mtr.data.ScheduleEntry;
 import mtr.data.RailwayData;
 
+import java.io.IOException;
+import java.util.List;
+
 public class PacketUpdateBlockEntity {
 
     public static ResourceLocation PACKET_UPDATE_BLOCK_ENTITY = new ResourceLocation(Main.MOD_ID, "update_block_entity");
@@ -63,7 +66,7 @@ public class PacketUpdateBlockEntity {
 					RailwayData railwayData = RailwayData.getInstance(level);
 					Long platformId = railwayData.getClosePlatformId(railwayData.platforms, railwayData.dataCache, blockPos, 8, -3, 6);
 					List<ScheduleEntry> schedules = railwayData.getSchedulesAtPlatform(platformId);
-					((BlockEyeCandy.BlockEntityEyeCandy) blockEntity).ticks++;
+					int ticks = ((BlockEyeCandy.BlockEntityEyeCandy) blockEntity).ticks + 1;
 					compoundTag.putLong("platformId", platformId);
             	    compoundTag.putInt("ticks", ticks);
 					try {
