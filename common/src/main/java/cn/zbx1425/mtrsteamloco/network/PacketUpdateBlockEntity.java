@@ -16,6 +16,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import mtr.data.ScheduleEntry;
 import mtr.data.RailwayData;
+import cn.zbx1425.mtrsteamloco.block.BlockEyeCandy;
+import cn.zbx1425.mtrsteamloco.network.util.Serializer;
 
 import java.io.IOException;
 import java.util.List;
