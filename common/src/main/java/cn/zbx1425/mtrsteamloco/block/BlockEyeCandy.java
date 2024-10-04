@@ -128,7 +128,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public double minPosX = 0, minPosY = 0, minPosZ = 0;
         public double maxPosX = 16, maxPosY = 16, maxPosZ = 16;
 
-        public List<Schedule> schedules = new ArrayList<>();
+        public Map<Long, List<Schedule>> schedules = new HashMap<>();
         public Long platformId = (long) 0;
 
         public int ticks = 0;
