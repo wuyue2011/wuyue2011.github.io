@@ -162,19 +162,23 @@ public class EyeCandyScreen extends SelectListScreen {
                     if(parts.length == 2){
                         be.data.put(parts[0], parts[1]);
                     }
-                }catch (Exception e){
-
-                }
+                }catch (Exception e){}
                 textField.setValue("");
             }else if(changed.contains("%")){
                 String newStr = "";
                 try{
                     String str = changed.replaceAll("%", "");
                     newStr = str + "," + be.data.get(str);
-                }catch (Exception e){
-
-                }
+                }catch (Exception e){}
                 textField.setValue(newStr);
+            }else if(changed.contains("&")){
+                String keys = "/";
+                try {
+                    for (String key : blockEntity.data.keySet()) {
+                        keys += key + "/";
+                    }
+                }catch (Exception e){}
+                textField.setValue(keys);
             }
         }));
 
