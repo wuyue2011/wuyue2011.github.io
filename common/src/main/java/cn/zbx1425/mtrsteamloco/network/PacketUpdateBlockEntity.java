@@ -88,7 +88,6 @@ public class PacketUpdateBlockEntity {
                             scheduleList0.add(new Schedule(scheduleEntry));
                         }
                         schedulesMap.put(platformId, scheduleList0);
-                        List<Schedule> scheduleList = new ArrayList<>();
                         if (station == null) break;
                         
                         stationId = station.id;
