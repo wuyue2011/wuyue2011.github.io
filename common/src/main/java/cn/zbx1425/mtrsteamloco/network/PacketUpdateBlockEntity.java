@@ -76,19 +76,23 @@ public class PacketUpdateBlockEntity {
                     Long stationId = (long) 0 ;
                     while (true) {
                         if (railwayData == null) break;
+
                         platformId = railwayData.getClosePlatformId(railwayData.platforms, railwayData.dataCache, blockPos, 5, 4, 4);
                         if (platformId == null) break;
+
                         Map<Long, List<ScheduleEntry>> schedules = new HashMap<>();
                         Station station = RailwayData.getStation(railwayData.stations, railwayData.dataCache, blockPos);
-                        if (station == null) break;
-                        stationId = station.id;
-                        railwayData.getSchedulesForStation(schedules, station.id);
-                        List<Schedule> scheduleList = new ArrayList<>();
                         List<ScheduleEntry> ScheduleEntries = railwayData.getSchedulesAtPlatform(platformId);
+                        List<Schedule> scheduleList0 = new ArrayList<>();
                         for (ScheduleEntry scheduleEntry : ScheduleEntries) {
                             scheduleList0.add(new Schedule(scheduleEntry));
                         }
                         schedulesMap.put(platformId, scheduleList0);
+                        List<Schedule> scheduleList = new ArrayList<>();
+                        if (station == null) break;
+                        
+                        stationId = station.id;
+                        railwayData.getSchedulesForStation(schedules, station.id);
                         List<Schedule> scheduleList = new ArrayList<>();
                         for (Long key : schedules.keySet()) {
                             scheduleList = new ArrayList<>();
