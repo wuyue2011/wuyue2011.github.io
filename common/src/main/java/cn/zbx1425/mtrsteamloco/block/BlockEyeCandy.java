@@ -150,7 +150,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             }
             try {
                 byte[] schedulesBytes = compoundTag.getByteArray("schedules");
-                schedules = Serializer.deserialize(schedulesBytes, true);
+                schedules = Serializer.deserialize(schedulesBytes, 1);
             }catch (IOException e) {
                 schedules = new ArrayList<Schedule>();
             }
