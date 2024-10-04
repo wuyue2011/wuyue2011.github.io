@@ -66,14 +66,25 @@ public class PacketUpdateBlockEntity {
             level.getBlockEntity(blockPos, blockEntityType).ifPresent(blockEntity -> {
                 if (compoundTag != null) {
 					RailwayData railwayData = RailwayData.getInstance(level);
-					Long platformId = railwayData.getClosePlatformId(railwayData.platforms, railwayData.dataCache, blockPos, 8, 0, 6);
-					List<ScheduleEntry> schedules = railwayData.getSchedulesAtPlatform(platformId);
-					int ticks = ((BlockEyeCandy.BlockEntityEyeCandy) blockEntity).ticks + 1;
-					compoundTag.putLong("platformId", platformId);
-            	    compoundTag.putInt("ticks", ticks);
-					try {
-						compoundTag.putByteArray("schedules", Serializer.serialize(schedules));
-					}catch (IOException e) {}
+                    if (railwayData!= null) {
+                        Long platformId = railwayData.getClosePlatformId(railwayData.platforms, railwayData.dataCache, blockPos, 5, 4, 4);
+                        if (platformId == null) {
+                            compoundTag.putLong("platformId", platformId);
+                            List<ScheduleEntry> schedules = railwayData.getSchedulesAtPlatform(platformId);
+                            if (schedules != null) {
+                                List<Schedule> schedulesList = new ArrayList<>();
+                                for (ScheduleEntry scheduleEntry : schedules) {
+                                    schedulesList.add(new Schedule(scheduleEntry.arrivalTime, scheduleEntry.trainCars, scheduleEntry.trainId, scheduleEntry.currentStationIndex, scheduleEntry.arrivalTime - System.currentTimeMillis()));
+                                }
+                                try {
+                                    compoundTag.putByteArray("schedules", Serializer.serialize(schedules));
+                                }catch (IOException e) {}
+                            }
+                        }
+                        int ticks = ((BlockEyeCandy.BlockEntityEyeCandy) blockEntity).ticks + 1;
+                        compoundTag.putInt("ticks", ticks);
+                    }
+					
                     blockEntity.load(compoundTag);
                     blockEntity.setChanged();
                     level.getChunkSource().blockChanged(blockPos);

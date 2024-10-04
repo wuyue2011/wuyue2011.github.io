@@ -43,9 +43,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
-import mtr.data.ScheduleEntry;
-import mtr.data.RailwayData;
 import net.minecraft.server.level.ServerLevel;
+import cn.zbx1425.mtrsteamloco.data.Schedule;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -109,28 +108,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
     }
 
-	public void cccddd(BlockState state, ServerLevel world, BlockPos pos) {
-		final BlockEntity entity = world.getBlockEntity(pos);
-		if (entity instanceof BlockEntityEyeCandy) {
-            world.getServer().execute(() -> {
-                RailwayData railwayData = RailwayData.getInstance(world);
-                Long platformId = railwayData.getClosePlatformId(railwayData.platforms, railwayData.dataCache, pos, 8, -3, 6);
-                List<ScheduleEntry> schedules = railwayData.getSchedulesAtPlatform(platformId);
-                ((BlockEyeCandy.BlockEntityEyeCandy) entity).schedules = schedules;
-                ((BlockEyeCandy.BlockEntityEyeCandy) entity).platformId = platformId;
-                ((BlockEyeCandy.BlockEntityEyeCandy) entity).ticks++;
-
-                //CompoundTag compoundTag = new CompoundTag();
-                //((BlockEyeCandy.BlockEntityEyeCandy) entity).writeCompoundTag(compoundTag);
-                
-                //entity.load(compoundTag);
-
-                entity.setChanged();
-                world.getChunkSource().blockChanged(pos);
-            });
-        }
-	}
-
     public static class BlockEntityEyeCandy extends BlockEntityClientSerializableMapper {
 
         public String prefabId = null;
@@ -151,7 +128,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public double minPosX = 0, minPosY = 0, minPosZ = 0;
         public double maxPosX = 16, maxPosY = 16, maxPosZ = 16;
 
-        public List<ScheduleEntry> schedules = new ArrayList<>();
+        public List<Schedule> schedules = new ArrayList<>();
         public Long platformId = (long) 0;
 
         public int ticks = 0;

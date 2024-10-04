@@ -1,6 +1,6 @@
 package cn.zbx1425.mtrsteamloco.network.util;
 
-import mtr.data.ScheduleEntry;
+import cn.zbx1425.mtrsteamloco.data.Schedule;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -46,25 +46,28 @@ public class Serializer {
         return map;
     }
 
-    public static byte[] serialize(List<ScheduleEntry> list) throws IOException {
+    public static byte[] serialize(List<Schedule> list) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
 
         dos.writeInt(list.size());
 
-        for (ScheduleEntry entry : list) {
+        for (Schedule entry : list) {
             dos.writeLong(entry.arrivalMillis);
             dos.writeInt(entry.trainCars);
             dos.writeLong(entry.routeId);
             dos.writeInt(entry.currentStationIndex);
+            dos.writeLong(entry.arrivalDiffMillis);
+            dos.writeInt(entry.dwellTime);
+            dos.writeUTF(entry.name);
         }
 
         dos.flush();
         return baos.toByteArray();
     }
 
-    public static List<ScheduleEntry> deserialize(byte[] bytes, boolean a) throws IOException {
-        List<ScheduleEntry> list = new ArrayList<>();
+    public static List<Schedule> deserialize(byte[] bytes, boolean a) throws IOException {
+        List<Schedule> list = new ArrayList<>();
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         DataInputStream dis = new DataInputStream(bais);
 
@@ -75,7 +78,10 @@ public class Serializer {
             int trainCars = dis.readInt();
             long routeId = dis.readLong();
             int currentStationIndex = dis.readInt();
-            list.add(new ScheduleEntry(arrivalMillis, trainCars, routeId, currentStationIndex));
+            long arrivalDiffMillis = dis.readLong();
+            int dwellTime = dis.readInt();
+            String name = dis.readUTF();
+            list.add(new Schedule(arrivalMillis, trainCars, routeId, currentStationIndex, arrivalDiffMillis, dwellTime, name));
         }
 
         dis.close();
