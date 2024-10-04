@@ -18,9 +18,11 @@ import mtr.data.ScheduleEntry;
 import mtr.data.RailwayData;
 import cn.zbx1425.mtrsteamloco.block.BlockEyeCandy;
 import cn.zbx1425.mtrsteamloco.network.util.Serializer;
+import cn.zbx1425.mtrsteamloco.data.Schedule;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.ArrayList;
 
 public class PacketUpdateBlockEntity {
 
