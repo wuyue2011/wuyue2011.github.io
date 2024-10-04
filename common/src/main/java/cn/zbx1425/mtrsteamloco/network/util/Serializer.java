@@ -83,4 +83,40 @@ public class Serializer {
         dis.close();
         return list;
     }
+
+    public static byte[] serialize(Map<Long, List<Schedule>> map) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DataOutputStream dos = new DataOutputStream(baos);
+
+        dos.writeInt(map.size());
+
+        for (Map.Entry<Long, List<Schedule>> entry : map.entrySet()) {
+            dos.writeLong(entry.getKey());
+            byte[] valueBytes = serialize(entry.getValue());
+            dos.writeInt(valueBytes.length);
+            dos.write(valueBytes);
+        }
+
+        dos.flush();
+        return baos.toByteArray();
+    }
+
+    public static Map<Long, List<Schedule>> deserialize(byte[] bytes, int a) throws IOException {
+        Map<Long, List<Schedule>> map = new HashMap<>();
+        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+        DataInputStream dis = new DataInputStream(bais);
+
+        int size = dis.readInt();
+
+        for (int i = 0; i < size; i++) {
+            long key = dis.readLong();
+            byte[] valueBytes = new byte[dis.readInt()];
+            dis.read(valueBytes);
+            List<Schedule> value = deserialize(valueBytes, true);
+            map.put(key, value);
+        }
+
+        dis.close();
+        return map;
+    }
 }

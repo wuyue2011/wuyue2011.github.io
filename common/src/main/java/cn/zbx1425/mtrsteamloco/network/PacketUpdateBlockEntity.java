@@ -19,10 +19,13 @@ import mtr.data.RailwayData;
 import cn.zbx1425.mtrsteamloco.block.BlockEyeCandy;
 import cn.zbx1425.mtrsteamloco.network.util.Serializer;
 import cn.zbx1425.mtrsteamloco.data.Schedule;
+import mtr.data.Station;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 public class PacketUpdateBlockEntity {
 
@@ -68,26 +71,36 @@ public class PacketUpdateBlockEntity {
             level.getBlockEntity(blockPos, blockEntityType).ifPresent(blockEntity -> {
                 if (compoundTag != null) {
 					RailwayData railwayData = RailwayData.getInstance(level);
-                    List<Schedule> schedulesList = new ArrayList<>();
+                    Map<Long, List<Schedule>> schedulesMap = new HashMap<>();
                     Long platformId = (long) 0 ;
-                    if (railwayData!= null) {
+                    Long stationId = (long) 0 ;
+                    while (1) {
+                        if (railwayData == null) break;
                         platformId = railwayData.getClosePlatformId(railwayData.platforms, railwayData.dataCache, blockPos, 5, 4, 4);
-                        if (platformId != null) {
-                            List<ScheduleEntry> schedules = railwayData.getSchedulesAtPlatform(platformId);
-                            if (schedules != null) {
-                                for (ScheduleEntry scheduleEntry : schedules) {
-                                    schedulesList.add(new Schedule(scheduleEntry));
-                                }
+                        if (platformId == null) break;
+                        Map<Long, List<ScheduleEntry>> schedules = new HashMap<>();
+                        Station station = RailwayData.getStation(railwayData.stations, railwayData.dataCache, blockPos);
+                        if (station == null) break;
+                        stationId = station.id;
+                        railwayData.getSchedulesForStation(schedules, station.id);
+                        List<Schedule> scheduleList = new ArrayList<>();
+                        schedules.forEach((key, value) -> {
+                            scheduleList = new ArrayList<>();
+                            for (ScheduleEntry scheduleEntry : value) {
+                                scheduleList.add(new Schedule(scheduleEntry));
                             }
-                        }
+                            schedulesMap.put(key, scheduleList);
+                        });
+                        break;
                     }
                     try {
-                        compoundTag.putByteArray("schedules", Serializer.serialize(schedulesList));
+                        compoundTag.putByteArray("schedules", Serializer.serialize(schedulesMap));
                     }catch (IOException e) {}
                     int ticks = ((BlockEyeCandy.BlockEntityEyeCandy) blockEntity).ticks + 1;
                     compoundTag.putInt("ticks", ticks);
                     compoundTag.putLong("platformId", platformId);
-					
+                    compoundTag.putLong("stationId", stationId);
+
                     blockEntity.load(compoundTag);
                     blockEntity.setChanged();
                     level.getChunkSource().blockChanged(blockPos);
