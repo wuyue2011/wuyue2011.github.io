@@ -74,10 +74,10 @@ public class PacketUpdateBlockEntity {
                             if (schedules != null) {
                                 List<Schedule> schedulesList = new ArrayList<>();
                                 for (ScheduleEntry scheduleEntry : schedules) {
-                                    schedulesList.add(new Schedule(scheduleEntry.arrivalTime, scheduleEntry.trainCars, scheduleEntry.trainId, scheduleEntry.currentStationIndex, scheduleEntry.arrivalTime - System.currentTimeMillis()));
+                                    schedulesList.add(new Schedule(scheduleEntry.arrivalMillis, scheduleEntry.trainCars, scheduleEntry.routeId, scheduleEntry.currentStationIndex, scheduleEntry.arrivalMillis - System.currentTimeMillis()));
                                 }
                                 try {
-                                    compoundTag.putByteArray("schedules", Serializer.serialize(schedules));
+                                    compoundTag.putByteArray("schedules", Serializer.serialize(schedulesList));
                                 }catch (IOException e) {}
                             }
                         }

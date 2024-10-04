@@ -58,8 +58,6 @@ public class Serializer {
             dos.writeLong(entry.routeId);
             dos.writeInt(entry.currentStationIndex);
             dos.writeLong(entry.arrivalDiffMillis);
-            dos.writeInt(entry.dwellTime);
-            dos.writeUTF(entry.name);
         }
 
         dos.flush();
@@ -79,9 +77,7 @@ public class Serializer {
             long routeId = dis.readLong();
             int currentStationIndex = dis.readInt();
             long arrivalDiffMillis = dis.readLong();
-            int dwellTime = dis.readInt();
-            String name = dis.readUTF();
-            list.add(new Schedule(arrivalMillis, trainCars, routeId, currentStationIndex, arrivalDiffMillis, dwellTime, name));
+            list.add(new Schedule(arrivalMillis, trainCars, routeId, currentStationIndex, arrivalDiffMillis));
         }
 
         dis.close();

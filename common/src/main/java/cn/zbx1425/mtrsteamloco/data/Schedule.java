@@ -17,13 +17,11 @@ public class Schedule {
 	public final int currentStationIndex;
     public final long arrivalDiffMillis;
 
-    public Schedule(long arrivalMillis, int trainCars, long routeId, int currentStationIndex, long arrivalDiffMillis, int dwellTime, String name) {
+    public Schedule(long arrivalMillis, int trainCars, long routeId, int currentStationIndex, long arrivalDiffMillis) {
         this.arrivalMillis = arrivalMillis;
         this.trainCars = trainCars;
         this.routeId = routeId;
         this.currentStationIndex = currentStationIndex;
         this.arrivalDiffMillis = arrivalDiffMillis;
-        this.dwellTime = dwellTime;
-        this.name = name;
     }
 }
