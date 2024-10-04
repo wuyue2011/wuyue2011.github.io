@@ -70,7 +70,7 @@ public class PacketUpdateBlockEntity {
 					RailwayData railwayData = RailwayData.getInstance(level);
                     if (railwayData!= null) {
                         Long platformId = railwayData.getClosePlatformId(railwayData.platforms, railwayData.dataCache, blockPos, 5, 4, 4);
-                        if (platformId == null) {
+                        if (platformId != null) {
                             compoundTag.putLong("platformId", platformId);
                             List<ScheduleEntry> schedules = railwayData.getSchedulesAtPlatform(platformId);
                             if (schedules != null) {
