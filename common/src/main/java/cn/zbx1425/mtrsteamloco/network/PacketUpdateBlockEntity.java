@@ -86,9 +86,10 @@ public class PacketUpdateBlockEntity {
                         List<Schedule> scheduleList = new ArrayList<>();
                         List<ScheduleEntry> ScheduleEntries = railwayData.getSchedulesAtPlatform(platformId);
                         for (ScheduleEntry scheduleEntry : ScheduleEntries) {
-                            scheduleList.add(new Schedule(scheduleEntry));
+                            scheduleList0.add(new Schedule(scheduleEntry));
                         }
-                        schedulesMap.put(platformId, scheduleList);
+                        schedulesMap.put(platformId, scheduleList0);
+                        List<Schedule> scheduleList = new ArrayList<>();
                         for (Long key : schedules.keySet()) {
                             scheduleList = new ArrayList<>();
                             for (ScheduleEntry scheduleEntry : schedules.get(key)) {
