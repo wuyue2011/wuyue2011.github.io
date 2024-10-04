@@ -68,24 +68,25 @@ public class PacketUpdateBlockEntity {
             level.getBlockEntity(blockPos, blockEntityType).ifPresent(blockEntity -> {
                 if (compoundTag != null) {
 					RailwayData railwayData = RailwayData.getInstance(level);
+                    List<Schedule> schedulesList = new ArrayList<>();
+                    Long platformId = (long) 0 ;
                     if (railwayData!= null) {
-                        Long platformId = railwayData.getClosePlatformId(railwayData.platforms, railwayData.dataCache, blockPos, 5, 4, 4);
+                        platformId = railwayData.getClosePlatformId(railwayData.platforms, railwayData.dataCache, blockPos, 5, 4, 4);
                         if (platformId != null) {
-                            compoundTag.putLong("platformId", platformId);
                             List<ScheduleEntry> schedules = railwayData.getSchedulesAtPlatform(platformId);
                             if (schedules != null) {
-                                List<Schedule> schedulesList = new ArrayList<>();
                                 for (ScheduleEntry scheduleEntry : schedules) {
                                     schedulesList.add(new Schedule(scheduleEntry.arrivalMillis, scheduleEntry.trainCars, scheduleEntry.routeId, scheduleEntry.currentStationIndex, scheduleEntry.arrivalMillis - System.currentTimeMillis()));
                                 }
-                                try {
-                                    compoundTag.putByteArray("schedules", Serializer.serialize(schedulesList));
-                                }catch (IOException e) {}
                             }
                         }
-                        int ticks = ((BlockEyeCandy.BlockEntityEyeCandy) blockEntity).ticks + 1;
-                        compoundTag.putInt("ticks", ticks);
                     }
+                    try {
+                        compoundTag.putByteArray("schedules", Serializer.serialize(schedulesList));
+                    }catch (IOException e) {}
+                    int ticks = ((BlockEyeCandy.BlockEntityEyeCandy) blockEntity).ticks + 1;
+                    compoundTag.putInt("ticks", ticks);
+                    compoundTag.putLong("platformId", platformId);
 					
                     blockEntity.load(compoundTag);
                     blockEntity.setChanged();
