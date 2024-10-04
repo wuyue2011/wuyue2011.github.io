@@ -89,13 +89,13 @@ public class PacketUpdateBlockEntity {
                             scheduleList.add(new Schedule(scheduleEntry));
                         }
                         schedulesMap.put(platformId, scheduleList);
-                        schedules.forEach((key, value) -> {
+                        for (Long key : schedules.keySet()) {
                             scheduleList = new ArrayList<>();
-                            for (ScheduleEntry scheduleEntry : value) {
+                            for (ScheduleEntry scheduleEntry : schedules.get(key)) {
                                 scheduleList.add(new Schedule(scheduleEntry));
                             }
                             schedulesMap.put(key, scheduleList);
-                        });
+                        }
                         break;
                     }
                     try {
