@@ -152,7 +152,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                 byte[] schedulesBytes = compoundTag.getByteArray("schedules");
                 schedules = Serializer.deserialize(schedulesBytes, 1);
             }catch (IOException e) {
-                schedules = new ArrayList<Schedule>();
+                schedules = new HashMap<Long, List<Schedule>>();
             }
             
             translateX = compoundTag.contains("translateX") ? compoundTag.getFloat("translateX") : 0;
@@ -186,7 +186,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             }
 
             try {
-                byte[] schedulesBytes = Serializer.serialize(schedules);
+                byte[] schedulesBytes = Serializer.serialize(schedules, 1);
                 compoundTag.putByteArray("schedules", schedulesBytes);
             }catch (IOException e) {
                 compoundTag.putByteArray("schedules", new byte[0]);

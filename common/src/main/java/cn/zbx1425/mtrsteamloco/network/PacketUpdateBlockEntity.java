@@ -74,7 +74,7 @@ public class PacketUpdateBlockEntity {
                     Map<Long, List<Schedule>> schedulesMap = new HashMap<>();
                     Long platformId = (long) 0 ;
                     Long stationId = (long) 0 ;
-                    while (1) {
+                    while (true) {
                         if (railwayData == null) break;
                         platformId = railwayData.getClosePlatformId(railwayData.platforms, railwayData.dataCache, blockPos, 5, 4, 4);
                         if (platformId == null) break;
