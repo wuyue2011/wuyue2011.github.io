@@ -32,6 +32,6 @@ public class Schedule {
         this.trainCars = entry.trainCars;
         this.routeId = entry.routeId;
         this.currentStationIndex = entry.currentStationIndex;
-        this.arrivalDiffMillis = entry.arrivalDiffMillis - System.currentTimeMillis();
+        this.arrivalDiffMillis = entry.arrivalMillis - System.currentTimeMillis();
     }
 }
