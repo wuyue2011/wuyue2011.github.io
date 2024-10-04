@@ -76,7 +76,7 @@ public class PacketUpdateBlockEntity {
                             List<ScheduleEntry> schedules = railwayData.getSchedulesAtPlatform(platformId);
                             if (schedules != null) {
                                 for (ScheduleEntry scheduleEntry : schedules) {
-                                    schedulesList.add(new Schedule(scheduleEntry.arrivalMillis, scheduleEntry.trainCars, scheduleEntry.routeId, scheduleEntry.currentStationIndex, scheduleEntry.arrivalMillis - System.currentTimeMillis()));
+                                    schedulesList.add(new Schedule(scheduleEntry));
                                 }
                             }
                         }

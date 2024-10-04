@@ -1,5 +1,7 @@
 package cn.zbx1425.mtrsteamloco.data;
 
+import mtr.data.ScheduleEntry;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -23,5 +25,13 @@ public class Schedule {
         this.routeId = routeId;
         this.currentStationIndex = currentStationIndex;
         this.arrivalDiffMillis = arrivalDiffMillis;
+    }
+
+    public Schedule(ScheduleEntry entry) {
+        this.arrivalMillis = entry.arrivalMillis;
+        this.trainCars = entry.trainCars;
+        this.routeId = entry.routeId;
+        this.currentStationIndex = entry.currentStationIndex;
+        this.arrivalDiffMillis = entry.arrivalDiffMillis - System.currentTimeMillis();
     }
 }
