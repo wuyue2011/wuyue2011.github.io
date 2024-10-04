@@ -84,7 +84,7 @@ public class Serializer {
         return list;
     }
 
-    public static byte[] serialize(Map<Long, List<Schedule>> map) throws IOException {
+    public static byte[] serialize(Map<Long, List<Schedule>> map, int a) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
 

@@ -94,7 +94,7 @@ public class PacketUpdateBlockEntity {
                         break;
                     }
                     try {
-                        compoundTag.putByteArray("schedules", Serializer.serialize(schedulesMap));
+                        compoundTag.putByteArray("schedules", Serializer.serialize(schedulesMap, 1));
                     }catch (IOException e) {}
                     int ticks = ((BlockEyeCandy.BlockEntityEyeCandy) blockEntity).ticks + 1;
                     compoundTag.putInt("ticks", ticks);
