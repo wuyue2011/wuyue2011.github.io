@@ -133,6 +133,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public int ticks = 0;
 
+        public int radius = 2, lower = 2, upper = 2;
+
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
         }
