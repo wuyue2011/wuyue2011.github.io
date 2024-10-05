@@ -70,14 +70,16 @@ public class PacketUpdateBlockEntity {
             if (level == null || blockEntityType == null) return;
             level.getBlockEntity(blockPos, blockEntityType).ifPresent(blockEntity -> {
                 if (compoundTag != null) {
-					RailwayData railwayData = RailwayData.getInstance(level);
+                    if (blockEntity instanceof BlockEyeCandy.BlockEntityEyeCandy) {
+                        BlockEyeCandy.BlockEntityEyeCandy beec = (BlockEyeCandy.BlockEntityEyeCandy) blockEntity;
+                        RailwayData railwayData = RailwayData.getInstance(level);
                     Map<Long, List<Schedule>> schedulesMap = new HashMap<>();
                     Long platformId = (long) 0 ;
                     Long stationId = (long) 0 ;
                     while (true) {
                         if (railwayData == null) break;
 
-                        platformId = railwayData.getClosePlatformId(railwayData.platforms, railwayData.dataCache, blockPos, blockEntity.radius, blockEntity.lower, blockEntity.upper);
+                        platformId = railwayData.getClosePlatformId(railwayData.platforms, railwayData.dataCache, blockPos, beec.radius, beec.lower, beec.upper);
                         if (platformId == null) break;
 
                         Map<Long, List<ScheduleEntry>> schedules = new HashMap<>();
@@ -105,10 +107,11 @@ public class PacketUpdateBlockEntity {
                     try {
                         compoundTag.putByteArray("schedules", Serializer.serialize(schedulesMap, 1));
                     }catch (IOException e) {}
-                    int ticks = ((BlockEyeCandy.BlockEntityEyeCandy) blockEntity).ticks + 1;
+                    int ticks = beec.ticks + 1;
                     compoundTag.putInt("ticks", ticks);
                     compoundTag.putLong("platformId", platformId);
                     compoundTag.putLong("stationId", stationId);
+                    }
 
                     blockEntity.load(compoundTag);
                     blockEntity.setChanged();
