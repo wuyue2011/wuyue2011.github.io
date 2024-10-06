@@ -95,7 +95,7 @@ public class PacketUpdateBlockEntity {
                 if (compoundTag != null) {
                     if (!cover) {
                         compoundTag = new CompoundTag();
-                        blockEntity.save(compoundTag);
+                        blockEntity.writeCompoundTag(compoundTag);
                     }
                     if (blockEntity instanceof BlockEyeCandy.BlockEntityEyeCandy) {
                         BlockEyeCandy.BlockEntityEyeCandy beec = (BlockEyeCandy.BlockEntityEyeCandy) blockEntity;
