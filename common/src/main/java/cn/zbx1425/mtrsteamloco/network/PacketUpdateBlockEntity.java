@@ -52,7 +52,7 @@ public class PacketUpdateBlockEntity {
     }
 
     public static void sendUpdateC2S(BlockEntityMapper blockEntity, boolean cover) {
-        Level level = blockEntity.getLevel();
+                Level level = blockEntity.getLevel();
         if (level == null) return;
 
         final FriendlyByteBuf packet = new FriendlyByteBuf(Unpooled.buffer());
@@ -92,10 +92,12 @@ public class PacketUpdateBlockEntity {
             ServerLevel level = server.getLevel(levelKey);
             if (level == null || blockEntityType == null) return;
             level.getBlockEntity(blockPos, blockEntityType).ifPresent(blockEntity -> {
-                if (compoundTag != null) {
+                if (tag0 != null) {
+                    CompoundTag tag1 = new CompoundTag();
                     if (!cover) {
-                        CompoundTag tag1 = new CompoundTag();
-                        blockEntity.writeCompoundTag(tag1);
+                        blockEntity.save(tag1);
+                    }else {
+                        tag1 = tag0;
                     }
                     if (blockEntity instanceof BlockEyeCandy.BlockEntityEyeCandy) {
                         BlockEyeCandy.BlockEntityEyeCandy beec = (BlockEyeCandy.BlockEntityEyeCandy) blockEntity;
