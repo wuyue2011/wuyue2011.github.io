@@ -229,6 +229,10 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             PacketUpdateBlockEntity.sendUpdateC2S(this);
         }
 
+        public void sendUpdateC2S(boolean cover) {
+            PacketUpdateBlockEntity.sendUpdateC2S(this, cover);
+        }
+
         public float getBlockYRot(){
             final Direction facing = IBlock.getStatePropertySafe(Minecraft.getInstance().level.getBlockState(this.worldPosition), HorizontalDirectionalBlock.FACING);
             return facing.toYRot();

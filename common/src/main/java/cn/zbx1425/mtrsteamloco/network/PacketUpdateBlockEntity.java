@@ -46,6 +46,27 @@ public class PacketUpdateBlockEntity {
         CompoundTag tag = new CompoundTag();
         blockEntity.writeCompoundTag(tag);
         packet.writeNbt(tag);
+        packet.writeBoolean(true);
+
+        RegistryClient.sendToServer(PACKET_UPDATE_BLOCK_ENTITY, packet);
+    }
+
+    public static void sendUpdateC2S(BlockEntityMapper blockEntity, boolean cover) {
+        Level level = blockEntity.getLevel();
+        if (level == null) return;
+
+        final FriendlyByteBuf packet = new FriendlyByteBuf(Unpooled.buffer());
+        packet.writeResourceLocation(level.dimension().location());
+        packet.writeBlockPos(blockEntity.getBlockPos());
+#if MC_VERSION >= "11903"
+        packet.writeId(net.minecraft.core.registries.BuiltInRegistries.BLOCK_ENTITY_TYPE, blockEntity.getType());
+#else
+        packet.writeVarInt(net.minecraft.core.Registry.BLOCK_ENTITY_TYPE.getId(blockEntity.getType()));
+#endif
+        CompoundTag tag = new CompoundTag();
+        blockEntity.writeCompoundTag(tag);
+        packet.writeNbt(tag);
+        packet.writeBoolean(cover);
 
         RegistryClient.sendToServer(PACKET_UPDATE_BLOCK_ENTITY, packet);
     }
@@ -65,57 +86,63 @@ public class PacketUpdateBlockEntity {
 
         CompoundTag compoundTag = packet.readNbt();
 
+        boolean cover = packet.readBoolean();
+
         server.execute(() -> {
             ServerLevel level = server.getLevel(levelKey);
             if (level == null || blockEntityType == null) return;
             level.getBlockEntity(blockPos, blockEntityType).ifPresent(blockEntity -> {
                 if (compoundTag != null) {
+                    if (!cover) {
+                        compoundTag = new CompoundTag();
+                        blockEntity.save(compoundTag);
+                    }
                     if (blockEntity instanceof BlockEyeCandy.BlockEntityEyeCandy) {
                         BlockEyeCandy.BlockEntityEyeCandy beec = (BlockEyeCandy.BlockEntityEyeCandy) blockEntity;
                         RailwayData railwayData = RailwayData.getInstance(level);
-                    Map<Long, List<Schedule>> schedulesMap = new HashMap<>();
-                    Long platformId = (long) 0 ;
-                    Long stationId = (long) 0 ;
-                    while (true) {
-                        if (railwayData == null) break;
+                        Map<Long, List<Schedule>> schedulesMap = new HashMap<>();
+                        Long platformId = (long) 0 ;
+                        Long stationId = (long) 0 ;
+                        while (true) {
+                            if (railwayData == null) break;
 
-                        platformId = railwayData.getClosePlatformId(railwayData.platforms, railwayData.dataCache, blockPos, beec.radius, beec.lower, beec.upper);
-                        if (platformId == null) break;
+                            platformId = railwayData.getClosePlatformId(railwayData.platforms, railwayData.dataCache, blockPos, beec.radius, beec.lower, beec.upper);
+                            if (platformId == null) break;
 
-                        Map<Long, List<ScheduleEntry>> schedules = new HashMap<>();
-                        Station station = RailwayData.getStation(railwayData.stations, railwayData.dataCache, blockPos);
-                        List<ScheduleEntry> ScheduleEntries = railwayData.getSchedulesAtPlatform(platformId);
-                        List<Schedule> scheduleList0 = new ArrayList<>();
-                        for (ScheduleEntry scheduleEntry : ScheduleEntries) {
-                            scheduleList0.add(new Schedule(scheduleEntry));
-                        }
-                        schedulesMap.put(platformId, scheduleList0);
-                        if (station == null) break;
-                        
-                        stationId = station.id;
-                        railwayData.getSchedulesForStation(schedules, station.id);
-                        List<Schedule> scheduleList = new ArrayList<>();
-                        for (Long key : schedules.keySet()) {
-                            scheduleList = new ArrayList<>();
-                            for (ScheduleEntry scheduleEntry : schedules.get(key)) {
-                                scheduleList.add(new Schedule(scheduleEntry));
+                            Map<Long, List<ScheduleEntry>> schedules = new HashMap<>();
+                            Station station = RailwayData.getStation(railwayData.stations, railwayData.dataCache, blockPos);
+                            List<ScheduleEntry> ScheduleEntries = railwayData.getSchedulesAtPlatform(platformId);
+                            List<Schedule> scheduleList0 = new ArrayList<>();
+                            for (ScheduleEntry scheduleEntry : ScheduleEntries) {
+                                scheduleList0.add(new Schedule(scheduleEntry));
                             }
-                            schedulesMap.put(key, scheduleList);
+                            schedulesMap.put(platformId, scheduleList0);
+                            if (station == null) break;
+                            
+                            stationId = station.id;
+                            railwayData.getSchedulesForStation(schedules, station.id);
+                            List<Schedule> scheduleList = new ArrayList<>();
+                            for (Long key : schedules.keySet()) {
+                                scheduleList = new ArrayList<>();
+                                for (ScheduleEntry scheduleEntry : schedules.get(key)) {
+                                    scheduleList.add(new Schedule(scheduleEntry));
+                                }
+                                schedulesMap.put(key, scheduleList);
+                            }
+                            break;
                         }
-                        break;
-                    }
-                    try {
-                        compoundTag.putByteArray("schedules", Serializer.serialize(schedulesMap, 1));
-                    }catch (IOException e) {}
-                    int ticks = beec.ticks + 1;
-                    compoundTag.putInt("ticks", ticks);
-                    compoundTag.putLong("platformId", platformId);
-                    compoundTag.putLong("stationId", stationId);
-                    }
+                        try {
+                            compoundTag.putByteArray("schedules", Serializer.serialize(schedulesMap, 1));
+                        }catch (IOException e) {}
+                        int ticks = beec.ticks + 1;
+                        compoundTag.putInt("ticks", ticks);
+                        compoundTag.putLong("platformId", platformId);
+                        compoundTag.putLong("stationId", stationId);
+                        }
 
-                    blockEntity.load(compoundTag);
-                    blockEntity.setChanged();
-                    level.getChunkSource().blockChanged(blockPos);
+                        blockEntity.load(compoundTag);
+                        blockEntity.setChanged();
+                        level.getChunkSource().blockChanged(blockPos);
                 }
             });
         });
