@@ -84,7 +84,7 @@ public class PacketUpdateBlockEntity {
         BlockEntityType<?> blockEntityType = net.minecraft.core.Registry.BLOCK_ENTITY_TYPE.byId(packet.readVarInt());
 #endif
 
-        CompoundTag compoundTag = packet.readNbt();
+        CompoundTag tag0 = packet.readNbt();
 
         boolean cover = packet.readBoolean();
 
@@ -94,8 +94,8 @@ public class PacketUpdateBlockEntity {
             level.getBlockEntity(blockPos, blockEntityType).ifPresent(blockEntity -> {
                 if (compoundTag != null) {
                     if (!cover) {
-                        compoundTag = new CompoundTag();
-                        blockEntity.writeCompoundTag(compoundTag);
+                        CompoundTag tag1 = new CompoundTag();
+                        blockEntity.writeCompoundTag(tag1);
                     }
                     if (blockEntity instanceof BlockEyeCandy.BlockEntityEyeCandy) {
                         BlockEyeCandy.BlockEntityEyeCandy beec = (BlockEyeCandy.BlockEntityEyeCandy) blockEntity;
@@ -140,7 +140,11 @@ public class PacketUpdateBlockEntity {
                         compoundTag.putLong("stationId", stationId);
                         }
 
-                        blockEntity.load(compoundTag);
+                        if (cover) {
+                            blockEntity.load(tag0);
+                        }else {
+                            blockEntity.load(tag1);
+                        }
                         blockEntity.setChanged();
                         level.getChunkSource().blockChanged(blockPos);
                 }
