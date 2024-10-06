@@ -92,15 +92,14 @@ public class PacketUpdateBlockEntity {
             ServerLevel level = server.getLevel(levelKey);
             if (level == null || blockEntityType == null) return;
             level.getBlockEntity(blockPos, blockEntityType).ifPresent(blockEntity -> {
-                if (tag0 != null) {
+                if (tag0 != null && blockEntity instanceof BlockEyeCandy.BlockEntityEyeCandy) {
                     CompoundTag tag1 = new CompoundTag();
-                    if (!cover) {
-                        blockEntity.save(tag1);
-                    }else {
-                        tag1 = tag0;
-                    }
-                    if (blockEntity instanceof BlockEyeCandy.BlockEntityEyeCandy) {
                         BlockEyeCandy.BlockEntityEyeCandy beec = (BlockEyeCandy.BlockEntityEyeCandy) blockEntity;
+                        if (!cover) {
+                            beec.save(tag1);
+                        }else {
+                            tag1 = tag0;
+                        }
                         RailwayData railwayData = RailwayData.getInstance(level);
                         Map<Long, List<Schedule>> schedulesMap = new HashMap<>();
                         Long platformId = (long) 0 ;
@@ -140,7 +139,6 @@ public class PacketUpdateBlockEntity {
                         tag1.putInt("ticks", ticks);
                         tag1.putLong("platformId", platformId);
                         tag1.putLong("stationId", stationId);
-                        }
 
                         blockEntity.load(tag1);
                         blockEntity.setChanged();
