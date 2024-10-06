@@ -134,19 +134,15 @@ public class PacketUpdateBlockEntity {
                             break;
                         }
                         try {
-                            compoundTag.putByteArray("schedules", Serializer.serialize(schedulesMap, 1));
+                            tag1.putByteArray("schedules", Serializer.serialize(schedulesMap, 1));
                         }catch (IOException e) {}
                         int ticks = beec.ticks + 1;
-                        compoundTag.putInt("ticks", ticks);
-                        compoundTag.putLong("platformId", platformId);
-                        compoundTag.putLong("stationId", stationId);
+                        tag1.putInt("ticks", ticks);
+                        tag1.putLong("platformId", platformId);
+                        tag1.putLong("stationId", stationId);
                         }
 
-                        if (cover) {
-                            blockEntity.load(tag0);
-                        }else {
-                            blockEntity.load(tag1);
-                        }
+                        blockEntity.load(tag1);
                         blockEntity.setChanged();
                         level.getChunkSource().blockChanged(blockPos);
                 }
