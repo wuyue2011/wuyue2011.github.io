@@ -43,10 +43,10 @@ public class PacketUpdateBlockEntity {
 #else
         packet.writeVarInt(net.minecraft.core.Registry.BLOCK_ENTITY_TYPE.getId(blockEntity.getType()));
 #endif
+        packet.writeBoolean(true);
         CompoundTag tag = new CompoundTag();
         blockEntity.writeCompoundTag(tag);
         packet.writeNbt(tag);
-        packet.writeBoolean(true);
 
         RegistryClient.sendToServer(PACKET_UPDATE_BLOCK_ENTITY, packet);
     }
@@ -63,10 +63,12 @@ public class PacketUpdateBlockEntity {
 #else
         packet.writeVarInt(net.minecraft.core.Registry.BLOCK_ENTITY_TYPE.getId(blockEntity.getType()));
 #endif
-        CompoundTag tag = new CompoundTag();
-        blockEntity.writeCompoundTag(tag);
-        packet.writeNbt(tag);
         packet.writeBoolean(cover);
+        CompoundTag tag = new CompoundTag();
+        if (cover) {
+            blockEntity.writeCompoundTag(tag);
+        }
+        packet.writeNbt(tag);
 
         RegistryClient.sendToServer(PACKET_UPDATE_BLOCK_ENTITY, packet);
     }
@@ -83,10 +85,9 @@ public class PacketUpdateBlockEntity {
 #else
         BlockEntityType<?> blockEntityType = net.minecraft.core.Registry.BLOCK_ENTITY_TYPE.byId(packet.readVarInt());
 #endif
+        boolean cover = packet.readBoolean();
 
         CompoundTag tag0 = packet.readNbt();
-
-        boolean cover = packet.readBoolean();
 
         server.execute(() -> {
             ServerLevel level = server.getLevel(levelKey);
