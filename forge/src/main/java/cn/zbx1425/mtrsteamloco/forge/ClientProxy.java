@@ -22,6 +22,7 @@ import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 #endif
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import cn.zbx1425.mtrsteamloco.gui.ScriptDebugOverlay;
 
 public class ClientProxy {
 
@@ -95,5 +96,9 @@ public class ClientProxy {
             );
         }
 #endif
+        @SubscribeEvent
+        public static void onRenderGameOverlayEvent(RenderGameOverlayEvent event) {
+            ScriptDebugOverlay.render(event.getMatrixStack());
+        }
     }
 }

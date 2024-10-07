@@ -20,7 +20,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.network.chat.FormattedText;
 
 import java.util.HashMap;
 import java.util.List;
