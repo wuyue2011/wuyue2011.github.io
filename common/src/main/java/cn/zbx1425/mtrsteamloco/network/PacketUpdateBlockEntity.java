@@ -109,27 +109,29 @@ public class PacketUpdateBlockEntity {
                             if (railwayData == null) break;
 
                             platformId = railwayData.getClosePlatformId(railwayData.platforms, railwayData.dataCache, blockPos, beec.radius, beec.lower, beec.upper);
-                            if (platformId == null) break;
+                            if (platformId != null) {
+                                List<ScheduleEntry> ScheduleEntries = railwayData.getSchedulesAtPlatform(platformId);
+                                List<Schedule> scheduleList0 = new ArrayList<>();
+                                for (ScheduleEntry scheduleEntry : ScheduleEntries) {
+                                    scheduleList0.add(new Schedule(scheduleEntry));
+                                }
+                                schedulesMap.put(platformId, scheduleList0);
+                            }
 
                             Map<Long, List<ScheduleEntry>> schedules = new HashMap<>();
                             Station station = RailwayData.getStation(railwayData.stations, railwayData.dataCache, blockPos);
-                            List<ScheduleEntry> ScheduleEntries = railwayData.getSchedulesAtPlatform(platformId);
-                            List<Schedule> scheduleList0 = new ArrayList<>();
-                            for (ScheduleEntry scheduleEntry : ScheduleEntries) {
-                                scheduleList0.add(new Schedule(scheduleEntry));
-                            }
-                            schedulesMap.put(platformId, scheduleList0);
-                            if (station == null) break;
-                            
-                            stationId = station.id;
-                            railwayData.getSchedulesForStation(schedules, station.id);
-                            List<Schedule> scheduleList = new ArrayList<>();
-                            for (Long key : schedules.keySet()) {
-                                scheduleList = new ArrayList<>();
-                                for (ScheduleEntry scheduleEntry : schedules.get(key)) {
-                                    scheduleList.add(new Schedule(scheduleEntry));
+
+                            if (station != null) {
+                                stationId = station.id;
+                                railwayData.getSchedulesForStation(schedules, station.id);
+                                List<Schedule> scheduleList = new ArrayList<>();
+                                for (Long key : schedules.keySet()) {
+                                    scheduleList = new ArrayList<>();
+                                    for (ScheduleEntry scheduleEntry : schedules.get(key)) {
+                                        scheduleList.add(new Schedule(scheduleEntry));
+                                    }
+                                    schedulesMap.put(key, scheduleList);
                                 }
-                                schedulesMap.put(key, scheduleList);
                             }
                             break;
                         }
