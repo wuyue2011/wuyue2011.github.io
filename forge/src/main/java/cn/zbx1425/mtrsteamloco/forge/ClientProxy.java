@@ -96,9 +96,5 @@ public class ClientProxy {
             );
         }
 #endif
-        @SubscribeEvent
-        public static void onRenderGameOverlayEvent(RenderGameOverlayEvent event) {
-            ScriptDebugOverlay.render(event.getMatrixStack());
-        }
     }
 }
