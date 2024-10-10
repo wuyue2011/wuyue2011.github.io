@@ -118,11 +118,10 @@ public class PacketUpdateBlockEntity {
                                 schedulesMap.put(platformId, scheduleList0);
                             }
 
-                            Map<Long, List<ScheduleEntry>> schedules = new HashMap<>();
                             Station station = RailwayData.getStation(railwayData.stations, railwayData.dataCache, blockPos);
 
                             if (station != null) {
-                                stationId = station.id;
+                                Map<Long, List<ScheduleEntry>> schedules = new HashMap<>();
                                 railwayData.getSchedulesForStation(schedules, station.id);
                                 List<Schedule> scheduleList = new ArrayList<>();
                                 for (Long key : schedules.keySet()) {
