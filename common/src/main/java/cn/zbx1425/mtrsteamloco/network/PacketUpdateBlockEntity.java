@@ -101,6 +101,7 @@ public class PacketUpdateBlockEntity {
                         }else {
                             tag1 = tag0;
                         }
+                        tag1.putInt("sc", 0);
                         RailwayData railwayData = RailwayData.getInstance(level);
                         Map<Long, List<Schedule>> schedulesMap = new HashMap<>();
                         Long platformId = (long) 0 ;
@@ -123,14 +124,14 @@ public class PacketUpdateBlockEntity {
                             if (station != null) {
                                 Map<Long, List<ScheduleEntry>> schedules = new HashMap<>();
                                 railwayData.getSchedulesForStation(schedules, station.id);
-                                List<Schedule> scheduleList = new ArrayList<>();
                                 for (Long key : schedules.keySet()) {
-                                    scheduleList = new ArrayList<>();
+                                    List<Schedule> scheduleList = new ArrayList<>();
                                     for (ScheduleEntry scheduleEntry : schedules.get(key)) {
                                         scheduleList.add(new Schedule(scheduleEntry));
                                     }
                                     schedulesMap.put(key, scheduleList);
                                 }
+                                tag1.putInt("sc", 1);
                             }
                             break;
                         }

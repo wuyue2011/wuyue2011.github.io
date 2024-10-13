@@ -135,6 +135,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public int radius = 2, lower = 2, upper = 2;
 
+        public int sc = 0;
+
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
         }
@@ -174,6 +176,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             maxPosZ = compoundTag.contains("maxPosZ") ? compoundTag.getDouble("maxPosZ") : 16;
             platformId = compoundTag.contains("platformId") ? compoundTag.getLong("platformId") : (long) 0;
             ticks = compoundTag.contains("ticks") ? compoundTag.getInt("ticks") : 0;
+            sc = compoundTag.contains("sc") ? compoundTag.getInt("sc") : 0;
         }
 
         @Override
@@ -211,6 +214,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putDouble("maxPosZ", maxPosZ);
             compoundTag.putLong("platformId", platformId);
             compoundTag.putInt("ticks", ticks);
+            compoundTag.putInt("sc", sc);
         }
 
         public BlockPos getWorldPos() {
