@@ -109,6 +109,8 @@ public class PacketUpdateBlockEntity {
                         while (true) {
                             if (railwayData == null) break;
 
+                            tag1.putInt("sc", 1);
+
                             platformId = railwayData.getClosePlatformId(railwayData.platforms, railwayData.dataCache, blockPos, beec.radius, beec.lower, beec.upper);
                             if (platformId != null) {
                                 List<ScheduleEntry> ScheduleEntries = railwayData.getSchedulesAtPlatform(platformId);
@@ -118,6 +120,8 @@ public class PacketUpdateBlockEntity {
                                 }
                                 schedulesMap.put(platformId, scheduleList0);
                             }
+
+                            tag1.putInt("sc", 2);
 
                             Station station = RailwayData.getStation(railwayData.stations, railwayData.dataCache, blockPos);
 
@@ -131,7 +135,7 @@ public class PacketUpdateBlockEntity {
                                     }
                                     schedulesMap.put(key, scheduleList);
                                 }
-                                tag1.putInt("sc", 1);
+                                tag1.putInt("sc", 3);
                             }
                             break;
                         }
