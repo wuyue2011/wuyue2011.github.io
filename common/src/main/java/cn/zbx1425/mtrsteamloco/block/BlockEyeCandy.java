@@ -128,15 +128,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public double minPosX = 0, minPosY = 0, minPosZ = 0;
         public double maxPosX = 16, maxPosY = 16, maxPosZ = 16;
 
-        public Map<Long, List<Schedule>> schedules = new HashMap<>();
-        public Long platformId = (long) 0;
-
-        public int ticks = 0;
-
-        public int radius = 2, lower = 2, upper = 2;
-
-        public int sc = 0;
-
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
         }
@@ -151,12 +142,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                 data = Serializer.deserialize(dataBytes);
             }catch (IOException e) {
                 data = new HashMap<String, String>();
-            }
-            try {
-                byte[] schedulesBytes = compoundTag.getByteArray("schedules");
-                schedules = Serializer.deserialize(schedulesBytes, 1);
-            }catch (IOException e) {
-                schedules = new HashMap<Long, List<Schedule>>();
             }
             
             translateX = compoundTag.contains("translateX") ? compoundTag.getFloat("translateX") : 0;
@@ -174,9 +159,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             maxPosX = compoundTag.contains("maxPosX") ? compoundTag.getDouble("maxPosX") : 16;
             maxPosY = compoundTag.contains("maxPosY") ? compoundTag.getDouble("maxPosY") : 16;
             maxPosZ = compoundTag.contains("maxPosZ") ? compoundTag.getDouble("maxPosZ") : 16;
-            platformId = compoundTag.contains("platformId") ? compoundTag.getLong("platformId") : (long) 0;
-            ticks = compoundTag.contains("ticks") ? compoundTag.getInt("ticks") : 0;
-            sc = compoundTag.contains("sc") ? compoundTag.getInt("sc") : 0;
         }
 
         @Override
@@ -188,13 +170,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                 compoundTag.putByteArray("data", dataBytes);
             }catch (IOException e) {
                 compoundTag.putByteArray("data", new byte[0]);
-            }
-
-            try {
-                byte[] schedulesBytes = Serializer.serialize(schedules, 1);
-                compoundTag.putByteArray("schedules", schedulesBytes);
-            }catch (IOException e) {
-                compoundTag.putByteArray("schedules", new byte[0]);
             }
             
             compoundTag.putFloat("translateX", translateX);
@@ -212,9 +187,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putDouble("maxPosX", maxPosX);
             compoundTag.putDouble("maxPosY", maxPosY);
             compoundTag.putDouble("maxPosZ", maxPosZ);
-            compoundTag.putLong("platformId", platformId);
-            compoundTag.putInt("ticks", ticks);
-            compoundTag.putInt("sc", sc);
         }
 
         public BlockPos getWorldPos() {
