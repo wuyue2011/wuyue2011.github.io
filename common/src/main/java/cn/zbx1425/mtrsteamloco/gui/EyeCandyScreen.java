@@ -174,7 +174,9 @@ public class EyeCandyScreen extends SelectListScreen {
             }else if(changed.contains("&")){
                 String keys = "/";
                 try {
-                    for (String key : blockEntity.data.keySet()) {
+                    List<String> keysList = new ArrayList<>(blockEntity.data.keySet());
+                    Collections.sort(keysList);
+                    for (String key : keysList) {
                         keys += key + "/";
                     }
                 }catch (Exception e){}
