@@ -61,7 +61,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                 BlockBehaviour.Properties.of()
 #endif
                         .strength(2)
-                        .noCollission()
         );
     }
 
