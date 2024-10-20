@@ -124,11 +124,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         return getShape(state, blockGetter, pos);
     }
 
-    @Override
-    public VoxelShape getVisualShape(BlockState p_60479_, BlockGetter p_60480_, BlockPos p_60481_, CollisionContext p_60482_) {
-        return Shapes.block();
-    }
-
     public static class BlockEntityEyeCandy extends BlockEntityClientSerializableMapper {
 
         public String prefabId = null;
