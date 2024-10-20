@@ -127,7 +127,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
     @Override
     public VoxelShape getOcclusionShape(BlockState p_53401_, BlockGetter p_53402_, BlockPos p_53403_) {
-        return getShape(p_53401_, p_53402_, p_53403_);
+        return Shapes.block();
     }
 
     @Override
@@ -152,8 +152,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public float doorValue = 0;
         public boolean doorTarget = false;
 
-        public double minPosX = 0, minPosY = 0, minPosZ = 0;
-        public double maxPosX = 16, maxPosY = 16, maxPosZ = 16;
+        public double minPosX = 0D, minPosY = 0D, minPosZ = 0D;
+        public double maxPosX = 16D, maxPosY = 16D, maxPosZ = 16D;
         public boolean isEmpty = true;
 
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
