@@ -103,7 +103,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }else {
             return Shapes.block();
         }*/
-        return Block.box(0, 0, 0, 16, 8, 16); 
+        return Block.box(0, 8, 0, 16, 16, 16); 
     }
 
     //protected static final VoxelShape X_SHAPE = Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D);
