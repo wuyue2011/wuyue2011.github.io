@@ -60,7 +60,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 #else
                 BlockBehaviour.Properties.of()
 #endif
-                        .strength(2).lightLevel((abc) -> {return 15;})
+                        .strength(2)
         );
     }
 
@@ -97,12 +97,13 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     }
 
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos) {
-        final BlockEntity entity = world.getBlockEntity(pos);
+        /*final BlockEntity entity = world.getBlockEntity(pos);
         if (entity instanceof BlockEntityEyeCandy) {
             return ((BlockEyeCandy.BlockEntityEyeCandy) entity).getShape();
         }else {
             return Shapes.block();
-        }
+        }*/
+        return Block.box(0, 0, 0, 16, 8, 16); 
     }
 
     //protected static final VoxelShape X_SHAPE = Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D);
@@ -116,11 +117,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
         return getShape(state, blockGetter, pos);
-    }
-
-    @Override
-    public VoxelShape getOcclusionShape(BlockState state, BlockGetter blockGetter, BlockPos pos) {
-        return Shapes.block();
     }
 
     public static class BlockEntityEyeCandy extends BlockEntityClientSerializableMapper {
