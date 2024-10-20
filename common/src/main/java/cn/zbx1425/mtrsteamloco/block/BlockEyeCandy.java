@@ -99,11 +99,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos) {
         final BlockEntity entity = world.getBlockEntity(pos);
         if (entity instanceof BlockEntityEyeCandy) {
-            if (((BlockEntityEyeCandy) entity).isEmpty) {
-                return Shapes.empty();
-            } else {
-            return IBlock.getVoxelShapeByDirection(((BlockEyeCandy.BlockEntityEyeCandy) entity).minPosX, ((BlockEyeCandy.BlockEntityEyeCandy) entity).minPosY, ((BlockEyeCandy.BlockEntityEyeCandy) entity).minPosZ, ((BlockEyeCandy.BlockEntityEyeCandy) entity).maxPosX, ((BlockEyeCandy.BlockEntityEyeCandy) entity).maxPosY, ((BlockEyeCandy.BlockEntityEyeCandy) entity).maxPosZ, IBlock.getStatePropertySafe(state, HorizontalDirectionalBlock.FACING));
-            }
+            return ((BlockEyeCandy.BlockEntityEyeCandy) entity).getShape();
         }else {
             return Shapes.block();
         }
@@ -144,8 +140,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public float doorValue = 0;
         public boolean doorTarget = false;
 
-        public double minPosX = 0D, minPosY = 0D, minPosZ = 0D;
-        public double maxPosX = 16D, maxPosY = 16D, maxPosZ = 16D;
+        protected String shape = "0, 0, 0, 16, 16, 16";
         public boolean isEmpty = false;
 
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
@@ -173,12 +168,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             platform = compoundTag.contains("platform") ? compoundTag.getBoolean("platform") : true;
             doorValue = compoundTag.contains("doorValue") ? compoundTag.getFloat("doorValue") : 0;
             doorTarget = compoundTag.contains("doorTarget") ? compoundTag.getBoolean("doorTarget") : false;
-            minPosX = compoundTag.contains("minPosX") ? compoundTag.getDouble("minPosX") : 0;
-            minPosY = compoundTag.contains("minPosY") ? compoundTag.getDouble("minPosY") : 0;
-            minPosZ = compoundTag.contains("minPosZ") ? compoundTag.getDouble("minPosZ") : 0;
-            maxPosX = compoundTag.contains("maxPosX") ? compoundTag.getDouble("maxPosX") : 16;
-            maxPosY = compoundTag.contains("maxPosY") ? compoundTag.getDouble("maxPosY") : 16;
-            maxPosZ = compoundTag.contains("maxPosZ") ? compoundTag.getDouble("maxPosZ") : 16;
+            shape = compoundTag.contains("shape") ? compoundTag.getString("shape") : "0, 0, 0, 16, 16, 16";
             isEmpty = compoundTag.contains("isEmpty") ? compoundTag.getBoolean("isEmpty") : true;
         }
 
@@ -202,12 +192,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putBoolean("platform", platform);
             compoundTag.putFloat("doorValue", doorValue);
             compoundTag.putBoolean("doorTarget", doorTarget);
-            compoundTag.putDouble("minPosX", minPosX);
-            compoundTag.putDouble("minPosY", minPosY);
-            compoundTag.putDouble("minPosZ", minPosZ);
-            compoundTag.putDouble("maxPosX", maxPosX);
-            compoundTag.putDouble("maxPosY", maxPosY);
-            compoundTag.putDouble("maxPosZ", maxPosZ);
+            compoundTag.putString("shape", shape);
             compoundTag.putBoolean("isEmpty", isEmpty);
         }
 
@@ -271,6 +256,46 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public boolean isPlatform() {
             return platform;
+        }
+
+        public void setShape(String shape) {
+            this.shape = shape;
+            getShape();
+        }
+
+        public VoxelShape getShape() {
+            if (isEmpty) {
+                return Shapes.empty();
+            } else {
+                String[] shapeArray = shape.split("/");
+                VoxelShape[] voxelShapes= new VoxelShape[shapeArray.length];
+                for (int i = 0; i < shapeArray.length; i++) {
+                    String[] posArray = shapeArray[i].split(",");
+                    if (posArray.length!= 6) {
+                        shape = "0, 0, 0, 16, 16, 16";
+                        sendUpdateC2S();
+                        return Shapes.empty();
+                    }
+                    Double[] pos = new Double[posArray.length];
+                    try {
+                        for (int j = 0; j < posArray.length; j++) {
+                            pos[j] = Double.parseDouble(posArray[j]);
+                        }
+                    } catch (NumberFormatException e) {
+                        shape = "0, 0, 0, 16, 16, 16";
+                        sendUpdateC2S();
+                        return Shapes.empty();
+                    }
+                    try {
+                        voxelShapes[i] = IBlock.getVoxelShapeByDirection(pos[0], pos[1], pos[2], pos[3], pos[4], pos[5], IBlock.getStatePropertySafe(Minecraft.getInstance().level.getBlockState(this.worldPosition), HorizontalDirectionalBlock.FACING));
+                    } catch (Exception e) {
+                        shape = "0, 0, 0, 16, 16, 16";
+                        sendUpdateC2S();
+                        return Shapes.empty();
+                    }
+                }
+                return Shapes.or(Shapes.empty(), voxelShapes);
+            }
         }
     }
 }
