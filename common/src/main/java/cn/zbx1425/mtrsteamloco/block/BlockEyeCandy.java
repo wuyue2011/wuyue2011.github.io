@@ -97,9 +97,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
-    @Override
-	public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext collisionContext) {
-		final BlockEntity entity = world.getBlockEntity(pos);
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos) {
+        final BlockEntity entity = world.getBlockEntity(pos);
         if (entity instanceof BlockEntityEyeCandy) {
             return IBlock.getVoxelShapeByDirection(((BlockEyeCandy.BlockEntityEyeCandy) entity).minPosX, ((BlockEyeCandy.BlockEntityEyeCandy) entity).minPosY, ((BlockEyeCandy.BlockEntityEyeCandy) entity).minPosZ, ((BlockEyeCandy.BlockEntityEyeCandy) entity).maxPosX, ((BlockEyeCandy.BlockEntityEyeCandy) entity).maxPosY, ((BlockEyeCandy.BlockEntityEyeCandy) entity).maxPosZ, IBlock.getStatePropertySafe(state, HorizontalDirectionalBlock.FACING));
         }else {
@@ -108,18 +107,23 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     }
 
     @Override
+	public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext collisionContext) {
+        return getShape(state, world, pos);
+    }
+
+    @Override
     public VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
-        return getCollisionShape(state, blockGetter, pos, collisionContext);
+        return getShape(state, world, pos);
     }
 
     @Override
 	public VoxelShape getVisualShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        return getCollisionShape(blockState, blockGetter, blockPos, collisionContext);
+        return getShape(state, world, pos);
     }
 
     @Override
     public VoxelShape getOcclusionShape(BlockState p_53401_, BlockGetter p_53402_, BlockPos p_53403_) {
-        return getCollisionShape(p_53401_, p_53402_, p_53403_, CollisionContext.empty());
+        return getShape(p_53401_, p_53402_, p_53403_);
     }
 
     @Override
