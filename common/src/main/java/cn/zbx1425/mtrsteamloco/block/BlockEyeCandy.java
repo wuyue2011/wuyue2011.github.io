@@ -120,7 +120,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
     @Override
     public VoxelShape getOcclusionShape(BlockState state, BlockGetter blockGetter, BlockPos pos) {
-        return Shapes.empty();
+        return Shapes.block();
     }
 
     public static class BlockEntityEyeCandy extends BlockEntityClientSerializableMapper {
