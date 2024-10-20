@@ -60,7 +60,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 #else
                 BlockBehaviour.Properties.of()
 #endif
-                        .strength(2)
+                        .strength(2).lightLevel((abc) -> {return 15;})
         );
     }
 
