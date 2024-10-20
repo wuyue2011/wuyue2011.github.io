@@ -100,7 +100,11 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos) {
         final BlockEntity entity = world.getBlockEntity(pos);
         if (entity instanceof BlockEntityEyeCandy) {
+            if (((BlockEntityEyeCandy) entity).isEmpty) {
+                return Shapes.empty();
+            } else {
             return IBlock.getVoxelShapeByDirection(((BlockEyeCandy.BlockEntityEyeCandy) entity).minPosX, ((BlockEyeCandy.BlockEntityEyeCandy) entity).minPosY, ((BlockEyeCandy.BlockEntityEyeCandy) entity).minPosZ, ((BlockEyeCandy.BlockEntityEyeCandy) entity).maxPosX, ((BlockEyeCandy.BlockEntityEyeCandy) entity).maxPosY, ((BlockEyeCandy.BlockEntityEyeCandy) entity).maxPosZ, IBlock.getStatePropertySafe(state, HorizontalDirectionalBlock.FACING));
+            }
         }else {
             return Shapes.block();
         }
@@ -150,6 +154,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public double minPosX = 0, minPosY = 0, minPosZ = 0;
         public double maxPosX = 16, maxPosY = 16, maxPosZ = 16;
+        public boolean isEmpty = true;
 
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
@@ -182,6 +187,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             maxPosX = compoundTag.contains("maxPosX") ? compoundTag.getDouble("maxPosX") : 16;
             maxPosY = compoundTag.contains("maxPosY") ? compoundTag.getDouble("maxPosY") : 16;
             maxPosZ = compoundTag.contains("maxPosZ") ? compoundTag.getDouble("maxPosZ") : 16;
+            isEmpty = compoundTag.contains("isEmpty") ? compoundTag.getBoolean("isEmpty") : true;
         }
 
         @Override
@@ -210,6 +216,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putDouble("maxPosX", maxPosX);
             compoundTag.putDouble("maxPosY", maxPosY);
             compoundTag.putDouble("maxPosZ", maxPosZ);
+            compoundTag.putBoolean("isEmpty", isEmpty);
         }
 
         public BlockPos getWorldPos() {
