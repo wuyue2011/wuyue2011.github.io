@@ -122,7 +122,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
     @Override
 	public VoxelShape getVisualShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        return getShape(state, blockGetter, blockPos);
+        return getShape(blockState, blockGetter, blockPos);
     }
 
     @Override
