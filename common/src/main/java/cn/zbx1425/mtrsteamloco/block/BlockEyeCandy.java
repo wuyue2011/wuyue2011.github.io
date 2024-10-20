@@ -109,25 +109,22 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
     }
 
-    protected static final VoxelShape X_SHAPE = Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D);
-    protected static final VoxelShape X_OCCLUSION_SHAPE = Shapes.or(Block.box(7.0D, 5.0D, 0.0D, 9.0D, 16.0D, 2.0D), Block.box(7.0D, 5.0D, 14.0D, 9.0D, 16.0D, 16.0D));
+    //protected static final VoxelShape X_SHAPE = Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D);
+    //protected static final VoxelShape X_OCCLUSION_SHAPE = Shapes.or(Block.box(7.0D, 5.0D, 0.0D, 9.0D, 16.0D, 2.0D), Block.box(7.0D, 5.0D, 14.0D, 9.0D, 16.0D, 16.0D));
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
-        return X_SHAPE;
-        //return Shapes.block();
+        return Shapes.block();
     }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
-        return X_SHAPE;
-        //return getShape(state, blockGetter, pos);
+        return getShape(state, blockGetter, pos);
     }
 
     @Override
     public VoxelShape getOcclusionShape(BlockState state, BlockGetter blockGetter, BlockPos pos) {
-        return X_OCCLUSION_SHAPE;
-        //return getShape(state, blockGetter, pos);
+        return Shapes.empty();
     }
 
     public static class BlockEntityEyeCandy extends BlockEntityClientSerializableMapper {
@@ -149,7 +146,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public double minPosX = 0D, minPosY = 0D, minPosZ = 0D;
         public double maxPosX = 16D, maxPosY = 16D, maxPosZ = 16D;
-        public boolean isEmpty = true;
+        public boolean isEmpty = false;
 
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
