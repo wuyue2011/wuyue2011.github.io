@@ -97,13 +97,12 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     }
 
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos) {
-        /*final BlockEntity entity = world.getBlockEntity(pos);
+        final BlockEntity entity = world.getBlockEntity(pos);
         if (entity instanceof BlockEntityEyeCandy) {
             return ((BlockEyeCandy.BlockEntityEyeCandy) entity).getShape();
         }else {
             return Shapes.block();
-        }*/
-        return Block.box(0, 8, 0, 16, 16, 16); 
+        }
     }
 
     //protected static final VoxelShape X_SHAPE = Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D);
@@ -261,7 +260,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public VoxelShape getShape() {
             if (isEmpty) {
-                return Shapes.empty();
+                return Shapes.block();
             } else {
                 String[] shapeArray = shape.split("/");
                 VoxelShape[] voxelShapes= new VoxelShape[shapeArray.length];
@@ -270,7 +269,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                     if (posArray.length!= 6) {
                         shape = "0, 0, 0, 16, 16, 16";
                         sendUpdateC2S();
-                        return Shapes.empty();
+                        return Shapes.block();
                     }
                     Double[] pos = new Double[posArray.length];
                     try {
@@ -280,14 +279,14 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                     } catch (NumberFormatException e) {
                         shape = "0, 0, 0, 16, 16, 16";
                         sendUpdateC2S();
-                        return Shapes.empty();
+                        return Shapes.block();
                     }
                     try {
                         voxelShapes[i] = IBlock.getVoxelShapeByDirection(pos[0], pos[1], pos[2], pos[3], pos[4], pos[5], IBlock.getStatePropertySafe(Minecraft.getInstance().level.getBlockState(this.worldPosition), HorizontalDirectionalBlock.FACING));
                     } catch (Exception e) {
                         shape = "0, 0, 0, 16, 16, 16";
                         sendUpdateC2S();
-                        return Shapes.empty();
+                        return Shapes.block();
                     }
                 }
                 return Shapes.or(Shapes.empty(), voxelShapes);
