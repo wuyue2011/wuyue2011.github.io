@@ -282,7 +282,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                         return Shapes.block();
                     }
                     try {
-                        voxelShapes[i] = IBlock.getVoxelShapeByDirection(pos[0], pos[1], pos[2], pos[3], pos[4], pos[5], IBlock.getStatePropertySafe(Minecraft.getInstance().level.getBlockState(this.worldPosition), HorizontalDirectionalBlock.FACING));
+                        voxelShapes[i] = Block.box(pos[0], pos[1], pos[2], pos[3], pos[4], pos[5]);//IBlock.getVoxelShapeByDirection(pos[0], pos[1], pos[2], pos[3], pos[4], pos[5], IBlock.getStatePropertySafe(Minecraft.getInstance().level.getBlockState(this.worldPosition), HorizontalDirectionalBlock.FACING));
                     } catch (Exception e) {
                         shape = "0, 0, 0, 16, 16, 16";
                         sendUpdateC2S();
