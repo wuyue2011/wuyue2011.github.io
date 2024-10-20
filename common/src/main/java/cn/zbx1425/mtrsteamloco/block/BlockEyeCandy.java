@@ -97,6 +97,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
+    protected static final VoxelShape X_SHAPE_LOW = Block.box(6.0D, 0.0D, 0.0D, 10.0D, 13.0D, 16.0D);
+
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos) {
         final BlockEntity entity = world.getBlockEntity(pos);
         if (entity instanceof BlockEntityEyeCandy) {
@@ -111,28 +113,9 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     }
 
     @Override
-	public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext collisionContext) {
-        return getShape(state, world, pos);
-    }
-
-    @Override
     public VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
-        return getShape(state, blockGetter, pos);
-    }
-
-    @Override
-	public VoxelShape getVisualShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        return getShape(blockState, blockGetter, blockPos);
-    }
-
-    @Override
-    public VoxelShape getOcclusionShape(BlockState p_53401_, BlockGetter p_53402_, BlockPos p_53403_) {
-        return Shapes.empty();
-    }
-
-    @Override
-    public VoxelShape getInteractionShape(BlockState p_60547_, BlockGetter p_60548_, BlockPos p_60549_) {
-        return Shapes.block();
+        return X_SHAPE_LOW
+        //return getShape(state, blockGetter, pos);
     }
 
     public static class BlockEntityEyeCandy extends BlockEntityClientSerializableMapper {
