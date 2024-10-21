@@ -165,7 +165,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             doorValue = compoundTag.contains("doorValue") ? compoundTag.getFloat("doorValue") : 0;
             doorTarget = compoundTag.contains("doorTarget") ? compoundTag.getBoolean("doorTarget") : false;
             //shape = compoundTag.contains("shape") ? compoundTag.getString("shape") : "0, 0, 0, 16, 16, 16";
-            isEmpty = compoundTag.contains("isEmpty") ? compoundTag.getBoolean("isEmpty") : true;
+            //isEmpty = compoundTag.contains("isEmpty") ? compoundTag.getBoolean("isEmpty") : true;
         }
 
         @Override
@@ -189,7 +189,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putFloat("doorValue", doorValue);
             compoundTag.putBoolean("doorTarget", doorTarget);
             //compoundTag.putString("shape", shape);
-            compoundTag.putBoolean("isEmpty", isEmpty);
+            //compoundTag.putBoolean("isEmpty", isEmpty);
         }
 
         public BlockPos getWorldPos() {
