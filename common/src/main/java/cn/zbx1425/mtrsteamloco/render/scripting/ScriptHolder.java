@@ -83,7 +83,7 @@ public class ScriptHolder {
             scope.put("Vector3f", scope, new NativeJavaClass(scope, Vector3f.class));   
 
             scope.put("MTRClientData", scope, new NativeJavaClass(scope, ClientData.class));
-            scope.put("IBlock", scope, new NativeJavaClass(scope, IBlock.class))
+            scope.put("IBlock", scope, new NativeJavaClass(scope, IBlock.class));
 
             scope.put("MinecraftClient", scope, new NativeJavaClass(scope, MinecraftClientUtil.class));
 
