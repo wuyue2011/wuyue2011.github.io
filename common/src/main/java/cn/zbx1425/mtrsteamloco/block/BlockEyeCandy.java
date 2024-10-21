@@ -99,7 +99,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos) {
         final BlockEntity entity = world.getBlockEntity(pos);
         if (entity instanceof BlockEntityEyeCandy) {
-            return ((BlockEyeCandy.BlockEntityEyeCandy) entity).getShape();
+            return ((BlockEyeCandy.BlockEntityEyeCandy) entity).shape;
         }else {
             return Shapes.block();
         }
@@ -135,8 +135,9 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public float doorValue = 0;
         public boolean doorTarget = false;
 
-        protected String shape = "0, 0, 0, 16, 16, 16";
-        public boolean isEmpty = false;
+        //protected String shape = "0, 0, 0, 16, 16, 16";
+        //public boolean isEmpty = false;
+        public VoxelShape shape = Shapes.block();
 
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
@@ -163,7 +164,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             platform = compoundTag.contains("platform") ? compoundTag.getBoolean("platform") : true;
             doorValue = compoundTag.contains("doorValue") ? compoundTag.getFloat("doorValue") : 0;
             doorTarget = compoundTag.contains("doorTarget") ? compoundTag.getBoolean("doorTarget") : false;
-            shape = compoundTag.contains("shape") ? compoundTag.getString("shape") : "0, 0, 0, 16, 16, 16";
+            //shape = compoundTag.contains("shape") ? compoundTag.getString("shape") : "0, 0, 0, 16, 16, 16";
             isEmpty = compoundTag.contains("isEmpty") ? compoundTag.getBoolean("isEmpty") : true;
         }
 
@@ -187,7 +188,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putBoolean("platform", platform);
             compoundTag.putFloat("doorValue", doorValue);
             compoundTag.putBoolean("doorTarget", doorTarget);
-            compoundTag.putString("shape", shape);
+            //compoundTag.putString("shape", shape);
             compoundTag.putBoolean("isEmpty", isEmpty);
         }
 
@@ -253,7 +254,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             return platform;
         }
 
-        public void setShape(String shape) {
+        /*public void setShape(String shape) {
             this.shape = shape;
             getShape();
         }
@@ -289,8 +290,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                         return Shapes.block();
                     }
                 }
-                return voxelShapes[0];
+                return Shapes.or(Shapes.empty, voxelShapes);
             }
-        }
+        }*/
     }
 }

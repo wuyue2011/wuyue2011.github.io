@@ -21,6 +21,9 @@ import mtr.data.Platform;
 import mtr.data.ScheduleEntry;
 import mtr.data.RailwayData;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.level.block.Block;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -121,5 +124,9 @@ public class MinecraftClientUtil {
         Long id = RailwayData.getClosePlatformId(ClientData.PLATFORMS, ClientData.DATA_CACHE, pos.toBlockPos(), radius, lower, upper);
         Platform platform = platformPositions.get(id);
         return platform;   
+    }
+
+    public static VoxelShape box(double x1, double y1, double z1, double x2, double y2, double z2) {
+        return Block.box(x1, y1, z1, x2, y2, z2);
     }
 }
