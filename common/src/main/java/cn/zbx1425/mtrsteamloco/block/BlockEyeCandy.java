@@ -260,7 +260,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             if (block instanceof BlockEyeCandy) {
                 ((BlockEyeCandy) block).shape = shape;
             } else {
-                scriptContext.setDebugInfo("设置shape失败了")
+                scriptContext.setDebugInfo("设置shape失败了", System.currentTimeMillis() + "");
             }
         }
 
