@@ -39,7 +39,6 @@ import mtr.block.BlockNode;
 import net.minecraft.client.Minecraft;
 import mtr.MTRClient;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -68,6 +67,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     public BlockState getStateForPlacement(BlockPlaceContext ctx) {
         return defaultBlockState().setValue(FACING, ctx.getHorizontalDirection());
     }
+
+    public VoxelShape shape = Shapes.block();
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -110,12 +111,12 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
-        return getShape(state, blockGetter, pos);
+        return shape;
     }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
-        return getShape(state, blockGetter, pos);
+        return shape;
     }
 
     public static class BlockEntityEyeCandy extends BlockEntityClientSerializableMapper {
@@ -137,7 +138,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         //protected String shape = "0, 0, 0, 16, 16, 16";
         //public boolean isEmpty = false;
-        public VoxelShape shape = Shapes.block();
+        //public VoxelShape shape = Shapes.block();
 
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
@@ -252,6 +253,15 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public boolean isPlatform() {
             return platform;
+        }
+
+        public void setShape(VoxelShape shape) {
+            Minecraft.getInstance().level.getBlockState(this.worldPosition).getBlock();
+            if (block instanceof BlockEyeCandy) {
+                ((BlockEyeCandy) block).shape = shape;
+            } else {
+                scriptContext.setDebugInfo("设置shape失败了")
+            }
         }
 
         /*public void setShape(String shape) {
