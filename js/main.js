@@ -1447,31 +1447,37 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   };
 
-  // 监听nav是否被其他音频暂停⏸️
-  const listenNavMusicPause = function () {
-    const timer = setInterval(() => {
-      if (navMusicEl && navMusicEl.querySelector("#nav-music meting-js").aplayer) {
-        clearInterval(timer);
-        let msgPlay = '<i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span>';
-        let msgPause = '<i class="anzhiyufont anzhiyu-icon-pause"></i><span>暂停音乐</span>';
-        navMusicEl.querySelector("#nav-music meting-js").aplayer.on("pause", function () {
-          navMusicEl.classList.remove("playing");
-          document.getElementById("menu-music-toggle").innerHTML = msgPlay;
-          document.getElementById("nav-music-hoverTips").innerHTML = "音乐已暂停";
-          document.querySelector("#consoleMusic").classList.remove("on");
-          anzhiyu_musicPlaying = false;
-          navMusicEl.classList.remove("stretch");
-        });
-        navMusicEl.querySelector("#nav-music meting-js").aplayer.on("play", function () {
-          navMusicEl.classList.add("playing");
-          document.getElementById("menu-music-toggle").innerHTML = msgPause;
-          document.querySelector("#consoleMusic").classList.add("on");
-          anzhiyu_musicPlaying = true;
-          // navMusicEl.classList.add("stretch");
-        });
-      }
-    }, 16);
-  };
+    // 监听nav是否被其他音频暂停⏸️
+    const listenNavMusicPause = function () {
+      const timer = setInterval(() => {
+        if (navMusicEl && navMusicEl.querySelector("#nav-music meting-js").aplayer) {
+          clearInterval(timer);
+          let msgPlay = '<i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span>';
+          let msgPause = '<i class="anzhiyufont anzhiyu-icon-pause"></i><span>暂停音乐</span>';
+          navMusicEl.querySelector("#nav-music meting-js").aplayer.on("pause", function () {
+            navMusicEl.classList.remove("playing");
+  -         document.getElementById("menu-music-toggle").innerHTML = msgPlay;
+  +         let menuMusicToggle  = document.getElementById("menu-music-toggle");
+  +         let iconElement = menuMusicToggle.querySelector('i');
+  +         iconElement.className = 'iconfont icon-play';
+            document.getElementById("nav-music-hoverTips").innerHTML = "音乐已暂停";
+            document.querySelector("#consoleMusic").classList.remove("on");
+            anzhiyu_musicPlaying = false;
+            navMusicEl.classList.remove("stretch");
+          });
+          navMusicEl.querySelector("#nav-music meting-js").aplayer.on("play", function () {
+            navMusicEl.classList.add("playing");
+  -         document.getElementById("menu-music-toggle").innerHTML = msgPause;
+  +         let menuMusicToggle  = document.getElementById("menu-music-toggle");
+  +         let iconElement = menuMusicToggle.querySelector('i');
+  +         iconElement.className = 'iconfont icon-pause';
+            document.querySelector("#consoleMusic").classList.add("on");
+            anzhiyu_musicPlaying = true;
+            // navMusicEl.classList.add("stretch");
+          });
+        }
+      }, 16);
+    };
 
   // 开发者工具键盘监听
   window.onkeydown = function (e) {

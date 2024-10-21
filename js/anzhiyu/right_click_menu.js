@@ -23,6 +23,8 @@ rm.showRightMenu = function (isTrue, x = 0, y = 0) {
   } else {
     rightMenu.style.display = "none";
   }
+  rm.updateMusicInfo();
+  rm.updateVolumeSlider();
 };
 
 // 隐藏菜单
@@ -62,6 +64,7 @@ var oncontextmenuFunction = function (event) {
     const $rightMenuCopyText = document.querySelector("#menu-copytext");
     const $rightMenuPasteText = document.querySelector("#menu-pastetext");
     const $rightMenuCommentText = document.querySelector("#menu-commenttext");
+    const $rightMenuCommentBarrage = document.querySelector("#menu-commentBarrage");
     const $rightMenuNewWindow = document.querySelector("#menu-newwindow");
     const $rightMenuNewWindowImg = document.querySelector("#menu-newwindowimg");
     const $rightMenuCopyLink = document.querySelector("#menu-copylink");
@@ -69,9 +72,7 @@ var oncontextmenuFunction = function (event) {
     const $rightMenuDownloadImg = document.querySelector("#menu-downloadimg");
     const $rightMenuSearch = document.querySelector("#menu-search");
     const $rightMenuSearchBaidu = document.querySelector("#menu-searchBaidu");
-    const $rightMenuMusicToggle = document.querySelector("#menu-music-toggle");
-    const $rightMenuMusicBack = document.querySelector("#menu-music-back");
-    const $rightMenuMusicForward = document.querySelector("#menu-music-forward");
+    const $rightMenuMusicPlayer = document.querySelector("#rightMenu > div.rightMenu-group.rightMenu-music.rightMenuPlayer");
     const $rightMenuMusicPlaylist = document.querySelector("#menu-music-playlist");
     const $rightMenuMusicCopyMusicName = document.querySelector("#menu-music-copyMusicName");
 
@@ -81,6 +82,7 @@ var oncontextmenuFunction = function (event) {
     // 判断模式 扩展模式为有事件
     let pluginMode = false;
     $rightMenuOther.style.display = "block";
+    $rightMenuCommentBarrage.style.display = "none";
     globalEvent = event;
 
     // 检查是否需要复制 是否有选中文本
@@ -133,17 +135,25 @@ var oncontextmenuFunction = function (event) {
     //判断是否是音乐
     if (navMusicEl && navMusicEl.contains(event.target)) {
       pluginMode = true;
-      $rightMenuMusicToggle.style.display = "block";
-      $rightMenuMusicBack.style.display = "block";
-      $rightMenuMusicForward.style.display = "block";
+      // $rightMenuMusicToggle.style.display = "block";
+      // $rightMenuMusicBack.style.display = "block";
+      // $rightMenuMusicForward.style.display = "block";
       $rightMenuMusicPlaylist.style.display = "block";
       $rightMenuMusicCopyMusicName.style.display = "block";
     } else {
-      $rightMenuMusicToggle.style.display = "none";
-      $rightMenuMusicBack.style.display = "none";
-      $rightMenuMusicForward.style.display = "none";
+      // $rightMenuMusicToggle.style.display = "none";
+      // $rightMenuMusicBack.style.display = "none";
+      // $rightMenuMusicForward.style.display = "none";
       $rightMenuMusicPlaylist.style.display = "none";
       $rightMenuMusicCopyMusicName.style.display = "none";
+    }
+
+    // 检查 `body` 是否具有 `data-type="music"` 属性
+    let bodyElement = document.querySelector('body');
+    if (bodyElement.getAttribute('data-type') === 'music') {
+      $rightMenuMusicPlayer.style.display = "none";
+    } else {
+      $rightMenuMusicPlayer.style.display = "block";
     }
 
     // 如果不是扩展模式则隐藏扩展模块
@@ -374,6 +384,93 @@ rm.copyLink = function () {
   anzhiyu.snackbarShow("已复制链接地址");
 };
 
+rm.updateMusicInfo = function () {
+  // 获取名称和作者的 span 元素
+  const nameSpan = document.querySelector("#name");
+  const artistSpan = document.querySelector("#artist");
+
+  if (!nameSpan || !artistSpan) {
+    console.error("Name or artist span element not found");
+    return;
+  }
+
+  // 获取当前播放的歌曲信息
+  const name = anzhiyu.musicGetName();
+  const artist = anzhiyu.musicGetauthor();
+
+  // 将歌曲名称和作者写入到 span 元素
+  nameSpan.textContent = name || 'Unknown Title'; // 显示歌曲名称，默认"Unknown Title"
+  artistSpan.textContent = artist || 'Unknown Artist'; // 显示作者名称，默认"Unknown Artist"
+}
+
+const volumeSlider = document.getElementById("volume-slider");
+const sliderRail = volumeSlider.querySelector('#slider-rail');
+const sliderProcess = volumeSlider.querySelector('#slider-process');
+const sliderDot = volumeSlider.querySelector('#slider-dot');
+
+rm.updateVolumeSlider = function () {
+  // 获取相关元素
+  const volume = navMusicEl.querySelector("meting-js").aplayer.volume();
+
+  // 确保音量在 0 到 1 之间
+  const validVolume = Math.min(Math.max(volume, 0), 1);
+
+  // 计算滑块的位置
+  const railRect = sliderRail.getBoundingClientRect();
+  const dotWidth = sliderDot.offsetWidth;
+  const sliderWidth = railRect.width;
+
+  // 更新滑块的位置和进度条的宽度
+  sliderProcess.style.width = `${validVolume * 100}%`;
+  // sliderDot.style.left = `${validVolume * 100}%`;
+
+  // 计算滑块的位置，使其不会超出滑条边界
+  const dotPosition = validVolume * sliderWidth;
+  const limitedPosition = Math.min(Math.max(dotPosition - dotWidth / 2, 3), 82);
+  sliderDot.style.left = `${limitedPosition}px`;
+}
+
+function initializeSliderEvents() {
+  let isDragging = false;
+
+  function handleSliderMove(event) {
+    const railRect = sliderRail.getBoundingClientRect();
+    const position = event.clientX;
+    const volume = Math.min(Math.max((position - railRect.left) / railRect.width, 0), 1);
+    
+    navMusicEl.querySelector("meting-js").aplayer.volume(volume);
+    rm.updateVolumeSlider();
+  }
+
+  sliderRail.addEventListener('click', function (event) {
+    if (!isDragging) {
+      sliderDot.style.transition = 'left 0.3s';
+      sliderProcess.style.transition = 'width 0.3s';
+      handleSliderMove(event);
+    }
+  });
+
+  sliderDot.addEventListener('mousedown', function (event) {
+    isDragging = true;
+    sliderDot.style.transition = 'none';
+    sliderProcess.style.transition = 'none';
+    event.preventDefault();
+
+    function onMouseMove(event) {
+      handleSliderMove(event);
+    }
+
+    function onMouseUp() {
+      isDragging = false;
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    }
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
+}
+
 function addRightMenuClickEvent() {
   // 添加点击事件
   document.getElementById("menu-backward").addEventListener("click", function () {
@@ -464,6 +561,10 @@ function addRightMenuClickEvent() {
   document.getElementById("menu-searchBaidu").addEventListener("click", rm.searchBaidu);
 
   //音乐
+  document.getElementById("menu-music-volume-up").addEventListener("click", anzhiyu.musicVolumeUp);
+
+  document.getElementById("menu-music-volume-down").addEventListener("click", anzhiyu.musicVolumeDown);
+
   document.getElementById("menu-music-toggle").addEventListener("click", anzhiyu.musicToggle);
 
   document.getElementById("menu-music-back").addEventListener("click", anzhiyu.musicSkipBack);
@@ -477,3 +578,4 @@ function addRightMenuClickEvent() {
 }
 
 addRightMenuClickEvent();
+initializeSliderEvents();
