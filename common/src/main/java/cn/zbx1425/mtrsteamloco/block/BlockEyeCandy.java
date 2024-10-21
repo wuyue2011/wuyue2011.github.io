@@ -256,7 +256,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
 
         public void setShape(VoxelShape shape) {
-            Minecraft.getInstance().level.getBlockState(this.worldPosition).getBlock();
+            Block block = Minecraft.getInstance().level.getBlockState(this.worldPosition).getBlock();
             if (block instanceof BlockEyeCandy) {
                 ((BlockEyeCandy) block).shape = shape;
             } else {
