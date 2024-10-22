@@ -68,7 +68,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         return defaultBlockState().setValue(FACING, ctx.getHorizontalDirection());
     }
 
-    public VoxelShape shape = Shapes.block();
+    //public VoxelShape shape = Shapes.block();
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -111,12 +111,12 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
-        return shape;
+        return Block.box(3.0D, 3.0D, 3.0D, 13.0D, 13.0D, 13.0D);
     }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
-        return shape;
+        return Block.box(3.0D, 3.0D, 3.0D, 13.0D, 13.0D, 13.0D);
     }
 
     public static class BlockEntityEyeCandy extends BlockEntityClientSerializableMapper {
