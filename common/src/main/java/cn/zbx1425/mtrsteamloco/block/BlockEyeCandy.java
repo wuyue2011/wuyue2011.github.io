@@ -97,26 +97,26 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
-    /*public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos) {
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos) {
         final BlockEntity entity = world.getBlockEntity(pos);
         if (entity instanceof BlockEntityEyeCandy) {
-            return ((BlockEyeCandy.BlockEntityEyeCandy) entity).shape;
+            return ((BlockEyeCandy.BlockEntityEyeCandy) entity).getShape();
         }else {
             return Shapes.block();
         }
-    }*/
+    }
 
     //protected static final VoxelShape X_SHAPE = Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D);
     //protected static final VoxelShape X_OCCLUSION_SHAPE = Shapes.or(Block.box(7.0D, 5.0D, 0.0D, 9.0D, 16.0D, 2.0D), Block.box(7.0D, 5.0D, 14.0D, 9.0D, 16.0D, 16.0D));
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
-        return Block.box(3.0D, 3.0D, 3.0D, 13.0D, 13.0D, 13.0D);
+        return getShape(state, blockGetter, pos);
     }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
-        return Block.box(3.0D, 3.0D, 3.0D, 13.0D, 13.0D, 13.0D);
+        return getShape(state, blockGetter, pos);
     }
 
     public static class BlockEntityEyeCandy extends BlockEntityClientSerializableMapper {
@@ -136,9 +136,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public float doorValue = 0;
         public boolean doorTarget = false;
 
-        //protected String shape = "0, 0, 0, 16, 16, 16";
-        //public boolean isEmpty = false;
-        //public VoxelShape shape = Shapes.block();
+        protected String shape = "0, 0, 0, 16, 16, 16";
+        public boolean isEmpty = false;
 
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
@@ -165,8 +164,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             platform = compoundTag.contains("platform") ? compoundTag.getBoolean("platform") : true;
             doorValue = compoundTag.contains("doorValue") ? compoundTag.getFloat("doorValue") : 0;
             doorTarget = compoundTag.contains("doorTarget") ? compoundTag.getBoolean("doorTarget") : false;
-            //shape = compoundTag.contains("shape") ? compoundTag.getString("shape") : "0, 0, 0, 16, 16, 16";
-            //isEmpty = compoundTag.contains("isEmpty") ? compoundTag.getBoolean("isEmpty") : true;
+            shape = compoundTag.contains("shape") ? compoundTag.getString("shape") : "0, 0, 0, 16, 16, 16";
+            isEmpty = compoundTag.contains("isEmpty") ? compoundTag.getBoolean("isEmpty") : true;
         }
 
         @Override
@@ -189,8 +188,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putBoolean("platform", platform);
             compoundTag.putFloat("doorValue", doorValue);
             compoundTag.putBoolean("doorTarget", doorTarget);
-            //compoundTag.putString("shape", shape);
-            //compoundTag.putBoolean("isEmpty", isEmpty);
+            compoundTag.putString("shape", shape);
+            compoundTag.putBoolean("isEmpty", isEmpty);
         }
 
         public BlockPos getWorldPos() {
@@ -255,16 +254,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             return platform;
         }
 
-        /*public void setShape(VoxelShape shape) {
-            Block block = Minecraft.getInstance().level.getBlockState(this.worldPosition).getBlock();
-            if (block instanceof BlockEyeCandy) {
-                ((BlockEyeCandy) block).shape = shape;
-            } else {
-                scriptContext.setDebugInfo("设置shape失败了", System.currentTimeMillis() + "");
-            }
-        }*/
-
-        /*public void setShape(String shape) {
+        public void setShape(String shape) {
             this.shape = shape;
             getShape();
         }
@@ -302,6 +292,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                 }
                 return Shapes.or(Shapes.empty, voxelShapes);
             }
-        }*/
+        }
     }
 }
