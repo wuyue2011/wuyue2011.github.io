@@ -290,7 +290,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                         return Shapes.block();
                     }
                 }
-                return Shapes.or(Shapes.empty, voxelShapes);
+                return Shapes.or(Shapes.empty(), voxelShapes);
             }
         }
     }
