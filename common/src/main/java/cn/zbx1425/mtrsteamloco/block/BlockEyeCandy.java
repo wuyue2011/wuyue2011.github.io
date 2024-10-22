@@ -105,19 +105,16 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             return Shapes.block();
         }
     }
-
-    //protected static final VoxelShape X_SHAPE = Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D);
-    //protected static final VoxelShape X_OCCLUSION_SHAPE = Shapes.or(Block.box(7.0D, 5.0D, 0.0D, 9.0D, 16.0D, 2.0D), Block.box(7.0D, 5.0D, 14.0D, 9.0D, 16.0D, 16.0D));
-
+    
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
         return getShape(state, blockGetter, pos);
     }
 
-    @Override
+    /*@Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
         return getShape(state, blockGetter, pos);
-    }
+    }*/
 
     public static class BlockEntityEyeCandy extends BlockEntityClientSerializableMapper {
 
