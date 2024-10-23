@@ -53,8 +53,6 @@ import java.util.List;
 
 public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlockMapper {
 
-    public static final IntegerProperty KEY = IntegerProperty.create("key", 0, Integer.MAX_VALUE);
-
     public BlockEyeCandy() {
         super(
 #if MC_VERSION < "12000"
@@ -110,6 +108,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
         try {
+            IntegerProperty KEY = IntegerProperty.create("beckey", 0, Integer.MAX_VALUE);
             int shape = Integer.valueOf(state.getValue(KEY)).intValue();
             return Block.box(shape >>> 25 & 0x1F, shape >>> 20 & 0x1F, shape >>> 15 & 0x1F, shape >>> 10 & 0x1F, shape >>> 5 & 0x1F, shape >>> 0 & 0x1F);
         } catch (NumberFormatException e) {
@@ -258,7 +257,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
 
         public void setShape(int shape) {
-            getBlockState().setValue(BlockEyeCandy.KEY, Integer.valueOf(shape));
+            IntegerProperty KEY = IntegerProperty.create("beckey", 0, Integer.MAX_VALUE);
+            getBlockState().setValue(KEY, Integer.valueOf(shape));
         }
 
         public VoxelShape getShape() {
