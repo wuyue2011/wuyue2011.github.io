@@ -643,87 +643,31 @@ const anzhiyu = {
     if (!config[configKey]) return defaultValue;
     return config[configKey];
   },
-    //切换音乐播放状态
-    musicToggle: function (changePaly = true) {
-      if (!anzhiyu_musicFirst) {
-        anzhiyu.musicBindEvent();
-        anzhiyu_musicFirst = true;
-      }
-      let msgPlay = '<i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span>';
-      let msgPause = '<i class="anzhiyufont anzhiyu-icon-pause"></i><span>暂停音乐</span>';
-      if (anzhiyu_musicPlaying) {
-        navMusicEl.classList.remove("playing");
-  -     document.getElementById("menu-music-toggle").innerHTML = msgPlay;
-        document.getElementById("nav-music-hoverTips").innerHTML = "音乐已暂停";
-        document.querySelector("#consoleMusic").classList.remove("on");
-        anzhiyu_musicPlaying = false;
-        navMusicEl.classList.remove("stretch");
-      } else {
-        navMusicEl.classList.add("playing");
-  -     document.getElementById("menu-music-toggle").innerHTML = msgPause;
-        document.querySelector("#consoleMusic").classList.add("on");
-        anzhiyu_musicPlaying = true;
-        navMusicEl.classList.add("stretch");
-      }
-      if (changePaly) document.querySelector("#nav-music meting-js").aplayer.toggle();
-  -   rm && rm.hideRightMenu();
-    },
-    // 音乐伸缩
-    musicTelescopic: function () {
-      if (navMusicEl.classList.contains("stretch")) {
-        navMusicEl.classList.remove("stretch");
-      } else {
-        navMusicEl.classList.add("stretch");
-      }
-    },
-  
-    //音乐上一曲
-    musicSkipBack: function () {
-      navMusicEl.querySelector("meting-js").aplayer.skipBack();
-  -   rm && rm.hideRightMenu();
-  +   rm.updateMusicInfo();
-    },
-  
-    //音乐下一曲
-    musicSkipForward: function () {
-      navMusicEl.querySelector("meting-js").aplayer.skipForward();
-  -   rm && rm.hideRightMenu();
-  +   rm.updateMusicInfo();
-    },
-  
-  + // 增加音量
-  + musicVolumeUp: function () {
-  +   navMusicEl.querySelector("meting-js").aplayer.volume(
-  +     Math.min(navMusicEl.querySelector("meting-js").aplayer.volume() + 0.1, 1)
-  +   );
-  +   rm.updateVolumeSlider();
-  + },
-  +
-  + // 减少音量
-  + musicVolumeDown: function () {
-  +   navMusicEl.querySelector("meting-js").aplayer.volume(
-  +     Math.max(navMusicEl.querySelector("meting-js").aplayer.volume() - 0.1, 0)
-  +   );
-  +   rm.updateVolumeSlider();
-  + },
-  
-    //获取音乐中的名称
-    musicGetName: function () {
-  -   var x = document.querySelector(".aplayer-title");
-  -   var arr = [];
-  -   for (var i = x.length - 1; i >= 0; i--) {
-  -     arr[i] = x[i].innerText;
-  -   }
-  -   return arr[0];
-  +   return x.innerText;
-    },
-  +
-  + //获取音乐中的作者
-  + musicGetauthor: function () {
-  +   var x = document.querySelector(".aplayer-author");
-  +   var composer = x.innerText.trim().replace(/^-\s*|\s*-\s*/g, '');
-  +   return composer;
-  + },
+  //切换音乐播放状态
+  musicToggle: function (changePaly = true) {
+    if (!anzhiyu_musicFirst) {
+      anzhiyu.musicBindEvent();
+      anzhiyu_musicFirst = true;
+    }
+    let msgPlay = '<i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span>';
+    let msgPause = '<i class="anzhiyufont anzhiyu-icon-pause"></i><span>暂停音乐</span>';
+    if (anzhiyu_musicPlaying) {
+      navMusicEl.classList.remove("playing");
+      document.getElementById("menu-music-toggle").innerHTML = msgPlay;
+      document.getElementById("nav-music-hoverTips").innerHTML = "音乐已暂停";
+      document.querySelector("#consoleMusic").classList.remove("on");
+      anzhiyu_musicPlaying = false;
+      navMusicEl.classList.remove("stretch");
+    } else {
+      navMusicEl.classList.add("playing");
+      document.getElementById("menu-music-toggle").innerHTML = msgPause;
+      document.querySelector("#consoleMusic").classList.add("on");
+      anzhiyu_musicPlaying = true;
+      navMusicEl.classList.add("stretch");
+    }
+    if (changePaly) document.querySelector("#nav-music meting-js").aplayer.toggle();
+    rm && rm.hideRightMenu();
+  },
   // 音乐伸缩
   musicTelescopic: function () {
     if (navMusicEl.classList.contains("stretch")) {
