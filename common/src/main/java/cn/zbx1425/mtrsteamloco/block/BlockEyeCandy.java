@@ -258,7 +258,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
 
         public void setShape(int shape) {
-            getBlockState().setValue(BlockEyeCandy.KEY, Integer.valueOf(value));
+            getBlockState().setValue(BlockEyeCandy.KEY, Integer.valueOf(shape));
         }
 
         public VoxelShape getShape() {
