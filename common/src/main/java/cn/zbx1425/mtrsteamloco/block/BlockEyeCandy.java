@@ -43,6 +43,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,6 +52,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlockMapper {
+
+    public static final IntegerProperty KEY = IntegerProperty.create("key", 0, Integer.MAX_VALUE);
 
     public BlockEyeCandy() {
         super(
@@ -67,8 +70,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     public BlockState getStateForPlacement(BlockPlaceContext ctx) {
         return defaultBlockState().setValue(FACING, ctx.getHorizontalDirection());
     }
-
-    //public VoxelShape shape = Shapes.block();
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -97,18 +98,22 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         return RenderShape.INVISIBLE;
     }
 
-    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos) {
+    /*public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos) {
         final BlockEntity entity = world.getBlockEntity(pos);
         if (entity instanceof BlockEntityEyeCandy) {
             return ((BlockEyeCandy.BlockEntityEyeCandy) entity).getShape();
         }else {
             return Block.box(3, 8, 3, 13, 16, 13);
         }
-    }
+    }*/
     
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
-        return getShape(state, blockGetter, pos);
+        int shape = Integer.valueOf(state.getValue(KEY)).intValue();
+        if (shape != null) {
+            return Block.box(shape >>> 25 & 0x1F, shape >>> 20 & 0x1F, shape >>> 15 & 0x1F, shape >>> 10 & 0x1F, shape >>> 5 & 0x1F, shape >>> 0 & 0x1F);
+        }
+        return Block.box(0, 0, 0, 16, 16, 16);
     }
 
     /*@Override
@@ -233,9 +238,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             return data;
         }
 
-        public void setDoorValue(float value) {
-            doorValue = value;
-            sendUpdateC2S();
+        public void setDoorValue(int value) {
+            getBlockState().setValue(BlockEyeCandy.KEY, Integer.valueOf(value));
         }
 
         public void setDoorTarget(boolean target) {
@@ -251,7 +255,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             return platform;
         }
 
-        public void setShape(String shape) {
+        public void setShape(int shape) {
             this.shape = shape;
             getShape();
         }
