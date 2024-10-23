@@ -102,7 +102,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         if (entity instanceof BlockEntityEyeCandy) {
             return ((BlockEyeCandy.BlockEntityEyeCandy) entity).getShape();
         }else {
-            return Shapes.block();
+            return Block.box(3, 8, 3, 13, 16, 13);
         }
     }
     
