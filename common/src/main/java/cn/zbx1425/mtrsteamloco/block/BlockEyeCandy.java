@@ -238,8 +238,9 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             return data;
         }
 
-        public void setDoorValue(int value) {
-            getBlockState().setValue(BlockEyeCandy.KEY, Integer.valueOf(value));
+        public void setDoorValue(float value) {
+            doorValue = value;
+            sendUpdateC2S();
         }
 
         public void setDoorTarget(boolean target) {
@@ -256,8 +257,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
 
         public void setShape(int shape) {
-            this.shape = shape;
-            getShape();
+            getBlockState().setValue(BlockEyeCandy.KEY, Integer.valueOf(value));
         }
 
         public VoxelShape getShape() {
