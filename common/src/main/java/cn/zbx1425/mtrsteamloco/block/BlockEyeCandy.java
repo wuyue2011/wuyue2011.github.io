@@ -109,11 +109,12 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
-        int shape = Integer.valueOf(state.getValue(KEY)).intValue();
-        if (shape != null) {
+        try {
+            int shape = Integer.valueOf(state.getValue(KEY)).intValue();
             return Block.box(shape >>> 25 & 0x1F, shape >>> 20 & 0x1F, shape >>> 15 & 0x1F, shape >>> 10 & 0x1F, shape >>> 5 & 0x1F, shape >>> 0 & 0x1F);
+        } catch (NumberFormatException e) {
+            return Block.box(3, 8, 3, 13, 13, 13);
         }
-        return Block.box(0, 0, 0, 16, 16, 16);
     }
 
     /*@Override
