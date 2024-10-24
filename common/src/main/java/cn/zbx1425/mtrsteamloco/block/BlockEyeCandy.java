@@ -110,7 +110,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         try {
             int shape = Integer.valueOf(state.getValue(Propertys.SHAPE)).intValue();
             return Block.box(shape >>> 25 & 0x1F, shape >>> 20 & 0x1F, shape >>> 15 & 0x1F, shape >>> 10 & 0x1F, shape >>> 5 & 0x1F, shape >>> 0 & 0x1F);
-        } catch (NumberFormatException e) {
+        } catch (IllegalArgumentException e) {
             return Block.box(3, 8, 3, 13, 13, 13);
         }
     }
