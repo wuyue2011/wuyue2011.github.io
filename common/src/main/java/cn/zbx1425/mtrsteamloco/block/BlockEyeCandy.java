@@ -108,8 +108,13 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
         try {
-            int shape = Integer.valueOf(state.getValue(Propertys.SHAPE)).intValue();
-            return Block.box(shape >>> 25 & 0x1F, shape >>> 20 & 0x1F, shape >>> 15 & 0x1F, shape >>> 10 & 0x1F, shape >>> 5 & 0x1F, shape >>> 0 & 0x1F);
+            int sx = Integer.valueOf(state.getValue(Propertys.SSX)).intValue();
+            int sy = Integer.valueOf(state.getValue(Propertys.SSY)).intValue();
+            int sz = Integer.valueOf(state.getValue(Propertys.SSZ)).intValue();
+            int mx = Integer.valueOf(state.getValue(Propertys.SMX)).intValue();
+            int my = Integer.valueOf(state.getValue(Propertys.SMY)).intValue();
+            int mz = Integer.valueOf(state.getValue(Propertys.SMZ)).intValue();
+            return Block.box(sx, sy, sz, mx, my, mz);
         } catch (IllegalArgumentException e) {
             return Block.box(3, 8, 3, 13, 13, 13);
         }
@@ -255,8 +260,18 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             return platform;
         }
 
-        public void setShape(int shape) {
-            getBlockState().setValue(Propertys.SHAPE, Integer.valueOf(shape));
+        public void setShape(int sx, int sy, int sz, int mx, int my, int mz) {
+            try {
+                BlockState state = getBlockState();
+                state.setValue(Propertys.SSX, Integer.valueOf(sx));
+                state.setValue(Propertys.SSY, Integer.valueOf(sy));
+                state.setValue(Propertys.SSZ, Integer.valueOf(sz));
+                state.setValue(Propertys.SMX, Integer.valueOf(mx));
+                state.setValue(Propertys.SMY, Integer.valueOf(my));
+                state.setValue(Propertys.SMZ, Integer.valueOf(mz));
+            } catch (IllegalArgumentException e) {
+
+            }
         }
 
         public VoxelShape getShape() {
