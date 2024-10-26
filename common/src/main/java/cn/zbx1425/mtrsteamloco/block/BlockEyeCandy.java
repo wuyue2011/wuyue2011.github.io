@@ -96,18 +96,20 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         return RenderShape.INVISIBLE;
     }
 
-    /*public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos) {
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos) {
         final BlockEntity entity = world.getBlockEntity(pos);
         if (entity instanceof BlockEntityEyeCandy) {
             return ((BlockEyeCandy.BlockEntityEyeCandy) entity).getShape();
         }else {
+            Main.LOGGER.info("BlockEyeCandy: " + entity.toString() + "/" + state.toString() + "/" + world.toString() + "/" + pos.toString());
             return Block.box(3, 8, 3, 13, 16, 13);
         }
-    }*/
+    }
     
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
-        try {
+        return getShape(state, blockGetter, pos);
+        /*try {
             int sx = Integer.valueOf(state.getValue(Propertys.SSX)).intValue();
             int sy = Integer.valueOf(state.getValue(Propertys.SSY)).intValue();
             int sz = Integer.valueOf(state.getValue(Propertys.SSZ)).intValue();
@@ -118,7 +120,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         } catch (IllegalArgumentException e) {
             Main.LOGGER.info("BlockEyeCandy: " + e.getMessage() + " " + state.toString() + " " + blockGetter.toString() + " " + pos.toString() + " " + collisionContext.toString());
             return Block.box(3, 8, 3, 13, 13, 13);
-        }
+        }*/
     }
 
     /*@Override
@@ -261,8 +263,10 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             return platform;
         }
 
-        public void setShape(int sx, int sy, int sz, int mx, int my, int mz) {
-            BlockState state = getBlockState();
+        public void setShape(String shape) {
+            this.shape = shape;
+            getShape();
+            /*BlockState state = getBlockState();
             try {
                 state.setValue(Propertys.SSX, Integer.valueOf(sx));
                 state.setValue(Propertys.SSY, Integer.valueOf(sy));
@@ -272,7 +276,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                 state.setValue(Propertys.SMZ, Integer.valueOf(mz));
             } catch (IllegalArgumentException e) {
                 Main.LOGGER.info("BlockEyeCandy: " + e.getMessage() + " " + state.toString());
-            }
+            }*/
+            
         }
 
         public VoxelShape getShape() {
@@ -300,7 +305,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                     }
                     try {
                         voxelShapes[i] = Block.box(pos[0], pos[1], pos[2], pos[3], pos[4], pos[5]);
-                    } catch (Exception e) {
+                    } catch (IllegalArgumentException e) {
                         shape = "0, 0, 0, 16, 16, 16";
                         sendUpdateC2S();
                         return Shapes.block();
