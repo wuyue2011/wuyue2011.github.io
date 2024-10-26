@@ -116,6 +116,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             int mz = Integer.valueOf(state.getValue(Propertys.SMZ)).intValue();
             return Block.box(sx, sy, sz, mx, my, mz);
         } catch (IllegalArgumentException e) {
+            Main.LOGGER.info("BlockEyeCandy: " + e.getMessage() + " " + state.toString() + " " + blockGetter.toString() + " " + pos.toString() + " " + collisionContext.toString());
             return Block.box(3, 8, 3, 13, 13, 13);
         }
     }
@@ -261,8 +262,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
 
         public void setShape(int sx, int sy, int sz, int mx, int my, int mz) {
+            BlockState state = getBlockState();
             try {
-                BlockState state = getBlockState();
                 state.setValue(Propertys.SSX, Integer.valueOf(sx));
                 state.setValue(Propertys.SSY, Integer.valueOf(sy));
                 state.setValue(Propertys.SSZ, Integer.valueOf(sz));
@@ -270,7 +271,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                 state.setValue(Propertys.SMY, Integer.valueOf(my));
                 state.setValue(Propertys.SMZ, Integer.valueOf(mz));
             } catch (IllegalArgumentException e) {
-
+                Main.LOGGER.info("BlockEyeCandy: " + e.getMessage() + " " + state.toString());
             }
         }
 
