@@ -274,7 +274,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                     sendUpdateC2S();
                     return Shapes.block();
                 }
-                Double[] pos = new Double[posArray.length];
+                Double[] pos = new Double[6];
                 try {
                     for (int j = 0; j < posArray.length; j++) {
                         pos[j] = Double.parseDouble(posArray[j]);
@@ -285,7 +285,34 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                     return Shapes.block();
                 }
                 try {
-                    voxelShapes[i] = Block.box(pos[0], pos[1], pos[2], pos[3], pos[4], pos[5]);
+                    Double x1 = pos[0], y1 = pos[1], z1 = pos[2], x2 = pos[3], y2 = pos[4], z2 = pos[5];
+                    Double[] newPos = null;
+                    float yRot = getBlockYRot();
+                    switch (yRot) {
+                        case 0: {
+                            newPos = new Double[]{x1, y1, z1, x2, y2, z2};
+                            break;
+                        }
+                        case 90: {
+                            newPos = new Double[]{16 - z2, y1, x1, 16 - z1, y2, x2};
+                            break;
+                        }
+                        case 180: {
+                            newPos = new Double[]{16 - x2, y1, 16 - z2, 16 - x1, y2, 16 - z1};
+                            break;
+                        }
+                        case 270: {
+                            newPos = new Double[]{z1, y1, 16 - x2, z2, y2, 16 - x1};
+                            break;
+                        }
+                        default: {
+                            newPos = new Double[]{x1, y1, z1, x2, y2, z2};
+                            break;
+                        }
+                    }
+                    voxelShapes[i] = Block.box(newPos[0], newPos[1], newPos[2], newPos[3], newPos[4], newPos[5]);
+                    double tx = (double)translateX * 16, ty = (double)translateY * 16, tz = (double)translateZ * 16;
+                    voxelShapes[i] = voxelShapes[i].move(tx, ty, tz);
                 } catch (IllegalArgumentException e) {
                     shape = "0, 0, 0, 16, 16, 16";
                     sendUpdateC2S();
