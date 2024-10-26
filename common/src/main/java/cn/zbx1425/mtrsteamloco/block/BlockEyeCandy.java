@@ -287,21 +287,21 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                 try {
                     Double x1 = pos[0], y1 = pos[1], z1 = pos[2], x2 = pos[3], y2 = pos[4], z2 = pos[5];
                     Double[] newPos = null;
-                    float yRot = getBlockYRot();
+                    int yRot = (int)getBlockYRot();
                     switch (yRot) {
-                        case 0F: {
+                        case 0: {
                             newPos = new Double[]{x1, y1, z1, x2, y2, z2};
                             break;
                         }
-                        case 90F: {
+                        case 90: {
                             newPos = new Double[]{16 - z2, y1, x1, 16 - z1, y2, x2};
                             break;
                         }
-                        case 180F: {
+                        case 180: {
                             newPos = new Double[]{16 - x2, y1, 16 - z2, 16 - x1, y2, 16 - z1};
                             break;
                         }
-                        case 270F: {
+                        case 270: {
                             newPos = new Double[]{z1, y1, 16 - x2, z2, y2, 16 - x1};
                             break;
                         }
