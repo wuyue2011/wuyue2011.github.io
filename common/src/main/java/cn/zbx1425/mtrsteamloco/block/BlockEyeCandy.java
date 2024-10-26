@@ -102,19 +102,19 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             return ((BlockEyeCandy.BlockEntityEyeCandy) entity).getShape();
         }else {
             Main.LOGGER.info("BlockEyeCandy: " + entity + "/" + state.toString() + "/" + world.toString() + "/" + pos.toString());
-            return Block.box(3, 8, 3, 13, 16, 13);
+            return Block.box(0, 0, 0, 16, 16, 16);
         }
     }
     
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
-        return getShape(state, blockGetter, pos);
+        return Block.box(0, 0, 0, 16, 16, 16);
     }
 
     @Override
-    public VoxelShape getVisualShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
-        return Block.box(0, 0, 0, 16, 16, 16);
-    }//1114514
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
+        return getShape(state, blockGetter, pos);
+    }
 
     public static class BlockEntityEyeCandy extends BlockEntityClientSerializableMapper {
 
