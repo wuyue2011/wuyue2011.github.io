@@ -227,6 +227,9 @@ public class EyeCandyScreen extends SelectListScreen {
                                 rz.setValue((int)Math.round(Math.toDegrees(be.rotateZ) / 5f) + 18);
                                 be.rotateZ = (float)Math.toRadians(Float.parseFloat(parts[1]));
                                 break;
+                            case "shape":
+                                be.shape = parts[1];
+                                break;
                             default:
                                 break;
                         }
@@ -257,6 +260,9 @@ public class EyeCandyScreen extends SelectListScreen {
                             break;
                         case "RZ":
                             newStr = "RZ=" + Math.toDegrees(blockEntity.rotateZ);
+                            break;
+                        case "shape":
+                            newStr = "shape=" + blockEntity.shape;
                             break;
                         default:
                             break;

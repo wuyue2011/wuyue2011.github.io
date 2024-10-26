@@ -148,6 +148,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public String shape = "0, 0, 0, 16, 16, 16";
         public boolean noCollision = false;
+        public boolean noMove = true;
 
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
@@ -176,6 +177,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             doorTarget = compoundTag.contains("doorTarget") ? compoundTag.getBoolean("doorTarget") : false;
             shape = compoundTag.contains("shape") ? compoundTag.getString("shape") : "0, 0, 0, 16, 16, 16";
             noCollision = compoundTag.contains("noCollision") ? compoundTag.getBoolean("noCollision") : false;
+            noMove = compoundTag.contains("noMove") ? compoundTag.getBoolean("noMove") : true;
         }
 
         @Override
@@ -200,6 +202,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putBoolean("doorTarget", doorTarget);
             compoundTag.putString("shape", shape);
             compoundTag.putBoolean("noCollision", noCollision);
+            compoundTag.putBoolean("noMove", noMove);
         }
 
         public BlockPos getWorldPos() {
@@ -316,8 +319,10 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                         }
                     }
                     voxelShapes[i] = Block.box(newPos[0], newPos[1], newPos[2], newPos[3], newPos[4], newPos[5]);
-                    double tx = (double)translateX * 16, ty = (double)translateY * 16, tz = (double)translateZ * 16;
-                    voxelShapes[i] = voxelShapes[i].move(tx, ty, tz);
+                    if (!noMove) {
+                        double tx = (double)translateX, ty = (double)translateY, tz = (double)translateZ;
+                        voxelShapes[i] = voxelShapes[i].move(tx, ty, tz);
+                    }
                 } catch (IllegalArgumentException e) {
                     shape = "0, 0, 0, 16, 16, 16";
                     sendUpdateC2S();
