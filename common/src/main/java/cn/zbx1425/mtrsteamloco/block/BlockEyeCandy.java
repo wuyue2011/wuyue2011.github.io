@@ -93,7 +93,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
     @Override
     public RenderShape getRenderShape(@NotNull BlockState blockState) {
-        return RenderShape.INVISIBLE;
+        return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos) {
