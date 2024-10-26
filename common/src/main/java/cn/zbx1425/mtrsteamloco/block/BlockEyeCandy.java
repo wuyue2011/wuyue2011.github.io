@@ -118,7 +118,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             if (((BlockEyeCandy.BlockEntityEyeCandy) entity).noCollision) {
                 return Shapes.empty();
             } else {
-                return getShape(blockState, blockGetter, blockPos);
+                return getShape(state, world, pos);
             }
         }
         return Shapes.empty();

@@ -27,10 +27,8 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(Train.class)
 public abstract class TrainMixin {
 
-    @Shadow
     protected abstract boolean skipScanBlocks(Level world, double trainX, double trainY, double trainZ);
 
-    @Shadow
     protected abstract boolean openDoors(Level world, Block block, BlockPos checkPos, int dwellTicks);
 
 	@Shadow
