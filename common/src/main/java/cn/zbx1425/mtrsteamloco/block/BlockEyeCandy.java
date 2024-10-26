@@ -108,8 +108,20 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
-        if (blockGetter instanceof ClientLevel) return Block.box(0, 0, 0, 16, 16, 16);
         return getShape(state, blockGetter, pos);
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+        final BlockEntity entity = world.getBlockEntity(pos);
+        if (entity instanceof BlockEntityEyeCandy) {
+            if (((BlockEyeCandy.BlockEntityEyeCandy) entity).noCollision) {
+                return Shapes.empty();
+            } else {
+                return getShape(blockState, blockGetter, blockPos);
+            }
+        }
+        return Shapes.empty();
     }
 
     public static class BlockEntityEyeCandy extends BlockEntityClientSerializableMapper {
@@ -130,6 +142,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public boolean doorTarget = false;
 
         protected String shape = "0, 0, 0, 16, 16, 16";
+        protected boolean noCollision = true;
 
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
@@ -157,6 +170,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             doorValue = compoundTag.contains("doorValue") ? compoundTag.getFloat("doorValue") : 0;
             doorTarget = compoundTag.contains("doorTarget") ? compoundTag.getBoolean("doorTarget") : false;
             shape = compoundTag.contains("shape") ? compoundTag.getString("shape") : "0, 0, 0, 16, 16, 16";
+            noCollision = compoundTag.contains("noCollision") ? compoundTag.getBoolean("noCollision") : true;
         }
 
         @Override
@@ -180,6 +194,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putFloat("doorValue", doorValue);
             compoundTag.putBoolean("doorTarget", doorTarget);
             compoundTag.putString("shape", shape);
+            compoundTag.putBoolean("noCollision", noCollision);
         }
 
         public BlockPos getWorldPos() {
