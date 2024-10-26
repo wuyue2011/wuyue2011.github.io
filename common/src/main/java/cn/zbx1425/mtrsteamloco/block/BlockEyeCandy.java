@@ -109,24 +109,12 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
         return getShape(state, blockGetter, pos);
-        /*try {
-            int sx = Integer.valueOf(state.getValue(Propertys.SSX)).intValue();
-            int sy = Integer.valueOf(state.getValue(Propertys.SSY)).intValue();
-            int sz = Integer.valueOf(state.getValue(Propertys.SSZ)).intValue();
-            int mx = Integer.valueOf(state.getValue(Propertys.SMX)).intValue();
-            int my = Integer.valueOf(state.getValue(Propertys.SMY)).intValue();
-            int mz = Integer.valueOf(state.getValue(Propertys.SMZ)).intValue();
-            return Block.box(sx, sy, sz, mx, my, mz);
-        } catch (IllegalArgumentException e) {
-            Main.LOGGER.info("BlockEyeCandy: " + e.getMessage() + " " + state.toString() + " " + blockGetter.toString() + " " + pos.toString() + " " + collisionContext.toString());
-            return Block.box(3, 8, 3, 13, 13, 13);
-        }*/
     }
 
-    /*@Override
-    public VoxelShape getCollisionShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
-        return getShape(state, blockGetter, pos);
-    }*/
+    @Override
+    public VoxelShape getVisualShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
+        return Block.box(0, 0, 0, 16, 16, 16);
+    }
 
     public static class BlockEntityEyeCandy extends BlockEntityClientSerializableMapper {
 
