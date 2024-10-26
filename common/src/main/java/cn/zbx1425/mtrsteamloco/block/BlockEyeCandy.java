@@ -43,7 +43,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.client.multiplayer.ClientLevel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -108,11 +108,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
-        return Block.box(0, 0, 0, 16, 16, 16);
-    }
-
-    @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext collisionContext) {
+        if (blockGetter instanceof ClientLevel) return Block.box(0, 0, 0, 16, 16, 16);
         return getShape(state, blockGetter, pos);
     }
 
