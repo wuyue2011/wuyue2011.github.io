@@ -146,7 +146,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public boolean doorTarget = false;
 
         protected String shape = "0, 0, 0, 16, 16, 16";
-        public boolean isEmpty = false;
 
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
@@ -174,7 +173,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             doorValue = compoundTag.contains("doorValue") ? compoundTag.getFloat("doorValue") : 0;
             doorTarget = compoundTag.contains("doorTarget") ? compoundTag.getBoolean("doorTarget") : false;
             shape = compoundTag.contains("shape") ? compoundTag.getString("shape") : "0, 0, 0, 16, 16, 16";
-            isEmpty = compoundTag.contains("isEmpty") ? compoundTag.getBoolean("isEmpty") : true;
         }
 
         @Override
@@ -198,7 +196,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putFloat("doorValue", doorValue);
             compoundTag.putBoolean("doorTarget", doorTarget);
             compoundTag.putString("shape", shape);
-            compoundTag.putBoolean("isEmpty", isEmpty);
         }
 
         public BlockPos getWorldPos() {
@@ -266,53 +263,37 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public void setShape(String shape) {
             this.shape = shape;
             getShape();
-            /*BlockState state = getBlockState();
-            try {
-                state.setValue(Propertys.SSX, Integer.valueOf(sx));
-                state.setValue(Propertys.SSY, Integer.valueOf(sy));
-                state.setValue(Propertys.SSZ, Integer.valueOf(sz));
-                state.setValue(Propertys.SMX, Integer.valueOf(mx));
-                state.setValue(Propertys.SMY, Integer.valueOf(my));
-                state.setValue(Propertys.SMZ, Integer.valueOf(mz));
-            } catch (IllegalArgumentException e) {
-                Main.LOGGER.info("BlockEyeCandy: " + e.getMessage() + " " + state.toString());
-            }*/
-            
         }
 
         public VoxelShape getShape() {
-            if (isEmpty) {
-                return Shapes.block();
-            } else {
-                String[] shapeArray = shape.split("/");
-                VoxelShape[] voxelShapes= new VoxelShape[shapeArray.length];
-                for (int i = 0; i < shapeArray.length; i++) {
-                    String[] posArray = shapeArray[i].split(",");
-                    if (posArray.length!= 6) {
-                        shape = "0, 0, 0, 16, 16, 16";
-                        sendUpdateC2S();
-                        return Shapes.block();
-                    }
-                    Double[] pos = new Double[posArray.length];
-                    try {
-                        for (int j = 0; j < posArray.length; j++) {
-                            pos[j] = Double.parseDouble(posArray[j]);
-                        }
-                    } catch (NumberFormatException e) {
-                        shape = "0, 0, 0, 16, 16, 16";
-                        sendUpdateC2S();
-                        return Shapes.block();
-                    }
-                    try {
-                        voxelShapes[i] = Block.box(pos[0], pos[1], pos[2], pos[3], pos[4], pos[5]);
-                    } catch (IllegalArgumentException e) {
-                        shape = "0, 0, 0, 16, 16, 16";
-                        sendUpdateC2S();
-                        return Shapes.block();
-                    }
+            String[] shapeArray = shape.split("/");
+            VoxelShape[] voxelShapes= new VoxelShape[shapeArray.length];
+            for (int i = 0; i < shapeArray.length; i++) {
+                String[] posArray = shapeArray[i].split(",");
+                if (posArray.length!= 6) {
+                    shape = "0, 0, 0, 16, 16, 16";
+                    sendUpdateC2S();
+                    return Shapes.block();
                 }
-                return Shapes.or(Shapes.empty(), voxelShapes);
+                Double[] pos = new Double[posArray.length];
+                try {
+                    for (int j = 0; j < posArray.length; j++) {
+                        pos[j] = Double.parseDouble(posArray[j]);
+                    }
+                } catch (NumberFormatException e) {
+                    shape = "0, 0, 0, 16, 16, 16";
+                    sendUpdateC2S();
+                    return Shapes.block();
+                }
+                try {
+                    voxelShapes[i] = Block.box(pos[0], pos[1], pos[2], pos[3], pos[4], pos[5]);
+                } catch (IllegalArgumentException e) {
+                    shape = "0, 0, 0, 16, 16, 16";
+                    sendUpdateC2S();
+                    return Shapes.block();
+                }
             }
+            return Shapes.or(Shapes.empty(), voxelShapes);
         }
     }
 }
