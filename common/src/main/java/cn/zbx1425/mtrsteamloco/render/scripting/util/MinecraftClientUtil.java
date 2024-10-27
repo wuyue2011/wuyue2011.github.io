@@ -23,6 +23,8 @@ import mtr.data.RailwayData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import mtr.block.BlockNode;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.BlockGetter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -125,7 +127,7 @@ public class MinecraftClientUtil {
         return platform;   
     }
 
-    public static Vector3f getNodePos(Vector3f vPos, Float fFacing) {
+    public static Vector3f getNodeAt(Vector3f vPos, Float fFacing) {
         BlockPos pos = vPos.toBlockPos();
         Direction facing = Direction.fromYRot(fFacing);
         BlockGetter world = Minecraft.getInstance().level;

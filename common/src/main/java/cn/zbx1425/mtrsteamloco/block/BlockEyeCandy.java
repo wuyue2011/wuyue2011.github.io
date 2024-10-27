@@ -43,6 +43,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.Direction;
 
 import java.util.HashMap;
 import java.util.Map;
