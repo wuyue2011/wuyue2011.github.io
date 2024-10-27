@@ -100,7 +100,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         final BlockEntity entity = world.getBlockEntity(pos);
         if (entity instanceof BlockEntityEyeCandy) {
             BlockEntityEyeCandy ent = (BlockEntityEyeCandy) entity;
-            return ent.getShape(state, world, pos);
+            return ent.getShape();
         }else {
             return Shapes.block();
         }
