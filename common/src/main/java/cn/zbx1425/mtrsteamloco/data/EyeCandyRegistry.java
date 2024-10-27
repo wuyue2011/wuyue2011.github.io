@@ -128,10 +128,13 @@ public class EyeCandyRegistry {
             }
             script.load("EyeCandy " + key, "Block", resourceManager, scripts);
         }
+        String shape = obj.has("shape")? obj.get("shape").getAsString() : "0, 0, 0, 16, 16, 16";
+        boolean noCollision = obj.has("noCollision") ? obj.get("noCollision").getAsBoolean() : true;
+        boolean noMove = obj.has("noMove") ? obj.get("noMove").getAsBoolean() : noCollision;
         if (cluster == null && script == null) {
             throw new IllegalArgumentException("Invalid eye-candy json: " + key);
         } else {
-            return new EyeCandyProperties(Text.translatable(obj.get("name").getAsString()), cluster, script);
+            return new EyeCandyProperties(Text.translatable(obj.get("name").getAsString()), cluster, script, shape, noCollision, noMove);
         }
     }
 }

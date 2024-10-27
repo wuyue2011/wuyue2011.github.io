@@ -147,7 +147,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public boolean doorTarget = false;
 
         public String shape = "0, 0, 0, 16, 16, 16";
-        public boolean noCollision = false;
+        public boolean noCollision = true;
         public boolean noMove = true;
 
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
@@ -176,7 +176,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             doorValue = compoundTag.contains("doorValue") ? compoundTag.getFloat("doorValue") : 0;
             doorTarget = compoundTag.contains("doorTarget") ? compoundTag.getBoolean("doorTarget") : false;
             shape = compoundTag.contains("shape") ? compoundTag.getString("shape") : "0, 0, 0, 16, 16, 16";
-            noCollision = compoundTag.contains("noCollision") ? compoundTag.getBoolean("noCollision") : false;
+            noCollision = compoundTag.contains("noCollision") ? compoundTag.getBoolean("noCollision") : true;
             noMove = compoundTag.contains("noMove") ? compoundTag.getBoolean("noMove") : true;
         }
 

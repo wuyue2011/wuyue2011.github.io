@@ -94,6 +94,21 @@ public class BlockEntityEyeCandyRenderer extends BlockEntityRendererMapper<Block
                 blockEntity.scriptContext.scriptResult.commit(MainClient.drawScheduler, candyPose, lightToUse);
             }
             prop.script.tryCallRenderFunctionAsync(blockEntity.scriptContext);
+        } else {
+            boolean needSendUpdate = false;
+            if (blockEntity.shape != prop.shape) {
+                blockEntity.shape = prop.shape;
+                needSendUpdate = true;
+            }
+            if (blockEntity.noCollision != prop.noCollision) {
+                blockEntity.noCollision = prop.noCollision;
+                needSendUpdate = true;
+            }
+            if (blockEntity.noMove != prop.noMove) {
+                blockEntity.noMove = prop.noMove;
+                needSendUpdate = true;
+            }
+            if (needSendUpdate) blockEntity.sendUpdateC2S();
         }
     }
 
