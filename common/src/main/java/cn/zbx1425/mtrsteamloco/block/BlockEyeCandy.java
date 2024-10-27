@@ -342,7 +342,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                 }
             }
             oldShape = shape;
-            bufferShape = Shapes.or(Shapes.empty(), voxelShapes);
+            bufferShape = Shapes.or(Block.box(0, 0, 0, 16, 24, 16), voxelShapes);
             return bufferShape;
         }
     }
