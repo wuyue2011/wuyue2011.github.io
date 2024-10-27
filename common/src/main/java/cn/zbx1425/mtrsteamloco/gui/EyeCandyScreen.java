@@ -21,6 +21,7 @@ import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import cn.zbx1425.mtrsteamloco.render.scripting.eyecandy.EyeCandyScriptContext;
 
 import java.util.*;
 import java.util.function.Consumer;
