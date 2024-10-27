@@ -277,7 +277,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             getShape();
         }
 
-        public void getShape() {
+        public VoxelShape getShape() {
             return Block.box(0D, 0D, 0D, 16D, 24D, 16D);
         }
 
