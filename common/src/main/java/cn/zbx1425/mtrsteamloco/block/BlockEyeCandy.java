@@ -96,22 +96,14 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
-    private VoxelShape bufferShape = Shapes.block();
-    private String oldShape = "0, 0, 0, 16, 16, 16"; 
-
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos) {
         final BlockEntity entity = world.getBlockEntity(pos);
         if (entity instanceof BlockEntityEyeCandy) {
             BlockEntityEyeCandy ent = (BlockEntityEyeCandy) entity;
-            if (oldShape != ent.shape) {
-                bufferShape = ent.getShape();
-                oldShape = ent.shape;
-                Main.LOGGER.info("BlockEyeCandy:NewShape/ " + bufferShape + "/" + oldShape + entity + "/" + state + "/" + world + "/" + pos);
-            }
+            return ent.getShape(state, world, pos);
         }else {
-            Main.LOGGER.info("BlockEyeCandy:NoEntity/ " + entity + "/" + state + "/" + world + "/" + pos);
+            return Shapes.block();
         }
-        return bufferShape;
     }
     
     @Override
@@ -124,8 +116,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         final BlockEntity entity = world.getBlockEntity(pos);
         if (entity instanceof BlockEntityEyeCandy) {
             if (((BlockEyeCandy.BlockEntityEyeCandy) entity).noCollision) {
-                //return Shapes.empty();
-                return getShape(state, world, pos);
+                return Shapes.empty();
             } else {
                 return getShape(state, world, pos);
             }
