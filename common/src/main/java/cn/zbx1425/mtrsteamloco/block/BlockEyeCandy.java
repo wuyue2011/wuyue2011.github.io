@@ -106,7 +106,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             if (oldShape != ent.shape) {
                 bufferShape = ent.getShape();
                 oldShape = ent.shape;
-                Main.LOGGER.info("BlockEyeCandy:NewShape/ " + shape + entity + "/" + state + "/" + world + "/" + pos);
+                Main.LOGGER.info("BlockEyeCandy:NewShape/ " + bufferShape + "/" + oldShape + entity + "/" + state + "/" + world + "/" + pos);
             }
         }else {
             Main.LOGGER.info("BlockEyeCandy:NoEntity/ " + entity + "/" + state + "/" + world + "/" + pos);
