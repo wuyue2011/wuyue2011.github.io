@@ -126,7 +126,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
     @Override
     public VoxelShape getOcclusionShape(BlockState state, BlockGetter world, BlockPos pos) {
-        return Shapes.or(empty(), getShape(state, world, pos));
+        return Shapes.or(Shapes.empty(), getShape(state, world, pos));
     }
 
     public static class BlockEntityEyeCandy extends BlockEntityClientSerializableMapper {
@@ -149,6 +149,9 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public String shape = "0, 0, 0, 16, 16, 16";
         public boolean noCollision = true;
         public boolean noMove = true;
+
+        private VoxelShape bufferShape = getShape();
+        private String oldShape = shape; 
 
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
@@ -273,6 +276,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
 
         public VoxelShape getShape() {
+            if (shape == oldShape) return bufferShape;
             String[] shapeArray = shape.split("/");
             VoxelShape[] voxelShapes= new VoxelShape[shapeArray.length];
             for (int i = 0; i < shapeArray.length; i++) {
@@ -280,7 +284,9 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                 if (posArray.length!= 6) {
                     shape = "0, 0, 0, 16, 16, 16";
                     sendUpdateC2S();
-                    return Shapes.block();
+                    oldShape = shape;
+                    bufferShape = Shapes.block();
+                    return bufferShape;
                 }
                 Double[] pos = new Double[6];
                 try {
@@ -290,7 +296,9 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                 } catch (NumberFormatException e) {
                     shape = "0, 0, 0, 16, 16, 16";
                     sendUpdateC2S();
-                    return Shapes.block();
+                    oldShape = shape;
+                    bufferShape = Shapes.block();
+                    return bufferShape;
                 }
                 try {
                     Double x1 = pos[0], y1 = pos[1], z1 = pos[2], x2 = pos[3], y2 = pos[4], z2 = pos[5];
@@ -325,11 +333,15 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                     }
                 } catch (IllegalArgumentException e) {
                     shape = "0, 0, 0, 16, 16, 16";
+                    oldShape = shape;
+                    bufferShape = Shapes.block();
                     sendUpdateC2S();
-                    return Shapes.block();
+                    return bufferShape;
                 }
             }
-            return Shapes.or(Shapes.empty(), voxelShapes);
+            oldShape = shape;
+            bufferShape = Shapes.or(Shapes.empty(), voxelShapes);
+            return bufferShape;
         }
     }
 }
