@@ -99,6 +99,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos) {
         final BlockEntity entity = world.getBlockEntity(pos);
         if (entity instanceof BlockEntityEyeCandy) {
+            Main.LOGGER.info("BlockEyeCandy:Shape/ " + ((BlockEyeCandy.BlockEntityEyeCandy) entity).getShape() + entity + "/" + state + "/" + world + "/" + pos);
             return ((BlockEyeCandy.BlockEntityEyeCandy) entity).getShape();
         }else {
             Main.LOGGER.info("BlockEyeCandy: " + entity + "/" + state + "/" + world + "/" + pos);
