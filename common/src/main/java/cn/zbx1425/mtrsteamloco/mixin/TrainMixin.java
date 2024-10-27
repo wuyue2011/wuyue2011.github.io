@@ -31,10 +31,8 @@ public abstract class TrainMixin {
 
     protected abstract boolean openDoors(Level world, Block block, BlockPos checkPos, int dwellTicks);
 
-	@Shadow
 	protected float doorValue;
 
-	@Shadow
 	protected boolean doorTarget;
 
     @Inject(method = "scanDoors", at = @At("HEAD"), cancellable = true, remap = false)

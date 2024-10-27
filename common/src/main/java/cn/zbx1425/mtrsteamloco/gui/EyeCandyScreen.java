@@ -115,6 +115,7 @@ public class EyeCandyScreen extends SelectListScreen {
                 blockEntity.shape = newProp.shape;
                 blockEntity.noCollision = newProp.noCollision;
                 blockEntity.noMove = newProp.noMove;
+                blockEntity.data.clear();
             }
         });
     }
