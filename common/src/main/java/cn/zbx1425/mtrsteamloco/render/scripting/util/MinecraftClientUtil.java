@@ -21,9 +21,6 @@ import mtr.data.Platform;
 import mtr.data.ScheduleEntry;
 import mtr.data.RailwayData;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.phys.shapes.Shapes;
 
 
 import java.util.HashMap;
@@ -127,11 +124,22 @@ public class MinecraftClientUtil {
         return platform;   
     }
 
-    public static VoxelShape box(double x1, double y1, double z1, double x2, double y2, double z2) {
-        return Block.box(x1, y1, z1, x2, y2, z2);
-    }
-
-    public static VoxelShape box1(double x1, double y1, double z1, double x2, double y2, double z2) {
-        return Shapes.box(x1, y1, z1, x2, y2, z2);
+    public static Vector3f getNodePos(Vector3f vPos, Float fFacing) {
+        BlockPos pos = vPos.toBlockPos();
+        Direction facing = Direction.fromYRot(fFacing);
+        BlockGetter world = Minecraft.getInstance().level;
+	    final int[] checkDistance = {0, 1, -1, 2, -2, 3, -3, 4, -4};
+	    for (final int z : checkDistance) {
+	    	for (final int x : checkDistance) {
+	    		for (int y = -5; y <= 0; y++) {
+	    			final BlockPos checkPos = pos.above(y).relative(facing.getClockWise(), x).relative(facing, z);
+	    			final BlockState checkState = world.getBlockState(checkPos);
+	    			if (checkState.getBlock() instanceof BlockNode) {
+	    				return new Vector3f(checkPos);
+	    			}
+	    		}
+	    	}
+	    }
+	    return null;
     }
 }

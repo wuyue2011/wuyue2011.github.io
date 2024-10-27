@@ -226,25 +226,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             return facing.toYRot();
         }
 
-        public Vector3f getNodePos(Vector3f vPos, Float fFacing) {
-            BlockPos pos = vPos.toBlockPos();
-            Direction facing = Direction.fromYRot(fFacing);
-            BlockGetter world = Minecraft.getInstance().level;
-		    final int[] checkDistance = {0, 1, -1, 2, -2, 3, -3, 4, -4};
-		    for (final int z : checkDistance) {
-		    	for (final int x : checkDistance) {
-		    		for (int y = -5; y <= 0; y++) {
-		    			final BlockPos checkPos = pos.above(y).relative(facing.getClockWise(), x).relative(facing, z);
-		    			final BlockState checkState = world.getBlockState(checkPos);
-		    			if (checkState.getBlock() instanceof BlockNode) {
-		    				return new Vector3f(checkPos);
-		    			}
-		    		}
-		    	}
-		    }
-		    return null;
-	    }
-
         public Map<String, String> getData() {
             return data;
         }
