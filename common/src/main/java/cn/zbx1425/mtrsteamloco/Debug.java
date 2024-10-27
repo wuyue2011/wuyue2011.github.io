@@ -76,10 +76,10 @@ public class Debug {
         }
     }
 
-    public static void registerAllModelsAsEyeCandy() {
+    /*public static void registerAllModelsAsEyeCandy() {
         for (Map.Entry<ResourceLocation, ModelCluster> entry : MainClient.modelManager.uploadedVertArrays.entrySet()) {
             String key = FilenameUtils.getBaseName(entry.getKey().getPath());
             EyeCandyRegistry.register(key, new EyeCandyProperties(Text.literal(key), entry.getValue(), null));
         }
-    }
+    }*/
 }
