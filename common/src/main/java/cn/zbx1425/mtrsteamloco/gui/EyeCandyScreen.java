@@ -100,7 +100,19 @@ public class EyeCandyScreen extends SelectListScreen {
 
     @Override
     protected void onBtnClick(String btnKey) {
-        updateBlockEntity((blockEntity) -> blockEntity.prefabId = btnKey);
+        updateBlockEntity((blockEntity) -> {
+            if (prefabId != btnKey) {
+                EyeCandyProperties oldProp = EyeCandyRegistry.elements.get(blockEntity.prefabId);
+                if (oldProp != null && oldProp.script != null) {
+                    oldProp.script.tryCallDisposeFunctionAsync(blockEntity)
+                }
+                EyeCandyProperties newProp = EyeCandyRegistry.elements.get(btnKey);
+                blockEntity.shape = newProp.shape;
+                blockEntity.noCollision = newProp.noCollision;
+                blockEntity.noMove = newProp.noMove;
+            }
+            blockEntity.prefabId = btnKey
+        });
     }
 
     @Override
