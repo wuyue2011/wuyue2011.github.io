@@ -21,7 +21,8 @@ import mtr.data.Platform;
 import mtr.data.ScheduleEntry;
 import mtr.data.RailwayData;
 import net.minecraft.world.level.Level;
-
+import net.minecraft.world.level.block.state.BlockState;
+import mtr.block.BlockNode;
 
 import java.util.HashMap;
 import java.util.Map;

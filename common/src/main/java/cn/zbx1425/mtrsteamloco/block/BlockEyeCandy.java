@@ -35,7 +35,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import mtr.block.IBlock;
-import mtr.block.BlockNode;
 import net.minecraft.client.Minecraft;
 import mtr.MTRClient;
 import net.minecraft.world.phys.shapes.VoxelShape;
