@@ -32,7 +32,7 @@ public class EyeCandyRegistry {
     public static Map<String, EyeCandyProperties> elements = new HashMap<>();
 
     public static void register(String key, EyeCandyProperties properties) {
-        elements.put(key, properties);
+        elements.put(key + "_" + properties.shape + "_" + properties.noCollision + "_" + properties.noMove, properties);
     }
 
     public static void reload(ResourceManager resourceManager) {

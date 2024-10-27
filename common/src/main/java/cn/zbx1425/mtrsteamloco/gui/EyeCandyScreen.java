@@ -106,12 +106,15 @@ public class EyeCandyScreen extends SelectListScreen {
                 if (oldProp != null && oldProp.script != null) {
                     oldProp.script.tryCallDisposeFunctionAsync(blockEntity.scriptContext);
                 }
+                blockEntity.prefabId = btnKey;
                 EyeCandyProperties newProp = EyeCandyRegistry.elements.get(btnKey);
+                if (newProp != null && newProp.script != null) {
+                    blockEntity.scriptContext = new EyeCandyScriptContext(blockEntity);
+                }
                 blockEntity.shape = newProp.shape;
                 blockEntity.noCollision = newProp.noCollision;
                 blockEntity.noMove = newProp.noMove;
             }
-            blockEntity.prefabId = btnKey;
         });
     }
 
