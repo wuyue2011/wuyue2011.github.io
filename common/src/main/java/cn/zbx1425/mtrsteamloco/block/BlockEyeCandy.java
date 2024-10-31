@@ -44,6 +44,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import java.util.Random;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -76,6 +78,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
     @Override
     public InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+        Main.LOGGER.info("BlockEyeCandy use by:" + level + ", " + player);
         if (player.getMainHandItem().is(mtr.Items.BRUSH.get())) {
             if (!level.isClientSide) {
                 PacketScreen.sendScreenBlockS2C((ServerPlayer) player, "eye_candy", pos);
@@ -95,20 +98,22 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     public RenderShape getRenderShape(@NotNull BlockState blockState) {
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }
-
-    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos) {
-        final BlockEntity entity = world.getBlockEntity(pos);
-        if (entity instanceof BlockEntityEyeCandy) {
-            BlockEntityEyeCandy ent = (BlockEntityEyeCandy) entity;
-            return ent.getShape();
-        }else {
-            return Shapes.block();
-        }
-    }
     
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos) {
+        BlockEntity entity = world.getBlockEntity(pos);
+        VoxelShape shape = Block.box(0, 0, 0, 16, 24, 16);
+        if (entity instanceof BlockEntityEyeCandy) {
+            shape = ((BlockEntityEyeCandy) entity).getShape();
+        } else {
+            Main.LOGGER.warn("BlockEntityEyeCandy not found at " + pos + ", " + world);
+        }
+        return shape;
+    }
+
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext collisionContext) {
-        return getShape(state, world, pos);
+        VoxelShape shape = getShape(state, world, pos);
+        return shape;
     }
 
     @Override
@@ -121,7 +126,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                 return getShape(state, world, pos);
             }
         }
-        return Shapes.empty();
+        return getShape(state, world, pos);
     }
 
     @Override
@@ -222,8 +227,12 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
 
         public float getBlockYRot(){
-            final Direction facing = IBlock.getStatePropertySafe(Minecraft.getInstance().level.getBlockState(this.worldPosition), HorizontalDirectionalBlock.FACING);
-            return facing.toYRot();
+            try {
+                final Direction facing = IBlock.getStatePropertySafe(Minecraft.getInstance().level.getBlockState(this.worldPosition), FACING);
+                return facing.toYRot();
+            } catch (Exception e) {
+                return 0;
+            }
         }
 
         public Map<String, String> getData() {
@@ -254,63 +263,69 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
 
         public VoxelShape getShape() {
-            String[] shapeArray = shape.split("/");
-            VoxelShape[] voxelShapes= new VoxelShape[shapeArray.length];
-            for (int i = 0; i < shapeArray.length; i++) {
-                String[] posArray = shapeArray[i].split(",");
-                if (posArray.length!= 6) {
-                    shape = "0, 0, 0, 16, 16, 16";
-                    sendUpdateC2S();
-                    return Shapes.block();
-                }
-                Double[] pos = new Double[6];
-                try {
-                    for (int j = 0; j < posArray.length; j++) {
-                        pos[j] = Double.parseDouble(posArray[j]);
+            try {
+                if (false) return Block.box(0, 0, 0, 16, 24, 16);
+                String[] shapeArray = shape.split("/");
+                VoxelShape[] voxelShapes= new VoxelShape[shapeArray.length];
+                for (int i = 0; i < shapeArray.length; i++) {
+                    String[] posArray = shapeArray[i].split(",");
+                    if (posArray.length!= 6) {
+                        shape = "0, 0, 0, 16, 16, 16";
+                        sendUpdateC2S();
+                        return Shapes.block();
                     }
-                } catch (NumberFormatException e) {
-                    shape = "0, 0, 0, 16, 16, 16";
-                    sendUpdateC2S();
-                    return Shapes.block();
-                }
-                try {
-                    Double x1 = pos[0], y1 = pos[1], z1 = pos[2], x2 = pos[3], y2 = pos[4], z2 = pos[5];
-                    Double[] newPos = null;
-                    int yRot = (int)getBlockYRot();
-                    switch (yRot) {
-                        case 0: {
-                            newPos = new Double[]{x1, y1, z1, x2, y2, z2};
-                            break;
+                    Double[] pos = new Double[6];
+                    try {
+                        for (int j = 0; j < posArray.length; j++) {
+                            pos[j] = Double.parseDouble(posArray[j]);
                         }
-                        case 90: {
-                            newPos = new Double[]{16 - z2, y1, x1, 16 - z1, y2, x2};
-                            break;
-                        }
-                        case 180: {
-                            newPos = new Double[]{16 - x2, y1, 16 - z2, 16 - x1, y2, 16 - z1};
-                            break;
-                        }
-                        case 270: {
-                            newPos = new Double[]{z1, y1, 16 - x2, z2, y2, 16 - x1};
-                            break;
-                        }
-                        default: {
-                            newPos = new Double[]{x1, y1, z1, x2, y2, z2};
-                            break;
-                        }
+                    } catch (NumberFormatException e) {
+                        shape = "0, 0, 0, 16, 16, 16";
+                        sendUpdateC2S();
+                        return Shapes.block();
                     }
-                    voxelShapes[i] = Block.box(newPos[0], newPos[1], newPos[2], newPos[3], newPos[4], newPos[5]);
-                    if (!noMove) {
-                        double tx = (double)translateX, ty = (double)translateY, tz = (double)translateZ;
-                        voxelShapes[i] = voxelShapes[i].move(tx, ty, tz);
+                    try {
+                        Double x1 = pos[0], y1 = pos[1], z1 = pos[2], x2 = pos[3], y2 = pos[4], z2 = pos[5];
+                        Double[] newPos = null;
+                        int yRot = (int)getBlockYRot();
+                        switch (yRot) {
+                            case 0: {
+                                newPos = new Double[]{x1, y1, z1, x2, y2, z2};
+                                break;
+                            }
+                            case 90: {
+                                newPos = new Double[]{16 - z2, y1, x1, 16 - z1, y2, x2};
+                                break;
+                            }
+                            case 180: {
+                                newPos = new Double[]{16 - x2, y1, 16 - z2, 16 - x1, y2, 16 - z1};
+                                break;
+                            }
+                            case 270: {
+                                newPos = new Double[]{z1, y1, 16 - x2, z2, y2, 16 - x1};
+                                break;
+                            }
+                            default: {
+                                newPos = new Double[]{x1, y1, z1, x2, y2, z2};
+                                break;
+                            }
+                        }
+                        VoxelShape voxelShape = Block.box(newPos[0], newPos[1], newPos[2], newPos[3], newPos[4], newPos[5]);
+                        if (!noMove) {
+                            double tx = (double)translateX, ty = (double)translateY, tz = (double)translateZ;
+                            voxelShapes[i] = voxelShape.move(tx, ty, tz);
+                        }
+                    } catch (IllegalArgumentException e) {
+                        shape = "0, 0, 0, 16, 16, 16";
+                        sendUpdateC2S();
+                        return Shapes.block();
                     }
-                } catch (IllegalArgumentException e) {
-                    shape = "0, 0, 0, 16, 16, 16";
-                    sendUpdateC2S();
-                    return Shapes.block();
                 }
+                return Shapes.or(Shapes.empty(), voxelShapes);
+            } catch (Exception e) {
+                Main.LOGGER.error("Error in getShape:" + e.getMessage());
+                return Shapes.block();
             }
-            return Shapes.or(Shapes.empty(), voxelShapes);
         }
     }
 }
