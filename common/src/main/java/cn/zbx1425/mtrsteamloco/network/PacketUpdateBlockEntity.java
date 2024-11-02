@@ -61,7 +61,7 @@ public class PacketUpdateBlockEntity {
             level.getBlockEntity(blockPos, blockEntityType).ifPresent(blockEntity -> {
                 if (compoundTag != null) {
                     blockEntity.load(compoundTag);
-                    BlockState state = level.getBlockState(blockPos);
+                    BlockState state = blockEntity.getBlockState();
                     if (blockEntity instanceof BlockEyeCandy.BlockEntityEyeCandy && state != null) {
                         int newValue = ((BlockEyeCandy.BlockEntityEyeCandy) blockEntity).lightLevel;
                         int oldValue = state.getValue(BlockEyeCandy.LEVEL);
