@@ -16,6 +16,8 @@ import net.minecraft.util.Mth;
 import mtr.path.PathData;
 
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -45,7 +47,7 @@ public abstract class TrainMixin {
 		boolean hasPlatform = false;
 		final Vec3 offsetVec = new Vec3(1, 0, 0).yRot(checkYaw).xRot(pitch);
 		final Vec3 traverseVec = new Vec3(0, 0, 1).yRot(checkYaw).xRot(pitch);
-
+		Set<String> OKPos = new HashSet<>();
 		for (int checkX = 1; checkX <= 3; checkX++) {
 			for (int checkY = -2; checkY <= 3; checkY++) {
 				for (double checkZ = -halfSpacing; checkZ <= halfSpacing; checkZ++) {
@@ -66,8 +68,10 @@ public abstract class TrainMixin {
 								for (int k = 1; k <= 20; k++) {
 									int v = dir[j] * k;
 									BlockPos pos = checkPos.offset(f[i] * v, f[i + 1] * v, f[i + 2] * v);
+									if (OKPos.contains(pos.toString())) break;
 									final BlockEntity entity = world.getBlockEntity(pos);
 									if (entity instanceof BlockEyeCandy.BlockEntityEyeCandy) {
+										OKPos.add(pos.toString());
 										BlockEyeCandy.BlockEntityEyeCandy e = (BlockEyeCandy.BlockEntityEyeCandy) entity;
 										e.setDoorValue(doorValue);
 										e.setDoorTarget(doorTarget);
@@ -88,7 +92,7 @@ public abstract class TrainMixin {
 				}
 			}
 		}
-
+		OKPos.clear();
         ci.setReturnValue(hasPlatform);
 		return;
     }
