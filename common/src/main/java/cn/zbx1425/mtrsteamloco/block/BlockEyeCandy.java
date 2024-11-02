@@ -237,7 +237,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public float getBlockYRot(){
             try {
-                final Direction facing = IBlock.getStatePropertySafe(Minecraft.getInstance().level.getBlockState(this.worldPosition), FACING);
+                final Direction facing = IBlock.getStatePropertySafe(blockState, FACING);
                 return facing.toYRot();
             } catch (Exception e) {
                 return 0;
