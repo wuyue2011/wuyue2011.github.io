@@ -62,13 +62,11 @@ public class PacketUpdateBlockEntity {
                 if (compoundTag != null) {
                     blockEntity.load(compoundTag);
                     BlockState state = level.getBlockState(blockPos);
-                    Main.LOGGER.info("Update block entity: " + blockPos + ", " + state + ", " + blockEntity);
                     if (blockEntity instanceof BlockEyeCandy.BlockEntityEyeCandy && state != null) {
                         int newValue = ((BlockEyeCandy.BlockEntityEyeCandy) blockEntity).lightLevel;
                         int oldValue = state.getValue(BlockEyeCandy.LEVEL);
                         if (newValue != oldValue) {
                             level.setBlock(blockPos, state.setValue(BlockEyeCandy.LEVEL, newValue), 2);
-                            Main.LOGGER.info("Update BlockEyecandy light level: " + oldValue + " -> " + newValue);
                         }
                     }
                     blockEntity.setChanged();
