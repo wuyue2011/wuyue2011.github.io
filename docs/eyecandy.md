@@ -58,6 +58,7 @@ NTE 允许通过 ”装饰物件“ 方块在游戏内显示 OBJ 模型。
         "shape": "0, 0, 0, 16, 8, 16/ 0, 8, 8, 16, 16,16",
         "noMove": false,
         "noCollision": false,
+        "lightLevel": 15
     }
 }
 ```
@@ -85,6 +86,7 @@ NTE 允许通过 ”装饰物件“ 方块在游戏内显示 OBJ 模型。
 - `shape` 是方块的形状，每组六个值分别代表了最小点的坐标和最大点的坐标，每组用/分割，进行 or 运算。
 - `noMove` (noMove 大写) 设为 false 方块形状将跟随物件平移移动。
 - `noCollision` (noCollision 大写) 设为 false 方块将有碰撞箱。
+- `lightLevel` 设置光照级别 0 到 15，默认为 0 (不发光)。
   
 对于包含 `model` 的物件：
 - `textureId` 可用于创建多个同一模型不同贴图的物件。用法与 OBJ 列车模型中相同。

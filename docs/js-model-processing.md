@@ -36,7 +36,7 @@ NTE 使用这些类加载和处理模型：
 
 - `RawMeshBuilder`：原始网格构造器，用于构造 RawMesh 。其包含一个 RawMesh ,一个面顶点数量和一个 Vertex 存储临时顶点信息。
 
-- `RawMesh`：原始网格类，包含了一个 MaterialProp ，一个  Face 数组、以一个 Face 数组。
+- `RawMesh`：原始网格类，包含了一个 MaterialProp ，一个  Face 数组 faces、以一个 Vertex 数组 vertices。
 
 - `RawModel`：原始网格模型，含有来源和一个 meshList(HashMap<MaterialProp, RawMesh>)，存储了多个 由 MaterialProp 和 RawMesh 组成的键值对。
 

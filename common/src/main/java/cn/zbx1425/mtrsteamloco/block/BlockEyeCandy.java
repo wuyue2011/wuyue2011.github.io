@@ -136,14 +136,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     }
 
     @Override
-	public void tick(BlockState state, ServerLevel world, BlockPos pos) {
-        BlockEntity entity = world.getBlockEntity(pos);
-        if (entity instanceof BlockEntityEyeCandy) {
-            world.setBlock(pos, state.setValue(LEVEL, ((BlockEntityEyeCandy) entity).lightLevel), 2);
-        }
-    }
-
-    @Override
     public VoxelShape getOcclusionShape(BlockState state, BlockGetter world, BlockPos pos) {
         return Shapes.empty();
     }

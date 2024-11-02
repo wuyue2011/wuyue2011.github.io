@@ -14,6 +14,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import cn.zbx1425.mtrsteamloco.block.BlockEyeCandy;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class PacketUpdateBlockEntity {
 
@@ -59,6 +61,12 @@ public class PacketUpdateBlockEntity {
             level.getBlockEntity(blockPos, blockEntityType).ifPresent(blockEntity -> {
                 if (compoundTag != null) {
                     blockEntity.load(compoundTag);
+                    BlockState state = level.getBlockState(blockPos);
+                    Main.LOGGER.info("update block entity: " + blockPos + ", " + state + ", " + blockEntity);
+                    if (blockEntity instanceof BlockEyeCandy.BlockEntityEyeCandy && state.getBlock() instanceof BlockEyeCandy) {
+                        Main.LOGGER.info("update light level: " + ((BlockEyeCandy.BlockEntityEyeCandy) blockEntity).lightLevel);
+                        level.setBlock(blockPos, state.setValue(BlockEyeCandy.LEVEL, ((BlockEyeCandy.BlockEntityEyeCandy) blockEntity).lightLevel), 2);
+                    }
                     blockEntity.setChanged();
                     level.getChunkSource().blockChanged(blockPos);
                 }
