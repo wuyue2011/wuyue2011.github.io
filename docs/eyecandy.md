@@ -50,6 +50,14 @@ NTE 允许通过 ”装饰物件“ 方块在游戏内显示 OBJ 模型。
     "key3": {
         "name": "Name3",
         "scriptFiles": ["mtrsteamloco:eyecandies/script.js"]
+    },
+    "key4": {
+        "mod_version": "0.5.4",
+        "name": "Name4",
+        "scriptFiles": ["mtrsteamloco:eyecandies/script.js"],
+        "shape": "0, 0, 0, 16, 8, 16/ 0, 8, 8, 16, 16,16",
+        "noMove": false,
+        "noCollision": false,
     }
 }
 ```
@@ -73,12 +81,19 @@ NTE 允许通过 ”装饰物件“ 方块在游戏内显示 OBJ 模型。
 
 以上是必填项。以下是可选项：
 
+- `mod_version` 设定物件所使用的 NTE 版本。
+- `shape` 是方块的形状，每组六个值分别代表了最小点的坐标和最大点的坐标，每组用/分割，进行 or 运算。
+- `noMove` (noMove 大写) 设为 false 方块形状将跟随物件平移移动。
+- `noCollision` (noCollision 大写) 设为 false 方块将有碰撞箱。
+  
+对于包含 `model` 的物件：
 - `textureId` 可用于创建多个同一模型不同贴图的物件。用法与 OBJ 列车模型中相同。
 - `flipV` (V大写) 设为 true 将把 OBJ 模型加载改为适配贴图 V 坐标正方向向上的导出方式的模式。
 - `translation` 对模型进行平移，后接 X、Y、Z 轴向上的移动距离。
 - `rotation` 对模型进行旋转，后接绕 X、Y、Z 轴向上的转动角度。
 - `scale` 对模型进行缩放，后接 X、Y、Z 轴向上的缩放比例，1 代表 100%。
 - `mirror` 对模型进行翻转，后接三个布尔值，表示是否要对于 YZ、XZ、XY 平面翻转。
+
 
 请注意大括号、中括号、双引号与逗号的使用。同时，所有文件名必须为全英文小写。
 

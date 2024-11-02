@@ -46,14 +46,21 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import java.util.Random;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.ToIntFunction;
 
 public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlockMapper {
+    public static final IntegerProperty LEVEL = BlockStateProperties.LEVEL;
+    public static final ToIntFunction<BlockState> LIGHT_EMISSION = (p_153701_) -> {
+        return p_153701_.getValue(LEVEL);
+    };
 
     public BlockEyeCandy() {
         super(
@@ -62,7 +69,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 #else
                 BlockBehaviour.Properties.of()
 #endif
-                        .strength(2)
+                        .strength(2).lightLevel(LIGHT_EMISSION)
         );
     }
 
@@ -73,7 +80,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING);
+        builder.add(FACING, LEVEL);
     }
 
     @Override
@@ -129,6 +136,14 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     }
 
     @Override
+	public void tick(BlockState state, ServerLevel world, BlockPos pos) {
+        BlockEntity entity = world.getBlockEntity(pos);
+        if (entity instanceof BlockEntityEyeCandy) {
+            world.setBlock(pos, state.setValue(LEVEL, ((BlockEntityEyeCandy) entity).lightLevel), 2);
+        }
+    }
+
+    @Override
     public VoxelShape getOcclusionShape(BlockState state, BlockGetter world, BlockPos pos) {
         return Shapes.empty();
     }
@@ -153,6 +168,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public String shape = "0, 0, 0, 16, 16, 16";
         public boolean noCollision = true;
         public boolean noMove = true;
+        public int lightLevel = 0;
 
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
@@ -182,6 +198,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             shape = compoundTag.contains("shape") ? compoundTag.getString("shape") : "0, 0, 0, 16, 16, 16";
             noCollision = compoundTag.contains("noCollision") ? compoundTag.getBoolean("noCollision") : true;
             noMove = compoundTag.contains("noMove") ? compoundTag.getBoolean("noMove") : true;
+            lightLevel = compoundTag.contains("lightLevel") ? compoundTag.getInt("lightLevel") : 0;
         }
 
         @Override
@@ -207,6 +224,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putString("shape", shape);
             compoundTag.putBoolean("noCollision", noCollision);
             compoundTag.putBoolean("noMove", noMove);
+            compoundTag.putInt("lightLevel", lightLevel);
         }
 
         public BlockPos getWorldPos() {

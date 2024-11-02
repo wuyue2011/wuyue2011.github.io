@@ -80,6 +80,12 @@ public class EyeCandyRegistry {
                 throw new IllegalArgumentException("Incompatible mod version: package is " + modVersion + ", mod is " +mv + ". Plase update the mod or resource package");
             }
         }
+
+        int lightLevel = 0;
+        if (obj.has("lightLevel")) {
+            lightLevel = obj.get("lightLevel").getAsInt();
+        }
+
         ModelCluster cluster = null;
         if (obj.has("model")) {
             RawModel rawModel = MainClient.modelManager.loadRawModel(resourceManager,
@@ -142,7 +148,7 @@ public class EyeCandyRegistry {
         if (cluster == null && script == null) {
             throw new IllegalArgumentException("Invalid eye-candy json: " + key);
         } else {
-            return new EyeCandyProperties(Text.translatable(obj.get("name").getAsString()), cluster, script, shape, noCollision, noMove);
+            return new EyeCandyProperties(Text.translatable(obj.get("name").getAsString()), cluster, script, shape, noCollision, noMove, lightLevel);
         }
     }
 }
