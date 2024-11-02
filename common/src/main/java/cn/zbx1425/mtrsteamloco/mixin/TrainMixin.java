@@ -59,16 +59,31 @@ public abstract class TrainMixin {
 						}
 						hasPlatform = true;
 					}else if (block instanceof BlockEyeCandy) {
-						final BlockEntity entity = world.getBlockEntity(checkPos);
-						if (((BlockEyeCandy.BlockEntityEyeCandy) entity).isPlatform()){
-							if (openDoors(world, block, checkPos, dwellTicks)) {
-								ci.setReturnValue(true);
-								return;
+						int[] dir = new int[]{1, -1};
+						int[] f = new int[]{1, 0, 0, 1, 0, 0};
+						for (int i = 0; i < 3; i++) {
+							for (int j = 0; j < 2; j++) {
+								for (int k = 1; k <= 20; k++) {
+									int v = dir[j] * k;
+									BlockPos pos = checkPos.offset(f[i] * v, f[i + 1] * v, f[i + 2] * v);
+									final BlockEntity entity = world.getBlockEntity(pos);
+									if (entity instanceof BlockEyeCandy.BlockEntityEyeCandy) {
+										BlockEyeCandy.BlockEntityEyeCandy e = (BlockEyeCandy.BlockEntityEyeCandy) entity;
+										e.setDoorValue(doorValue);
+										e.setDoorTarget(doorTarget);
+										e.sendUpdateC2S();
+										if (e.isPlatform()) {
+											if (openDoors(world, block, pos, dwellTicks)) {
+												ci.setReturnValue(true);
+												return;
+											}
+											hasPlatform = true;
+										} else break;
+									} else break;
+								}
 							}
-							hasPlatform = true;
 						}
-						((BlockEyeCandy.BlockEntityEyeCandy) entity).setDoorValue(doorValue);
-						((BlockEyeCandy.BlockEntityEyeCandy) entity).setDoorTarget(doorTarget);
+						
 					}
 				}
 			}

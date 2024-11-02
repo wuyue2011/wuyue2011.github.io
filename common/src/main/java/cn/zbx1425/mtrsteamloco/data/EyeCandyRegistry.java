@@ -21,6 +21,7 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import cn.zbx1425.mtrsteamloco.BuildConfig;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -72,6 +73,13 @@ public class EyeCandyRegistry {
             );
         }
 
+        if (obj.has("mod_version")) {
+            String mv = BuildConfig.MOD_VERSION.split("\\+")[0];
+            String modVersion = obj.get("mod_version").getAsString();
+            if (!mv.equals(modVersion)) {
+                throw new IllegalArgumentException("Incompatible mod version: package is " + modVersion + ", mod is " +mv + ". Plase update the mod or resource package");
+            }
+        }
         ModelCluster cluster = null;
         if (obj.has("model")) {
             RawModel rawModel = MainClient.modelManager.loadRawModel(resourceManager,
