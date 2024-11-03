@@ -80,7 +80,7 @@ public abstract class TrainMixin {
 										e.setDoorValue(doorValue);
 										e.setDoorTarget(doorTarget);
 										e.setChanged();
-                    					world.getChunkSource().blockChanged(blockPos);
+                    					world.getChunkSource().blockChanged(pos);
 										if (e.isPlatform()) {
 											if (openDoors(world, block, pos, dwellTicks)) {
 												ci.setReturnValue(true);
