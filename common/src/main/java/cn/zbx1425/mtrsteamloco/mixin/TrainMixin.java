@@ -25,6 +25,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.Shadow;
+import net.minecraft.server.level.ServerLevel;
 
 @Mixin(Train.class)
 public abstract class TrainMixin {
@@ -80,7 +81,7 @@ public abstract class TrainMixin {
 										e.setDoorValue(doorValue);
 										e.setDoorTarget(doorTarget);
 										e.setChanged();
-                    					world.getChunkSource().blockChanged(pos);
+                    					((ServerLevel) world).getChunkSource().blockChanged(pos);
 										if (e.isPlatform()) {
 											if (openDoors(world, block, pos, dwellTicks)) {
 												ci.setReturnValue(true);
