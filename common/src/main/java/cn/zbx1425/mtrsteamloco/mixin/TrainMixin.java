@@ -74,8 +74,8 @@ public abstract class TrainMixin {
 									final BlockEntity entity = world.getBlockEntity(pos);
 									if (entity instanceof BlockEyeCandy.BlockEntityEyeCandy) {
 										OKPos.add(pos.toString());
+										BlockEyeCandy.BlockEntityEyeCandy e = (BlockEyeCandy.BlockEntityEyeCandy) entity;
 										if (!world.isClientSide()) {
-											BlockEyeCandy.BlockEntityEyeCandy e = (BlockEyeCandy.BlockEntityEyeCandy) entity;
 											e.setDoorValue(doorValue);
 											e.setDoorTarget(doorTarget);
 											e.setChanged();
