@@ -74,14 +74,12 @@ public abstract class TrainMixin {
 									final BlockEntity entity = world.getBlockEntity(pos);
 									if (entity instanceof BlockEyeCandy.BlockEntityEyeCandy) {
 										OKPos.add(pos.toString());
-										BlockEyeCandy.BlockEntityEyeCandy e = (BlockEyeCandy.BlockEntityEyeCandy) entity;
-										e.setDoorValue(doorValue);
-										e.setDoorTarget(doorTarget);
-										try {
+										if (!world.isClientSide()) {
+											BlockEyeCandy.BlockEntityEyeCandy e = (BlockEyeCandy.BlockEntityEyeCandy) entity;
+											e.setDoorValue(doorValue);
+											e.setDoorTarget(doorTarget);
 											e.setChanged();
                     						((ServerLevel) world).getChunkSource().blockChanged(pos);
-										} catch (Exception e1) {
-											Main.LOGGER.error("Error updating block entity in scanDoors: " + e1.getMessage());
 										}
 										if (e.isPlatform()) {
 											if (openDoors(world, block, pos, dwellTicks)) {
