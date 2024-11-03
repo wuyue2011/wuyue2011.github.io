@@ -250,12 +250,10 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public void setDoorValue(float value) {
             doorValue = value;
-            sendUpdateC2S();
         }
 
         public void setDoorTarget(boolean target) {
             doorTarget = target;
-            sendUpdateC2S();
         }
 
         public boolean isOpen() {

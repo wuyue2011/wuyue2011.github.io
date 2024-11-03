@@ -39,6 +39,10 @@ public abstract class TrainMixin {
 
     @Inject(method = "scanDoors", at = @At("HEAD"), cancellable = true, remap = false)
     private void onScanDoors(Level world, double trainX, double trainY, double trainZ, float checkYaw, float pitch, double halfSpacing, int dwellTicks, CallbackInfoReturnable<Boolean> ci) {
+		if (world.isClientSide) {
+			ci.setReturnValue(false);
+			return;
+		}
         if (skipScanBlocks(world, trainX, trainY, trainZ)) {
             ci.setReturnValue(false);
 			return;
@@ -75,7 +79,8 @@ public abstract class TrainMixin {
 										BlockEyeCandy.BlockEntityEyeCandy e = (BlockEyeCandy.BlockEntityEyeCandy) entity;
 										e.setDoorValue(doorValue);
 										e.setDoorTarget(doorTarget);
-										e.sendUpdateC2S();
+										e.setChanged();
+                    					world.getChunkSource().blockChanged(blockPos);
 										if (e.isPlatform()) {
 											if (openDoors(world, block, pos, dwellTicks)) {
 												ci.setReturnValue(true);
