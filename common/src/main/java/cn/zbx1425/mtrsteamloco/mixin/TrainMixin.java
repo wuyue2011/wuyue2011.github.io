@@ -1,5 +1,6 @@
 package cn.zbx1425.mtrsteamloco.mixin;
 
+import cn.zbx1425.mtrsteamloco.Main;
 import mtr.data.TrainServer;
 import mtr.data.Train;
 import mtr.data.RailwayData;
@@ -40,10 +41,6 @@ public abstract class TrainMixin {
 
     @Inject(method = "scanDoors", at = @At("HEAD"), cancellable = true, remap = false)
     private void onScanDoors(Level world, double trainX, double trainY, double trainZ, float checkYaw, float pitch, double halfSpacing, int dwellTicks, CallbackInfoReturnable<Boolean> ci) {
-		if (world.isClientSide) {
-			ci.setReturnValue(false);
-			return;
-		}
         if (skipScanBlocks(world, trainX, trainY, trainZ)) {
             ci.setReturnValue(false);
 			return;
@@ -80,8 +77,12 @@ public abstract class TrainMixin {
 										BlockEyeCandy.BlockEntityEyeCandy e = (BlockEyeCandy.BlockEntityEyeCandy) entity;
 										e.setDoorValue(doorValue);
 										e.setDoorTarget(doorTarget);
-										e.setChanged();
-                    					((ServerLevel) world).getChunkSource().blockChanged(pos);
+										try {
+											e.setChanged();
+                    						((ServerLevel) world).getChunkSource().blockChanged(pos);
+										} catch (Exception e1) {
+											Main.LOGGER.error("Error updating block entity in scanDoors: " + e1.getMessage());
+										}
 										if (e.isPlatform()) {
 											if (openDoors(world, block, pos, dwellTicks)) {
 												ci.setReturnValue(true);
