@@ -244,7 +244,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             }
         }
 
-        public Map<String, String> getData() {
+        public synchronized Map<String, String> getData() {
             return data;
         }
 

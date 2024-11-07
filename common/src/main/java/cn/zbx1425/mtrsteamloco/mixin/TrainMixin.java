@@ -63,6 +63,7 @@ public abstract class TrainMixin {
 						}
 						hasPlatform = true;
 					}else if (block instanceof BlockEyeCandy) {
+						if (OKPos.contains(checkPos.toString())) continue;
 						int[] dir = new int[]{1, -1};
 						int[] f = new int[]{1, 0, 0, 1, 0, 0};
 						for (int i = 0; i < 3; i++) {

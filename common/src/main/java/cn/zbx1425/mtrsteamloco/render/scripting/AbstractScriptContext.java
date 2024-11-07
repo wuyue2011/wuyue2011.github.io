@@ -32,4 +32,11 @@ public abstract class AbstractScriptContext {
         debugInfo.clear();
     }
 
+    public synchronized Scriptable getState() {
+        return state;
+    }
+
+    public synchronized void setState(Scriptable state) {
+        this.state = state;
+    }
 }
