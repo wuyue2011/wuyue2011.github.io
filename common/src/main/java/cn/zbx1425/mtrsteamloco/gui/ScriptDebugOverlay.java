@@ -28,10 +28,10 @@ import java.util.Map;
 public class ScriptDebugOverlay {
 
 #if MC_VERSION >= "12000"
-    public static void render(GuiGraphics vdStuff) {
+    public synchronized static void render(GuiGraphics vdStuff) {
         PoseStack matrices = vdStuff.pose();
 #else
-    public static void render(PoseStack vdStuff) {
+    public synchronized static void render(PoseStack vdStuff) {
         PoseStack matrices = vdStuff;
 #endif
         if (!ClientConfig.enableScriptDebugOverlay) return;
@@ -60,9 +60,9 @@ public class ScriptDebugOverlay {
             }
             for (AbstractScriptContext context : entry.getValue()) {
                 y = drawText(vdStuff, font,
-                        String.format("#%08X (%.2f ms)", context.hashCode(), context.lastExecuteDuration / 1000.0),
-                        10, y, 0xFFCCCCFF);
-                for (Map.Entry<String, Object> debugInfo : context.debugInfo.entrySet()) {
+                    String.format("#%08X (%.2f ms)", context.hashCode(), context.lastExecuteDuration / 1000.0),
+                    10, y, 0xFFCCCCFF);
+                for (Map.Entry<String, Object> debugInfo : context.getDebugInfo().entrySet()) {
                     Object value = debugInfo.getValue();
                     if (value instanceof GraphicsTexture) {
                         GraphicsTexture texture = (GraphicsTexture) value;

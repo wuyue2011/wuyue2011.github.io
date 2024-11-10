@@ -24,12 +24,22 @@ public abstract class AbstractScriptContext {
 
     public abstract boolean isBearerAlive();
 
-    public void setDebugInfo(String key, Object value) {
-        debugInfo.put(key, value);
+    public synchronized Map<String, Object> getDebugInfo() {
+        synchronized (debugInfo) {
+            return new HashMap<>(debugInfo);
+        }
     }
 
-    public void clearDebugInfo() {
-        debugInfo.clear();
+    public synchronized void setDebugInfo(String key, Object value) {
+        synchronized (debugInfo) {
+            debugInfo.put(key, value);
+        }
+    }
+
+    public synchronized void clearDebugInfo() {
+        synchronized (debugInfo) {
+            debugInfo.clear();
+        }
     }
 
     public synchronized Scriptable getState() {
