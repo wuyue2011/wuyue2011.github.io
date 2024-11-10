@@ -9,11 +9,11 @@ import java.util.concurrent.Future;
 public abstract class AbstractScriptContext {
 
     public Scriptable state;
-    protected boolean created = false;
+    public boolean created = false;
     public Future<?> scriptStatus;
     public double lastExecuteTime = 0;
 
-    protected boolean disposed = false;
+    public boolean disposed = false;
 
     public long lastExecuteDuration = 0;
     public Map<String, Object> debugInfo = new LinkedHashMap<>();

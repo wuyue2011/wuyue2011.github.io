@@ -24,7 +24,6 @@ import org.apache.commons.io.IOUtils;
 import cn.zbx1425.mtrsteamloco.BuildConfig;
 import cn.zbx1425.mtrsteamloco.render.scripting.ScriptContextManager;
 import cn.zbx1425.mtrsteamloco.render.scripting.AbstractScriptContext;
-import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolder;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,10 +39,6 @@ public class EyeCandyRegistry {
     }
 
     public static void reload(ResourceManager resourceManager) {
-        for (Map.Entry<AbstractScriptContext, ScriptHolder> pair : ScriptContextManager.livingContexts.entrySet()) {
-            pair.getValue().tryCallDisposeFunctionAsync(pair.getKey());
-        }
-        ScriptContextManager.livingContexts.clear();
         elements.clear();
         List<Pair<ResourceLocation, Resource>> resources =
                 MtrModelRegistryUtil.listResources(resourceManager, "mtrsteamloco", "eyecandies", ".json");
@@ -65,6 +60,15 @@ public class EyeCandyRegistry {
             } catch (Exception ex) {
                 Main.LOGGER.error("Failed loading eye-candy: " + pair.getFirst().toString(), ex);
                 MtrModelRegistryUtil.recordLoadingError("Failed loading Eye-candy " + pair.getFirst().toString(), ex);
+            }
+        }
+        for (Map.Entry<AbstractScriptContext, ScriptHolder> pair : ScriptContextManager.livingContexts.entrySet()) {
+            String name = pair.getValue().name.substring(9);
+            if (elements.containsKey(name) && elements.get(name).script!= null) {
+                pair.getValue().tryCallDisposeFunctionAsync(pair.getKey());
+                pair.getKey().created = false;
+                pair.getKey().disposed = false;
+                ScriptContextManager.livingContexts.put(pair.getKey(), elements.get(name).script);
             }
         }
     }
