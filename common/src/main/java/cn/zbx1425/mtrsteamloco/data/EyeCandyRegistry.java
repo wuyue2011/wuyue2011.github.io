@@ -22,6 +22,9 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import cn.zbx1425.mtrsteamloco.BuildConfig;
+import cn.zbx1425.mtrsteamloco.render.scripting.ScriptContextManager;
+import cn.zbx1425.mtrsteamloco.render.scripting.AbstractScriptContext;
+import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolder;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,6 +40,10 @@ public class EyeCandyRegistry {
     }
 
     public static void reload(ResourceManager resourceManager) {
+        for (Map.Entry<AbstractScriptContext, ScriptHolder> pair : ScriptContextManager.livingContexts.entrySet()) {
+            pair.getValue().tryCallDisposeFunctionAsync(pair.getKey());
+        }
+        ScriptContextManager.livingContexts.clear();
         elements.clear();
         List<Pair<ResourceLocation, Resource>> resources =
                 MtrModelRegistryUtil.listResources(resourceManager, "mtrsteamloco", "eyecandies", ".json");

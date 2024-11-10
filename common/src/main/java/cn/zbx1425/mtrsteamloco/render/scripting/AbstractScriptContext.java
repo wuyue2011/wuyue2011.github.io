@@ -2,7 +2,7 @@ package cn.zbx1425.mtrsteamloco.render.scripting;
 
 import vendor.cn.zbx1425.mtrsteamloco.org.mozilla.javascript.Scriptable;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
 
@@ -16,7 +16,7 @@ public abstract class AbstractScriptContext {
     protected boolean disposed = false;
 
     public long lastExecuteDuration = 0;
-    public Map<String, Object> debugInfo = new HashMap<>();
+    public Map<String, Object> debugInfo = new LinkedHashMap<>();
 
     public abstract void renderFunctionFinished();
 
@@ -26,7 +26,7 @@ public abstract class AbstractScriptContext {
 
     public synchronized Map<String, Object> getDebugInfo() {
         synchronized (debugInfo) {
-            return new HashMap<>(debugInfo);
+            return new LinkedHashMap<>(debugInfo);
         }
     }
 
