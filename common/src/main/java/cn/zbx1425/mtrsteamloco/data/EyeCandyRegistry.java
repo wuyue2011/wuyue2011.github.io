@@ -22,8 +22,6 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import cn.zbx1425.mtrsteamloco.BuildConfig;
-import cn.zbx1425.mtrsteamloco.render.scripting.ScriptContextManager;
-import cn.zbx1425.mtrsteamloco.render.scripting.AbstractScriptContext;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,15 +58,6 @@ public class EyeCandyRegistry {
             } catch (Exception ex) {
                 Main.LOGGER.error("Failed loading eye-candy: " + pair.getFirst().toString(), ex);
                 MtrModelRegistryUtil.recordLoadingError("Failed loading Eye-candy " + pair.getFirst().toString(), ex);
-            }
-        }
-        for (Map.Entry<AbstractScriptContext, ScriptHolder> pair : ScriptContextManager.livingContexts.entrySet()) {
-            String name = pair.getValue().name.substring(9);
-            if (elements.containsKey(name) && elements.get(name).script!= null) {
-                pair.getValue().tryCallDisposeFunctionAsync(pair.getKey());
-                pair.getKey().created = false;
-                pair.getKey().disposed = false;
-                ScriptContextManager.livingContexts.put(pair.getKey(), elements.get(name).script);
             }
         }
     }
