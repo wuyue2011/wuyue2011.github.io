@@ -73,6 +73,7 @@ public class ScriptHolder {
             scope.put("SoundHelper", scope, new NativeJavaClass(scope, SoundHelper.class));
             scope.put("ParticleHelper", scope, new NativeJavaClass(scope, ParticleHelper.class));
             scope.put("TickableSound", scope, new NativeJavaClass(scope, TickableSound.class));
+            scope.put("GlobalRegister", scope, new NativeJavaClass(scope, GlobalRegister.class));
 
             scope.put("RawModel", scope, new NativeJavaClass(scope, RawModel.class));
             scope.put("RawMesh", scope, new NativeJavaClass(scope, RawMesh.class));
