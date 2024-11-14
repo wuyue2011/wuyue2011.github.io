@@ -2103,6 +2103,21 @@ span.tags-punctuation i {
   -o-filter: grayscale(100%);
   filter: grayscale(100%);
 }
+#global_bg {
+  position: fixed;
+  z-index: 999;
+  opacity: 0.2;
+  width: 100%;
+  height: 100%;
+  background-image: url("https://pic.imgdb.cn/item/673588cad29ded1a8c44f61b.jpg");
+  background-size: cover;
+  background-position: center;
+  pointer-events: none;
+  background-repeat: no-repeat;
+}
+[data-theme=dark] #global_bg {
+  background-image: url("https://pic.imgdb.cn/item/673588cad29ded1a8c44f61b.jpg");
+}
 .post-content {
   overflow-wrap: break-word;
 }
