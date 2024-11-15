@@ -145,4 +145,9 @@ public class MinecraftClientUtil {
 	    }
 	    return null;
     }
+
+    public static float getCameraDistance(Vector3f from) {
+        Vector3f cameraPos = new Vector3f(Minecraft.getInstance().gameRenderer.getMainCamera().getPosition());
+        return cameraPos.distance(from);
+    }
 }

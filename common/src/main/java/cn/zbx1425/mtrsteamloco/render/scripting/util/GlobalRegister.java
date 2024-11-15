@@ -2,6 +2,8 @@ package cn.zbx1425.mtrsteamloco.render.scripting.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.Collection;
 
 public class GlobalRegister {
 
@@ -19,9 +21,51 @@ public class GlobalRegister {
         }
     }
 
-    public static boolean contains(String key) {
+    public static boolean containsKey(String key) {
         synchronized (register) {
             return register.containsKey(key);
+        }
+    }
+
+    public static boolean containsValue(Object value) {
+        synchronized (register) {
+            return register.containsValue(value);
+        }
+    }
+
+    public static Set<String> keySet() {
+        synchronized (register) {
+            return register.keySet();
+        }
+    }
+
+    public static Collection<Object> values() {
+        synchronized (register) {
+            return register.values();
+        }
+    }
+
+    public static void clear() {
+        synchronized (register) {
+            register.clear();
+        }
+    }
+
+    public static int size() {
+        synchronized (register) {
+            return register.size();
+        }
+    }
+
+    public remove(String key) {
+        synchronized (register) {
+            register.remove(key);
+        }
+    }
+
+    public static Set<Map.Entry<String, Object>> entrySet() {
+        synchronized (register) {
+            return register.entrySet();
         }
     }
 
