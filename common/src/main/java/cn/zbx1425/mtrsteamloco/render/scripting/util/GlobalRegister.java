@@ -57,7 +57,7 @@ public class GlobalRegister {
         }
     }
 
-    public remove(String key) {
+    public static void remove(String key) {
         synchronized (register) {
             register.remove(key);
         }
