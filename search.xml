@@ -16,6 +16,19 @@
 <h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
 
 <p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+<p>&#x2F;&#x2F;jQuery-Ajax<br>$.ajax({<br>    url: ‘<a href="https://api.76.al/api/king/query">https://api.76.al/api/king/query</a>‘,<br>    data: {<br>    &#x2F;&#x2F;接口参数，一行一个，可按照接口文档-请求参数 的参数填写，或者直接复制开发工具下面的测试代码。<br>        key: ‘CF40OWzXZN5XZZaaOCzQSHKvXw’,<br>        参数名: ‘参数值’,</p>
+<pre><code>&#125;,
+type: &#39;GET&#39;, //请求协议（GET或POST），一般默认GET，部分接口需要POST请求，根据实际情况修改为POST即可。
+dataType: &#39;json&#39;,
+success: function(data) &#123;
+    console.log(data); //请求成功，输出结果到控制台
+&#125;,
+timeout: 3000, //超时时间
+error: function(data) &#123;
+    console.log(&#39;请求失败&#39;); //失败处理
+&#125;
+</code></pre>
+<p>});</p>
 ]]></content>
   </entry>
 </search>
