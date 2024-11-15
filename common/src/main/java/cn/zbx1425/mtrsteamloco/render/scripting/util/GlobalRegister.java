@@ -18,4 +18,11 @@ public class GlobalRegister {
             return register.get(key);
         }
     }
+
+    public static boolean contains(String key) {
+        synchronized (register) {
+            return register.containsKey(key);
+        }
+    }
+
 }
