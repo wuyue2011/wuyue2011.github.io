@@ -15,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.Objects;
+import java.util.Arrays;
 
 public class VertAttrState {
 
@@ -25,7 +26,8 @@ public class VertAttrState {
     public Integer lightmapUV;
     public Vector3f normal;
     public Matrix4f matrixModel;
-    public byte billboard = 0;
+    public float[] ks = new float[3]; 
+    public static Matrix4f matrix = new Matrix4f();
 
     public void applyGlobal() {
         for (VertAttrType attr : VertAttrType.values()) {
@@ -68,10 +70,11 @@ public class VertAttrState {
                     break;
                 case MATRIX_MODEL:
                     if (matrixModel == null) continue;
+                    matrix = matrixModel;
                     if (useCustomShader) {
                         ByteBuffer byteBuf = ByteBuffer.allocate(64);
                         FloatBuffer floatBuf = byteBuf.asFloatBuffer();
-                        matrixModel.store(floatBuf);
+                        matrix.store(floatBuf);
                         GL33.glVertexAttrib4f(attr.location, floatBuf.get(0), floatBuf.get(1), floatBuf.get(2), floatBuf.get(3));
                         GL33.glVertexAttrib4f(attr.location + 1, floatBuf.get(4), floatBuf.get(5), floatBuf.get(6), floatBuf.get(7));
                         GL33.glVertexAttrib4f(attr.location + 2, floatBuf.get(8), floatBuf.get(9), floatBuf.get(10), floatBuf.get(11));
@@ -79,7 +82,7 @@ public class VertAttrState {
                     } else {
                         ShaderInstance shaderInstance = RenderSystem.getShader();
                         if (shaderInstance != null && shaderInstance.MODEL_VIEW_MATRIX != null) {
-                            shaderInstance.MODEL_VIEW_MATRIX.set(matrixModel.asMoj());
+                            shaderInstance.MODEL_VIEW_MATRIX.set(matrix.asMoj());
                             if (useCustomShader) {
                                 shaderInstance.MODEL_VIEW_MATRIX.upload();
                             } else {
@@ -89,11 +92,23 @@ public class VertAttrState {
                     }
                     break;
                 case BILLBOARD:
-                    if (billboard == 0) continue;
+                    if (!isBillboard()) continue;
                     if (useCustomShader) {
-                        if ((billboard & 1) == 1) GL33.glVertexAttrib4f(attr.location, 1, 0, 0, 0);
-                        if ((billboard >> 1 & 1) == 1) GL33.glVertexAttrib4f(attr.location + 1, 0, 1, 0, 0);
-                        if ((billboard >> 2 & 1) == 1) GL33.glVertexAttrib4f(attr.location + 2, 0, 0, 1, 0);
+                        Vector3f rot = matrix.transform3(new Vector3f(0, 0, 0));
+                        rot.mul(ks[0], ks[1], ks[2]);
+                        matrix.rotateX(-rot.x());
+                        matrix.rotateY(-rot.y());
+                        matrix.rotateZ(-rot.z());
+                        ByteBuffer byteBuf = ByteBuffer.allocate(64);
+                        FloatBuffer floatBuf = byteBuf.asFloatBuffer();
+                        matrix.store(floatBuf);
+                        GL33.glVertexAttrib4f(attr.location, 1, 0, 0, 0);
+                        GL33.glVertexAttrib4f(attr.location + 1, 0, 1, 0, 0);
+                        GL33.glVertexAttrib4f(attr.location + 2, 0, 0, 1, 0);
+                        //GL33.glVertexAttrib4f(attr.location, floatBuf.get(0), floatBuf.get(1), floatBuf.get(2), floatBuf.get(3));
+                        //GL33.glVertexAttrib4f(attr.location + 1, floatBuf.get(4), floatBuf.get(5), floatBuf.get(6), floatBuf.get(7));
+                        //GL33.glVertexAttrib4f(attr.location + 2, floatBuf.get(8), floatBuf.get(9), floatBuf.get(10), floatBuf.get(11));
+                        //GL33.glVertexAttrib4f(attr.location + 3, floatBuf.get(12), floatBuf.get(13), floatBuf.get(14), floatBuf.get(15));
                     }
                     break;
             }
@@ -151,13 +166,15 @@ public class VertAttrState {
         return this;
     }
 
-    public VertAttrState setBillboard(boolean x, boolean y, boolean z) {
-        this.billboard = (byte) ((x ? 0b1 : 0) | (y ? 0b10 : 0) | (z ? 0b100 : 0));
+    public VertAttrState setBillboard(float x, float y, float z) {
+        this.ks[0] = x;
+        this.ks[1] = y;
+        this.ks[2] = z;
         return this;
     }
 
     public boolean isBillboard() {
-        return billboard != 0;
+        return ks[0] != 0 || ks[1] != 0 || ks[2] != 0;
     }
 
     public boolean hasAttr(VertAttrType attrType) {
@@ -177,7 +194,7 @@ public class VertAttrState {
             case MATRIX_MODEL:
                 return matrixModel != null;
             case BILLBOARD:
-                return billboard != 0;
+                return isBillboard();
         }
         return false;
     }
@@ -207,7 +224,7 @@ public class VertAttrState {
                 matrixModel = null;
                 break;
             case BILLBOARD:
-                billboard = 0;
+                ks = new float[3];
                 break;
         }
     }
@@ -219,12 +236,12 @@ public class VertAttrState {
         VertAttrState that = (VertAttrState) o;
         return Objects.equals(position, that.position) && Objects.equals(color, that.color) && Objects.equals(texU, that.texU)
                 && Objects.equals(texV, that.texV) && Objects.equals(lightmapUV, that.lightmapUV) && Objects.equals(normal, that.normal)
-                && Objects.equals(matrixModel, that.matrixModel) && billboard == that.billboard;
+                && Objects.equals(matrixModel, that.matrixModel) && Arrays.equals(ks, that.ks);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(position, color, texU, texV, lightmapUV, normal, matrixModel, billboard);
+        return Objects.hash(position, color, texU, texV, lightmapUV, normal, matrixModel, Arrays.toString(ks));
     }
 
     public VertAttrState copy() {
@@ -236,7 +253,7 @@ public class VertAttrState {
         clone.lightmapUV = this.lightmapUV;
         clone.normal = this.normal == null ? null : this.normal.copy();
         clone.matrixModel = this.matrixModel == null ? null : this.matrixModel.copy();
-        clone.billboard = this.billboard;
+        clone.ks = this.ks;
         return clone;
     }
 }

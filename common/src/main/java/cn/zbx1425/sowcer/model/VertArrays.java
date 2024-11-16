@@ -52,7 +52,7 @@ public class VertArrays implements Closeable {
         return result;
     }
 
-    public void setBillboard(boolean x, boolean y, boolean z) {
+    public void setBillboard(float x, float y, float z) {
         for (VertArray vertArray : meshList) {
             vertArray.materialProp.setBillboard(x, y, z);
         }

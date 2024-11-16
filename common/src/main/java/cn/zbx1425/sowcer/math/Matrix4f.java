@@ -96,6 +96,12 @@ public class Matrix4f {
         return new Vector3f(impl.transformDirection(srcCpy));
     }
 
+    public Vector3f getEulerAnglesXYZ() {
+        org.joml.Vector3f result = new org.joml.Vector3f();
+        impl.getEulerAnglesXYZ(result);
+        return new Vector3f(result);
+    }
+
     public org.joml.Matrix3f getRotationPart() {
         org.joml.Matrix3f result = new org.joml.Matrix3f();
         return impl.get3x3(result);
@@ -178,6 +184,27 @@ public class Matrix4f {
         Vector3f pos3 = src.copy();
         pos3.impl.transform(new com.mojang.math.Matrix3f(impl));
         return pos3;
+    }
+
+    public Vector3f getEulerAnglesXYZ() {
+        float[] eulerAngles = new float[3]; // 存储欧拉角的数组，索引分别代表pitch、yaw和roll
+
+    // 提取欧拉角
+        float sy = (float) Math.sqrt(impl.m00 * impl.m00 + impl.m10 * impl.m10); // m00 和 m10 的平方和的开方
+
+        boolean singular = sy < 1e-6; // 判断是否是奇异情况
+
+        if (!singular) {
+            eulerAngles[0] = (float) Math.atan2(impl.m32, impl.m22); // pitch (绕x轴旋转)
+            eulerAngles[1] = (float) Math.atan2(-impl.m20, sy); // yaw (绕y轴旋转)
+            eulerAngles[2] = (float) Math.atan2(impl.m10, impl.m00); // roll (绕z轴旋转)
+        } else {
+            // 处理奇异情况
+            eulerAngles[0] = (float) Math.atan2(-impl.m21, impl.m11); // pitch
+            eulerAngles[1] = (float) Math.atan2(-impl.m20, sy); // yaw
+            eulerAngles[2] = 0; // roll
+        }
+        return new Vector3f(eulerAngles[0], eulerAngles[1], eulerAngles[2]);
     }
 
     public com.mojang.math.Matrix3f getRotationPart() {

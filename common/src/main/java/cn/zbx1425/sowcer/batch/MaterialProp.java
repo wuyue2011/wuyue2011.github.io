@@ -17,6 +17,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.util.Arrays;
 
 /** Properties regarding material. Set during model loading. Affects batching. */
 public class MaterialProp {
@@ -61,8 +62,22 @@ public class MaterialProp {
         this.attrState.lightmapUV = mtlObj.get("lightmapUV").isJsonNull() ? null : mtlObj.get("lightmapUV").getAsInt();
         this.translucent = mtlObj.has("translucent") && mtlObj.get("translucent").getAsBoolean();
         this.writeDepthBuf = mtlObj.has("writeDepthBuf") && mtlObj.get("writeDepthBuf").getAsBoolean();
-        boolean billboard = mtlObj.has("billboard") && mtlObj.get("billboard").getAsBoolean();
-        attrState.billboard = (byte) (billboard ? 7 : 0);
+        if (mtlObj.has("billboard")) {
+            try {
+                String str = mtlObj.get("billboard").getAsString();
+                str = str.substring(1, str.length() - 1);
+                String[] tokens = str.split(",");
+                float[] ks = new float[3];
+                for (int i = 0; i < 3; i++) {
+                    ks[i] = Float.parseFloat(tokens[i]);
+                }
+                attrState.setBillboard(ks[0], ks[1], ks[2]);
+            } catch (Exception e) {
+                boolean token = mtlObj.get("billboard").getAsBoolean();
+                float v = token ? 1.0f : 0.0f;
+                attrState.setBillboard(v, v, v);
+            }
+        }
         this.cutoutHack = mtlObj.has("cutoutHack") && mtlObj.get("cutoutHack").getAsBoolean();
     }
 
@@ -153,7 +168,7 @@ public class MaterialProp {
         }
         mtlObj.addProperty("translucent", this.translucent);
         mtlObj.addProperty("writeDepthBuf", this.writeDepthBuf);
-        mtlObj.addProperty("billboard", this.attrState.billboard);
+        mtlObj.addProperty("billboard", Arrays.toString(this.attrState.ks));
         mtlObj.addProperty("cutoutHack", this.cutoutHack);
         String content = mtlObj.toString();
         byte[] contentBytes = content.getBytes(StandardCharsets.UTF_8);
@@ -165,7 +180,7 @@ public class MaterialProp {
         return attrState.isBillboard();
     }
 
-    public void setBillboard(boolean x, boolean y, boolean z) {
+    public void setBillboard(float x, float y, float z) {
         attrState.setBillboard(x, y, z);
     }
     
@@ -189,7 +204,7 @@ public class MaterialProp {
 
     @Override
     public int hashCode() {
-        return Objects.hash(shaderName, texture, attrState, translucent, writeDepthBuf, attrState.billboard,
+        return Objects.hash(shaderName, texture, attrState, translucent, writeDepthBuf, Arrays.toString(attrState.ks),
                 cutoutHack, sheetElementsU, sheetElementsV);
     }
 }

@@ -399,4 +399,8 @@ public class RawMesh {
         dos.writeInt(faces.size());
         for (Face face : faces) face.serializeTo(dos);
     }
+
+    public void setBillboard(float x, float y, float z) {
+        materialProp.setBillboard(x, y, z);
+    }
 }
