@@ -71,7 +71,7 @@ public class ModelCluster implements Closeable {
                 new VertAttrState()
                         .setColor(255, 255, 255, 255).setOverlayUVNoOverlay()
                         .setLightmapUV(shaderLightmapUV).setModelMatrix(pose)
-                        .setBillboard(billboard);
+                        .setBillboard(billboard)
         ), ShaderProp.DEFAULT);
     }
 
@@ -85,7 +85,7 @@ public class ModelCluster implements Closeable {
                 new VertAttrState()
                         .setColor(255, 255, 255, 255).setOverlayUVNoOverlay()
                         .setLightmapUV(shaderLightmapUV).setModelMatrix(matrix4f)
-                        .setBillboard(billboard);
+                        .setBillboard(billboard)
         ), ShaderProp.DEFAULT);
     }
 
