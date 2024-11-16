@@ -21,6 +21,7 @@ public class ModelCluster implements Closeable {
     public final RawModel opaqueParts;
     public final VertArrays uploadedTranslucentParts;
     public final RawModel translucentParts;
+    public boolean billboard = false;
 
     public ModelCluster(RawModel source, VertAttrMapping mapping, ModelManager modelManager) {
         this.translucentParts = new RawModel();
@@ -70,6 +71,7 @@ public class ModelCluster implements Closeable {
                 new VertAttrState()
                         .setColor(255, 255, 255, 255).setOverlayUVNoOverlay()
                         .setLightmapUV(shaderLightmapUV).setModelMatrix(pose)
+                        .setBillboard(billboard);
         ), ShaderProp.DEFAULT);
     }
 
@@ -83,6 +85,7 @@ public class ModelCluster implements Closeable {
                 new VertAttrState()
                         .setColor(255, 255, 255, 255).setOverlayUVNoOverlay()
                         .setLightmapUV(shaderLightmapUV).setModelMatrix(matrix4f)
+                        .setBillboard(billboard);
         ), ShaderProp.DEFAULT);
     }
 
