@@ -36,6 +36,7 @@ public class ModelManager {
             .set(VertAttrType.UV_LIGHTMAP, VertAttrSrc.GLOBAL)
             .set(VertAttrType.NORMAL, VertAttrSrc.VERTEX_BUF)
             .set(VertAttrType.MATRIX_MODEL, VertAttrSrc.GLOBAL)
+            .set(VertAttrType.BILLBOARD, VertAttrSrc.GLOBAL)
             .build();
 
     public void clear() {

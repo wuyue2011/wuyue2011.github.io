@@ -237,9 +237,9 @@ public class RawModel {
         }
     }
 
-    public void setBillboard(boolean isBillboard) {
+    public void setBillboard(boolean x, boolean y, boolean z) {
         for (MaterialProp prop : meshList.keySet()) {
-            prop.setBillboard(isBillboard);
+            prop.setBillboard(x, y, z);
         }
     }
 }

@@ -189,7 +189,7 @@ public class CsvModelLoader {
                         break;
                     case "setbillboard":
                         // extension
-                        buildingMesh.materialProp.setBillboard(tokens[1].equals("true"));
+                        buildingMesh.materialProp.attrState.billboard = (byte) (tokens[1].equals("true") ? 0b111 : 0);
                         break;
                     case "setisglcoords":
                         // extension

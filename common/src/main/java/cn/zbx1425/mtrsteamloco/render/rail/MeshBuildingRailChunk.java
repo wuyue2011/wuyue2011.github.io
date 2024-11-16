@@ -38,6 +38,7 @@ public class MeshBuildingRailChunk extends RailChunkBase {
             .set(VertAttrType.UV_LIGHTMAP, VertAttrSrc.VERTEX_BUF_OR_GLOBAL)
             .set(VertAttrType.NORMAL, VertAttrSrc.VERTEX_BUF)
             .set(VertAttrType.MATRIX_MODEL, VertAttrSrc.GLOBAL)
+            .set(VertAttrType.BILLBOARD, VertAttrSrc.GLOBAL)
             .build();
 
     protected MeshBuildingRailChunk(Long chunkId, String modelKey) {

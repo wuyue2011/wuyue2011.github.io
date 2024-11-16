@@ -9,6 +9,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import org.lwjgl.opengl.GL33;
+import org.lwjgl.BufferUtils;
+import net.minecraft.client.Minecraft;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -23,10 +25,11 @@ public class VertAttrState {
     public Integer lightmapUV;
     public Vector3f normal;
     public Matrix4f matrixModel;
-    public boolean billboard = false;
+    public byte billboard = 0;
 
     public void applyGlobal() {
         for (VertAttrType attr : VertAttrType.values()) {
+            final boolean useCustomShader = ShadersModHandler.canUseCustomShader();
             switch (attr) {
                 case POSITION:
                     if (position == null) continue;
@@ -64,35 +67,33 @@ public class VertAttrState {
                     GL33.glVertexAttrib3f(attr.location, normal.x(), normal.y(), normal.z());
                     break;
                 case MATRIX_MODEL:
-                    if (matrixModel == null || billboard == false) continue;
-                    Matrix4f temp = new Matrix4f();
-                    if (matrixModel != null) temp = matrixModel;
-                    final boolean useCustomShader = ShadersModHandler.canUseCustomShader();
+                    if (matrixModel == null) continue;
                     if (useCustomShader) {
                         ByteBuffer byteBuf = ByteBuffer.allocate(64);
                         FloatBuffer floatBuf = byteBuf.asFloatBuffer();
-                        temp.store(floatBuf);
-                        if (billboard) {
-                            GL33.glVertexAttrib4f(attr.location, 1, 0, 0, 0);
-                            GL33.glVertexAttrib4f(attr.location + 1, 0, 1, 0, 0);
-                            GL33.glVertexAttrib4f(attr.location + 2, 0, 0, 1, 0);
-                            GL33.glVertexAttrib4f(attr.location + 3, floatBuf.get(12), floatBuf.get(13), floatBuf.get(14), floatBuf.get(15));
-                        } else {
-                            GL33.glVertexAttrib4f(attr.location, floatBuf.get(0), floatBuf.get(1), floatBuf.get(2), floatBuf.get(3));
-                            GL33.glVertexAttrib4f(attr.location + 1, floatBuf.get(4), floatBuf.get(5), floatBuf.get(6), floatBuf.get(7));
-                            GL33.glVertexAttrib4f(attr.location + 2, floatBuf.get(8), floatBuf.get(9), floatBuf.get(10), floatBuf.get(11));
-                            GL33.glVertexAttrib4f(attr.location + 3, floatBuf.get(12), floatBuf.get(13), floatBuf.get(14), floatBuf.get(15));
-                        }
+                        matrixModel.store(floatBuf);
+                        GL33.glVertexAttrib4f(attr.location, floatBuf.get(0), floatBuf.get(1), floatBuf.get(2), floatBuf.get(3));
+                        GL33.glVertexAttrib4f(attr.location + 1, floatBuf.get(4), floatBuf.get(5), floatBuf.get(6), floatBuf.get(7));
+                        GL33.glVertexAttrib4f(attr.location + 2, floatBuf.get(8), floatBuf.get(9), floatBuf.get(10), floatBuf.get(11));
+                        GL33.glVertexAttrib4f(attr.location + 3, floatBuf.get(12), floatBuf.get(13), floatBuf.get(14), floatBuf.get(15));
                     } else {
                         ShaderInstance shaderInstance = RenderSystem.getShader();
                         if (shaderInstance != null && shaderInstance.MODEL_VIEW_MATRIX != null) {
-                            shaderInstance.MODEL_VIEW_MATRIX.set(temp.asMoj());
-                            if (ShadersModHandler.canUseCustomShader()) {
+                            shaderInstance.MODEL_VIEW_MATRIX.set(matrixModel.asMoj());
+                            if (useCustomShader) {
                                 shaderInstance.MODEL_VIEW_MATRIX.upload();
                             } else {
                                 shaderInstance.apply();
                             }
                         }
+                    }
+                    break;
+                case BILLBOARD:
+                    if (billboard == 0) continue;
+                    if (useCustomShader) {
+                        if ((billboard & 1) == 1) GL33.glVertexAttrib4f(attr.location, 1, 0, 0, 0);
+                        if ((billboard >> 1 & 1) == 1) GL33.glVertexAttrib4f(attr.location + 1, 0, 1, 0, 0);
+                        if ((billboard >> 2 & 1) == 1) GL33.glVertexAttrib4f(attr.location + 2, 0, 0, 1, 0);
                     }
                     break;
             }
@@ -150,9 +151,13 @@ public class VertAttrState {
         return this;
     }
 
-    public VertAttrState setBillboard(boolean billboard) {
-        this.billboard = billboard;
+    public VertAttrState setBillboard(boolean x, boolean y, boolean z) {
+        this.billboard = (byte) ((x ? 0b1 : 0) | (y ? 0b10 : 0) | (z ? 0b100 : 0));
         return this;
+    }
+
+    public boolean isBillboard() {
+        return billboard != 0;
     }
 
     public boolean hasAttr(VertAttrType attrType) {
@@ -170,7 +175,9 @@ public class VertAttrState {
             case UV_LIGHTMAP:
                 return lightmapUV != null;
             case MATRIX_MODEL:
-                return matrixModel != null || billboard;
+                return matrixModel != null;
+            case BILLBOARD:
+                return billboard != 0;
         }
         return false;
     }
@@ -198,7 +205,9 @@ public class VertAttrState {
                 break;
             case MATRIX_MODEL:
                 matrixModel = null;
-                billboard = false;
+                break;
+            case BILLBOARD:
+                billboard = 0;
                 break;
         }
     }

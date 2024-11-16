@@ -62,7 +62,7 @@ public class MaterialProp {
         this.translucent = mtlObj.has("translucent") && mtlObj.get("translucent").getAsBoolean();
         this.writeDepthBuf = mtlObj.has("writeDepthBuf") && mtlObj.get("writeDepthBuf").getAsBoolean();
         boolean billboard = mtlObj.has("billboard") && mtlObj.get("billboard").getAsBoolean();
-        attrState.billboard = billboard;
+        attrState.billboard = (byte) (billboard ? 7 : 0);
         this.cutoutHack = mtlObj.has("cutoutHack") && mtlObj.get("cutoutHack").getAsBoolean();
     }
 
@@ -162,11 +162,11 @@ public class MaterialProp {
     }
 
     public boolean isBillboard() {
-        return attrState.billboard;
+        return attrState.isBillboard();
     }
 
-    public void setBillboard(boolean billboard) {
-        attrState.billboard = billboard;
+    public void setBillboard(boolean x, boolean y, boolean z) {
+        attrState.setBillboard(x, y, z);
     }
     
     @Override

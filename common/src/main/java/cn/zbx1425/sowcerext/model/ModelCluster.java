@@ -90,11 +90,11 @@ public class ModelCluster implements Closeable {
         translucentParts.writeBlazeBuffer(vertexConsumers, pose, light, drawContext);
     }
 
-    public void setBillboard(boolean isBillboard) {
-        opaqueParts.setBillboard(isBillboard);
-        translucentParts.setBillboard(isBillboard);
-        uploadedOpaqueParts.setBillboard(isBillboard);
-        uploadedTranslucentParts.setBillboard(isBillboard);
+    public void setBillboard(boolean x, boolean y, boolean z) {
+        opaqueParts.setBillboard(x, y, z);
+        translucentParts.setBillboard(x, y, z);
+        uploadedOpaqueParts.setBillboard(x, y, z);
+        uploadedTranslucentParts.setBillboard(x, y, z);
     }
 
     @Override
