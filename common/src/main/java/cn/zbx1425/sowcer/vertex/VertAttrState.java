@@ -64,12 +64,14 @@ public class VertAttrState {
                     GL33.glVertexAttrib3f(attr.location, normal.x(), normal.y(), normal.z());
                     break;
                 case MATRIX_MODEL:
-                    if (matrixModel == null) continue;
+                    if (matrixModel == null || billboard == false) continue;
+                    Matrix4f temp = new Matrix4f();
+                    if (matrixModel != null) temp = matrixModel;
                     final boolean useCustomShader = ShadersModHandler.canUseCustomShader();
                     if (useCustomShader) {
                         ByteBuffer byteBuf = ByteBuffer.allocate(64);
                         FloatBuffer floatBuf = byteBuf.asFloatBuffer();
-                        matrixModel.store(floatBuf);
+                        temp.store(floatBuf);
                         if (billboard) {
                             GL33.glVertexAttrib4f(attr.location, 1, 0, 0, 0);
                             GL33.glVertexAttrib4f(attr.location + 1, 0, 1, 0, 0);
@@ -84,7 +86,7 @@ public class VertAttrState {
                     } else {
                         ShaderInstance shaderInstance = RenderSystem.getShader();
                         if (shaderInstance != null && shaderInstance.MODEL_VIEW_MATRIX != null) {
-                            shaderInstance.MODEL_VIEW_MATRIX.set(matrixModel.asMoj());
+                            shaderInstance.MODEL_VIEW_MATRIX.set(temp.asMoj());
                             if (ShadersModHandler.canUseCustomShader()) {
                                 shaderInstance.MODEL_VIEW_MATRIX.upload();
                             } else {
