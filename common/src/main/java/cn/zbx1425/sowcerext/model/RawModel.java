@@ -200,7 +200,7 @@ public class RawModel {
             */
 
             Matrix4f resultMatrix = matrix;
-            if (entry.getKey().billboard) {
+            if (entry.getKey().isBillboard()) {
                 resultMatrix = matrix.copy();
                 AttrUtil.zeroRotation(resultMatrix);
             }
@@ -234,6 +234,12 @@ public class RawModel {
         dos.writeInt(meshList.size());
         for (RawMesh mesh : meshList.values()) {
             mesh.serializeTo(dos);
+        }
+    }
+
+    public void setBillboard(boolean isBillboard) {
+        for (MaterialProp prop : meshList.keySet()) {
+            prop.setBillboard(isBillboard);
         }
     }
 }

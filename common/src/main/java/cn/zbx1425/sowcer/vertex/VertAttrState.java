@@ -168,7 +168,7 @@ public class VertAttrState {
             case UV_LIGHTMAP:
                 return lightmapUV != null;
             case MATRIX_MODEL:
-                return matrixModel != null;
+                return matrixModel != null || billboard;
         }
         return false;
     }
@@ -224,6 +224,7 @@ public class VertAttrState {
         clone.lightmapUV = this.lightmapUV;
         clone.normal = this.normal == null ? null : this.normal.copy();
         clone.matrixModel = this.matrixModel == null ? null : this.matrixModel.copy();
+        clone.billboard = this.billboard;
         return clone;
     }
 }

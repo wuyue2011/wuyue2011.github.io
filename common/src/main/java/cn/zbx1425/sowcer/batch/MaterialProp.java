@@ -35,7 +35,7 @@ public class MaterialProp {
     public boolean writeDepthBuf = true;
     /** If the renderer should remove rotation components from model and view matrices.
      *  Results in faces on the XY plane always facing the camera. */
-    public boolean billboard = false;
+    // public boolean billboard = false;
 
     public boolean cutoutHack = false;
 
@@ -61,7 +61,8 @@ public class MaterialProp {
         this.attrState.lightmapUV = mtlObj.get("lightmapUV").isJsonNull() ? null : mtlObj.get("lightmapUV").getAsInt();
         this.translucent = mtlObj.has("translucent") && mtlObj.get("translucent").getAsBoolean();
         this.writeDepthBuf = mtlObj.has("writeDepthBuf") && mtlObj.get("writeDepthBuf").getAsBoolean();
-        this.billboard = mtlObj.has("billboard") && mtlObj.get("billboard").getAsBoolean();
+        boolean billboard = mtlObj.has("billboard") && mtlObj.get("billboard").getAsBoolean();
+        attrState.billboard = billboard;
         this.cutoutHack = mtlObj.has("cutoutHack") && mtlObj.get("cutoutHack").getAsBoolean();
     }
 
@@ -127,7 +128,6 @@ public class MaterialProp {
         this.attrState = other.attrState.copy();
         this.translucent = other.translucent;
         this.writeDepthBuf = other.writeDepthBuf;
-        this.billboard = other.billboard;
         this.sheetElementsU = other.sheetElementsU;
         this.sheetElementsV = other.sheetElementsV;
     }
@@ -153,7 +153,7 @@ public class MaterialProp {
         }
         mtlObj.addProperty("translucent", this.translucent);
         mtlObj.addProperty("writeDepthBuf", this.writeDepthBuf);
-        mtlObj.addProperty("billboard", this.billboard);
+        mtlObj.addProperty("billboard", this.attrState.billboard);
         mtlObj.addProperty("cutoutHack", this.cutoutHack);
         String content = mtlObj.toString();
         byte[] contentBytes = content.getBytes(StandardCharsets.UTF_8);
@@ -161,6 +161,14 @@ public class MaterialProp {
         dos.write(contentBytes);
     }
 
+    public boolean isBillboard() {
+        return attrState.billboard;
+    }
+
+    public void setBillboard(boolean billboard) {
+        attrState.billboard = billboard;
+    }
+    
     @Override
     public String toString() {
         return String.format("{%s: %s%s}",
@@ -173,7 +181,7 @@ public class MaterialProp {
         if (o == null || getClass() != o.getClass()) return false;
         MaterialProp that = (MaterialProp) o;
         return translucent == that.translucent && writeDepthBuf == that.writeDepthBuf
-                && billboard == that.billboard && cutoutHack == that.cutoutHack
+                && cutoutHack == that.cutoutHack
                 && sheetElementsU == that.sheetElementsU && sheetElementsV == that.sheetElementsV
                 && Objects.equals(shaderName, that.shaderName) && Objects.equals(texture, that.texture)
                 && Objects.equals(attrState, that.attrState);
@@ -181,7 +189,7 @@ public class MaterialProp {
 
     @Override
     public int hashCode() {
-        return Objects.hash(shaderName, texture, attrState, translucent, writeDepthBuf, billboard,
+        return Objects.hash(shaderName, texture, attrState, translucent, writeDepthBuf, attrState.billboard,
                 cutoutHack, sheetElementsU, sheetElementsV);
     }
 }
