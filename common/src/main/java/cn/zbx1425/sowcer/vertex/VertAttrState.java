@@ -196,6 +196,7 @@ public class VertAttrState {
                 break;
             case MATRIX_MODEL:
                 matrixModel = null;
+                billboard = false;
                 break;
         }
     }
@@ -207,12 +208,12 @@ public class VertAttrState {
         VertAttrState that = (VertAttrState) o;
         return Objects.equals(position, that.position) && Objects.equals(color, that.color) && Objects.equals(texU, that.texU)
                 && Objects.equals(texV, that.texV) && Objects.equals(lightmapUV, that.lightmapUV) && Objects.equals(normal, that.normal)
-                && Objects.equals(matrixModel, that.matrixModel);
+                && Objects.equals(matrixModel, that.matrixModel) && billboard == that.billboard;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(position, color, texU, texV, lightmapUV, normal, matrixModel);
+        return Objects.hash(position, color, texU, texV, lightmapUV, normal, matrixModel, billboard);
     }
 
     public VertAttrState copy() {
