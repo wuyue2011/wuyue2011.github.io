@@ -94,7 +94,7 @@ public class VertAttrState {
                 case BILLBOARD:
                     if (!isBillboard()) continue;
                     if (useCustomShader) {
-                        Vector3f rot = matrix.transform3(new Vector3f(0, 0, 0));
+                        Vector3f rot = matrix.getEulerAnglesXYZ();
                         rot.mul(ks[0], ks[1], ks[2]);
                         matrix.rotateX(-rot.x());
                         matrix.rotateY(-rot.y());
@@ -102,9 +102,9 @@ public class VertAttrState {
                         ByteBuffer byteBuf = ByteBuffer.allocate(64);
                         FloatBuffer floatBuf = byteBuf.asFloatBuffer();
                         matrix.store(floatBuf);
-                        GL33.glVertexAttrib4f(attr.location, 1, 0, 0, 0);
+                        /*GL33.glVertexAttrib4f(attr.location, 1, 0, 0, 0);
                         GL33.glVertexAttrib4f(attr.location + 1, 0, 1, 0, 0);
-                        GL33.glVertexAttrib4f(attr.location + 2, 0, 0, 1, 0);
+                        GL33.glVertexAttrib4f(attr.location + 2, 0, 0, 1, 0);*/
                         //GL33.glVertexAttrib4f(attr.location, floatBuf.get(0), floatBuf.get(1), floatBuf.get(2), floatBuf.get(3));
                         //GL33.glVertexAttrib4f(attr.location + 1, floatBuf.get(4), floatBuf.get(5), floatBuf.get(6), floatBuf.get(7));
                         //GL33.glVertexAttrib4f(attr.location + 2, floatBuf.get(8), floatBuf.get(9), floatBuf.get(10), floatBuf.get(11));
