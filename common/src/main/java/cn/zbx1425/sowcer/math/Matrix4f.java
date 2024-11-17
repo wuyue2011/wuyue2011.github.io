@@ -187,24 +187,8 @@ public class Matrix4f {
     }
 
     public Vector3f getEulerAnglesXYZ() {
-        float[] eulerAngles = new float[3]; // 存储欧拉角的数组，索引分别代表pitch、yaw和roll
-
-    // 提取欧拉角
-        float sy = (float) Math.sqrt(impl.m00 * impl.m00 + impl.m10 * impl.m10); // m00 和 m10 的平方和的开方
-
-        boolean singular = sy < 1e-6; // 判断是否是奇异情况
-
-        if (!singular) {
-            eulerAngles[0] = (float) Math.atan2(impl.m32, impl.m22); // pitch (绕x轴旋转)
-            eulerAngles[1] = (float) Math.atan2(-impl.m20, sy); // yaw (绕y轴旋转)
-            eulerAngles[2] = (float) Math.atan2(impl.m10, impl.m00); // roll (绕z轴旋转)
-        } else {
-            // 处理奇异情况
-            eulerAngles[0] = (float) Math.atan2(-impl.m21, impl.m11); // pitch
-            eulerAngles[1] = (float) Math.atan2(-impl.m20, sy); // yaw
-            eulerAngles[2] = 0; // roll
-        }
-        return new Vector3f(eulerAngles[0], eulerAngles[1], eulerAngles[2]);
+        com.mojang.math.Vector3f result = impl.getRotationAngles();
+        return new Vector3f(result);
     }
 
     public com.mojang.math.Matrix3f getRotationPart() {

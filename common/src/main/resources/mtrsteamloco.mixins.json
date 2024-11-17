@@ -26,6 +26,7 @@
     "TrainClientMixin",
     "TrainClientRegistryMixin",
     "GLFWMixin"
+    ,"Matrix4fMixin"
   ],
   "injectors": {
     "defaultRequire": 1
