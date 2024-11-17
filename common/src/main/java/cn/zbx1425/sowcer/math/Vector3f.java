@@ -86,6 +86,10 @@ public class Vector3f {
         this.impl = new com.mojang.math.Vector3f(x, y, z);
     }
 
+    public Vector3f(com.mojang.math.Vector3f moj) {
+        this.impl = moj.copy();
+    }
+
     public float x() { return impl.x(); }
     public float y() { return impl.y(); }
     public float z() { return impl.z(); }

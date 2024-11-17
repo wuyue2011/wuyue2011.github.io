@@ -187,8 +187,30 @@ public class Matrix4f {
     }
 
     public Vector3f getEulerAnglesXYZ() {
-        com.mojang.math.Vector3f result = impl.getEulerAnglesXYZ();
-        return new Vector3f(result);
+        float[] srcValues = new float[16];
+        FloatBuffer srcFloatBuffer = FloatBuffer.wrap(srcValues);
+        impl.store(srcFloatBuffer);
+        float[] angles = new float[3];
+        float m00 = srcValues[0];
+        float m01 = srcValues[1];
+        float m02 = srcValues[2];
+        float m03 = srcValues[3];
+        float m10 = srcValues[4];
+        float m11 = srcValues[5];
+        float m12 = srcValues[6];
+        float m13 = srcValues[7];
+        float m20 = srcValues[8];
+        float m21 = srcValues[9];
+        float m22 = srcValues[10];
+        float m23 = srcValues[11];
+        float m30 = srcValues[12];
+        float m31 = srcValues[13];
+        float m32 = srcValues[14];
+        float m33 = srcValues[15];
+        angles[0] = (float) Math.atan2(m32, m22); // pitch
+        angles[1] = (float) Math.atan2(-m20, Math.sqrt(m21 * m21 + m22 * m22)); // yaw
+        angles[2] = (float) Math.atan2(m10, m00); // roll
+        return new Vector3f(angles[0], angles[1], angles[2]);
     }
 
     public com.mojang.math.Matrix3f getRotationPart() {
