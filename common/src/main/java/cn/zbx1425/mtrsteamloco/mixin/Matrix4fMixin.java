@@ -31,7 +31,7 @@ public  class Matrix4fMixin {
     @Shadow protected float m32;
     @Shadow protected float m33;
 
-    public Vector3f getRotationAngles() {
+    public Vector3f getEulerAnglesXYZ() {
         float[] angles = new float[3];
         angles[0] = (float) Math.atan2(m32, m22); // pitch
         angles[1] = (float) Math.atan2(-m20, Math.sqrt(m21 * m21 + m22 * m22)); // yaw

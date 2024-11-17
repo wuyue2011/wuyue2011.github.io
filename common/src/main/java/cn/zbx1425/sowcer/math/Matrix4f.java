@@ -187,7 +187,7 @@ public class Matrix4f {
     }
 
     public Vector3f getEulerAnglesXYZ() {
-        com.mojang.math.Vector3f result = impl.getRotationAngles();
+        com.mojang.math.Vector3f result = impl.getEulerAnglesXYZ();
         return new Vector3f(result);
     }
 
