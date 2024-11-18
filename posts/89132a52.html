@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>运动会横幅 | 一个简单的博客</title><noscript>开启JavaScript才能访问本站哦~</noscript><link rel="icon" href="https://pic.imgdb.cn/item/66f5564ef21886ccc004c817.jpg"><!-- index.css--><link rel="stylesheet" href="/css/index.css?v=2.1.7"><!-- inject head--><link rel="canonical" href="https://blog.yucan.icu/posts/89132a52.html"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"><!-- aplayer--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aplayer/1.10.1/APlayer.min.css"><!-- swiper--><!-- fancybox ui--><!-- katex--><!-- Open Graph--><meta name="description" content="运动会即将来临，班级运动会方阵横幅暂时未定，欢迎大家投稿内容，下周一（11月18日）晚上发起投票 投票方式1.本篇文章底部评论投票（仅适合QQ），昵称填写QQ号自动同步当前QQ头像以及QQ昵称，切勿发表不良语言，否则会自动过滤掉！2.发送邮箱&amp;#49;&amp;#x33;&amp;#55;&amp;#x32;&amp;#x34;&amp;amp;"><!-- pwa--><meta name="apple-mobile-web-app-capable" content="一个简单的博客"><meta name="theme-color" content="var(--efu-main)"><meta name="apple-mobile-web-app-status-bar-style" content="var(--efu-main)"><link rel="bookmark" href="https://pic.imgdb.cn/item/66f5564ef21886ccc004c817.jpg"><link rel="apple-touch-icon" href="https://pic.imgdb.cn/item/66f5564ef21886ccc004c817.jpg" sizes="180x180"><script>console.log(' %c Solitude %c ' + '2.1.7' + ' %c https://github.com/everfu/hexo-theme-solitude',
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>运动会横幅 | 一个简单的博客</title><noscript>开启JavaScript才能访问本站哦~</noscript><link rel="icon" href="https://pic.imgdb.cn/item/66f5564ef21886ccc004c817.jpg"><!-- index.css--><link rel="stylesheet" href="/css/index.css?v=2.1.7"><!-- inject head--><link rel="canonical" href="https://blog.yucan.icu/posts/89132a52.html"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"><!-- aplayer--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aplayer/1.10.1/APlayer.min.css"><!-- swiper--><!-- fancybox ui--><!-- katex--><!-- Open Graph--><meta name="description" content="运动会即将来临，班级运动会方阵横幅暂时未定，欢迎大家投稿内容，下周一（11月18日）晚上发起投票 投票方式1.本篇文章底部评论投票（仅适合QQ），昵称填写QQ号自动同步当前QQ头像以及QQ昵称，切勿发表不良语言，否则会自动过滤掉！2.发送邮箱&amp;#x31;&amp;#x33;&amp;#55;&amp;#x32;&amp;#x34;"><!-- pwa--><meta name="apple-mobile-web-app-capable" content="一个简单的博客"><meta name="theme-color" content="var(--efu-main)"><meta name="apple-mobile-web-app-status-bar-style" content="var(--efu-main)"><link rel="bookmark" href="https://pic.imgdb.cn/item/66f5564ef21886ccc004c817.jpg"><link rel="apple-touch-icon" href="https://pic.imgdb.cn/item/66f5564ef21886ccc004c817.jpg" sizes="180x180"><script>console.log(' %c Solitude %c ' + '2.1.7' + ' %c https://github.com/everfu/hexo-theme-solitude',
     'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
     'background:#ff9a9a ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
     'background:unset ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff')
@@ -192,7 +192,7 @@ setTimeout(() => {
     }
     let ls = []
 
-    await fetch('https://chenjianan-twikoo.hf.space/', {
+    await fetch('https://twikoo.yucan.icu/', {
         method: "POST",
         body: JSON.stringify({
             "event": "GET_RECENT_COMMENTS",
@@ -322,7 +322,7 @@ if (sco_keyboards) {
         const ele = document.querySelectorAll('.twikoo-count')
         if (!ele) return
         twikoo.getCommentsCount({
-            envId: 'https://chenjianan-twikoo.hf.space/',
+            envId: 'https://twikoo.yucan.icu/',
             region: '',
             urls: [window.location.pathname],
             includeReply: false
@@ -335,7 +335,7 @@ if (sco_keyboards) {
     const init = () => {
         twikoo.init(Object.assign({
             el: '#twikoo-wrap',
-            envId: 'https://chenjianan-twikoo.hf.space/',
+            envId: 'https://twikoo.yucan.icu/',
             region: '',
             path: window.location.pathname,
             onCommentLoaded: () => {
@@ -384,7 +384,7 @@ if (sco_keyboards) {
     }
 })()
 </script><script>async function barrageTwikoo() {
-    await fetch("https://chenjianan-twikoo.hf.space/", {
+    await fetch("https://twikoo.yucan.icu/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

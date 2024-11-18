@@ -192,7 +192,7 @@ setTimeout(() => {
     }
     let ls = []
 
-    await fetch('https://chenjianan-twikoo.hf.space/', {
+    await fetch('https://twikoo.yucan.icu/', {
         method: "POST",
         body: JSON.stringify({
             "event": "GET_RECENT_COMMENTS",
@@ -324,7 +324,7 @@ if (sco_keyboards) {
     }
     let ls = []
 
-    await fetch('https://chenjianan-twikoo.hf.space/', {
+    await fetch('https://twikoo.yucan.icu/', {
         method: "POST",
         body: JSON.stringify({
             "event": "GET_RECENT_COMMENTS",
@@ -399,7 +399,7 @@ if (sco_keyboards) {
         const ele = document.querySelectorAll('.twikoo-count')
         if (!ele) return
         twikoo.getCommentsCount({
-            envId: 'https://chenjianan-twikoo.hf.space/',
+            envId: 'https://twikoo.yucan.icu/',
             region: '',
             urls: [window.location.pathname],
             includeReply: false
@@ -412,7 +412,7 @@ if (sco_keyboards) {
     const init = () => {
         twikoo.init(Object.assign({
             el: '#twikoo-wrap',
-            envId: 'https://chenjianan-twikoo.hf.space/',
+            envId: 'https://twikoo.yucan.icu/',
             region: '',
             path: window.location.pathname,
             onCommentLoaded: () => {
@@ -461,7 +461,7 @@ if (sco_keyboards) {
     }
 })()
 </script><script>async function barrageTwikoo() {
-    await fetch("https://chenjianan-twikoo.hf.space/", {
+    await fetch("https://twikoo.yucan.icu/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
