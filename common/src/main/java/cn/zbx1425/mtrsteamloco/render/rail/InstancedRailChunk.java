@@ -44,7 +44,7 @@ public class InstancedRailChunk extends RailChunkBase {
             .set(VertAttrType.UV_LIGHTMAP, VertAttrSrc.INSTANCE_BUF_OR_GLOBAL)
             .set(VertAttrType.NORMAL, VertAttrSrc.VERTEX_BUF)
             .set(VertAttrType.MATRIX_MODEL, VertAttrSrc.INSTANCE_BUF)
-            .set(VertAttrType.BILLBOARD, VertAttrSrc.INSTANCE_BUF)
+            .set(VertAttrType.MATRIX_PROCESS, VertAttrSrc.INSTANCE_BUF)
             .build();
 
     public InstancedRailChunk(Long chunkId, String modelKey) {

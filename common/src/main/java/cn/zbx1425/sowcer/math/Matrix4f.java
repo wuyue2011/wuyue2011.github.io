@@ -102,6 +102,18 @@ public class Matrix4f {
         return new Vector3f(result);
     }
 
+    public Vector3f getEulerAnglesYXZ() {
+        org.joml.Vector3f result = new org.joml.Vector3f();
+        impl.getEulerAnglesYXZ(result);
+        return new Vector3f(result);
+    }
+
+    public Vector3f getEulerAnglesZYX() {
+        org.joml.Vector3f result = new org.joml.Vector3f();
+        impl.getEulerAnglesZYX(result);
+        return new Vector3f(result);
+    }
+
     public org.joml.Matrix3f getRotationPart() {
         org.joml.Matrix3f result = new org.joml.Matrix3f();
         return impl.get3x3(result);
@@ -186,31 +198,41 @@ public class Matrix4f {
         return pos3;
     }
 
-    public Vector3f getEulerAnglesXYZ() {
-        float[] srcValues = new float[16];
-        FloatBuffer srcFloatBuffer = FloatBuffer.wrap(srcValues);
+    public Vector3f getEulerAnglesZYX() {
+        float[] src = new float[16];
+        FloatBuffer srcFloatBuffer = FloatBuffer.wrap(src);
         impl.store(srcFloatBuffer);
-        float[] angles = new float[3];
-        float m00 = srcValues[0];
-        float m01 = srcValues[1];
-        float m02 = srcValues[2];
-        float m03 = srcValues[3];
-        float m10 = srcValues[4];
-        float m11 = srcValues[5];
-        float m12 = srcValues[6];
-        float m13 = srcValues[7];
-        float m20 = srcValues[8];
-        float m21 = srcValues[9];
-        float m22 = srcValues[10];
-        float m23 = srcValues[11];
-        float m30 = srcValues[12];
-        float m31 = srcValues[13];
-        float m32 = srcValues[14];
-        float m33 = srcValues[15];
-        angles[0] = (float) Math.atan2(m32, m22); // pitch
-        angles[1] = (float) Math.atan2(-m20, Math.sqrt(m21 * m21 + m22 * m22)); // yaw
-        angles[2] = (float) Math.atan2(m10, m00); // roll
-        return new Vector3f(angles[0], angles[1], angles[2]);
+
+        float x = (float) Math.atan2(src[index(1, 2)], src[index(2, 2)]);
+        float y = (float) Math.atan2(-src[index(0, 2)], Math.sqrt(1.0F - src[index(0, 2)] * src[index(0, 2)]));
+        float z = (float) Math.atan2(src[index(0, 1)], src[index(0, 0)]);
+        return new Vector3f(x, y, z);
+    }
+
+    public Vector3f getEulerAnglesXYZ() {
+        float[] src = new float[16];
+        FloatBuffer srcFloatBuffer = FloatBuffer.wrap(src);
+        impl.store(srcFloatBuffer);
+
+        float x = (float) Math.atan2(-src[index(2, 1)], src[index(2, 2)]);
+        float y = (float) Math.atan2(src[index(2, 0)], Math.sqrt(1.0F - src[index(2, 0)] * src[index(2, 0)]));
+        float z = (float) Math.atan2(-src[index(1, 0)], src[index(0, 0)]);
+        return new Vector3f(x, y, z);
+    }
+
+    public Vector3f getEulerAnglesYXZ() {
+        float[] src = new float[16];
+        FloatBuffer srcFloatBuffer = FloatBuffer.wrap(src);
+        impl.store(srcFloatBuffer);
+
+        float x = (float) Math.atan2(-src[index(2, 1)], Math.sqrt(1.0F - src[index(2, 1)] * src[index(2, 1)]));
+        float y = (float) Math.atan2(src[index(2, 0)], src[index(2, 2)]);
+        float z = (float) Math.atan2(src[index(1, 0)], src[index(1, 1)]);
+        return new Vector3f(x, y, z);
+    }
+
+    int index(int p_27642_, int p_27643_) {
+      return p_27643_ * 4 + p_27642_;
     }
 
     public com.mojang.math.Matrix3f getRotationPart() {
@@ -234,6 +256,40 @@ public class Matrix4f {
         return new Vector3f(srcValues[12], srcValues[13], srcValues[14]);
     }
 #endif
+
+    public void translate(Vector3f vec) {
+        translate(vec.x(), vec.y(), vec.z());
+    }
+
+    public void rotateXYZ(float x, float y, float z) {
+        rotateX(x);
+        rotateY(y);
+        rotateZ(z);
+    }
+
+    public void rotateXYZ(Vector3f vec) {
+        rotateXYZ(vec.x(), vec.y(), vec.z());
+    }
+
+    public void rotateYXZ(float y, float x, float z) {
+        rotateY(y);
+        rotateX(x);
+        rotateZ(z);
+    }
+
+    public void rotateYXZ(Vector3f vec) {
+        rotateYXZ(vec.y(), vec.x(), vec.z());
+    }
+
+    public void rotateZYX(float z, float y, float x) {
+        rotateZ(z);
+        rotateY(y);
+        rotateX(x);
+    }
+
+    public void rotateZYX(Vector3f vec) {
+        rotateZYX(vec.z(), vec.y(), vec.x());
+    }
 
     @Override
     public int hashCode() {

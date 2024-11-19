@@ -48,6 +48,13 @@ import net.minecraft.server.level.ServerLevel;
 import java.util.Random;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import mtr.block.BlockTicketBarrier;
+import mtr.data.TicketSystem;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
+import mtr.mappings.Utilities;
+import mtr.SoundEvents;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,6 +64,8 @@ import java.util.List;
 import java.util.function.ToIntFunction;
 
 public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlockMapper {
+    
+    public static final EnumProperty<TicketSystem.EnumTicketBarrierOpen> OPEN = BlockTicketBarrier.OPEN;
     public static final IntegerProperty LEVEL = BlockStateProperties.LEVEL;
     public static final ToIntFunction<BlockState> LIGHT_EMISSION = (p_153701_) -> {
         return p_153701_.getValue(LEVEL);
@@ -80,7 +89,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, LEVEL);
+        builder.add(FACING, LEVEL, OPEN);
     }
 
     @Override
@@ -140,6 +149,37 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         return Shapes.empty();
     }
 
+	@Override
+	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
+        final BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (blockEntity instanceof BlockEntityEyeCandy) {
+            if (((BlockEntityEyeCandy) blockEntity).isTicketBarrier() == false) return;
+        } else {
+            return;
+        }
+        boolean isEntrance = ((BlockEntityEyeCandy) blockEntity).isEntrance;
+		if (!world.isClientSide && entity instanceof Player) {
+			final Direction facing = IBlock.getStatePropertySafe(state, FACING);
+			final Vec3 playerPosRotated = entity.position().subtract(pos.getX() + 0.5, 0, pos.getZ() + 0.5).yRot((float) Math.toRadians(facing.toYRot()));
+			final TicketSystem.EnumTicketBarrierOpen open = IBlock.getStatePropertySafe(state, OPEN);
+
+			if (open.isOpen() && playerPosRotated.z > 0) {
+				world.setBlockAndUpdate(pos, state.setValue(OPEN, TicketSystem.EnumTicketBarrierOpen.CLOSED));
+			} else if (!open.isOpen() && playerPosRotated.z < 0) {
+				final TicketSystem.EnumTicketBarrierOpen newOpen = TicketSystem.passThrough(world, pos, (Player) entity, isEntrance, !isEntrance, SoundEvents.TICKET_BARRIER, SoundEvents.TICKET_BARRIER_CONCESSIONARY, SoundEvents.TICKET_BARRIER, SoundEvents.TICKET_BARRIER_CONCESSIONARY, null, false);
+				world.setBlockAndUpdate(pos, state.setValue(OPEN, newOpen));
+				if (newOpen != TicketSystem.EnumTicketBarrierOpen.CLOSED && !world.getBlockTicks().hasScheduledTick(pos, this)) {
+					Utilities.scheduleBlockTick(world, pos, this, 40);
+				}
+			}
+		}
+	}
+
+	@Override
+	public void tick(BlockState state, ServerLevel world, BlockPos pos) {
+		world.setBlockAndUpdate(pos, state.setValue(OPEN, TicketSystem.EnumTicketBarrierOpen.CLOSED));
+	}
+
     public static class BlockEntityEyeCandy extends BlockEntityClientSerializableMapper {
 
         public String prefabId = null;
@@ -161,6 +201,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public boolean noCollision = true;
         public boolean noMove = true;
         public int lightLevel = 0;
+        public boolean isTicketBarrier = false;
+        public boolean isEntrance = false;
 
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
@@ -262,6 +304,19 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public boolean isPlatform() {
             return platform;
+        }
+
+        public boolean isTicketBarrier() {
+            return isTicketBarrier;
+        }
+
+        public boolean isOpened() {
+            try {
+                return getBlockState().getValue(BlockEyeCandy.OPEN).isOpen();
+            } catch (Exception e) {
+                Main.LOGGER.info("Error in isOpened:" + e.getMessage());
+                return false;
+            }
         }
 
         public void setShape(String shape) {

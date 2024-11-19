@@ -19,6 +19,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.*;
+import java.util.function.Function;
 
 public class RawMesh {
 
@@ -400,7 +401,11 @@ public class RawMesh {
         for (Face face : faces) face.serializeTo(dos);
     }
 
-    public void setBillboard(float x, float y, float z) {
-        materialProp.setBillboard(x, y, z);
+    public void setMatixProcess(boolean useMatixProcess, Function<Matrix4f, Matrix4f> matrixProcess) {
+        materialProp.setMatixProcess(useMatixProcess, matrixProcess);
+    }
+
+    public void setMatixProcess(boolean useMatixProcess) {
+        materialProp.setMatixProcess(useMatixProcess);
     }
 }

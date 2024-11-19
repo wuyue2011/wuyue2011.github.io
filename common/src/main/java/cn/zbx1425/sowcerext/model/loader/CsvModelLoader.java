@@ -189,7 +189,7 @@ public class CsvModelLoader {
                         break;
                     case "setbillboard":
                         // extension
-                        buildingMesh.setBillboard(1.0F, 1.0F, 1.0F);
+                        buildingMesh.setMatixProcess(true);
                         break;
                     case "setisglcoords":
                         // extension

@@ -5,6 +5,8 @@ import vendor.cn.zbx1425.mtrsteamloco.org.mozilla.javascript.Scriptable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AbstractScriptContext {
 
@@ -24,6 +26,8 @@ public abstract class AbstractScriptContext {
 
     public abstract boolean isBearerAlive();
 
+    public abstract boolean isTrain();
+
     public synchronized Map<String, Object> getDebugInfo() {
         synchronized (debugInfo) {
             return new LinkedHashMap<>(debugInfo);
@@ -33,6 +37,16 @@ public abstract class AbstractScriptContext {
     public synchronized void setDebugInfo(String key, Object value) {
         synchronized (debugInfo) {
             debugInfo.put(key, value);
+        }
+    }
+
+    public synchronized void setDebugInfo(String key, Object... values) {
+        synchronized (debugInfo) {
+            List<Object> list = new ArrayList<>();
+            for (Object value : values) {
+                list.add(value);
+            }
+            debugInfo.put(key, list);
         }
     }
 

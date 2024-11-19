@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 public class RawModel {
 
@@ -200,10 +201,10 @@ public class RawModel {
             */
 
             Matrix4f resultMatrix = matrix;
-            if (entry.getKey().isBillboard()) {
+            /*if (entry.getKey().useMatixProcess()) {
                 resultMatrix = matrix.copy();
                 AttrUtil.zeroRotation(resultMatrix);
-            }
+            }*/
 
             entry.getValue().writeBlazeBuffer(vertexConsumers.getBuffer(renderType, entry.getKey().translucent),
                     resultMatrix, resultColor, resultLight, drawContext);
@@ -237,9 +238,15 @@ public class RawModel {
         }
     }
 
-    public void setBillboard(float x, float y, float z) {
+    public void setMatixProcess(boolean useMatixProcess, Function<Matrix4f, Matrix4f> matrixProcess) {
         for (RawMesh mesh : meshList.values()) {
-            mesh.setBillboard(x, y, z);
+            mesh.setMatixProcess(useMatixProcess, matrixProcess);
+        }
+    }
+
+    public void setMatixProcess(boolean useMatixProcess) {
+        for (RawMesh mesh : meshList.values()) {
+            mesh.setMatixProcess(useMatixProcess);
         }
     }
 }

@@ -11,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.opengl.GL33;
+import cn.zbx1425.sowcer.math.Matrix4f;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Arrays;
+import java.util.function.Function;
 
 /** Properties regarding material. Set during model loading. Affects batching. */
 public class MaterialProp {
@@ -62,22 +64,8 @@ public class MaterialProp {
         this.attrState.lightmapUV = mtlObj.get("lightmapUV").isJsonNull() ? null : mtlObj.get("lightmapUV").getAsInt();
         this.translucent = mtlObj.has("translucent") && mtlObj.get("translucent").getAsBoolean();
         this.writeDepthBuf = mtlObj.has("writeDepthBuf") && mtlObj.get("writeDepthBuf").getAsBoolean();
-        if (mtlObj.has("billboard")) {
-            try {
-                String str = mtlObj.get("billboard").getAsString();
-                str = str.substring(1, str.length() - 1);
-                String[] tokens = str.split(",");
-                float[] ks = new float[3];
-                for (int i = 0; i < 3; i++) {
-                    ks[i] = Float.parseFloat(tokens[i]);
-                }
-                attrState.setBillboard(ks[0], ks[1], ks[2]);
-            } catch (Exception e) {
-                boolean token = mtlObj.get("billboard").getAsBoolean();
-                float v = token ? 1.0f : 0.0f;
-                attrState.setBillboard(v, v, v);
-            }
-        }
+        boolean isBillboard = mtlObj.has("billboard") && mtlObj.get("billboard").getAsBoolean();
+        attrState.setMatixProcess(true);
         this.cutoutHack = mtlObj.has("cutoutHack") && mtlObj.get("cutoutHack").getAsBoolean();
     }
 
@@ -168,7 +156,7 @@ public class MaterialProp {
         }
         mtlObj.addProperty("translucent", this.translucent);
         mtlObj.addProperty("writeDepthBuf", this.writeDepthBuf);
-        mtlObj.addProperty("billboard", Arrays.toString(this.attrState.ks));
+        mtlObj.addProperty("billboard", this.attrState.useMatixProcess());
         mtlObj.addProperty("cutoutHack", this.cutoutHack);
         String content = mtlObj.toString();
         byte[] contentBytes = content.getBytes(StandardCharsets.UTF_8);
@@ -176,12 +164,16 @@ public class MaterialProp {
         dos.write(contentBytes);
     }
 
-    public boolean isBillboard() {
-        return attrState.isBillboard();
+    public boolean useMatixProcess() {
+        return attrState.useMatixProcess();
     }
 
-    public void setBillboard(float x, float y, float z) {
-        attrState.setBillboard(x, y, z);
+    public void setMatixProcess(boolean useMatixProcess, Function<Matrix4f, Matrix4f> matrixProcess) {
+        attrState.setMatixProcess(useMatixProcess, matrixProcess);
+    }
+
+    public void setMatixProcess(boolean useMatixProcess) {
+        attrState.setMatixProcess(useMatixProcess);
     }
     
     @Override
@@ -204,7 +196,7 @@ public class MaterialProp {
 
     @Override
     public int hashCode() {
-        return Objects.hash(shaderName, texture, attrState, translucent, writeDepthBuf, Arrays.toString(attrState.ks),
+        return Objects.hash(shaderName, texture, attrState, translucent, writeDepthBuf,
                 cutoutHack, sheetElementsU, sheetElementsV);
     }
 }

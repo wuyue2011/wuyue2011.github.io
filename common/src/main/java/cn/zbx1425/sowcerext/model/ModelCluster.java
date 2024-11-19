@@ -14,6 +14,7 @@ import cn.zbx1425.sowcerext.reuse.ModelManager;
 import net.minecraft.resources.ResourceLocation;
 
 import java.io.Closeable;
+import java.util.function.Function;
 
 public class ModelCluster implements Closeable {
 
@@ -90,11 +91,18 @@ public class ModelCluster implements Closeable {
         translucentParts.writeBlazeBuffer(vertexConsumers, pose, light, drawContext);
     }
 
-    public void setBillboard(float x, float y, float z) {
-        opaqueParts.setBillboard(x, y, z);
-        translucentParts.setBillboard(x, y, z);
-        uploadedOpaqueParts.setBillboard(x, y, z);
-        uploadedTranslucentParts.setBillboard(x, y, z);
+    public void setMatixProcess(boolean useMatixProcess, Function<Matrix4f, Matrix4f> matrixProcess) {
+        opaqueParts.setMatixProcess(useMatixProcess, matrixProcess);
+        translucentParts.setMatixProcess(useMatixProcess, matrixProcess);
+        uploadedOpaqueParts.setMatixProcess(useMatixProcess, matrixProcess);
+        uploadedTranslucentParts.setMatixProcess(useMatixProcess, matrixProcess);
+    }
+
+    public void setMatixProcess(boolean useMatixProcess) {
+        opaqueParts.setMatixProcess(useMatixProcess);
+        translucentParts.setMatixProcess(useMatixProcess);
+        uploadedOpaqueParts.setMatixProcess(useMatixProcess);
+        uploadedTranslucentParts.setMatixProcess(useMatixProcess);
     }
 
     @Override

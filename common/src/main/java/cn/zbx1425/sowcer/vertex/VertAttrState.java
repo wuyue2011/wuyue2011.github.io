@@ -11,14 +11,22 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import org.lwjgl.opengl.GL33;
 import org.lwjgl.BufferUtils;
 import net.minecraft.client.Minecraft;
+import cn.zbx1425.mtrsteamloco.Main;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.Objects;
 import java.util.Arrays;
+import java.util.function.Function;
 
 public class VertAttrState {
 
+    public static final Function<Matrix4f, Matrix4f> DEFCUT_MATRIX_PROCESS = (matrix) -> {
+        Vector3f pos = matrix.getTranslationPart();
+        Matrix4f result = new Matrix4f();
+        result.translate(pos);
+        return result;
+    };
     public Vector3f position;
     public Integer color;
     public Float texU, texV;
@@ -26,8 +34,9 @@ public class VertAttrState {
     public Integer lightmapUV;
     public Vector3f normal;
     public Matrix4f matrixModel;
-    public float[] ks = new float[3]; 
-    public static Matrix4f matrix = new Matrix4f();
+    public boolean useMatixProcess = false;
+    public Function<Matrix4f, Matrix4f> matrixProcess = DEFCUT_MATRIX_PROCESS;
+    public static Matrix4f nowMatrix = new Matrix4f();
 
     public void applyGlobal() {
         for (VertAttrType attr : VertAttrType.values()) {
@@ -70,11 +79,11 @@ public class VertAttrState {
                     break;
                 case MATRIX_MODEL:
                     if (matrixModel == null) continue;
-                    matrix = matrixModel;
+                    nowMatrix = matrixModel.copy();
                     if (useCustomShader) {
                         ByteBuffer byteBuf = ByteBuffer.allocate(64);
                         FloatBuffer floatBuf = byteBuf.asFloatBuffer();
-                        matrix.store(floatBuf);
+                        nowMatrix.store(floatBuf);
                         GL33.glVertexAttrib4f(attr.location, floatBuf.get(0), floatBuf.get(1), floatBuf.get(2), floatBuf.get(3));
                         GL33.glVertexAttrib4f(attr.location + 1, floatBuf.get(4), floatBuf.get(5), floatBuf.get(6), floatBuf.get(7));
                         GL33.glVertexAttrib4f(attr.location + 2, floatBuf.get(8), floatBuf.get(9), floatBuf.get(10), floatBuf.get(11));
@@ -82,7 +91,7 @@ public class VertAttrState {
                     } else {
                         ShaderInstance shaderInstance = RenderSystem.getShader();
                         if (shaderInstance != null && shaderInstance.MODEL_VIEW_MATRIX != null) {
-                            shaderInstance.MODEL_VIEW_MATRIX.set(matrix.asMoj());
+                            shaderInstance.MODEL_VIEW_MATRIX.set(nowMatrix.asMoj());
                             if (useCustomShader) {
                                 shaderInstance.MODEL_VIEW_MATRIX.upload();
                             } else {
@@ -91,24 +100,21 @@ public class VertAttrState {
                         }
                     }
                     break;
-                case BILLBOARD:
-                    if (!isBillboard()) continue;
+                case MATRIX_PROCESS:
+                    if (!useMatixProcess()) continue;
                     if (useCustomShader) {
-                        Vector3f rot = matrix.getEulerAnglesXYZ();
-                        rot.mul(ks[0], ks[1], ks[2]);
-                        matrix.rotateX(-rot.x());
-                        matrix.rotateY(-rot.y());
-                        matrix.rotateZ(-rot.z());
+                        nowMatrix = matrixProcess.apply(nowMatrix);
+                        
                         ByteBuffer byteBuf = ByteBuffer.allocate(64);
                         FloatBuffer floatBuf = byteBuf.asFloatBuffer();
-                        matrix.store(floatBuf);
+                        nowMatrix.store(floatBuf);
                         /*GL33.glVertexAttrib4f(attr.location, 1, 0, 0, 0);
                         GL33.glVertexAttrib4f(attr.location + 1, 0, 1, 0, 0);
                         GL33.glVertexAttrib4f(attr.location + 2, 0, 0, 1, 0);*/
-                        //GL33.glVertexAttrib4f(attr.location, floatBuf.get(0), floatBuf.get(1), floatBuf.get(2), floatBuf.get(3));
-                        //GL33.glVertexAttrib4f(attr.location + 1, floatBuf.get(4), floatBuf.get(5), floatBuf.get(6), floatBuf.get(7));
-                        //GL33.glVertexAttrib4f(attr.location + 2, floatBuf.get(8), floatBuf.get(9), floatBuf.get(10), floatBuf.get(11));
-                        //GL33.glVertexAttrib4f(attr.location + 3, floatBuf.get(12), floatBuf.get(13), floatBuf.get(14), floatBuf.get(15));
+                        GL33.glVertexAttrib4f(attr.location, floatBuf.get(0), floatBuf.get(1), floatBuf.get(2), floatBuf.get(3));
+                        GL33.glVertexAttrib4f(attr.location + 1, floatBuf.get(4), floatBuf.get(5), floatBuf.get(6), floatBuf.get(7));
+                        GL33.glVertexAttrib4f(attr.location + 2, floatBuf.get(8), floatBuf.get(9), floatBuf.get(10), floatBuf.get(11));
+                        GL33.glVertexAttrib4f(attr.location + 3, floatBuf.get(12), floatBuf.get(13), floatBuf.get(14), floatBuf.get(15));
                     }
                     break;
             }
@@ -166,15 +172,20 @@ public class VertAttrState {
         return this;
     }
 
-    public VertAttrState setBillboard(float x, float y, float z) {
-        this.ks[0] = x;
-        this.ks[1] = y;
-        this.ks[2] = z;
+    public VertAttrState setMatixProcess(boolean useMatixProcess, Function<Matrix4f, Matrix4f> matrixProcess) {
+        this.useMatixProcess = useMatixProcess;
+        this.matrixProcess = matrixProcess;
         return this;
     }
 
-    public boolean isBillboard() {
-        return ks[0] != 0 || ks[1] != 0 || ks[2] != 0;
+    public VertAttrState setMatixProcess(boolean useMatixProcess) {
+        this.useMatixProcess = useMatixProcess;
+        this.matrixProcess = DEFCUT_MATRIX_PROCESS;
+        return this;
+    }
+
+    public boolean useMatixProcess() {
+        return useMatixProcess;
     }
 
     public boolean hasAttr(VertAttrType attrType) {
@@ -193,8 +204,8 @@ public class VertAttrState {
                 return lightmapUV != null;
             case MATRIX_MODEL:
                 return matrixModel != null;
-            case BILLBOARD:
-                return isBillboard();
+            case MATRIX_PROCESS:
+                return useMatixProcess();
         }
         return false;
     }
@@ -223,8 +234,9 @@ public class VertAttrState {
             case MATRIX_MODEL:
                 matrixModel = null;
                 break;
-            case BILLBOARD:
-                ks = new float[3];
+            case MATRIX_PROCESS:
+                useMatixProcess = false;
+                matrixProcess = DEFCUT_MATRIX_PROCESS;
                 break;
         }
     }
@@ -236,12 +248,12 @@ public class VertAttrState {
         VertAttrState that = (VertAttrState) o;
         return Objects.equals(position, that.position) && Objects.equals(color, that.color) && Objects.equals(texU, that.texU)
                 && Objects.equals(texV, that.texV) && Objects.equals(lightmapUV, that.lightmapUV) && Objects.equals(normal, that.normal)
-                && Objects.equals(matrixModel, that.matrixModel) && Arrays.equals(ks, that.ks);
+                && Objects.equals(matrixModel, that.matrixModel);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(position, color, texU, texV, lightmapUV, normal, matrixModel, Arrays.toString(ks));
+        return Objects.hash(position, color, texU, texV, lightmapUV, normal, matrixModel);
     }
 
     public VertAttrState copy() {
@@ -253,7 +265,8 @@ public class VertAttrState {
         clone.lightmapUV = this.lightmapUV;
         clone.normal = this.normal == null ? null : this.normal.copy();
         clone.matrixModel = this.matrixModel == null ? null : this.matrixModel.copy();
-        clone.ks = this.ks;
+        clone.useMatixProcess = this.useMatixProcess;
+        clone.matrixProcess = this.matrixProcess;
         return clone;
     }
 }
