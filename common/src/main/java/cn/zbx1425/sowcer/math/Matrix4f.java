@@ -98,19 +98,19 @@ public class Matrix4f {
 
     public Vector3f getEulerAnglesXYZ() {
         org.joml.Vector3f result = new org.joml.Vector3f();
-        impl.getEulerAnglesXYZ(result);
+        result = impl.getEulerAnglesXYZ(result);
         return new Vector3f(result);
     }
 
     public Vector3f getEulerAnglesYXZ() {
         org.joml.Vector3f result = new org.joml.Vector3f();
-        impl.getEulerAnglesYXZ(result);
+        result = impl.getEulerAnglesYXZ(result);
         return new Vector3f(result);
     }
 
     public Vector3f getEulerAnglesZYX() {
         org.joml.Vector3f result = new org.joml.Vector3f();
-        impl.getEulerAnglesZYX(result);
+        result = impl.getEulerAnglesZYX(result);
         return new Vector3f(result);
     }
 
