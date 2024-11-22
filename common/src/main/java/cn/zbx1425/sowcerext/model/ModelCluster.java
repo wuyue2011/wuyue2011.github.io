@@ -91,18 +91,11 @@ public class ModelCluster implements Closeable {
         translucentParts.writeBlazeBuffer(vertexConsumers, pose, light, drawContext);
     }
 
-    public void setMatixProcess(boolean useMatixProcess, Function<Matrix4f, Matrix4f> matrixProcess) {
-        opaqueParts.setMatixProcess(useMatixProcess, matrixProcess);
-        translucentParts.setMatixProcess(useMatixProcess, matrixProcess);
-        uploadedOpaqueParts.setMatixProcess(useMatixProcess, matrixProcess);
-        uploadedTranslucentParts.setMatixProcess(useMatixProcess, matrixProcess);
-    }
-
-    public void setMatixProcess(boolean useMatixProcess) {
-        opaqueParts.setMatixProcess(useMatixProcess);
-        translucentParts.setMatixProcess(useMatixProcess);
-        uploadedOpaqueParts.setMatixProcess(useMatixProcess);
-        uploadedTranslucentParts.setMatixProcess(useMatixProcess);
+    public void setMatixProcess(Function<Matrix4f, Matrix4f> matrixProcess) {
+        opaqueParts.setMatixProcess(matrixProcess);
+        translucentParts.setMatixProcess(matrixProcess);
+        uploadedOpaqueParts.setMatixProcess(matrixProcess);
+        uploadedTranslucentParts.setMatixProcess(matrixProcess);
     }
 
     @Override

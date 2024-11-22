@@ -54,15 +54,9 @@ public class VertArrays implements Closeable {
         return result;
     }
 
-    public void setMatixProcess(boolean useMatixProcess, Function<Matrix4f, Matrix4f> matrixProcess) {
+    public void setMatixProcess(Function<Matrix4f, Matrix4f> matrixProcess) {
         for (VertArray vertArray : meshList) {
-            vertArray.materialProp.setMatixProcess(useMatixProcess, matrixProcess);
-        }
-    }
-
-    public void setMatixProcess(boolean useMatixProcess) {
-        for (VertArray vertArray : meshList) {
-            vertArray.materialProp.setMatixProcess(useMatixProcess);
+            vertArray.materialProp.setMatixProcess(matrixProcess);
         }
     }
 

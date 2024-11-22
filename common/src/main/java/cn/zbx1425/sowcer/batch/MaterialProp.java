@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.opengl.GL33;
 import cn.zbx1425.sowcer.math.Matrix4f;
+import cn.zbx1425.sowcer.vertex.VertAttrState;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -65,7 +66,7 @@ public class MaterialProp {
         this.translucent = mtlObj.has("translucent") && mtlObj.get("translucent").getAsBoolean();
         this.writeDepthBuf = mtlObj.has("writeDepthBuf") && mtlObj.get("writeDepthBuf").getAsBoolean();
         boolean isBillboard = mtlObj.has("billboard") && mtlObj.get("billboard").getAsBoolean();
-        attrState.setMatixProcess(true);
+        attrState.setMatixProcess(VertAttrState.BILLBOARD);
         this.cutoutHack = mtlObj.has("cutoutHack") && mtlObj.get("cutoutHack").getAsBoolean();
     }
 
@@ -168,12 +169,8 @@ public class MaterialProp {
         return attrState.useMatixProcess();
     }
 
-    public void setMatixProcess(boolean useMatixProcess, Function<Matrix4f, Matrix4f> matrixProcess) {
-        attrState.setMatixProcess(useMatixProcess, matrixProcess);
-    }
-
-    public void setMatixProcess(boolean useMatixProcess) {
-        attrState.setMatixProcess(useMatixProcess);
+    public void setMatixProcess(Function<Matrix4f, Matrix4f> matrixProces) {
+        attrState.setMatixProcess(matrixProces);
     }
     
     @Override

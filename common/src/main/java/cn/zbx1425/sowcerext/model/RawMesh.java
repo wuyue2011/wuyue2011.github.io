@@ -401,11 +401,7 @@ public class RawMesh {
         for (Face face : faces) face.serializeTo(dos);
     }
 
-    public void setMatixProcess(boolean useMatixProcess, Function<Matrix4f, Matrix4f> matrixProcess) {
-        materialProp.setMatixProcess(useMatixProcess, matrixProcess);
-    }
-
-    public void setMatixProcess(boolean useMatixProcess) {
-        materialProp.setMatixProcess(useMatixProcess);
+    public void setMatixProcess(Function<Matrix4f, Matrix4f> matrixProcess) {
+        materialProp.setMatixProcess(matrixProcess);
     }
 }

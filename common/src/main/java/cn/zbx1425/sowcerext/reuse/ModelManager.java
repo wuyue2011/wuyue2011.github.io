@@ -36,7 +36,6 @@ public class ModelManager {
             .set(VertAttrType.UV_LIGHTMAP, VertAttrSrc.GLOBAL)
             .set(VertAttrType.NORMAL, VertAttrSrc.VERTEX_BUF)
             .set(VertAttrType.MATRIX_MODEL, VertAttrSrc.GLOBAL)
-            .set(VertAttrType.MATRIX_PROCESS, VertAttrSrc.GLOBAL)
             .build();
 
     public void clear() {

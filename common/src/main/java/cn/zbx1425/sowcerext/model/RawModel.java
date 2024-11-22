@@ -238,15 +238,9 @@ public class RawModel {
         }
     }
 
-    public void setMatixProcess(boolean useMatixProcess, Function<Matrix4f, Matrix4f> matrixProcess) {
+    public void setMatixProcess(Function<Matrix4f, Matrix4f> matrixProcess) {
         for (RawMesh mesh : meshList.values()) {
-            mesh.setMatixProcess(useMatixProcess, matrixProcess);
-        }
-    }
-
-    public void setMatixProcess(boolean useMatixProcess) {
-        for (RawMesh mesh : meshList.values()) {
-            mesh.setMatixProcess(useMatixProcess);
+            mesh.setMatixProcess(matrixProcess);
         }
     }
 }

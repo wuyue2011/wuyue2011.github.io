@@ -21,7 +21,7 @@ import java.util.function.Function;
 
 public class VertAttrState {
 
-    public static final Function<Matrix4f, Matrix4f> DEFCUT_MATRIX_PROCESS = (matrix) -> {
+    public static final Function<Matrix4f, Matrix4f> BILLBOARD = (matrix) -> {
         Vector3f pos = matrix.getTranslationPart();
         Matrix4f result = new Matrix4f();
         result.translate(pos);
@@ -33,9 +33,8 @@ public class VertAttrState {
     public Integer overlayUV;
     public Integer lightmapUV;
     public Vector3f normal;
-    public Matrix4f matrixModel;
+    public Function<Matrix4f, Matrix4f> matrixModel;
     public boolean useMatixProcess = false;
-    public Function<Matrix4f, Matrix4f> matrixProcess = DEFCUT_MATRIX_PROCESS;
     public static Matrix4f nowMatrix = new Matrix4f();
 
     public void applyGlobal() {
@@ -79,7 +78,7 @@ public class VertAttrState {
                     break;
                 case MATRIX_MODEL:
                     if (matrixModel == null) continue;
-                    nowMatrix = matrixModel.copy();
+                    nowMatrix = matrixModel.apply(nowMatrix);
                     if (useCustomShader) {
                         ByteBuffer byteBuf = ByteBuffer.allocate(64);
                         FloatBuffer floatBuf = byteBuf.asFloatBuffer();
@@ -165,19 +164,15 @@ public class VertAttrState {
     }
 
     public VertAttrState setModelMatrix(Matrix4f matrix) {
-        this.matrixModel = matrix;
+        this.matrixModel = (matrixIn) -> {
+            nowMatrix = matrix;    
+            return matrix;
+        };
         return this;
     }
 
-    public VertAttrState setMatixProcess(boolean useMatixProcess, Function<Matrix4f, Matrix4f> matrixProcess) {
-        this.useMatixProcess = useMatixProcess;
-        this.matrixProcess = matrixProcess;
-        return this;
-    }
-
-    public VertAttrState setMatixProcess(boolean useMatixProcess) {
-        this.useMatixProcess = useMatixProcess;
-        this.matrixProcess = DEFCUT_MATRIX_PROCESS;
+    public VertAttrState setMatixProcess(Function<Matrix4f, Matrix4f> matrixProcess) {
+        this.matrixModel = matrixModel;
         return this;
     }
 
@@ -201,8 +196,6 @@ public class VertAttrState {
                 return lightmapUV != null;
             case MATRIX_MODEL:
                 return matrixModel != null;
-            case MATRIX_PROCESS:
-                return useMatixProcess();
         }
         return false;
     }
@@ -231,10 +224,6 @@ public class VertAttrState {
             case MATRIX_MODEL:
                 matrixModel = null;
                 break;
-            case MATRIX_PROCESS:
-                useMatixProcess = false;
-                matrixProcess = DEFCUT_MATRIX_PROCESS;
-                break;
         }
     }
 
@@ -261,9 +250,7 @@ public class VertAttrState {
         clone.texV = this.texV;
         clone.lightmapUV = this.lightmapUV;
         clone.normal = this.normal == null ? null : this.normal.copy();
-        clone.matrixModel = this.matrixModel == null ? null : this.matrixModel.copy();
-        clone.useMatixProcess = this.useMatixProcess;
-        clone.matrixProcess = this.matrixProcess;
+        clone.matrixModel = this.matrixModel == null ? null : this.matrixModel;
         return clone;
     }
 }

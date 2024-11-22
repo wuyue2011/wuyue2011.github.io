@@ -5,6 +5,7 @@ import cn.zbx1425.sowcerext.model.Face;
 import cn.zbx1425.sowcerext.model.RawMesh;
 import cn.zbx1425.sowcerext.model.RawModel;
 import cn.zbx1425.sowcerext.model.Vertex;
+import cn.zbx1425.sowcer.vertex.VertAttrState;
 import cn.zbx1425.sowcerext.reuse.AtlasManager;
 import cn.zbx1425.sowcerext.util.Logging;
 import cn.zbx1425.sowcerext.util.ResourceUtil;
@@ -189,7 +190,7 @@ public class CsvModelLoader {
                         break;
                     case "setbillboard":
                         // extension
-                        buildingMesh.setMatixProcess(true);
+                        buildingMesh.setMatixProcess(VertAttrState.BILLBOARD);
                         break;
                     case "setisglcoords":
                         // extension
