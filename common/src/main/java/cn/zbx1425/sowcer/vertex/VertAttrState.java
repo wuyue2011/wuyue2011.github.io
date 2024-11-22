@@ -99,20 +99,6 @@ public class VertAttrState {
                         }
                     }
                     break;
-                case MATRIX_PROCESS:
-                    if (!useMatixProcess()) continue;
-                    if (useCustomShader) {
-                        nowMatrix = matrixProcess.apply(nowMatrix);
-                        
-                        ByteBuffer byteBuf = ByteBuffer.allocate(64);
-                        FloatBuffer floatBuf = byteBuf.asFloatBuffer();
-                        nowMatrix.store(floatBuf);
-                        GL33.glVertexAttrib4f(attr.location, floatBuf.get(0), floatBuf.get(1), floatBuf.get(2), floatBuf.get(3));
-                        GL33.glVertexAttrib4f(attr.location + 1, floatBuf.get(4), floatBuf.get(5), floatBuf.get(6), floatBuf.get(7));
-                        GL33.glVertexAttrib4f(attr.location + 2, floatBuf.get(8), floatBuf.get(9), floatBuf.get(10), floatBuf.get(11));
-                        GL33.glVertexAttrib4f(attr.location + 3, floatBuf.get(12), floatBuf.get(13), floatBuf.get(14), floatBuf.get(15));
-                    }
-                    break;
             }
         }
     }
