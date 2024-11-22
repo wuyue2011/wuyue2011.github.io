@@ -96,24 +96,6 @@ public class Matrix4f {
         return new Vector3f(impl.transformDirection(srcCpy));
     }
 
-    public Vector3f getEulerAnglesXYZ() {
-        org.joml.Vector3f result = new org.joml.Vector3f();
-        result = impl.getEulerAnglesXYZ(result);
-        return new Vector3f(result);
-    }
-
-    public Vector3f getEulerAnglesYXZ() {
-        org.joml.Vector3f result = new org.joml.Vector3f();
-        result = impl.getEulerAnglesYXZ(result);
-        return new Vector3f(result);
-    }
-
-    public Vector3f getEulerAnglesZYX() {
-        org.joml.Vector3f result = new org.joml.Vector3f();
-        result = impl.getEulerAnglesZYX(result);
-        return new Vector3f(result);
-    }
-
     public org.joml.Matrix3f getRotationPart() {
         org.joml.Matrix3f result = new org.joml.Matrix3f();
         return impl.get3x3(result);
@@ -198,43 +180,6 @@ public class Matrix4f {
         return pos3;
     }
 
-    public Vector3f getEulerAnglesZYX() {
-        float[] src = new float[16];
-        FloatBuffer srcFloatBuffer = FloatBuffer.wrap(src);
-        impl.store(srcFloatBuffer);
-
-        float x = (float) Math.atan2(src[index(1, 2)], src[index(2, 2)]);
-        float y = (float) Math.atan2(-src[index(0, 2)], Math.sqrt(1.0F - src[index(0, 2)] * src[index(0, 2)]));
-        float z = (float) Math.atan2(src[index(0, 1)], src[index(0, 0)]);
-        return new Vector3f(x, y, z);
-    }
-
-    public Vector3f getEulerAnglesXYZ() {
-        float[] src = new float[16];
-        FloatBuffer srcFloatBuffer = FloatBuffer.wrap(src);
-        impl.store(srcFloatBuffer);
-
-        float x = (float) Math.atan2(-src[index(2, 1)], src[index(2, 2)]);
-        float y = (float) Math.atan2(src[index(2, 0)], Math.sqrt(1.0F - src[index(2, 0)] * src[index(2, 0)]));
-        float z = (float) Math.atan2(-src[index(1, 0)], src[index(0, 0)]);
-        return new Vector3f(x, y, z);
-    }
-
-    public Vector3f getEulerAnglesYXZ() {
-        float[] src = new float[16];
-        FloatBuffer srcFloatBuffer = FloatBuffer.wrap(src);
-        impl.store(srcFloatBuffer);
-
-        float x = (float) Math.atan2(-src[index(2, 1)], Math.sqrt(1.0F - src[index(2, 1)] * src[index(2, 1)]));
-        float y = (float) Math.atan2(src[index(2, 0)], src[index(2, 2)]);
-        float z = (float) Math.atan2(src[index(1, 0)], src[index(1, 1)]);
-        return new Vector3f(x, y, z);
-    }
-
-    int index(int p_27642_, int p_27643_) {
-      return p_27643_ * 4 + p_27642_;
-    }
-
     public com.mojang.math.Matrix3f getRotationPart() {
         float[] srcValues = new float[16];
         FloatBuffer srcFloatBuffer = FloatBuffer.wrap(srcValues);
@@ -289,6 +234,43 @@ public class Matrix4f {
 
     public void rotateZYX(Vector3f vec) {
         rotateZYX(vec.z(), vec.y(), vec.x());
+    }
+
+    public Vector3f getEulerAnglesZYX() {
+        float[] src = new float[16];
+        FloatBuffer srcFloatBuffer = FloatBuffer.wrap(src);
+        store(srcFloatBuffer);
+
+        float x = (float) Math.atan2(src[index(1, 2)], src[index(2, 2)]);
+        float y = (float) Math.atan2(-src[index(0, 2)], Math.sqrt(1.0F - src[index(0, 2)] * src[index(0, 2)]));
+        float z = (float) Math.atan2(src[index(0, 1)], src[index(0, 0)]);
+        return new Vector3f(x, y, z);
+    }
+
+    public Vector3f getEulerAnglesXYZ() {
+        float[] src = new float[16];
+        FloatBuffer srcFloatBuffer = FloatBuffer.wrap(src);
+        store(srcFloatBuffer);
+
+        float x = (float) Math.atan2(-src[index(2, 1)], src[index(2, 2)]);
+        float y = (float) Math.atan2(src[index(2, 0)], Math.sqrt(1.0F - src[index(2, 0)] * src[index(2, 0)]));
+        float z = (float) Math.atan2(-src[index(1, 0)], src[index(0, 0)]);
+        return new Vector3f(x, y, z);
+    }
+
+    public Vector3f getEulerAnglesYXZ() {
+        float[] src = new float[16];
+        FloatBuffer srcFloatBuffer = FloatBuffer.wrap(src);
+        store(srcFloatBuffer);
+
+        float x = (float) Math.atan2(-src[index(2, 1)], Math.sqrt(1.0F - src[index(2, 1)] * src[index(2, 1)]));
+        float y = (float) Math.atan2(src[index(2, 0)], src[index(2, 2)]);
+        float z = (float) Math.atan2(src[index(1, 0)], src[index(1, 1)]);
+        return new Vector3f(x, y, z);
+    }
+
+    int index(int p_27642_, int p_27643_) {
+      return p_27643_ * 4 + p_27642_;
     }
 
     @Override
