@@ -154,4 +154,8 @@ public class MinecraftClientUtil {
     public static Vector3f getCameraPos() {
         return new Vector3f(Minecraft.getInstance().gameRenderer.getMainCamera().getPosition());
     }
+
+	public Level getWorld() {
+		return Minecraft.getInstance().level;
+	}
 }

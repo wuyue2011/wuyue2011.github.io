@@ -18,7 +18,7 @@ public class VertAttrMapping {
         this.sources = sources;
 
         int strideVertex = 0, strideInstance = 0;
-        for (VertAttrType attrType : sources.keySet()) {
+        for (VertAttrType attrType : VertAttrType.values()) {
             switch (sources.get(attrType)) {
                 case VERTEX_BUF:
                 case VERTEX_BUF_OR_GLOBAL:
@@ -51,7 +51,7 @@ public class VertAttrMapping {
     }
 
     public void setupAttrsToVao(VertBuf vertexBuf, InstanceBuf instanceBuf) {
-        for (VertAttrType attrType : sources.keySet()) {
+        for (VertAttrType attrType : VertAttrType.values()) {
             switch (sources.get(attrType)) {
                 case GLOBAL:
                     attrType.toggleAttrArray(false);
@@ -75,7 +75,7 @@ public class VertAttrMapping {
     }
 
     public void applyToggleableAttr(VertAttrState enqueueProp, VertAttrState materialProp) {
-        for (VertAttrType attrType : sources.keySet()) {
+        for (VertAttrType attrType : VertAttrType.values()) {
             if (sources.get(attrType).isToggleable()) {
                 boolean hasAttr = (enqueueProp != null && enqueueProp.hasAttr(attrType))
                         || (materialProp != null && materialProp.hasAttr(attrType));

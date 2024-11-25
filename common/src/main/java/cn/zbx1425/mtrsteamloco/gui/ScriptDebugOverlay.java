@@ -66,7 +66,9 @@ public class ScriptDebugOverlay {
                     Object value = debugInfo.getValue();
                     if (value instanceof GraphicsTexture) {
                         GraphicsTexture texture = (GraphicsTexture) value;
-                        float scale = (Minecraft.getInstance().getWindow().getGuiScaledWidth() - 40) / (float) texture.width;
+                        float scale0 = (Minecraft.getInstance().getWindow().getGuiScaledWidth() - 40) / (float) texture.width;
+                        float scale1 = font.lineHeight * 5 / (float) texture.height;
+                        float scale = Math.min(scale0, scale1);
                         blit(vdStuff, texture.identifier, 20, y, (int)(texture.width * scale), (int)(texture.height * scale));
                         y = drawText(vdStuff, font, debugInfo.getKey() + ": GraphicsTexture", 20, y, 0xFFFFFFFF);
                         y += (int)(texture.height * scale);
