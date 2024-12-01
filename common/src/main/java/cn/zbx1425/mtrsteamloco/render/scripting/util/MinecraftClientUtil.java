@@ -25,6 +25,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import mtr.block.BlockNode;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.util.Mth;
+import cn.zbx1425.mtrsteamloco.block.BlockEyeCandy;
+import net.minecraft.world.level.block.Block;
+import mtr.block.BlockPlatform;
+import mtr.block.BlockPSDAPGBase;
+import net.minecraft.world.level.block.entity.BlockEntity;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -155,7 +163,59 @@ public class MinecraftClientUtil {
         return new Vector3f(Minecraft.getInstance().gameRenderer.getMainCamera().getPosition());
     }
 
-	public Level getWorld() {
+	public static Level getWorld() {
 		return Minecraft.getInstance().level;
+	}
+
+    public static boolean[] canOpenDoorsAt(Vector3f p1, Vector3f p2) {
+        final Level world = getWorld();
+		final Vec3 pos1 = p1.toVec3();
+		final Vec3 pos2 = p2.toVec3();
+		final int dwellTicks = 114514;
+
+		final double x = getAverage(pos1.x, pos2.x);
+		final double y = getAverage(pos1.y, pos2.y) + 1;
+		final double z = getAverage(pos1.z, pos2.z);
+
+		final double realSpacing = pos2.distanceTo(pos1);
+		final float yaw = (float) Mth.atan2(pos2.x - pos1.x, pos2.z - pos1.z);
+		final float pitch = realSpacing == 0 ? 0 : (float) asin((pos2.y - pos1.y) / realSpacing);
+		final boolean doorLeftOpen = scanDoors(world, x, y, z, (float) Math.PI + yaw, pitch, realSpacing / 2);
+		final boolean doorRightOpen = scanDoors(world, x, y, z, yaw, pitch, realSpacing / 2);
+		return new boolean[]{doorLeftOpen, doorRightOpen};
+	}
+
+    static double getAverage(double a, double b) {
+		return (a + b) / 2;
+	}
+
+    static boolean scanDoors(Level world, double trainX, double trainY, double trainZ, float checkYaw, float pitch, double halfSpacing) {
+		final Vec3 offsetVec = new Vec3(1, 0, 0).yRot(checkYaw).xRot(pitch);
+		final Vec3 traverseVec = new Vec3(0, 0, 1).yRot(checkYaw).xRot(pitch);
+        for (int checkX = 1; checkX <= 3; checkX++) {
+			for (int checkY = -2; checkY <= 3; checkY++) {
+				for (double checkZ = -halfSpacing; checkZ <= halfSpacing; checkZ++) {
+                    final BlockPos checkPos = RailwayData.newBlockPos(trainX + offsetVec.x * checkX + traverseVec.x * checkZ, trainY + checkY, trainZ + offsetVec.z * checkX + traverseVec.z * checkZ);
+					final Block block = world.getBlockState(checkPos).getBlock();
+                    if (block instanceof BlockPlatform || block instanceof BlockPSDAPGBase) {
+						return true;
+					}
+                    if (block instanceof BlockEyeCandy) {
+                        final BlockEntity entity = world.getBlockEntity(checkPos);
+                        if (entity instanceof BlockEyeCandy.BlockEntityEyeCandy) {
+                            BlockEyeCandy.BlockEntityEyeCandy e = (BlockEyeCandy.BlockEntityEyeCandy) entity;
+                            if (e.isPlatform()) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    static double asin(double value) {
+		return Math.asin(value);
 	}
 }

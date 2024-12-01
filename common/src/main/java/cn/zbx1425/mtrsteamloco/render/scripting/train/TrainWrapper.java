@@ -10,10 +10,26 @@ import mtr.path.PathData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
+import cn.zbx1425.mtrsteamloco.Main;
+import mtr.data.Train;
 
 import java.util.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class TrainWrapper {
+
+    public static Class<?> trainClass = Train.class;
+    public static Method openDoorsMethod;
+
+    static {
+        try {
+            openDoorsMethod = trainClass.getDeclaredMethod("openDoors");
+            openDoorsMethod.setAccessible(true);
+        } catch (Exception e) {
+            Main.LOGGER.error("Failed to initialize TrainWrapper", e);
+        }
+    }
 
     public boolean[] doorLeftOpen;
     public boolean[] doorRightOpen;
@@ -29,6 +45,8 @@ public class TrainWrapper {
     private PlatformLookupMap trainPlatforms;
     private List<PathData> trainPlatformsValidPath;
 
+
+    
     public TrainWrapper(TrainClient train) {
         doorLeftOpen = new boolean[train.trainCars];
         doorRightOpen = new boolean[train.trainCars];
@@ -245,5 +263,9 @@ public class TrainWrapper {
     @SuppressWarnings("unused") public boolean justOpening() { return train.justOpening(); }
     @SuppressWarnings("unused") public boolean justClosing(float doorCloseTime) { return train.justClosing(doorCloseTime); }
     @SuppressWarnings("unused") public final boolean isDoorOpening() { return train.isDoorOpening(); }
-
+    @SuppressWarnings("unused") public boolean doorTarget() throws Exception {
+        synchronized (train) {
+            return (boolean) openDoorsMethod.invoke(train); 
+        }
+    }
 }

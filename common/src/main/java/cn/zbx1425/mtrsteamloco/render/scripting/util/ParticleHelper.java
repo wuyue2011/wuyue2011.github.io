@@ -8,6 +8,7 @@ import cn.zbx1425.sowcer.math.Vector3f;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import java.lang.reflect.Field;
+import net.minecraft.core.particles.ParticleType;
 //import cn.zbx1425.mtrsteamloco.fabric.RegistriesWrapperImpl;
 //import cn.zbx1425.mtrsteamloco.forge.RegistriesWrapperImpl;
 
@@ -44,7 +45,7 @@ public class ParticleHelper {
         }
     }*/
 
-    public static <T> T getParticleType(String particleName) {
+    public static <T extends ParticleType> T getParticleType(String particleName) {
         switch (particleName.toUpperCase()) {
         case "AMBIENT_ENTITY_EFFECT":
             return (T)  ParticleTypes.AMBIENT_ENTITY_EFFECT;

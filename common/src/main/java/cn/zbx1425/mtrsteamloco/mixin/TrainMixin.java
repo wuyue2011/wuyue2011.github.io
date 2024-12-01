@@ -36,17 +36,9 @@ public abstract class TrainMixin {
 
     protected abstract boolean openDoors(Level world, Block block, BlockPos checkPos, int dwellTicks);
 
-	protected abstract boolean scanDoors(Level world, double trainX, double trainY, double trainZ, float checkYaw, float pitch, double halfSpacing, int dwellTicks);
-
-	protected abstract double asin(double value);
-
 	protected float doorValue;
 
 	protected boolean doorTarget;
-
-	public static double getAverage(double a, double b) {
-		return (a + b) / 2;
-	}
 
     @Inject(method = "scanDoors", at = @At("HEAD"), cancellable = true, remap = false)
     private void onScanDoors(Level world, double trainX, double trainY, double trainZ, float checkYaw, float pitch, double halfSpacing, int dwellTicks, CallbackInfoReturnable<Boolean> ci) {
@@ -111,20 +103,4 @@ public abstract class TrainMixin {
         ci.setReturnValue(hasPlatform);
     }
 
-	public boolean[] canOpenDoorsAt(Level world, Vector3f p1, Vector3f p2) {
-		final Vec3 pos1 = p1.toVec3();
-		final Vec3 pos2 = p2.toVec3();
-		final int dwellTicks = 114514;
-
-		final double x = getAverage(pos1.x, pos2.x);
-		final double y = getAverage(pos1.y, pos2.y) + 1;
-		final double z = getAverage(pos1.z, pos2.z);
-
-		final double realSpacing = pos2.distanceTo(pos1);
-		final float yaw = (float) Mth.atan2(pos2.x - pos1.x, pos2.z - pos1.z);
-		final float pitch = realSpacing == 0 ? 0 : (float) asin((pos2.y - pos1.y) / realSpacing);
-		final boolean doorLeftOpen = scanDoors(world, x, y, z, (float) Math.PI + yaw, pitch, realSpacing / 2, dwellTicks);
-		final boolean doorRightOpen = scanDoors(world, x, y, z, yaw, pitch, realSpacing / 2, dwellTicks);
-		return new boolean[]{doorLeftOpen, doorRightOpen};
-	}
 }
