@@ -40,6 +40,12 @@ public abstract class AbstractScriptContext {
         }
     }
 
+    public synchronized void removeDebugInfo(String key) {
+        synchronized (debugInfo) {
+            debugInfo.remove(key);
+        }
+    }
+
     public synchronized void setDebugInfo(String key, Object... values) {
         synchronized (debugInfo) {
             List<Object> list = new ArrayList<>();
