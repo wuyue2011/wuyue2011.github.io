@@ -23,6 +23,7 @@ import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import cn.zbx1425.mtrsteamloco.gui.ScriptDebugOverlay;
+import cn.zbx1425.mtrsteamloco.render.scripting.ScriptContextManager;
 
 public class ClientProxy {
 
@@ -79,6 +80,11 @@ public class ClientProxy {
                             .then(Commands.literal("hideriding")
                                     .executes(context -> {
                                         ClientConfig.hideRidingTrain = !ClientConfig.hideRidingTrain;
+                                        return 1;
+                                    }))
+                            .then(Commands.literal("clearDebugInfo")
+                                    .executes(context -> {
+                                        ScriptContextManager.clearDebugInfo();
                                         return 1;
                                     }))
                             .then(Commands.literal("stat")

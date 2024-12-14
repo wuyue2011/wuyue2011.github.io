@@ -24,6 +24,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 #endif
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.Minecraft;
+import cn.zbx1425.mtrsteamloco.render.scripting.ScriptContextManager;
 
 public class MainFabricClient implements ClientModInitializer {
 
@@ -55,6 +56,11 @@ public class MainFabricClient implements ClientModInitializer {
 							.then(ClientCommandManager.literal("hideriding")
                                     .executes(context -> {
                                         ClientConfig.hideRidingTrain = !ClientConfig.hideRidingTrain;
+                                        return 1;
+                                    }))
+							.then(Commands.literal("clearDebugInfo")
+                                    .executes(context -> {
+                                        ScriptContextManager.clearDebugInfo();
                                         return 1;
                                     }))
 							.then(ClientCommandManager.literal("stat")
