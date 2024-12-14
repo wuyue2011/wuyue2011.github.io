@@ -58,7 +58,7 @@ public class MainFabricClient implements ClientModInitializer {
                                         ClientConfig.hideRidingTrain = !ClientConfig.hideRidingTrain;
                                         return 1;
                                     }))
-							.then(Commands.literal("clearDebugInfo")
+							.then(ClientCommandManager.literal("clearDebugInfo")
                                     .executes(context -> {
                                         ScriptContextManager.clearDebugInfo();
                                         return 1;
