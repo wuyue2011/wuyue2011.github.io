@@ -56,18 +56,7 @@ public class GraphicsTexture implements Closeable {
     }
 
     public void upload() {
-        IntBuffer imgData = IntBuffer.wrap(((DataBufferInt)bufferedImage.getRaster().getDataBuffer()).getData());
-        long pixelAddr = ((NativeImageAccessor)(Object)dynamicTexture.getPixels()).getPixels();
-        ByteBuffer target = MemoryUtil.memByteBuffer(pixelAddr, width * height * 4);
-        for (int i = 0; i < width * height; i++) {
-            // ARGB to RGBA
-            int pixel = imgData.get();
-            target.put((byte)((pixel >> 16) & 0xFF));
-            target.put((byte)((pixel >> 8) & 0xFF));
-            target.put((byte)(pixel & 0xFF));
-            target.put((byte)((pixel >> 24) & 0xFF));
-        }
-        RenderSystem.recordRenderCall(dynamicTexture::upload);
+        upload(bufferedImage);
     }
 
     public void upload(BufferedImage image) {

@@ -45,7 +45,7 @@ public class ParticleHelper {
         }
     }*/
 
-    public static <T extends ParticleType> T getParticleType(String particleName) {
+    public static <T extends ParticleType> T getParticleType(String particleName) throws Exception {
         switch (particleName.toUpperCase()) {
         case "AMBIENT_ENTITY_EFFECT":
             return (T)  ParticleTypes.AMBIENT_ENTITY_EFFECT;
@@ -226,7 +226,7 @@ public class ParticleHelper {
         case "SCRAPE":
             return (T)  ParticleTypes.SCRAPE;
         default:
-            return (T)  null;
+            throw new Exception("Invalid particle name: " + particleName);
         }
     }
 }
