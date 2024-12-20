@@ -1,9 +1,9 @@
 package cn.zbx1425.mtrsteamloco.render.scripting.util;
 
-import java.util.LinkedHashMap;
-import java.util.HashMap;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class OrderedMap<K, V> {
@@ -12,14 +12,20 @@ public class OrderedMap<K, V> {
     private HashMap<K, PlacementOrder> orderMap;
 
     public OrderedMap() {
-        map = new LinkedHashMap<>();
-        orderList = new HashMap<>();
+        valueMap = new HashMap<>();
+        orderList = new ArrayList<>();
         orderMap = new HashMap<>();
     }
 
+    public OrderedMap(OrderedMap<K, V> map) {
+        valueMap = new HashMap<>(map.valueMap);
+        orderList = new ArrayList<>(map.orderList);
+        orderMap = new HashMap<>(map.orderMap);
+    }
+
     public void put(K key, V value, PlacementOrder order) {
-        map.put(key, value);
-        if (orderList.containsKey(key)) {
+        valueMap.put(key, value);
+        if (orderList.contains(key)) {
             int index = orderList.indexOf(key);
             orderList.set(index, key);
         } else {
@@ -29,50 +35,35 @@ public class OrderedMap<K, V> {
     }
 
     public void remove(K key) {
-        map.remove(key);
-        order.remove(key);
+        valueMap.remove(key);
+        orderMap.remove(key);
     }
 
     public V get(K key) {
-        map.get(key);
+        return valueMap.get(key);
     }
 
     public List<Entry<K, V>> entryList() {
-        ArrayList<K> upsides = new ArrayList<>();
-        ArrayList<K> neutrals = new ArrayList<>();
-        ArrayList<K> downsides = new ArrayList<>();
-
-        for (k key : orderList) {
+        ArrayList<Entry<K, V>> entryList = new ArrayList<>();
+        for (K key : orderList) {
             PlacementOrder order = orderMap.get(key);
-            V value = map.get(key);
+            V value = valueMap.get(key);
             switch (order) {
                 case UPSIDE:
-                    upsides.add(new Entry(key, value));
+                    entryList.add(new Entry<>(key, value));
                     break;
                 case NEUTRAL:
-                    neutrals.add(new Entry(key, value));
+                    entryList.add(new Entry<>(key, value));
                     break;
                 case DOWNSIDE:
-                    downsides.add(new Entry(key, value));
+                    entryList.add(new Entry<>(key, value));
                     break;
             }
         }
-
-        ArrayList<K> combined = new ArrayList<>();
-        combined.addAll(upsides);
-        combined.addAll(neutrals);
-        combined.addAll(downsides);
-
-        ArrayList<Entry<K, V>> entryList = new ArrayList<>();
-        for (K key : combined) {
-            V value = map.get(key);
-            entryList.add(new Entry(key, value));
-        }
-
         return entryList;
     }
 
-    public enum PlacementOrder{
+    public enum PlacementOrder {
         UPSIDE,
         NEUTRAL,
         DOWNSIDE
@@ -81,10 +72,10 @@ public class OrderedMap<K, V> {
     public class Entry<K, V> {
         public final K key;
         public final V value;
-        
+
         public Entry(K key, V value) {
-            key = key;
-            value = value;
+            this.key = key;
+            this.value = value;
         }
     }
 }
