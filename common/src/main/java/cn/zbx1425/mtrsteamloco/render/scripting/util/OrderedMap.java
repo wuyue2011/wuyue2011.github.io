@@ -84,7 +84,7 @@ public class OrderedMap<K, V> {
             this.value = value;
         }
 
-        public k getKey() {
+        public K getKey() {
             return key;
         }
 
