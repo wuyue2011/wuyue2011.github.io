@@ -20,6 +20,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.util.FormattedCharSequence;
+import cn.zbx1425.mtrsteamloco.render.scripting.util.OrderedMap;
 
 import java.util.HashMap;
 import java.util.List;
@@ -62,7 +63,7 @@ public class ScriptDebugOverlay {
                 y = drawText(vdStuff, font,
                     String.format("#%08X (%.2f ms)", context.hashCode(), context.lastExecuteDuration / 1000.0),
                     10, y, 0xFFCCCCFF);
-                for (Map.Entry<String, Object> debugInfo : context.getDebugInfo().entrySet()) {
+                for (OrderedMap.Entry<String, Object> debugInfo : context.getDebugInfo().entryList()) {
                     Object value = debugInfo.getValue();
                     if (value instanceof GraphicsTexture) {
                         GraphicsTexture texture = (GraphicsTexture) value;
