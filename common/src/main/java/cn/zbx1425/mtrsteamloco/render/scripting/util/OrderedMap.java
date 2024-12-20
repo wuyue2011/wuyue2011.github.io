@@ -43,6 +43,12 @@ public class OrderedMap<K, V> {
         return valueMap.get(key);
     }
 
+    public void clear() {
+        valueMap.clear();
+        orderList.clear();
+        orderMap.clear();
+    }
+
     public List<Entry<K, V>> entryList() {
         ArrayList<Entry<K, V>> entryList = new ArrayList<>();
         for (K key : orderList) {
@@ -70,12 +76,20 @@ public class OrderedMap<K, V> {
     }
 
     public class Entry<K, V> {
-        public final K key;
-        public final V value;
+        private final K key;
+        private final V value;
 
         public Entry(K key, V value) {
             this.key = key;
             this.value = value;
+        }
+
+        public k getKey() {
+            return key;
+        }
+
+        public V getValue() {
+            return value;
         }
     }
 }
