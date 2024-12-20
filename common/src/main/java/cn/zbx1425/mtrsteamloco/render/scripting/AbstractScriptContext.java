@@ -55,7 +55,7 @@ public abstract class AbstractScriptContext {
                 }
             }
             if (list.size() == 1) {
-                debugInfo.put(key, list.get(0))
+                debugInfo.put(key, list.get(0));
             } else {
                 debugInfo.put(key, list);
             }
