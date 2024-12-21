@@ -63,7 +63,8 @@ public class ScriptDebugOverlay {
                 y = drawText(vdStuff, font,
                     String.format("#%08X (%.2f ms)", context.hashCode(), context.lastExecuteDuration / 1000.0),
                     10, y, 0xFFCCCCFF);
-                for (OrderedMap.Entry<String, Object> debugInfo : context.getDebugInfo().entryList()) {
+                List<Map.Entry<String, Object>> debugInfos = context.getDebugInfo();
+                for (Map.Entry<String, Object> debugInfo : debugInfos) {
                     Object value = debugInfo.getValue();
                     if (value instanceof GraphicsTexture) {
                         GraphicsTexture texture = (GraphicsTexture) value;

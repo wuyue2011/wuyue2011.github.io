@@ -72,13 +72,33 @@ task setupLibrary() {
 		}
 	}
 
-	String minecraftMappingsBaseURL = " https://github.com/zbx1425/Minecraft-Mappings/archive/refs/heads/"// https://ghp.ci/
+	String minecraftMappingsBaseURL1 = "https://github.com/zbx1425/Minecraft-Mappings/archive/refs/heads/"
+	String minecraftMappingsBaseURL2 = "https://ghp.ci/https://github.com/zbx1425/Minecraft-Mappings/archive/refs/heads/"
 
-	download {
-		src "${minecraftMappingsBaseURL}${is_1_19_3 ? minecraft_version : "1." + minecraft_main_version}.zip"
-		dest "common/src/main/java/cn/zbx1425/mtrsteamloco/mappings/files.zip"
-		overwrite true
+	for (int i = 0; i < 10; i++) {
+		try {
+			try {
+				download {
+					src "${minecraftMappingsBaseURL1}${is_1_19_3 ? minecraft_version : "1." + minecraft_main_version}.zip"
+					dest "common/src/main/java/cn/zbx1425/mtrsteamloco/mappings/files.zip"
+					overwrite true
+				}
+			} catch (Exception e) {
+				System.println(e.message);
+				
+				download {
+					src "${minecraftMappingsBaseURL2}${is_1_19_3 ? minecraft_version : "1." + minecraft_main_version}.zip"
+					dest "common/src/main/java/cn/zbx1425/mtrsteamloco/mappings/files.zip"
+					overwrite true
+				}
+			}
+			break;
+		} catch (Exception e) {
+			System.println(e.message);
+			Thread.sleep(500);
+		}
 	}
+
 
 	/*copy {
 		from "./files.zip"

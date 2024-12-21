@@ -5,68 +5,155 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.LinkedHashSet;
+import java.util.Collection;
 
-public class OrderedMap<K, V> {
+public class OrderedMap<K, V> implements Map<K, V> {
     private HashMap<K, V> valueMap;
-    private List<K> orderList;
-    private HashMap<K, PlacementOrder> orderMap;
+
+    private List<K> upsideList;
+    private List<K> neutralList;
+    private List<K> downsideList;
 
     public OrderedMap() {
-        valueMap = new HashMap<>();
-        orderList = new ArrayList<>();
-        orderMap = new HashMap<>();
+        valueMap = new LinkedHashMap<>();
+        upsideList = new ArrayList<>();
+        neutralList = new ArrayList<>();
+        downsideList = new ArrayList<>();
     }
 
-    public OrderedMap(OrderedMap<K, V> map) {
-        valueMap = new HashMap<>(map.valueMap);
-        orderList = new ArrayList<>(map.orderList);
-        orderMap = new HashMap<>(map.orderMap);
+    public OrderedMap(Map<? extends K, ? extends V> m) {
+        this();
+        putAll(m);
     }
 
-    public void put(K key, V value, PlacementOrder order) {
-        valueMap.put(key, value);
-        if (orderList.contains(key)) {
-            int index = orderList.indexOf(key);
-            orderList.set(index, key);
+    @Override
+    public void putAll(Map<? extends K, ? extends V> m) {
+        putAll(m, PlacementOrder.NEUTRAL);
+    }
+
+    public void putAll(Map<? extends K, ? extends V> m, PlacementOrder order) {
+        if (m instanceof OrderedMap) {
+            OrderedMap<K, V> other = (OrderedMap<K, V>) m;
+            for (K key : other.upsideList) {
+                put(key, other.valueMap.get(key), PlacementOrder.UPSIDE);
+            }
+            for (K key : other.neutralList) {
+                put(key, other.valueMap.get(key), PlacementOrder.NEUTRAL);
+            }
+            for (K key : other.downsideList) {
+                put(key, other.valueMap.get(key), PlacementOrder.DOWNSIDE);
+            }
         } else {
-            orderList.add(key);
+            for (Map.Entry<? extends K, ? extends V> entry : m.entrySet()) {
+                put(entry.getKey(), entry.getValue(), order);
+            }
         }
-        orderMap.put(key, order);
     }
 
-    public void remove(K key) {
-        valueMap.remove(key);
-        orderMap.remove(key);
+    @Override
+    public V put(K key, V value) {
+        return put(key, value, PlacementOrder.NEUTRAL);
     }
 
-    public V get(K key) {
+    public V put(K key, V value, PlacementOrder order) {
+        switch (order) {
+            case UPSIDE:
+                if (!upsideList.contains(key)) upsideList.add(key);
+                break;
+            case NEUTRAL:
+                if (!neutralList.contains(key)) neutralList.add(key);
+                break;
+            case DOWNSIDE:
+                if (!downsideList.contains(key)) downsideList.add(key);
+                break;
+        }
+        V oldValue = valueMap.get(key);
+        valueMap.put(key, value);
+        return oldValue;
+    }
+
+    @Override
+    public int size() {
+        return valueMap.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return valueMap.isEmpty();
+    }
+    
+    @Override
+    public boolean containsKey(Object key) {
+        return valueMap.containsKey(key);
+    }
+
+    @Override
+    public boolean containsValue(Object value) {
+        return valueMap.containsValue(value);
+    }
+
+    @Override
+    public V remove(Object key) {
+        if (upsideList.contains(key)) {
+            int index = upsideList.indexOf(key);
+            upsideList.remove(index);
+        }else if(neutralList.contains(key)) {
+            int index = neutralList.indexOf(key);
+            neutralList.remove(index);
+        }else if(downsideList.contains(key)) {
+            int index = downsideList.indexOf(key);
+            downsideList.remove(index);
+        }
+        return valueMap.remove(key);
+    }
+
+    @Override
+    public V get(Object key) {
         return valueMap.get(key);
     }
 
+    @Override
     public void clear() {
         valueMap.clear();
-        orderList.clear();
-        orderMap.clear();
+        upsideList.clear();
+        neutralList.clear();
+        downsideList.clear();
     }
 
-    public List<Entry<K, V>> entryList() {
-        ArrayList<Entry<K, V>> entryList = new ArrayList<>();
-        for (K key : orderList) {
-            PlacementOrder order = orderMap.get(key);
-            V value = valueMap.get(key);
-            switch (order) {
-                case UPSIDE:
-                    entryList.add(new Entry<>(key, value));
-                    break;
-                case NEUTRAL:
-                    entryList.add(new Entry<>(key, value));
-                    break;
-                case DOWNSIDE:
-                    entryList.add(new Entry<>(key, value));
-                    break;
-            }
+    public List<Map.Entry<K, V>> entryList() {
+        List<Map.Entry<K, V>> entryList = new ArrayList<>();
+        for (K key : upsideList) {
+            entryList.add(new Entry<>(key, valueMap.get(key)));
+        }
+        for (K key : neutralList) {
+            entryList.add(new Entry<>(key, valueMap.get(key)));
+        }
+        for (K key : downsideList) {
+            entryList.add(new Entry<>(key, valueMap.get(key)));
         }
         return entryList;
+    }
+
+    @Override
+    public Set<Map.Entry<K, V>> entrySet() {
+        List<Map.Entry<K, V>> entryList = entryList();
+        return new LinkedHashSet<>(entryList);
+    }
+
+    @Override
+    public Set<K> keySet() {
+        List<K> keyList = new ArrayList<>();
+        keyList.addAll(upsideList);
+        keyList.addAll(neutralList);
+        keyList.addAll(downsideList);
+        return new LinkedHashSet<>(keyList);
+    }
+
+    @Override
+    public Collection<V> values() {
+        return new ArrayList<>(valueMap.values());
     }
 
     public enum PlacementOrder {
@@ -75,7 +162,7 @@ public class OrderedMap<K, V> {
         DOWNSIDE
     }
 
-    public class Entry<K, V> {
+    public class Entry<K, V> implements Map.Entry<K, V> {
         private final K key;
         private final V value;
 
@@ -84,10 +171,12 @@ public class OrderedMap<K, V> {
             this.value = value;
         }
 
+        @Override
         public K getKey() {
             return key;
         }
 
+        @Override
         public V getValue() {
             return value;
         }
