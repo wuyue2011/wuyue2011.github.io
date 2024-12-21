@@ -77,7 +77,7 @@ public class ScriptDebugOverlay {
                     } else {
                         y = drawText(vdStuff, font, debugInfo.getKey() + ": " + debugInfo.getValue(), 20, y, 0xFFFFFFFF);
                     }
-                    y += Mth.ceil(font.lineHeight * 0.5f);
+                    y += Mth.ceil(font.lineHeight * 0.2f);
                 }
             }
         }
@@ -92,7 +92,7 @@ public class ScriptDebugOverlay {
         List<FormattedCharSequence> lines = font.split(formattedText, Minecraft.getInstance().getWindow().getGuiScaledWidth() - 40);
         for (FormattedCharSequence line : lines) {
             guiGraphics.drawString(font, line, x, y, color);
-            y += Mth.ceil(font.lineHeight * 1.2f);
+            y += Mth.ceil(font.lineHeight * 1.1f);
         }
         return y;
     }
@@ -105,7 +105,7 @@ public class ScriptDebugOverlay {
         List<FormattedCharSequence> lines = font.split(formattedText, Minecraft.getInstance().getWindow().getGuiScaledWidth() - 40);
         for (FormattedCharSequence line : lines) {
             font.drawShadow(matrices, line, x, y, color);
-            y += Mth.ceil(font.lineHeight * 1.2f);
+            y += Mth.ceil(font.lineHeight * 1.1f);
         }
         return y;
     }
