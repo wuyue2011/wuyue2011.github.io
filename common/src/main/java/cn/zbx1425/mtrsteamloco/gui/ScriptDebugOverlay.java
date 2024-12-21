@@ -63,7 +63,7 @@ public class ScriptDebugOverlay {
                 y = drawText(vdStuff, font,
                     String.format("#%08X (%.2f ms)", context.hashCode(), context.lastExecuteDuration / 1000.0),
                     10, y, 0xFFCCCCFF);
-                List<Map.Entry<String, Object>> debugInfos = context.getDebugInfo();
+                List<Map.Entry<String, Object>> debugInfos = context.getDebugInfo().entryList();
                 for (Map.Entry<String, Object> debugInfo : debugInfos) {
                     Object value = debugInfo.getValue();
                     if (value instanceof GraphicsTexture) {
@@ -77,6 +77,7 @@ public class ScriptDebugOverlay {
                     } else {
                         y = drawText(vdStuff, font, debugInfo.getKey() + ": " + debugInfo.getValue(), 20, y, 0xFFFFFFFF);
                     }
+                    y += Mth.ceil(font.lineHeight * 0.5f);
                 }
             }
         }

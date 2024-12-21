@@ -82,6 +82,8 @@ public class ScriptHolder {
             scope.put("Matrices", scope, new NativeJavaClass(scope, Matrices.class));
             scope.put("Matrix4f", scope, new NativeJavaClass(scope, Matrix4f.class));
             scope.put("Vector3f", scope, new NativeJavaClass(scope, Vector3f.class));   
+            scope.put("OrderedMap", scope, new NativeJavaClass(scope, OrderedMap.class));   
+            scope.put("PlacementOrder", scope, new NativeJavaClass(scope, OrderedMap.PlacementOrder.class));
 
             scope.put("MTRClientData", scope, new NativeJavaClass(scope, ClientData.class));
             scope.put("IBlock", scope, new NativeJavaClass(scope, IBlock.class));

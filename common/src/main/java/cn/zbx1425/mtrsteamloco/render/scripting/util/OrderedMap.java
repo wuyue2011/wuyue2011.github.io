@@ -163,8 +163,8 @@ public class OrderedMap<K, V> implements Map<K, V> {
     }
 
     public class Entry<K, V> implements Map.Entry<K, V> {
-        private final K key;
-        private final V value;
+        private K key;
+        private V value;
 
         public Entry(K key, V value) {
             this.key = key;
@@ -180,5 +180,13 @@ public class OrderedMap<K, V> implements Map<K, V> {
         public V getValue() {
             return value;
         }
+
+        @Override
+        public V setValue(V value) {
+            V oldValue = this.value;
+            this.value = value;
+            return oldValue;
+        }
+
     }
 }
