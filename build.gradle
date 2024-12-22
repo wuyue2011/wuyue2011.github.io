@@ -76,11 +76,12 @@ task setupLibrary() {
 			overwrite true
 		}
 
-		download {
-			src url1
-			dest "checkouts/files.zip"
-			overwrite true
-		}
+	}
+
+	download {
+		src url1
+		dest "checkouts/files.zip"
+		overwrite false
 	}
 
 	copy {
