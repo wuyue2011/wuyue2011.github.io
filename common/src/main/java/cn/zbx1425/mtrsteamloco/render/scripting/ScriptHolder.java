@@ -32,6 +32,7 @@ public class ScriptHolder {
     private final List<Function> createFunctions = new ArrayList<>();
     private final List<Function> renderFunctions = new ArrayList<>();
     private final List<Function> disposeFunctions = new ArrayList<>();
+    private final List<Function> beClickedFunctions = new ArrayList<>();
 
     public long failTime = 0;
     public Exception failException = null;
@@ -47,6 +48,7 @@ public class ScriptHolder {
         this.createFunctions.clear();
         this.renderFunctions.clear();
         this.disposeFunctions.clear();
+        this.beClickedFunctions.clear();
         this.failTime = 0;
         this.failException = null;
 
@@ -126,6 +128,8 @@ public class ScriptHolder {
                 acquireFunction("render" + contextTypeName, renderFunctions);
                 acquireFunction("dispose", disposeFunctions);
                 acquireFunction("dispose" + contextTypeName, disposeFunctions);
+                acquireFunction("beClicked", beClickedFunctions);
+                acquireFunction("beClicked" + contextTypeName, beClickedFunctions);
             }
             ScriptResourceUtil.activeContext = null;
             ScriptResourceUtil.activeScope = null;
@@ -148,7 +152,7 @@ public class ScriptHolder {
         }
     }
 
-    public Future<?> callFunctionAsync(List<Function> functions, AbstractScriptContext scriptCtx, Runnable finishCallback) {
+    public Future<?> callFunctionAsync(List<Function> functions, AbstractScriptContext scriptCtx, Runnable finishCallback, Object... args) {
         if (duringFailTimeout()) return null;
         failTime = 0;
         return SCRIPT_THREAD.submit(() -> {
@@ -159,7 +163,7 @@ public class ScriptHolder {
                 long startTime = System.nanoTime();
 
                 TimingUtil.prepareForScript(scriptCtx);
-                Object[] functionParam = { scriptCtx, scriptCtx.state, scriptCtx.getWrapperObject() };
+                Object[] functionParam = { scriptCtx, scriptCtx.state, scriptCtx.getWrapperObject(), args};
                 for (Function function : functions) {
                     function.call(rhinoCtx, scope, scope, functionParam);
                 }
@@ -197,6 +201,14 @@ public class ScriptHolder {
             scriptCtx.scriptStatus = callFunctionAsync(disposeFunctions, scriptCtx, () -> {
                 scriptCtx.created = false;
             });
+        }
+    }
+
+    public void tryCallBeClickedFunctionAsync(AbstractScriptContext scriptCtx, boolean isShiftKeyDowh) {
+        if (!(scriptCtx.scriptStatus == null || scriptCtx.scriptStatus.isDone())) return;
+        if (scriptCtx.disposed) return;
+        if (scriptCtx.created) {
+            scriptCtx.scriptStatus = callFunctionAsync(beClickedFunctions, scriptCtx, null, isShiftKeyDowh);
         }
     }
 

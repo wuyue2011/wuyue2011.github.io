@@ -49,6 +49,11 @@ configure(subprojects.findAll {it.name != 'rhino'}) {
 }
 
 task setupLibrary() {
+	String minecraftMappingsBaseURL1 = "https://github.com/zbx1425/Minecraft-Mappings/archive/refs/heads/"
+	String minecraftMappingsBaseURL2 = "https://ghp.ci/https://github.com/zbx1425/Minecraft-Mappings/archive/refs/heads/"
+	String url1 = "${minecraftMappingsBaseURL1}${is_1_19_3 ? minecraft_version : "1." + minecraft_main_version}.zip"
+	String url2 = "${minecraftMappingsBaseURL2}${is_1_19_3 ? minecraft_version : "1." + minecraft_main_version}.zip"
+
 	doLast {
 
 		String baseURL = is_1_20 ? "https://storage.zbx1425.cn/mtr-artifacts/libs/" : "https://www.minecrafttransitrailway.com/libs/"
@@ -70,46 +75,18 @@ task setupLibrary() {
 			dest "checkouts/mtr-forge.jar"
 			overwrite true
 		}
-	}
 
-	String minecraftMappingsBaseURL1 = "https://github.com/zbx1425/Minecraft-Mappings/archive/refs/heads/"
-	String minecraftMappingsBaseURL2 = "https://ghp.ci/https://github.com/zbx1425/Minecraft-Mappings/archive/refs/heads/"
-	String url1 = "${minecraftMappingsBaseURL1}${is_1_19_3 ? minecraft_version : "1." + minecraft_main_version}.zip"
-	String url2 = "${minecraftMappingsBaseURL2}${is_1_19_3 ? minecraft_version : "1." + minecraft_main_version}.zip"
-
-	int maxRetryCount = 10;
-	int retryCount = 0;
-	while (retryCount < maxRetryCount) {
-		retryCount++
-		try {
-			try {
-				download {
-					src url1
-					dest "common/src/main/java/cn/zbx1425/mtrsteamloco/mappings/files.zip"
-					overwrite true
-				}
-			} catch (Exception e) {
-				System.println(e.message);
-				download {
-					src url2
-					dest "common/src/main/java/cn/zbx1425/mtrsteamloco/mappings/files.zip"
-					overwrite true
-				}
-			}
-			break;
-		} catch (Exception e) {
-			if (retryCount == maxRetryCount) {
-				throw e;
-			}
-			System.println(e.message);
+		download {
+			src url1
+			dest "checkouts/files.zip"
+			overwrite true
 		}
 	}
 
-
-	/*copy {
-		from "./files.zip"
+	copy {
+		from "checkouts/files.zip"
 		into "common/src/main/java/cn/zbx1425/mtrsteamloco/mappings"
-	}*/
+	}
 
 	copy {
 		outputs.upToDateWhen { false }

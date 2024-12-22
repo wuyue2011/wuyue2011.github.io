@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.system.MemoryUtil;
+import cn.zbx1425.mtrsteamloco.Main;
 
 import java.awt.*;
 import java.awt.color.ColorSpace;
@@ -28,6 +29,7 @@ public class GraphicsTexture implements Closeable {
     public final Graphics2D graphics;
 
     public final int width, height;
+    private boolean isClosed = false;
 
     public GraphicsTexture(int width, int height, ResourceLocation path) {
         this.width = width;
@@ -60,25 +62,37 @@ public class GraphicsTexture implements Closeable {
     }
 
     public void upload(BufferedImage image) {
-        IntBuffer imgData = IntBuffer.wrap(((DataBufferInt)image.getRaster().getDataBuffer()).getData());
-        long pixelAddr = ((NativeImageAccessor)(Object)dynamicTexture.getPixels()).getPixels();
-        ByteBuffer target = MemoryUtil.memByteBuffer(pixelAddr, width * height * 4);
-        for (int i = 0; i < width * height; i++) {
-            // ARGB to RGBA
-            int pixel = imgData.get();
-            target.put((byte)((pixel >> 16) & 0xFF));
-            target.put((byte)((pixel >> 8) & 0xFF));
-            target.put((byte)(pixel & 0xFF));
-            target.put((byte)((pixel >> 24) & 0xFF));
+        if (isClosed) Main.LOGGER.warn("GraphicsTexture already closed");
+        else {
+            IntBuffer imgData = IntBuffer.wrap(((DataBufferInt)image.getRaster().getDataBuffer()).getData());
+            long pixelAddr = ((NativeImageAccessor)(Object)dynamicTexture.getPixels()).getPixels();
+            ByteBuffer target = MemoryUtil.memByteBuffer(pixelAddr, width * height * 4);
+            for (int i = 0; i < width * height; i++) {
+                // ARGB to RGBA
+                int pixel = imgData.get();
+                target.put((byte)((pixel >> 16) & 0xFF));
+                target.put((byte)((pixel >> 8) & 0xFF));
+                target.put((byte)(pixel & 0xFF));
+                target.put((byte)((pixel >> 24) & 0xFF));
+            }
+            RenderSystem.recordRenderCall(dynamicTexture::upload);
         }
-        RenderSystem.recordRenderCall(dynamicTexture::upload);
+    }
+
+    public boolean isClosed() {
+        return isClosed;
     }
 
     @Override
     public void close() {
-        Minecraft.getInstance().execute(() -> {
-            Minecraft.getInstance().getTextureManager().release(identifier);
-        });
-        graphics.dispose();
+        if (isClosed) Main.LOGGER.warn("GraphicsTexture already closed");
+        else {
+            Minecraft.getInstance().execute(() -> {
+                Minecraft.getInstance().getTextureManager().release(identifier);
+            });
+            graphics.dispose();
+            dynamicTexture.close();
+            isClosed = true;
+        }
     }
 }

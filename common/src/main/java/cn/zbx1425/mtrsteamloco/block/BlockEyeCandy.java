@@ -55,6 +55,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import mtr.mappings.Utilities;
 import mtr.SoundEvents;
+import cn.zbx1425.mtrsteamloco.data.EyeCandyRegistry;
+import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -97,10 +99,25 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         if (player.getMainHandItem().is(mtr.Items.BRUSH.get())) {
             if (!level.isClientSide) {
                 PacketScreen.sendScreenBlockS2C((ServerPlayer) player, "eye_candy", pos);
+            } else {
+                return InteractionResult.PASS;
             }
             return InteractionResult.SUCCESS;
         } else {
-            return InteractionResult.PASS;
+            if (level.isClientSide) {
+                BlockEntity blockEntity = level.getBlockEntity(pos);
+                if (blockEntity instanceof BlockEntityEyeCandy) {
+                    boolean isShiftKeyDowh = player.isShiftKeyDown();
+                    BlockEntityEyeCandy blockEntityEyeCandy = (BlockEntityEyeCandy) blockEntity;
+                    blockEntityEyeCandy.tryCallBeClickedFunctionAsync(isShiftKeyDowh);
+                } else {
+                    Main.LOGGER.warn("BlockEntityEyeCandy not found at " + pos + ", " + level);
+                    return InteractionResult.PASS;
+                }
+                return InteractionResult.SUCCESS;
+            } else {
+                return InteractionResult.PASS;
+            }
         }
     }
 
@@ -387,6 +404,13 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             } catch (Exception e) {
                 Main.LOGGER.error("Error in getShape:" + e.getMessage());
                 return Shapes.block();
+            }
+        }
+
+        public void tryCallBeClickedFunctionAsync(boolean isShiftKeyDowh) {
+            ScriptHolder scriptHolder = EyeCandyRegistry.elements.get(prefabId).script;
+            if (scriptHolder != null && scriptContext != null) {
+                scriptHolder.tryCallBeClickedFunctionAsync(scriptContext, isShiftKeyDowh);
             }
         }
     }
