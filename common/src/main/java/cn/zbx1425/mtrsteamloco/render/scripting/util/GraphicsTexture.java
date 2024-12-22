@@ -62,7 +62,7 @@ public class GraphicsTexture implements Closeable {
     }
 
     public void upload(BufferedImage image) {
-        if (isClosed) Main.LOGGER.warn("GraphicsTexture already closed");
+        if (isClosed || dynamicTexture.getPixels() == null) Main.LOGGER.info("GraphicsTexture already closed");
         else {
             IntBuffer imgData = IntBuffer.wrap(((DataBufferInt)image.getRaster().getDataBuffer()).getData());
             long pixelAddr = ((NativeImageAccessor)(Object)dynamicTexture.getPixels()).getPixels();
@@ -75,7 +75,7 @@ public class GraphicsTexture implements Closeable {
                 target.put((byte)(pixel & 0xFF));
                 target.put((byte)((pixel >> 24) & 0xFF));
             }
-            RenderSystem.recordRenderCall(dynamicTexture::upload);
+            Minecraft.getInstance().execute(dynamicTexture::upload);
         }
     }
 
@@ -85,7 +85,7 @@ public class GraphicsTexture implements Closeable {
 
     @Override
     public void close() {
-        if (isClosed) Main.LOGGER.warn("GraphicsTexture already closed");
+        if (isClosed) Main.LOGGER.info("GraphicsTexture already closed");
         else {
             Minecraft.getInstance().execute(() -> {
                 Minecraft.getInstance().getTextureManager().release(identifier);
