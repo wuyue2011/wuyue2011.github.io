@@ -152,6 +152,10 @@ public class Vector3f {
 
 #endif
 
+    public Vector3f(double x, double y, double z) {
+        this((float)x, (float)y, (float)z);
+    }
+
     @Override
     public int hashCode() {
         return impl.hashCode();
