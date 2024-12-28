@@ -16,6 +16,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import vendor.cn.zbx1425.mtrsteamloco.org.mozilla.javascript.*;
 import mtr.block.IBlock;
+import net.minecraft.world.entity.player.Player;
+import cn.zbx1425.mtrsteamloco.render.scripting.util.WapperedEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +78,7 @@ public class ScriptHolder {
             scope.put("ParticleHelper", scope, new NativeJavaClass(scope, ParticleHelper.class));
             scope.put("TickableSound", scope, new NativeJavaClass(scope, TickableSound.class));
             scope.put("GlobalRegister", scope, new NativeJavaClass(scope, GlobalRegister.class));
+            scope.put("WapperedEntity", scope, new NativeJavaClass(scope, WapperedEntity.class));
 
             scope.put("RawModel", scope, new NativeJavaClass(scope, RawModel.class));
             scope.put("RawMesh", scope, new NativeJavaClass(scope, RawMesh.class));
@@ -163,7 +166,12 @@ public class ScriptHolder {
                 long startTime = System.nanoTime();
 
                 TimingUtil.prepareForScript(scriptCtx);
-                Object[] functionParam = { scriptCtx, scriptCtx.state, scriptCtx.getWrapperObject(), args};
+                Object[] functionParam = new Object[3 + args.length];
+                functionParam[0] = scriptCtx;
+                functionParam[1] = scriptCtx.state;
+                functionParam[2] = scriptCtx.getWrapperObject();
+                System.arraycopy(args, 0, functionParam, 3, args.length);
+
                 for (Function function : functions) {
                     function.call(rhinoCtx, scope, scope, functionParam);
                 }
@@ -204,11 +212,11 @@ public class ScriptHolder {
         }
     }
 
-    public void tryCallBeClickedFunctionAsync(AbstractScriptContext scriptCtx, boolean isShiftKeyDowh) {
+    public void tryCallBeClickedFunctionAsync(AbstractScriptContext scriptCtx, Player player) {
         if (!(scriptCtx.scriptStatus == null || scriptCtx.scriptStatus.isDone())) return;
         if (scriptCtx.disposed) return;
         if (scriptCtx.created) {
-            scriptCtx.scriptStatus = callFunctionAsync(beClickedFunctions, scriptCtx, null, isShiftKeyDowh);
+            scriptCtx.scriptStatus = callFunctionAsync(beClickedFunctions, scriptCtx, null, new WapperedEntity(player));
         }
     }
 

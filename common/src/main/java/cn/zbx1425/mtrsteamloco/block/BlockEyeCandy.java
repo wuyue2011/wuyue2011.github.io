@@ -107,9 +107,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             if (level.isClientSide) {
                 BlockEntity blockEntity = level.getBlockEntity(pos);
                 if (blockEntity instanceof BlockEntityEyeCandy) {
-                    boolean isShiftKeyDowh = player.isShiftKeyDown();
                     BlockEntityEyeCandy blockEntityEyeCandy = (BlockEntityEyeCandy) blockEntity;
-                    blockEntityEyeCandy.tryCallBeClickedFunctionAsync(isShiftKeyDowh);
+                    blockEntityEyeCandy.tryCallBeClickedFunctionAsync(player);
                 } else {
                     Main.LOGGER.warn("BlockEntityEyeCandy not found at " + pos + ", " + level);
                     return InteractionResult.PASS;
@@ -407,10 +406,10 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             }
         }
 
-        public void tryCallBeClickedFunctionAsync(boolean isShiftKeyDowh) {
+        public void tryCallBeClickedFunctionAsync(Player player) {
             ScriptHolder scriptHolder = EyeCandyRegistry.elements.get(prefabId).script;
             if (scriptHolder != null && scriptContext != null) {
-                scriptHolder.tryCallBeClickedFunctionAsync(scriptContext, isShiftKeyDowh);
+                scriptHolder.tryCallBeClickedFunctionAsync(scriptContext, player);
             }
         }
     }
