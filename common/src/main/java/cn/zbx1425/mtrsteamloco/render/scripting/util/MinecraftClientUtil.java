@@ -154,13 +154,13 @@ public class MinecraftClientUtil {
 	    return null;
     }
 
-    public static float getCameraDistance(Vector3f from) {
-        Vector3f cameraPos = new Vector3f(Minecraft.getInstance().gameRenderer.getMainCamera().getPosition());
-        return cameraPos.distance(from);
-    }
-
     public static Vector3f getCameraPos() {
         return new Vector3f(Minecraft.getInstance().gameRenderer.getMainCamera().getPosition());
+    }
+
+    public static float getCameraDistance(Vector3f from) {
+        Vector3f cameraPos = getCameraPos();
+        return cameraPos.distance(from);
     }
 
 	public static Level getWorld() {
@@ -218,4 +218,12 @@ public class MinecraftClientUtil {
     static double asin(double value) {
 		return Math.asin(value);
 	}
+
+    public static WapperedEntity getCameraEntity() {
+        return new WapperedEntity(Minecraft.getInstance().cameraEntity);
+    }
+
+    public static WapperedEntity getPlayer() {
+        return new WapperedEntity(Minecraft.getInstance().player);
+    }
 }

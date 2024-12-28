@@ -57,6 +57,7 @@ import mtr.mappings.Utilities;
 import mtr.SoundEvents;
 import cn.zbx1425.mtrsteamloco.data.EyeCandyRegistry;
 import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolder;
+import cn.zbx1425.mtrsteamloco.data.EyeCandyProperties;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -407,10 +408,12 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
 
         public void tryCallBeClickedFunctionAsync(Player player) {
-            ScriptHolder scriptHolder = EyeCandyRegistry.elements.get(prefabId).script;
-            if (scriptHolder != null && scriptContext != null) {
-                scriptHolder.tryCallBeClickedFunctionAsync(scriptContext, player);
-            }
+            if (scriptContext == null) return;
+            EyeCandyProperties prop = EyeCandyRegistry.elements.get(prefabId);
+            if (prop == null) return;
+            ScriptHolder scriptHolder = prop.script;
+            if (scriptHolder == null) return;
+            scriptHolder.tryCallBeClickedFunctionAsync(scriptContext, player);
         }
     }
 }

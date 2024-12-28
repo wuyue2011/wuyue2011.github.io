@@ -95,7 +95,7 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
         Matrix4f drawPose = new Matrix4f(matrices.last().pose());
         if (shouldRender) {
             synchronized (trainScripting) {
-                trainScripting.scriptResult.commitCar(carIndex, MainClient.drawScheduler, drawPose, worldPose, light);
+                trainScripting.commitCar(carIndex, MainClient.drawScheduler, drawPose, worldPose, light);
             }
         }
         matrices.popPose();

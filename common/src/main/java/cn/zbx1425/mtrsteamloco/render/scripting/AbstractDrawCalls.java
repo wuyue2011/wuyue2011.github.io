@@ -40,6 +40,28 @@ public abstract class AbstractDrawCalls {
         }
     }
 
+    public static class WorldDrawCall extends ClusterDrawCall {
+        public WorldDrawCall(ModelCluster model, Matrix4f pose) {
+            super(model, pose);
+        }
+
+        public WorldDrawCall(DynamicModelHolder model, Matrix4f pose) {
+            super(model, pose);
+        }
+
+        @Override
+        public void commit(DrawScheduler drawScheduler, Matrix4f basePose, int light) {
+            if (model != null) {
+                drawScheduler.enqueue(model, pose, light);
+            } else {
+                ModelCluster model = modelHolder.getUploadedModel();
+                if (model != null) {
+                    drawScheduler.enqueue(model, pose, light);
+                }
+            }
+        }
+    }
+
     public static class PlaySoundCall {
         public SoundEvent sound;
         public Vector3f position;

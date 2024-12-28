@@ -15,6 +15,12 @@ import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import cn.zbx1425.sowcerext.reuse.DrawScheduler;
+import cn.zbx1425.sowcer.math.Matrix4f;
+import cn.zbx1425.mtrsteamloco.render.scripting.AbstractDrawCalls.ClusterDrawCall;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @SuppressWarnings("unused")
 public class TrainScriptContext extends AbstractScriptContext {
@@ -25,13 +31,26 @@ public class TrainScriptContext extends AbstractScriptContext {
 
     public TrainDrawCalls scriptResult;
     private TrainDrawCalls scriptResultWriting;
+    public Map<Integer, ClusterDrawCall>[] drawCalls;
 
     public TrainScriptContext(TrainClient train) {
-        this.scriptResult = new TrainDrawCalls(train.trainCars);
-        this.scriptResultWriting = new TrainDrawCalls(train.trainCars);
-        this.train = train;
-        this.trainExtra = new TrainWrapper(train);
-        this.trainExtraWriting = new TrainWrapper(train);
+        scriptResult = new TrainDrawCalls(train.trainCars);
+        scriptResultWriting = new TrainDrawCalls(train.trainCars);
+        train = train;
+        trainExtra = new TrainWrapper(train);
+        trainExtraWriting = new TrainWrapper(train);
+        drawCalls = new Map[train.trainCars];
+        for (int i = 0; i < train.trainCars; i++) {
+            drawCalls[i] = new HashMap<>();
+        }
+    }
+
+    public void commitCar(int car, DrawScheduler drawScheduler, Matrix4f basePose, Matrix4f worldPose, int light) {
+        Map<Integer, ClusterDrawCall> drawCallsCopy = new HashMap<>(drawCalls[car]);
+        for (Map.Entry<Integer, ClusterDrawCall> entry : drawCallsCopy.entrySet()) {
+            entry.getValue().commit(drawScheduler, basePose, light);
+        }
+        scriptResult.commitCar(car, drawScheduler, basePose, worldPose, light);
     }
 
     @Override

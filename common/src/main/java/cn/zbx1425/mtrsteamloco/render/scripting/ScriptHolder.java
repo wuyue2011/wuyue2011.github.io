@@ -18,6 +18,7 @@ import vendor.cn.zbx1425.mtrsteamloco.org.mozilla.javascript.*;
 import mtr.block.IBlock;
 import net.minecraft.world.entity.player.Player;
 import cn.zbx1425.mtrsteamloco.render.scripting.util.WapperedEntity;
+import cn.zbx1425.mtrsteamloco.render.scripting.AbstractDrawCalls;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +80,9 @@ public class ScriptHolder {
             scope.put("TickableSound", scope, new NativeJavaClass(scope, TickableSound.class));
             scope.put("GlobalRegister", scope, new NativeJavaClass(scope, GlobalRegister.class));
             scope.put("WapperedEntity", scope, new NativeJavaClass(scope, WapperedEntity.class));
+
+            scope.put("ClusterDrawCall", scope, new NativeJavaClass(scope, AbstractDrawCalls.ClusterDrawCall.class));
+            scope.put("WorldDrawCall", scope, new NativeJavaClass(scope, AbstractDrawCalls.WorldDrawCall.class));
 
             scope.put("RawModel", scope, new NativeJavaClass(scope, RawModel.class));
             scope.put("RawMesh", scope, new NativeJavaClass(scope, RawMesh.class));

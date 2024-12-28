@@ -91,7 +91,7 @@ public class BlockEntityEyeCandyRenderer extends BlockEntityRendererMapper<Block
         }
         if (prop.script != null) {
             synchronized (blockEntity.scriptContext) {
-                blockEntity.scriptContext.scriptResult.commit(MainClient.drawScheduler, candyPose, lightToUse);
+                blockEntity.scriptContext.commit(MainClient.drawScheduler, candyPose, lightToUse);
             }
             prop.script.tryCallRenderFunctionAsync(blockEntity.scriptContext);
         }

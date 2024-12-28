@@ -3,11 +3,13 @@ package cn.zbx1425.mtrsteamloco.render.scripting;
 import vendor.cn.zbx1425.mtrsteamloco.org.mozilla.javascript.Scriptable;
 
 import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.ArrayList;
 import java.util.List;
 import cn.zbx1425.mtrsteamloco.render.scripting.util.OrderedMap;
+import cn.zbx1425.mtrsteamloco.render.scripting.AbstractDrawCalls.*;
 
 public abstract class AbstractScriptContext {
 
