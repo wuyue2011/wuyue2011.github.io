@@ -145,7 +145,7 @@ public class EyeCandyRegistry {
         String shape = obj.has("shape")? obj.get("shape").getAsString() : "0, 0, 0, 16, 16, 16";
         boolean noCollision = obj.has("noCollision") ? obj.get("noCollision").getAsBoolean() : true;
         boolean fixedShape = obj.has("fixedShape") ? obj.get("fixedShape").getAsBoolean() : noCollision;
-        bollean fixedMatrix = obj.has("fixedMatrix") ? obj.get("fixedMatrix").getAsBoolean() : false;
+        boolean fixedMatrix = obj.has("fixedMatrix") ? obj.get("fixedMatrix").getAsBoolean() : false;
         if (cluster == null && script == null) {
             throw new IllegalArgumentException("Invalid eye-candy json: " + key);
         } else {
