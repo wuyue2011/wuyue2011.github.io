@@ -18,7 +18,7 @@ public class Matrix4f {
         this.impl = moj;
     }
 
-    private Matrix4f(Matrix4f other) {
+    public Matrix4f(Matrix4f other) {
         this.impl = new org.joml.Matrix4f(other.impl);
     }
 
@@ -118,7 +118,7 @@ public class Matrix4f {
         this.impl = moj;
     }
 
-    private Matrix4f(Matrix4f other) {
+    public Matrix4f(Matrix4f other) {
         this.impl = other.impl.copy();
     }
 

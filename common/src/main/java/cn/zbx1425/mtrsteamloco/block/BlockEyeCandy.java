@@ -216,7 +216,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public String shape = "0, 0, 0, 16, 16, 16";
         public boolean noCollision = true;
-        public boolean noMove = true;
+        public boolean fixedShape = true;
+        public boolean fixedMatrix = false;
         public int lightLevel = 0;
         public boolean isTicketBarrier = false;
         public boolean isEntrance = false;
@@ -248,7 +249,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             doorTarget = compoundTag.contains("doorTarget") ? compoundTag.getBoolean("doorTarget") : false;
             shape = compoundTag.contains("shape") ? compoundTag.getString("shape") : "0, 0, 0, 16, 16, 16";
             noCollision = compoundTag.contains("noCollision") ? compoundTag.getBoolean("noCollision") : true;
-            noMove = compoundTag.contains("noMove") ? compoundTag.getBoolean("noMove") : true;
+            fixedShape = compoundTag.contains("fixedShape") ? compoundTag.getBoolean("fixedShape") : true;
+            fixedMatrix = compoundTag.contains("fixedMatrix") ? compoundTag.getBoolean("fixedMatrix") : false;
             lightLevel = compoundTag.contains("lightLevel") ? compoundTag.getInt("lightLevel") : 0;
         }
 
@@ -274,7 +276,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putBoolean("doorTarget", doorTarget);
             compoundTag.putString("shape", shape);
             compoundTag.putBoolean("noCollision", noCollision);
-            compoundTag.putBoolean("noMove", noMove);
+            compoundTag.putBoolean("fixedShape", fixedShape);
+            compoundTag.putBoolean("fixedMatrix", fixedMatrix);
             compoundTag.putInt("lightLevel", lightLevel);
         }
 
@@ -390,7 +393,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                             }
                         }
                         VoxelShape voxelShape = Block.box(newPos[0], newPos[1], newPos[2], newPos[3], newPos[4], newPos[5]);
-                        if (!noMove) {
+                        if (!fixedShape) {
                             double tx = (double)translateX, ty = (double)translateY, tz = (double)translateZ;
                             voxelShapes[i] = voxelShape.move(tx, ty, tz);
                         }

@@ -26,7 +26,7 @@ public abstract class AbstractDrawCalls {
             this.pose = pose;
         }
 
-        public abstract void commit(DrawScheduler drawScheduler, Matrix4f basePose, int light);
+        public abstract void commit(DrawScheduler drawScheduler, Matrix4f basePose, Matrix4f worldPose, int light);
     }
 
     public static class ClusterDrawCall extends DrawCall {
@@ -39,7 +39,8 @@ public abstract class AbstractDrawCalls {
             super(model, pose);
         }
 
-        public void commit(DrawScheduler drawScheduler, Matrix4f basePose, int light) {
+        @Override
+        public void commit(DrawScheduler drawScheduler, Matrix4f basePose, Matrix4f worldPose, int light) {
             Matrix4f finalPose = basePose.copy();
             finalPose.multiply(pose);
             if (model != null) {
@@ -63,13 +64,15 @@ public abstract class AbstractDrawCalls {
         }
 
         @Override
-        public void commit(DrawScheduler drawScheduler, Matrix4f basePose, int light) {
+        public void commit(DrawScheduler drawScheduler, Matrix4f basePose, Matrix4f worldPose, int light) {
+            Matrix4f finalPose = worldPose.copy();
+            finalPose.multiply(pose);
             if (model != null) {
-                drawScheduler.enqueue(model, pose, light);
+                drawScheduler.enqueue(model, finalPose, light);
             } else {
                 ModelCluster model = modelHolder.getUploadedModel();
                 if (model != null) {
-                    drawScheduler.enqueue(model, pose, light);
+                    drawScheduler.enqueue(model, finalPose, light);
                 }
             }
         }

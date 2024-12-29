@@ -88,6 +88,7 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
             return;
         }
 
+        worldPose = new Matrix4f(matrices.last().pose()).copy();
         matrices.translate(x, y, z);
         PoseStackUtil.rotY(matrices, (float) Math.PI + yaw);
         PoseStackUtil.rotX(matrices, hasPitch ? pitch : 0);
@@ -119,6 +120,7 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
 
         final BlockPos posAverage = applyAverageTransform(train.getViewOffset(), x, y, z);
         if (posAverage == null) return;
+        Matrix4f worldPose = new Matrix4f(matrices.last().pose()).copy();
         matrices.pushPose();
         matrices.translate(x, y, z);
         PoseStackUtil.rotY(matrices, (float) Math.PI + yaw);
@@ -127,7 +129,7 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
         final int light = LightTexture.pack(world.getBrightness(LightLayer.BLOCK, posAverage), world.getBrightness(LightLayer.SKY, posAverage));
         Matrix4f pose = new Matrix4f(matrices.last().pose());
         synchronized (trainScripting) {
-            trainScripting.scriptResult.commitConn(0, MainClient.drawScheduler, pose, light);
+            trainScripting.scriptResult.commitConn(0, MainClient.drawScheduler, pose, worldPose, light);
             matrices.popPose();
             trainScripting.scriptResult.commitConnImmediate(0, matrices, vertexConsumers,
                     prevPos1, prevPos2, prevPos3, prevPos4, thisPos1, thisPos2, thisPos3, thisPos4, light);

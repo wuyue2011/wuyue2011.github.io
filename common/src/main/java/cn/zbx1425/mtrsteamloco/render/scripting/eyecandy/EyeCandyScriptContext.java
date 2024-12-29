@@ -31,12 +31,12 @@ public class EyeCandyScriptContext extends AbstractScriptContext {
         this.entity = entity;
     }
 
-    public void commit(DrawScheduler drawScheduler, Matrix4f basePose, int light) {
+    public void commit(DrawScheduler drawScheduler, Matrix4f basePose, Matrix4f worldPose, int light) {
         Collection<DrawCall> calls = drawCalls.values();
         for (DrawCall entry : calls) {
-            entry.commit(drawScheduler, basePose, light);
+            entry.commit(drawScheduler, basePose, worldPose, light);
         }
-        scriptResult.commit(drawScheduler, basePose, light);
+        scriptResult.commit(drawScheduler, basePose, worldPose, light);
     }
 
     @Override

@@ -9,6 +9,7 @@ import cn.zbx1425.mtrsteamloco.render.scripting.ScriptContextManager;
 import cn.zbx1425.mtrsteamloco.render.scripting.eyecandy.EyeCandyScriptContext;
 import cn.zbx1425.mtrsteamloco.render.scripting.train.ScriptedTrainRenderer;
 import cn.zbx1425.sowcer.math.Matrix4f;
+import cn.zbx1425.sowcer.math.Vector3f;
 import cn.zbx1425.sowcer.math.PoseStackUtil;
 import cn.zbx1425.sowcerext.model.ModelCluster;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -54,7 +55,10 @@ public class BlockEntityEyeCandyRenderer extends BlockEntityRendererMapper<Block
         if (world == null) return;
 
         int lightToUse = blockEntity.fullLight ? LightTexture.pack(15, 15) : light;
-        Matrix4f candyPose = new Matrix4f(matrices.last().pose()).copy();
+        Matrix4f worldPose = new Matrix4f(matrices.last().pose()).copy();
+        Matrix4f candyPose = worldPose.copy();
+        Vector3f candyPos = new Vector3f(blockEntity.getBlockPos());
+        worldPose.translate(-candyPos.x(), -candyPos.y(), -candyPos.z());
 
         EyeCandyProperties prop = EyeCandyRegistry.getProperty(blockEntity.prefabId);
         if (prop == null || RailRenderDispatcher.isHoldingBrush) {
@@ -91,7 +95,7 @@ public class BlockEntityEyeCandyRenderer extends BlockEntityRendererMapper<Block
         }
         if (prop.script != null) {
             synchronized (blockEntity.scriptContext) {
-                blockEntity.scriptContext.commit(MainClient.drawScheduler, candyPose, lightToUse);
+                blockEntity.scriptContext.commit(MainClient.drawScheduler, candyPose, worldPose, lightToUse);
             }
             prop.script.tryCallRenderFunctionAsync(blockEntity.scriptContext);
         }

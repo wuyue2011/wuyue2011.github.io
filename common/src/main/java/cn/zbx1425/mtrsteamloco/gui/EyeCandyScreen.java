@@ -114,7 +114,8 @@ public class EyeCandyScreen extends SelectListScreen {
                 }
                 blockEntity.shape = newProp.shape;
                 blockEntity.noCollision = newProp.noCollision;
-                blockEntity.noMove = newProp.noMove;
+                blockEntity.fixedShape = newProp.fixedShape;
+                blockEntity.fixedMatrix = newProp.fixedMatrix;
                 blockEntity.lightLevel = newProp.lightLevel;
                 blockEntity.data.clear();
             }
@@ -139,36 +140,40 @@ public class EyeCandyScreen extends SelectListScreen {
                 20 * 2, (int)Math.round(blockEntity.translateX * 100 / 5f) + 20,
                 value -> { updateBlockEntity(be -> be.translateX = (value - 20) * 5f / 100f); return "TX " + ((value - 20) * 5) + "cm"; }
         );
-        IDrawing.setPositionAndWidth(addRenderableWidget(tx), SQUARE_SIZE, SQUARE_SIZE * 3, (width - SQUARE_SIZE * 2) / 3);
 
         ty = new WidgetSlider(
                 20 * 2, (int)Math.round(blockEntity.translateY * 100 / 5f) + 20,
                 value -> { updateBlockEntity(be -> be.translateY = (value - 20) * 5f / 100f); return "TY " + ((value - 20) * 5) + "cm"; }
         );
-        IDrawing.setPositionAndWidth(addRenderableWidget(ty), SQUARE_SIZE + (width - SQUARE_SIZE * 2) / 3, SQUARE_SIZE * 3, (width - SQUARE_SIZE * 2) / 3);
 
         tz = new WidgetSlider(
                 20 * 2, (int)Math.round(blockEntity.translateZ * 100 / 5f) + 20,
                 value -> { updateBlockEntity(be -> be.translateZ = (value - 20) * 5f / 100f); return "TZ " + ((value - 20) * 5) + "cm"; }
         ); 
-        IDrawing.setPositionAndWidth(addRenderableWidget(tz), SQUARE_SIZE + (width - SQUARE_SIZE * 2) / 3 * 2, SQUARE_SIZE * 3, (width - SQUARE_SIZE * 2) / 3);
+
 
         rx = new WidgetSlider(
                 18 * 2, (int)Math.round(Math.toDegrees(blockEntity.rotateX) / 5f) + 18,
                 value -> { updateBlockEntity(be -> be.rotateX = (float)Math.toRadians((value - 18) * 5f)); return "RX " + ((value - 18) * 5) + "°"; }
         );
-        IDrawing.setPositionAndWidth(addRenderableWidget(rx), SQUARE_SIZE, SQUARE_SIZE * 4, (width - SQUARE_SIZE * 2) / 3);
+        
         
         ry = new WidgetSlider(
                 18 * 2, (int)Math.round(Math.toDegrees(blockEntity.rotateY) / 5f) + 18,
                 value -> { updateBlockEntity(be -> be.rotateY = (float)Math.toRadians((value - 18) * 5f)); return "RY " + ((value - 18) * 5) + "°"; }
         );
-        IDrawing.setPositionAndWidth(addRenderableWidget(ry), SQUARE_SIZE + (width - SQUARE_SIZE * 2) / 3, SQUARE_SIZE * 4, (width - SQUARE_SIZE * 2) / 3);
+        
 
         rz = new WidgetSlider(
                 18 * 2, (int)Math.round(Math.toDegrees(blockEntity.rotateZ) / 5f) + 18,
                 value -> { updateBlockEntity(be -> be.rotateZ = (float)Math.toRadians((value - 18) * 5f)); return "RZ " + ((value - 18) * 5) + "°"; }
         );
+
+        IDrawing.setPositionAndWidth(addRenderableWidget(tx), SQUARE_SIZE, SQUARE_SIZE * 3, (width - SQUARE_SIZE * 2) / 3);
+        IDrawing.setPositionAndWidth(addRenderableWidget(ty), SQUARE_SIZE + (width - SQUARE_SIZE * 2) / 3, SQUARE_SIZE * 3, (width - SQUARE_SIZE * 2) / 3);
+        IDrawing.setPositionAndWidth(addRenderableWidget(tz), SQUARE_SIZE + (width - SQUARE_SIZE * 2) / 3 * 2, SQUARE_SIZE * 3, (width - SQUARE_SIZE * 2) / 3);
+        IDrawing.setPositionAndWidth(addRenderableWidget(rx), SQUARE_SIZE, SQUARE_SIZE * 4, (width - SQUARE_SIZE * 2) / 3);
+        IDrawing.setPositionAndWidth(addRenderableWidget(ry), SQUARE_SIZE + (width - SQUARE_SIZE * 2) / 3, SQUARE_SIZE * 4, (width - SQUARE_SIZE * 2) / 3);
         IDrawing.setPositionAndWidth(addRenderableWidget(rz), SQUARE_SIZE + (width - SQUARE_SIZE * 2) / 3 * 2, SQUARE_SIZE * 4, (width - SQUARE_SIZE * 2) / 3);
 
         textField = new WidgetBetterTextField(Text.translatable("gui.mtrsteamloco.eye_candy.text_field").getString(), 128);
