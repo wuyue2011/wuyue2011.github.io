@@ -81,6 +81,7 @@ public class ScriptHolder {
             scope.put("GlobalRegister", scope, new NativeJavaClass(scope, GlobalRegister.class));
             scope.put("WapperedEntity", scope, new NativeJavaClass(scope, WapperedEntity.class));
 
+            scope.put("DrawCall", scope, new NativeJavaClass(scope, AbstractDrawCalls.DrawCall.class));
             scope.put("ClusterDrawCall", scope, new NativeJavaClass(scope, AbstractDrawCalls.ClusterDrawCall.class));
             scope.put("WorldDrawCall", scope, new NativeJavaClass(scope, AbstractDrawCalls.WorldDrawCall.class));
 

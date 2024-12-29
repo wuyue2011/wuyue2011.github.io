@@ -10,10 +10,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import cn.zbx1425.sowcerext.reuse.DrawScheduler;
 import cn.zbx1425.sowcer.math.Matrix4f;
-import cn.zbx1425.mtrsteamloco.render.scripting.AbstractDrawCalls.ClusterDrawCall;
+import cn.zbx1425.mtrsteamloco.render.scripting.AbstractDrawCalls.DrawCall;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Collection;
 
 public class EyeCandyScriptContext extends AbstractScriptContext {
 
@@ -22,7 +23,7 @@ public class EyeCandyScriptContext extends AbstractScriptContext {
     public EyeCandyDrawCalls scriptResult;
     private EyeCandyDrawCalls scriptResultWriting;
 
-    public Map<Integer, ClusterDrawCall> drawCalls = new HashMap<>();
+    public Map<Integer, DrawCall> drawCalls = new HashMap<>();
     
     public EyeCandyScriptContext(BlockEyeCandy.BlockEntityEyeCandy entity) {
         scriptResult = new EyeCandyDrawCalls();
@@ -31,9 +32,9 @@ public class EyeCandyScriptContext extends AbstractScriptContext {
     }
 
     public void commit(DrawScheduler drawScheduler, Matrix4f basePose, int light) {
-        Map<Integer, ClusterDrawCall> drawCallsCopy = new HashMap<>(drawCalls);
-        for (Map.Entry<Integer, ClusterDrawCall> entry : drawCallsCopy.entrySet()) {
-            entry.getValue().commit(drawScheduler, basePose, light);
+        Collection<DrawCall> calls = drawCalls.values();
+        for (DrawCall entry : calls) {
+            entry.commit(drawScheduler, basePose, light);
         }
         scriptResult.commit(drawScheduler, basePose, light);
     }

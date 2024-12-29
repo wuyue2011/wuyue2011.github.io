@@ -11,19 +11,32 @@ import net.minecraft.sounds.SoundSource;
 
 public abstract class AbstractDrawCalls {
 
-    public static class ClusterDrawCall {
+    public static abstract class DrawCall {
         public ModelCluster model;
         public DynamicModelHolder modelHolder;
         public Matrix4f pose;
 
-        public ClusterDrawCall(ModelCluster model, Matrix4f pose) {
+        public DrawCall(ModelCluster model, Matrix4f pose) {
             this.model = model;
             this.pose = pose;
         }
 
-        public ClusterDrawCall(DynamicModelHolder model, Matrix4f pose) {
+        public DrawCall(DynamicModelHolder model, Matrix4f pose) {
             this.modelHolder = model;
             this.pose = pose;
+        }
+
+        public abstract void commit(DrawScheduler drawScheduler, Matrix4f basePose, int light);
+    }
+
+    public static class ClusterDrawCall extends DrawCall {
+
+        public ClusterDrawCall(ModelCluster model, Matrix4f pose) {
+            super(model, pose);
+        }
+
+        public ClusterDrawCall(DynamicModelHolder model, Matrix4f pose) {
+            super(model, pose);
         }
 
         public void commit(DrawScheduler drawScheduler, Matrix4f basePose, int light) {
@@ -40,7 +53,7 @@ public abstract class AbstractDrawCalls {
         }
     }
 
-    public static class WorldDrawCall extends ClusterDrawCall {
+    public static class WorldDrawCall extends DrawCall {
         public WorldDrawCall(ModelCluster model, Matrix4f pose) {
             super(model, pose);
         }

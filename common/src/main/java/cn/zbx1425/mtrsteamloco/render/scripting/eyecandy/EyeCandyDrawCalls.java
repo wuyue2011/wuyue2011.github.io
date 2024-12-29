@@ -16,7 +16,7 @@ import java.util.List;
 
 public class EyeCandyDrawCalls extends AbstractDrawCalls {
 
-    private final List<ClusterDrawCall> drawList = new ArrayList<>();
+    private final List<DrawCall> drawList = new ArrayList<>();
     private final List<PlaySoundCall> soundList = new ArrayList<>();
 
     public void addModel(ModelCluster model, Matrix4f pose) {
@@ -27,12 +27,16 @@ public class EyeCandyDrawCalls extends AbstractDrawCalls {
         drawList.add(new ClusterDrawCall(model, pose));
     }
 
+    public void addDrawCall(DrawCall drawCall) {
+        drawList.add(drawCall);
+    }
+
     public void addSound(SoundEvent sound, float volume, float pitch) {
         soundList.add(new PlaySoundCall(sound, Vector3f.ZERO, volume, pitch));
     }
 
     public void commit(DrawScheduler drawScheduler, Matrix4f basePose, int light) {
-        for (ClusterDrawCall clusterDrawCall : drawList) {
+        for (DrawCall clusterDrawCall : drawList) {
             clusterDrawCall.commit(drawScheduler, basePose, light);
         }
         ClientLevel level = Minecraft.getInstance().level;
