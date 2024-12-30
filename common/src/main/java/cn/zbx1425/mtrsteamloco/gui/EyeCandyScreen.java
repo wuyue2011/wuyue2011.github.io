@@ -63,27 +63,13 @@ public class EyeCandyScreen {
         }
 
         EyeCandyProperties properties = EyeCandyRegistry.elements.get(blockEntity.prefabId);
-        Set<Map.Entry<String, EyeCandyProperties>> entries = EyeCandyRegistry.elements.entrySet();
-        Map<String, EyeCandyProperties> elementMap = new HashMap<>();
-        Map<EyeCandyProperties, String> idMap = new HashMap<>();
-        List<String> repeatList = new ArrayList<>();
+        Set<String> keySet = EyeCandyRegistry.elements.keySet();
+        Map<String, String> elementMap = new HashMap<>();
         for (Map.Entry<String, EyeCandyProperties> entry : entries) {
             EyeCandyProperties prop = entry.getValue();
-            String keyi = entry.getKey();
-            idMap.put(properties, keyi);
+            String prid = entry.getKey();
             String name = prop.name.getString();
-            if (elementMap.containsKey(name)) {
-                repeatList.add(name);
-                EyeCandyProperties oldv = elementMap.remove(name);
-                String oid = idMap.get(oldv);
-                String oname = oldv.name.getString();
-                elementMap.put(oname + " (" + oid + ")", oldv);
-                elementMap.put(name + " (" + keyi + ")", prop);
-            } else if (repeatList.contains(name)) {
-                elementMap.put(name + " (" + keyi + ")", prop);
-            } else {
-                elementMap.put(name, prop);
-            }
+            elementMap.put(name + " (" + prid + ")", prid);
         }
         List<String> elementList = new ArrayList<>(elementMap.keySet());
         Collections.sort(elementList);
@@ -109,27 +95,7 @@ public class EyeCandyScreen {
             DropdownMenuBuilder.TopCellElementBuilder.of(pid, str -> str))
             .setDefaultValue(pid).setSelections(elementList).setSaveConsumer(btnKey -> {
                 updateBlockEntity((blockEntity) -> {
-                    if (blockEntity.prefabId != btnKey) {
-                        EyeCandyProperties oldProp = EyeCandyRegistry.elements.get(blockEntity.prefabId);
-                        if (oldProp != null) {
-                            if (oldProp.script != null) oldProp.script.tryCallDisposeFunctionAsync(blockEntity.scriptContext);
-                        }
-                        EyeCandyProperties newProp = elementMap.get(btnKey);
-                        if (newProp == null) {
-                            return;
-                        } else {
-                            blockEntity.prefabId = idMap.get(newProp);
-                        }
-                        if (newProp != null && newProp.script != null) {
-                            blockEntity.scriptContext = new EyeCandyScriptContext(blockEntity);
-                        }
-                        blockEntity.shape = newProp.shape;
-                        blockEntity.noCollision = newProp.noCollision;
-                        blockEntity.fixedShape = newProp.fixedShape;
-                        blockEntity.fixedMatrix = newProp.fixedMatrix;
-                        blockEntity.lightLevel = newProp.lightLevel;
-                        blockEntity.data.clear();
-                    }
+                    blockEntity.setPrefabId(elementMap.get(btnKey));
                 });
             }).build()
         );

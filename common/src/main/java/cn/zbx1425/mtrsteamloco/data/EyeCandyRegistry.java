@@ -146,10 +146,12 @@ public class EyeCandyRegistry {
         boolean noCollision = obj.has("noCollision") ? obj.get("noCollision").getAsBoolean() : true;
         boolean fixedShape = obj.has("fixedShape") ? obj.get("fixedShape").getAsBoolean() : noCollision;
         boolean fixedMatrix = obj.has("fixedMatrix") ? obj.get("fixedMatrix").getAsBoolean() : false;
+        boolean isTicketBarrier = obj.has("isTicketBarrier") ? obj.get("isTicketBarrier").getAsBoolean() : false;
+        boolean isEntrance = obj.has("isEntrance") ? obj.get("isEntrance").getAsBoolean() : false;
         if (cluster == null && script == null) {
             throw new IllegalArgumentException("Invalid eye-candy json: " + key);
         } else {
-            return new EyeCandyProperties(Text.translatable(obj.get("name").getAsString()), cluster, script, shape, noCollision, fixedShape, fixedMatrix, lightLevel);
+            return new EyeCandyProperties(Text.translatable(obj.get("name").getAsString()), cluster, script, shape, noCollision, fixedShape, fixedMatrix, lightLevel, isTicketBarrier, isEntrance);
         }
     }
 }

@@ -200,6 +200,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     public static class BlockEntityEyeCandy extends BlockEntityClientSerializableMapper {
 
         public String prefabId = null;
+        public EyeCandyProperties properties = null;
 
         public float translateX = 0, translateY = 0, translateZ = 0;
         public float rotateX = 0, rotateY = 0, rotateZ = 0;
@@ -228,8 +229,9 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         @Override
         public void readCompoundTag(CompoundTag compoundTag) {
-            prefabId = compoundTag.getString("prefabId");
-            if (StringUtils.isEmpty(prefabId)) prefabId = null;
+            String id = compoundTag.getString("prefabId");
+            if (StringUtils.isEmpty(id)) id = null;
+            setPrefabId(id);
             fullLight = compoundTag.getBoolean("fullLight");
             try {
                 byte[] dataBytes = compoundTag.getByteArray("data");
@@ -252,6 +254,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             fixedShape = compoundTag.contains("fixedShape") ? compoundTag.getBoolean("fixedShape") : true;
             fixedMatrix = compoundTag.contains("fixedMatrix") ? compoundTag.getBoolean("fixedMatrix") : false;
             lightLevel = compoundTag.contains("lightLevel") ? compoundTag.getInt("lightLevel") : 0;
+            isTicketBarrier = compoundTag.contains("isTicketBarrier") ? compoundTag.getBoolean("isTicketBarrier") : false;
+            isEntrance = compoundTag.contains("isEntrance") ? compoundTag.getBoolean("isEntrance") : false;
         }
 
         @Override
@@ -279,6 +283,34 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putBoolean("fixedShape", fixedShape);
             compoundTag.putBoolean("fixedMatrix", fixedMatrix);
             compoundTag.putInt("lightLevel", lightLevel);
+            compoundTag.putBoolean("isTicketBarrier", isTicketBarrier);
+            compoundTag.putBoolean("isEntrance", isEntrance);
+        }
+
+        public void setPrefabId(String prefabId) {
+            if (this.prefabId == null || !this.prefabId.equals(prefabId)) {
+                if (properties != null) {
+                    if (properties.script != null) {
+                        properties.script.tryCallDisposeFunctionAsync(scriptContext);
+                    }
+                }
+                scriptContext = null;
+                this.prefabId = prefabId;
+                properties = EyeCandyRegistry.elements.get(prefabId);
+                if (properties != null) {
+                    shape = properties.shape;
+                    noCollision = properties.noCollision;
+                    fixedShape = properties.fixedShape;
+                    fixedMatrix = properties.fixedMatrix;
+                    lightLevel = properties.lightLevel;
+                    data.clear();
+                    isTicketBarrier = properties.isTicketBarrier;
+                    isEntrance = properties.isEntrance;
+                    if (properties.script != null) {
+                        scriptContext = new EyeCandyScriptContext(this);
+                    }
+                }
+            }
         }
 
         public BlockPos getWorldPos() {
