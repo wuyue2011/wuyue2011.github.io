@@ -67,6 +67,10 @@ public class EyeCandyRegistry {
     }
 
     private static EyeCandyProperties loadFromJson(ResourceManager resourceManager, String key, JsonObject obj) throws Exception {
+        if (key.isEmpty()) {
+            throw new IllegalArgumentException("Invalid eye-candy key: " + key + " (empty)");
+        }
+
         if (obj.has("atlasIndex")) {
             MainClient.atlasManager.load(
                     MtrModelRegistryUtil.resourceManager,  new ResourceLocation(obj.get("atlasIndex").getAsString())
