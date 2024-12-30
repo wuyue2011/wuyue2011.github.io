@@ -29,100 +29,13 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.gui.entries.StringListEntry;
 import net.minecraft.client.gui.screens.Screen;
 import cn.zbx1425.mtrsteamloco.Main;
+import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
 
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Consumer;
 
 public class EyeCandyScreen {
-    public class SelectEyeCandyScreen extends SelectListScreen {
-        Screen parent;
-        BlockEntityEyeCandy blockEntity;
-
-        private static final String INSTRUCTION_LINK = "https://www.zbx1425.cn/nautilus/mtr-nte/#/eyecandy";
-        private final WidgetLabel lblInstruction = new WidgetLabel(0, 0, 0, Text.translatable("gui.mtrsteamloco.eye_candy.tip_resource_pack"), () -> {
-            this.minecraft.setScreen(new ConfirmLinkScreen(bl -> {
-                if (bl) {
-                    Util.getPlatform().openUri(INSTRUCTION_LINK);
-                }
-                this.minecraft.setScreen(this);
-            }, INSTRUCTION_LINK, true));
-        });
-
-        public SelectEyeCandyScreen(Screen parent, BlockEntityEyeCandy blockEntity) {
-            super(Text.literal("Select EyeCandy"));
-            this.parent = parent;
-            this.blockEntity = blockEntity;
-        }
-
-            @Override
-#if MC_VERSION >= "12000"
-        public void render(@NotNull GuiGraphics guiGraphics, int i, int j, float f) {
-#else
-        public void render(@NotNull PoseStack guiGraphics, int i, int j, float f) {
-#endif
-            this.renderBackground(guiGraphics);
-            super.render(guiGraphics, i, j, f);
-            super.renderSelectPage(guiGraphics);
-        }
-
-        @Override
-        protected void init() {
-            super.init();
-
-            loadPage();
-        }
-
-        @Override
-        protected void loadPage() {
-            clearWidgets();
-
-            scrollList.visible = true;
-            loadSelectPage(key -> !key.equals(blockEntity.prefabId));
-            lblInstruction.alignR = true;
-            IDrawing.setPositionAndWidth(lblInstruction, width / 2 + SQUARE_SIZE, height - SQUARE_SIZE - TEXT_HEIGHT, 0);
-            lblInstruction.setWidth(width / 2 - SQUARE_SIZE * 2);
-            addRenderableWidget(lblInstruction);
-        }
-
-        @Override
-        protected void onBtnClick(String btnKey) {
-            if (blockEntity.prefabId != btnKey) {
-                EyeCandyProperties oldProp = EyeCandyRegistry.elements.get(blockEntity.prefabId);
-                if (oldProp != null && oldProp.script != null) {
-                    oldProp.script.tryCallDisposeFunctionAsync(blockEntity.scriptContext);
-                }
-                blockEntity.prefabId = btnKey;
-                EyeCandyProperties newProp = EyeCandyRegistry.elements.get(btnKey);
-                if (newProp != null && newProp.script != null) {
-                    blockEntity.scriptContext = new EyeCandyScriptContext(blockEntity);
-                }
-                blockEntity.shape = newProp.shape;
-                blockEntity.noCollision = newProp.noCollision;
-                blockEntity.fixedShape = newProp.fixedShape;
-                blockEntity.fixedMatrix = newProp.fixedMatrix;
-                blockEntity.lightLevel = newProp.lightLevel;
-                blockEntity.data.clear();
-                PacketUpdateBlockEntity.sendUpdateC2S(blockEntity);
-            }
-        }
-
-        @Override
-        protected List<Pair<String, String>> getRegistryEntries() {
-            return EyeCandyRegistry.elements.entrySet().stream()
-                    .map(e -> new Pair<>(e.getKey(), e.getValue().name.getString()))
-                    .toList();
-        }
-
-        @Override
-        public void onClose() {
-            this.minecraft.setScreen(parent);
-        }
-
-        @Override
-        public boolean isPauseScreen() {
-            return false;
-        }
-    }
 
     private final BlockPos blockPos;
     private final List<Consumer<BlockEntityEyeCandy>> updateBlockEntityCallbacks = new ArrayList<>();
@@ -150,6 +63,30 @@ public class EyeCandyScreen {
         }
 
         EyeCandyProperties properties = EyeCandyRegistry.elements.get(blockEntity.prefabId);
+        Set<Map.Entry<String, EyeCandyProperties>> entries = EyeCandyRegistry.elements.entrySet();
+        Map<String, EyeCandyProperties> elementMap = new HashMap<>();
+        Map<EyeCandyProperties, String> idMap = new HashMap<>();
+        List<String> repeatList = new ArrayList<>();
+        for (Map.Entry<String, EyeCandyProperties> entry : entries) {
+            EyeCandyProperties prop = entry.getValue();
+            String keyi = entry.getKey();
+            idMap.put(properties, keyi);
+            String name = prop.name.getString();
+            if (elementMap.containsKey(name)) {
+                repeatList.add(name);
+                EyeCandyProperties oldv = elementMap.remove(name);
+                String oid = idMap.get(oldv);
+                String oname = oldv.name.getString();
+                elementMap.put(oname + " (" + oid + ")", oldv);
+                elementMap.put(name + " (" + keyi + ")", prop);
+            } else if (repeatList.contains(name)) {
+                elementMap.put(name + " (" + keyi + ")", prop);
+            } else {
+                elementMap.put(name, prop);
+            }
+        }
+        List<String> elementList = new ArrayList<>(elementMap.keySet());
+        Collections.sort(elementList);
 
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(null)
@@ -165,10 +102,37 @@ public class EyeCandyScreen {
                 Text.literal("当前模型: " + (properties != null ? properties.name.getString() : blockEntity.prefabId + " (???)"))
         ).build());
 
-        common.addEntry(new ButtonListEntry(
-                Text.literal("选择模型"),
-                sender -> Minecraft.getInstance().setScreen(new SelectEyeCandyScreen(screen, blockEntity))
-        ));
+        String pid = blockEntity.prefabId;
+        if (pid == null) pid = "";
+        common.addEntry(entryBuilder.startDropdownMenu(
+            Text.literal("选择模型"),
+            DropdownMenuBuilder.TopCellElementBuilder.of(pid, str -> str))
+            .setDefaultValue(pid).setSelections(elementList).setSaveConsumer(btnKey -> {
+                updateBlockEntity((blockEntity) -> {
+                    if (blockEntity.prefabId != btnKey) {
+                        EyeCandyProperties oldProp = EyeCandyRegistry.elements.get(blockEntity.prefabId);
+                        if (oldProp != null) {
+                            if (oldProp.script != null) oldProp.script.tryCallDisposeFunctionAsync(blockEntity.scriptContext);
+                        }
+                        EyeCandyProperties newProp = elementMap.get(btnKey);
+                        if (newProp == null) {
+                            return;
+                        } else {
+                            blockEntity.prefabId = idMap.get(newProp);
+                        }
+                        if (newProp != null && newProp.script != null) {
+                            blockEntity.scriptContext = new EyeCandyScriptContext(blockEntity);
+                        }
+                        blockEntity.shape = newProp.shape;
+                        blockEntity.noCollision = newProp.noCollision;
+                        blockEntity.fixedShape = newProp.fixedShape;
+                        blockEntity.fixedMatrix = newProp.fixedMatrix;
+                        blockEntity.lightLevel = newProp.lightLevel;
+                        blockEntity.data.clear();
+                    }
+                });
+            }).build()
+        );
 
         common.addEntry(entryBuilder
                 .startBooleanToggle(

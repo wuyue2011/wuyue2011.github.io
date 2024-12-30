@@ -3,11 +3,14 @@ package cn.zbx1425.mtrsteamloco.data;
 import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolder;
 import cn.zbx1425.sowcerext.model.ModelCluster;
 import net.minecraft.network.chat.Component;
+import mtr.mappings.Text;
 
 import java.io.Closeable;
 import java.io.IOException;
 
 public class EyeCandyProperties implements Closeable {
+
+    public static EyeCandyProperties DEFAULT = new EyeCandyProperties(Text.literal("空"), null, null, "0, 0, 0, 16, 16, 16", false, false, false, 0);
 
     public Component name;
 
