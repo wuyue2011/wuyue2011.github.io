@@ -44,7 +44,7 @@ public abstract class AbstractDrawCalls {
             }
         }
 
-        private abstract Matrix4f selectPose(Matrix4f basePose, Matrix4f worldPose);
+        protected abstract Matrix4f selectPose(Matrix4f basePose, Matrix4f worldPose);
     }
 
     public static class ClusterDrawCall extends DrawCallBase {
@@ -58,7 +58,7 @@ public abstract class AbstractDrawCalls {
         }
 
         @Override
-        private void selectPose(Matrix4f basePose, Matrix4f worldPose) {
+        protected Matrix4f selectPose(Matrix4f basePose, Matrix4f worldPose) {
             return basePose;
         }
     }
@@ -73,7 +73,7 @@ public abstract class AbstractDrawCalls {
         }
 
         @Override
-        private void selectPose(Matrix4f basePose, Matrix4f worldPose) {
+        protected Matrix4f selectPose(Matrix4f basePose, Matrix4f worldPose) {
             return worldPose;
         }
     }

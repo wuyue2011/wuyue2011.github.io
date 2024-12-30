@@ -63,7 +63,11 @@ public class EyeCandyScreen {
         }
 
         EyeCandyProperties properties = EyeCandyRegistry.elements.get(blockEntity.prefabId);
-        Set<String> keySet = EyeCandyRegistry.elements.keySet();
+        String pid = "";
+        if (properties != null) pid += properties.name.getString();
+        pid += " (" + blockEntity.prefabId + ")";
+        
+        Set<Map.Entry<String, EyeCandyProperties>> entries = EyeCandyRegistry.elements.entrySet();
         Map<String, String> elementMap = new HashMap<>();
         for (Map.Entry<String, EyeCandyProperties> entry : entries) {
             EyeCandyProperties prop = entry.getValue();
@@ -88,8 +92,6 @@ public class EyeCandyScreen {
                 Text.literal("当前模型: " + (properties != null ? properties.name.getString() : blockEntity.prefabId + " (???)"))
         ).build());
 
-        String pid = blockEntity.prefabId;
-        if (pid == null) pid = "";
         common.addEntry(entryBuilder.startDropdownMenu(
             Text.literal("选择模型"),
             DropdownMenuBuilder.TopCellElementBuilder.of(pid, str -> str))

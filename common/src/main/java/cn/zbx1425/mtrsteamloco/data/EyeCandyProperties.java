@@ -10,8 +10,6 @@ import java.io.IOException;
 
 public class EyeCandyProperties implements Closeable {
 
-    public static EyeCandyProperties DEFAULT = new EyeCandyProperties(Text.literal("空"), null, null, "0, 0, 0, 16, 16, 16", false, false, false, 0);
-
     public Component name;
 
     public ModelCluster model;
