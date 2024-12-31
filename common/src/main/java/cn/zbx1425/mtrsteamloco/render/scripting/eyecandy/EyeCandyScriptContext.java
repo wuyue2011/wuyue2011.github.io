@@ -23,7 +23,7 @@ public class EyeCandyScriptContext extends AbstractScriptContext {
     public EyeCandyDrawCalls scriptResult;
     private EyeCandyDrawCalls scriptResultWriting;
 
-    public Map<Integer, DrawCall> drawCalls = new HashMap<>();
+    public Map<Object, DrawCall> drawCalls = new HashMap<>();
     
     public EyeCandyScriptContext(BlockEyeCandy.BlockEntityEyeCandy entity) {
         scriptResult = new EyeCandyDrawCalls();

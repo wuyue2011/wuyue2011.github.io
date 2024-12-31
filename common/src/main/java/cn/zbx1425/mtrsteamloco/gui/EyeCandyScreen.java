@@ -64,9 +64,10 @@ public class EyeCandyScreen {
 
         EyeCandyProperties properties = EyeCandyRegistry.elements.get(blockEntity.prefabId);
         String pid = "";
-        if (properties != null) pid += properties.name.getString();
-        pid += " (" + blockEntity.prefabId + ")";
-        
+        if (properties != null) {
+            pid = properties.name.getString() + " (" + blockEntity.prefabId + ")";
+        }
+
         Set<Map.Entry<String, EyeCandyProperties>> entries = EyeCandyRegistry.elements.entrySet();
         Map<String, String> elementMap = new HashMap<>();
         for (Map.Entry<String, EyeCandyProperties> entry : entries) {
@@ -110,18 +111,18 @@ public class EyeCandyScreen {
                     if (checked != blockEntity.fullLight) {
                         updateBlockEntity(be -> be.fullLight = checked);
                     }
-                }).setDefaultValue(false).build()
+                }).setDefaultValue(blockEntity.fullLight).build()
         );
 
         common.addEntry(entryBuilder
                 .startBooleanToggle(
                         Text.literal("当作站台"),
-                        blockEntity.platform
+                        blockEntity.bePlatform
                 ).setSaveConsumer(checked -> {
-                    if (checked != blockEntity.platform) {
-                        updateBlockEntity(be -> be.platform = checked);
+                    if (checked != blockEntity.bePlatform) {
+                        updateBlockEntity(be -> be.bePlatform = checked);
                     }
-                }).setDefaultValue(false).build()
+                }).setDefaultValue(blockEntity.bePlatform).build()
         );
 
         if (blockEntity.fixedMatrix) {

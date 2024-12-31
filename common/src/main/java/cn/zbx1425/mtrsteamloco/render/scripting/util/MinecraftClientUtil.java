@@ -163,12 +163,12 @@ public class MinecraftClientUtil {
         return cameraPos.distance(from);
     }
 
-	public static Level getWorld() {
+	public static Level getLevel() {
 		return Minecraft.getInstance().level;
-	}
+	} 
 
     public static boolean[] canOpenDoorsAt(Vector3f p1, Vector3f p2) {
-        final Level world = getWorld();
+        final Level world = getLevel();
 		final Vec3 pos1 = p1.toVec3();
 		final Vec3 pos2 = p2.toVec3();
 		final int dwellTicks = 114514;
@@ -225,5 +225,9 @@ public class MinecraftClientUtil {
 
     public static WapperedEntity getPlayer() {
         return new WapperedEntity(Minecraft.getInstance().player);
+    }
+
+    public static int packLightTexture(int p_109886_, int  p_109887_) {
+       return p_109886_ << 4 | p_109887_ << 20;
     }
 }

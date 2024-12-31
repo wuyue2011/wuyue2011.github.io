@@ -32,7 +32,7 @@ public class TrainScriptContext extends AbstractScriptContext {
 
     public TrainDrawCalls scriptResult;
     private TrainDrawCalls scriptResultWriting;
-    public Map<Integer, DrawCall>[] drawCalls;
+    public Map<Object, DrawCall>[] drawCalls;
 
     public TrainScriptContext(TrainClient train) {
         scriptResult = new TrainDrawCalls(train.trainCars);

@@ -211,7 +211,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public EyeCandyScriptContext scriptContext = new EyeCandyScriptContext(this);
 
-        public boolean platform = true;
+        public boolean bePlatform = true;
         public float doorValue = 0;
         public boolean doorTarget = false;
 
@@ -246,7 +246,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             rotateX = compoundTag.contains("rotateX") ? compoundTag.getFloat("rotateX") : 0;
             rotateY = compoundTag.contains("rotateY") ? compoundTag.getFloat("rotateY") : 0;
             rotateZ = compoundTag.contains("rotateZ") ? compoundTag.getFloat("rotateZ") : 0;
-            platform = compoundTag.contains("platform") ? compoundTag.getBoolean("platform") : true;
+            bePlatform = compoundTag.contains("bePlatform") ? compoundTag.getBoolean("bePlatform") : true;
             doorValue = compoundTag.contains("doorValue") ? compoundTag.getFloat("doorValue") : 0;
             doorTarget = compoundTag.contains("doorTarget") ? compoundTag.getBoolean("doorTarget") : false;
             shape = compoundTag.contains("shape") ? compoundTag.getString("shape") : "0, 0, 0, 16, 16, 16";
@@ -275,7 +275,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putFloat("rotateX", rotateX);
             compoundTag.putFloat("rotateY", rotateY);
             compoundTag.putFloat("rotateZ", rotateZ);
-            compoundTag.putBoolean("platform", platform);
+            compoundTag.putBoolean("bePlatform", bePlatform);
             compoundTag.putFloat("doorValue", doorValue);
             compoundTag.putBoolean("doorTarget", doorTarget);
             compoundTag.putString("shape", shape);
@@ -355,7 +355,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
 
         public boolean isPlatform() {
-            return platform;
+            return bePlatform;
         }
 
         public boolean isTicketBarrier() {

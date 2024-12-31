@@ -1,4 +1,4 @@
-# MTR-NTE
+# MTR-ANTE
 
 
 ![Feature Grid Image](https://www.zbx1425.cn/nautilus/mtr-nte/img/featgrid.jpg)
@@ -6,7 +6,7 @@
 Video for feature introduction: https://www.bilibili.com/video/BV1kG4y1G7yx
 
 ---
-Nemo's Transit Expansion, created by Zbx1425, includes some experimental extension functionalities to the [Minecraft Transit Railway](https://github.com/jonafanho/Minecraft-Transit-Railway) Mod. As a contributor to MTR's development, the author hopes to initially release, exhibit and experiment with these new features with this medium, and later merge its stable aspects into the MTR mod itself.
+Aphrodite's Nemo's Transit Expansion, created by Zbx1425, now developed by Aphrodite , includes some experimental extension functionalities to the [Minecraft Transit Railway](https://github.com/jonafanho/Minecraft-Transit-Railway) Mod. As a contributor to MTR's development, the author hopes to initially release, exhibit and experiment with these new features with this medium, and later merge its stable aspects into the MTR mod itself.
 
 Initially published at the [Teacon 2022 mod development jam](https://teacon.cn), the mod was originally named MTRSteamLoco.
 
