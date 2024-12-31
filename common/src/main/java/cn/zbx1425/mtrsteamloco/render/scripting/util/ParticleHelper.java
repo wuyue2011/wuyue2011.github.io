@@ -53,8 +53,10 @@ public class ParticleHelper {
             return (T)  ParticleTypes.ANGRY_VILLAGER;
         case "BLOCK":
             return (T)  ParticleTypes.BLOCK;
+#if MC_VERSION > "11701"
         case "BLOCK_MARKER":
             return (T)  ParticleTypes.BLOCK_MARKER;
+#endif
         case "BUBBLE":
             return (T)  ParticleTypes.BUBBLE;
         case "CLOUD":
