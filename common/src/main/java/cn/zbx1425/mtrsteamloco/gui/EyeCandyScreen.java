@@ -81,7 +81,7 @@ public class EyeCandyScreen {
 
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(null)
-                .setTitle(Text.translatable("gui.mtrsteamloco.config.client.title"))
+                .setTitle(Text.literal("装饰物件设置"))
                 .setDoesConfirmSave(false)
                 .transparentBackground();
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
@@ -131,7 +131,7 @@ public class EyeCandyScreen {
             ).build());
 
             common.addEntry(entryBuilder.startTextDescription(
-                    Text.literal("TX: " + blockEntity.translateX + "cm, TY: " + blockEntity.translateY + "cm, TZ: " + blockEntity.translateZ + "cm")
+                    Text.literal("TX: " + blockEntity.translateX * 100 + "cm, TY: " + blockEntity.translateY * 100 + "cm, TZ: " + blockEntity.translateZ * 100 + "cm")
             ).build());
 
             common.addEntry(entryBuilder.startTextDescription(
@@ -140,14 +140,15 @@ public class EyeCandyScreen {
         } else {
             StringListEntry tx = entryBuilder.startTextField(
                             Text.literal("TX"),
-                            blockEntity.translateX + "cm"
+                            blockEntity.translateX * 100 + "cm"
                 ).setSaveConsumer(str -> {
                     try {
+                        str = str.toLowerCase().trim();
                         Float value = 0f;
                         if (str.endsWith("cm")) {
-                            value = Float.parseFloat(str.substring(0, str.length() - 2));
+                            value = Float.parseFloat(str.substring(0, str.length() - 2)) / 100;
                         } else if (str.endsWith("m")) {
-                            value = Float.parseFloat(str.substring(0, str.length() - 1)) * 100;
+                            value = Float.parseFloat(str.substring(0, str.length() - 1));
                         } else {
                             value = Float.parseFloat(str);
                         }
@@ -158,21 +159,21 @@ public class EyeCandyScreen {
                     } catch (NumberFormatException e) {
                         // tx.setValue(blockEntity.translateX + "cm");
                     }  
-                }).setDefaultValue(blockEntity.translateX + "cm")
+                }).setDefaultValue(blockEntity.translateX * 100 + "cm")
                 .build();
 
             common.addEntry(tx);
 
             StringListEntry ty = entryBuilder.startTextField(
                             Text.literal("TY"),
-                            blockEntity.translateY + "cm"
+                            blockEntity.translateY * 100 + "cm"
                 ).setSaveConsumer(str -> {
                     try {
                         Float value = 0f;
                         if (str.endsWith("cm")) {
-                            value = Float.parseFloat(str.substring(0, str.length() - 2));
+                            value = Float.parseFloat(str.substring(0, str.length() - 2)) / 100;
                         } else if (str.endsWith("m")) {
-                            value = Float.parseFloat(str.substring(0, str.length() - 1)) * 100;
+                            value = Float.parseFloat(str.substring(0, str.length() - 1));
                         } else {
                             value = Float.parseFloat(str);
                         }
@@ -183,7 +184,7 @@ public class EyeCandyScreen {
                     } catch (NumberFormatException e) {
                         // tx.setValue(blockEntity.translateY + "cm");
                     }  
-                }).setDefaultValue(blockEntity.translateY + "cm")
+                }).setDefaultValue(blockEntity.translateY * 100 + "cm")
                 .build();
 
             common.addEntry(ty);
@@ -208,14 +209,14 @@ public class EyeCandyScreen {
                     } catch (NumberFormatException e) {
                         // tz.setValue(blockEntity.translateZ + "cm");
                     }  
-                }).setDefaultValue(blockEntity.translateZ + "cm")
+                }).setDefaultValue(blockEntity.translateZ * 100 + "cm")
                 .build();
 
             common.addEntry(tz);
 
             StringListEntry rx = entryBuilder.startTextField(
                             Text.literal("RX"),
-                            blockEntity.rotateX + "°"
+                            Math.toDegrees(blockEntity.rotateX) + "°"
                 ).setSaveConsumer(str -> {  
                     try {
                         Float value = 0f;
@@ -224,6 +225,7 @@ public class EyeCandyScreen {
                         } else {
                             value = Float.parseFloat(str);
                         }
+                        value = (float) Math.toRadians(value);
                         if (value != blockEntity.rotateX) {
                             final float v = value;
                             updateBlockEntity(be -> be.rotateX = v);
@@ -231,14 +233,14 @@ public class EyeCandyScreen {
                     } catch (NumberFormatException e) {
                         // tz.setValue(blockEntity.translateZ + "cm");
                     }  
-                }).setDefaultValue(blockEntity.rotateX + "°")
+                }).setDefaultValue(Math.toDegrees(blockEntity.rotateX) + "°")
                 .build();
 
             common.addEntry(rx);
 
             StringListEntry ry = entryBuilder.startTextField(
                             Text.literal("RY"),
-                            blockEntity.rotateY + "°"
+                            Math.toDegrees(blockEntity.rotateY) + "°"
                 ).setSaveConsumer(str -> {  
                     try {
                         Float value = 0f;
@@ -247,6 +249,7 @@ public class EyeCandyScreen {
                         } else {
                             value = Float.parseFloat(str);
                         }
+                        value = (float) Math.toRadians(value);
                         if (value != blockEntity.rotateY) {
                             final float v = value;
                             updateBlockEntity(be -> be.rotateY = v);
@@ -254,14 +257,14 @@ public class EyeCandyScreen {
                     } catch (NumberFormatException e) {
                         // tz.setValue(blockEntity.translateZ + "cm");
                     }  
-                }).setDefaultValue(blockEntity.rotateY + "°")
+                }).setDefaultValue(Math.toDegrees(blockEntity.rotateY) + "°")
                 .build();
 
             common.addEntry(ry);
 
             StringListEntry rz = entryBuilder.startTextField(
                             Text.literal("RZ"),
-                            blockEntity.rotateZ + "°"
+                            Math.toDegrees(blockEntity.rotateZ) + "°"
                 ).setSaveConsumer(str -> {  
                     try {
                         Float value = 0f;
@@ -270,6 +273,7 @@ public class EyeCandyScreen {
                         } else {
                             value = Float.parseFloat(str);
                         }
+                        value = (float) Math.toRadians(value);
                         if (value != blockEntity.rotateZ) {
                             final float v = value;
                             updateBlockEntity(be -> be.rotateZ = v);
@@ -277,7 +281,7 @@ public class EyeCandyScreen {
                     } catch (NumberFormatException e) {
                         // tz.setValue(blockEntity.translateZ + "cm");
                     }  
-                }).setDefaultValue(blockEntity.rotateZ + "°")
+                }).setDefaultValue(Math.toDegrees(blockEntity.rotateZ) + "°")
                 .build();
 
             common.addEntry(rz);

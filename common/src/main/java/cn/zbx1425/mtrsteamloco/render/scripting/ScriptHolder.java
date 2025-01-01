@@ -99,6 +99,7 @@ public class ScriptHolder {
             scope.put("IBlock", scope, new NativeJavaClass(scope, IBlock.class));
 
             scope.put("MinecraftClient", scope, new NativeJavaClass(scope, MinecraftClientUtil.class));
+            scope.put("MinecraftClientUtil", scope, new NativeJavaClass(scope, MinecraftClientUtil.class));
 
             try {
                 String[] classesToLoad = {

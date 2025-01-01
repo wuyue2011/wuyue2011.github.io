@@ -77,14 +77,6 @@ public class EyeCandyRegistry {
             );
         }
 
-        if (obj.has("mod_version")) {
-            String mv = BuildConfig.MOD_VERSION.split("\\+")[0];
-            String modVersion = obj.get("mod_version").getAsString();
-            if (!mv.equals(modVersion)) {
-                throw new IllegalArgumentException("Incompatible mod version: package is " + modVersion + ", mod is " +mv + ". Plase update the mod or resource package");
-            }
-        }
-
         int lightLevel = 0;
         if (obj.has("lightLevel")) {
             lightLevel = obj.get("lightLevel").getAsInt();

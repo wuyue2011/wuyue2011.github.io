@@ -6,7 +6,7 @@ issueTrackerURL="https://github.com/zbx1425/mtr-nte/issues"
 [[mods]]
 modId = "mtrsteamloco"
 version = "${version}"
-displayName = "Nemo's Transit Expansion"
+displayName = "Aphrodite's Nemo's Transit Expansion"
 displayURL = "https://www.zbx1425.cn/nautilus/mtr-nte/"
 
 authors = "Zbx1425, Aphrodite281"
