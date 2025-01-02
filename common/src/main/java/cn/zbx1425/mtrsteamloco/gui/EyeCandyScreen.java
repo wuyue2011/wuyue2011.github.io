@@ -27,40 +27,28 @@ import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.gui.entries.StringListEntry;
+import me.shedaniel.clothconfig2.gui.entries.FloatListEntry;
+import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
 import net.minecraft.client.gui.screens.Screen;
 import cn.zbx1425.mtrsteamloco.Main;
-import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
+import net.minecraft.network.chat.Component;
 
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
+import java.util.function.Function;
 
 public class EyeCandyScreen {
 
-    private final BlockPos blockPos;
-    private final List<Consumer<BlockEntityEyeCandy>> updateBlockEntityCallbacks = new ArrayList<>();
-    public Screen screen;
-    private final BlockEntityEyeCandy blockEntity;
-
-    public EyeCandyScreen(BlockPos blockPos) {
-        this.blockPos = blockPos;
-        Optional<BlockEntityEyeCandy> optionalBlockEntity = getBlockEntity();
-        if (!optionalBlockEntity.isEmpty()) {
-            blockEntity = optionalBlockEntity.get();
-        } else {
-            Main.LOGGER.error("Cannot find block entity at " + blockPos);
-            blockEntity = null;
-        }
-    }
-
-    public void setScreen() {
-        Minecraft.getInstance().setScreen(createScreen());
-    }
-
-    public Screen createScreen() {
+    public static Screen createScreen(BlockPos blockPos) {
+        Optional<BlockEntityEyeCandy> opt = getBlockEntity(blockPos);
+        BlockEntityEyeCandy blockEntity = opt.orElse(null);
         if (blockEntity == null) {
             return null;
         }
+
+        List<Consumer<BlockEntityEyeCandy>> update = new ArrayList<>();// updateBlockEntityCallbacks;
 
         EyeCandyProperties properties = EyeCandyRegistry.elements.get(blockEntity.prefabId);
         String pid = "";
@@ -97,8 +85,8 @@ public class EyeCandyScreen {
             Text.literal("选择模型"),
             DropdownMenuBuilder.TopCellElementBuilder.of(pid, str -> str))
             .setDefaultValue(pid).setSelections(elementList).setSaveConsumer(btnKey -> {
-                updateBlockEntity((blockEntity) -> {
-                    blockEntity.setPrefabId(elementMap.get(btnKey));
+                update.add((be) -> {
+                    be.setPrefabId(elementMap.get(btnKey));
                 });
             }).build()
         );
@@ -109,7 +97,7 @@ public class EyeCandyScreen {
                         blockEntity.fullLight
                 ).setSaveConsumer(checked -> {
                     if (checked != blockEntity.fullLight) {
-                        updateBlockEntity(be -> be.fullLight = checked);
+                        update.add(be -> be.fullLight = checked);
                     }
                 }).setDefaultValue(blockEntity.fullLight).build()
         );
@@ -120,7 +108,7 @@ public class EyeCandyScreen {
                         blockEntity.bePlatform
                 ).setSaveConsumer(checked -> {
                     if (checked != blockEntity.bePlatform) {
-                        updateBlockEntity(be -> be.bePlatform = checked);
+                        update.add(be -> be.bePlatform = checked);
                     }
                 }).setDefaultValue(blockEntity.bePlatform).build()
         );
@@ -138,153 +126,83 @@ public class EyeCandyScreen {
                     Text.literal("RX: " + Math.toDegrees(blockEntity.rotateX) + "°, RY: " + Math.toDegrees(blockEntity.rotateY) + "°, RZ: " + Math.toDegrees(blockEntity.rotateZ) + "°")
             ).build());
         } else {
-            StringListEntry tx = entryBuilder.startTextField(
+            common.addEntry(entryBuilder.startTextField(
                             Text.literal("TX"),
                             blockEntity.translateX * 100 + "cm"
                 ).setSaveConsumer(str -> {
-                    try {
-                        str = str.toLowerCase().trim();
-                        Float value = 0f;
-                        if (str.endsWith("cm")) {
-                            value = Float.parseFloat(str.substring(0, str.length() - 2)) / 100;
-                        } else if (str.endsWith("m")) {
-                            value = Float.parseFloat(str.substring(0, str.length() - 1));
-                        } else {
-                            value = Float.parseFloat(str);
-                        }
-                        if (value != blockEntity.translateX) {
-                            final float v = value;
-                            updateBlockEntity(be -> be.translateX = v);
-                        }
-                    } catch (NumberFormatException e) {
-                        // tx.setValue(blockEntity.translateX + "cm");
-                    }  
+                    float value = parseMovement(str).orElse(blockEntity.translateX);
+                    if (value != blockEntity.translateX) {
+                        final float v = value;
+                        update.add(be -> be.translateX = v);
+                    } 
                 }).setDefaultValue(blockEntity.translateX * 100 + "cm")
-                .build();
+                .setErrorSupplier(verifyMovement)
+                .build());
 
-            common.addEntry(tx);
-
-            StringListEntry ty = entryBuilder.startTextField(
+            common.addEntry(entryBuilder.startTextField(
                             Text.literal("TY"),
                             blockEntity.translateY * 100 + "cm"
                 ).setSaveConsumer(str -> {
-                    try {
-                        Float value = 0f;
-                        if (str.endsWith("cm")) {
-                            value = Float.parseFloat(str.substring(0, str.length() - 2)) / 100;
-                        } else if (str.endsWith("m")) {
-                            value = Float.parseFloat(str.substring(0, str.length() - 1));
-                        } else {
-                            value = Float.parseFloat(str);
-                        }
-                        if (value != blockEntity.translateY) {
-                            final float v = value;
-                            updateBlockEntity(be -> be.translateY = v);
-                        }
-                    } catch (NumberFormatException e) {
-                        // tx.setValue(blockEntity.translateY + "cm");
-                    }  
+                    float value = parseMovement(str).orElse(blockEntity.translateY);
+                    if (value != blockEntity.translateY) {
+                        final float v = value;
+                        update.add(be -> be.translateY = v);
+                    } 
                 }).setDefaultValue(blockEntity.translateY * 100 + "cm")
-                .build();
+                .setErrorSupplier(verifyMovement)
+                .build());
 
-            common.addEntry(ty);
-
-            StringListEntry tz = entryBuilder.startTextField(
+            common.addEntry(entryBuilder.startTextField(
                             Text.literal("TZ"),
-                            blockEntity.translateZ + "cm"
-                ).setSaveConsumer(str -> {  
-                    try {
-                        Float value = 0f;
-                        if (str.endsWith("cm")) {
-                            value = Float.parseFloat(str.substring(0, str.length() - 2));
-                        } else if (str.endsWith("m")) {
-                            value = Float.parseFloat(str.substring(0, str.length() - 1)) * 100;
-                        } else {
-                            value = Float.parseFloat(str);
-                        }
-                        if (value != blockEntity.translateZ) {
-                            final float v = value;
-                            updateBlockEntity(be -> be.translateZ = v);
-                        }
-                    } catch (NumberFormatException e) {
-                        // tz.setValue(blockEntity.translateZ + "cm");
-                    }  
+                            blockEntity.translateZ * 100 + "cm"
+                ).setSaveConsumer(str -> {
+                    float value = parseMovement(str).orElse(blockEntity.translateZ);
+                    if (value != blockEntity.translateZ) {
+                        final float v = value;
+                        update.add(be -> be.translateZ = v);
+                    } 
                 }).setDefaultValue(blockEntity.translateZ * 100 + "cm")
-                .build();
+                .setErrorSupplier(verifyMovement)
+                .build());
 
-            common.addEntry(tz);
-
-            StringListEntry rx = entryBuilder.startTextField(
+            common.addEntry(entryBuilder.startTextField(
                             Text.literal("RX"),
                             Math.toDegrees(blockEntity.rotateX) + "°"
                 ).setSaveConsumer(str -> {  
-                    try {
-                        Float value = 0f;
-                        if (str.endsWith("°")) {
-                            value = Float.parseFloat(str.substring(0, str.length() - 1));
-                        } else {
-                            value = Float.parseFloat(str);
-                        }
-                        value = (float) Math.toRadians(value);
-                        if (value != blockEntity.rotateX) {
-                            final float v = value;
-                            updateBlockEntity(be -> be.rotateX = v);
-                        }
-                    } catch (NumberFormatException e) {
-                        // tz.setValue(blockEntity.translateZ + "cm");
-                    }  
+                    Float value = parseRotation(str).orElse(blockEntity.rotateX);
+                    if (value != blockEntity.rotateX) {
+                        final float v = value;
+                        update.add(be -> be.rotateX = v);
+                    }
                 }).setDefaultValue(Math.toDegrees(blockEntity.rotateX) + "°")
-                .build();
+                .setErrorSupplier(verifyRotation)
+                .build());
 
-            common.addEntry(rx);
-
-            StringListEntry ry = entryBuilder.startTextField(
+            common.addEntry(entryBuilder.startTextField(
                             Text.literal("RY"),
                             Math.toDegrees(blockEntity.rotateY) + "°"
-                ).setSaveConsumer(str -> {  
-                    try {
-                        Float value = 0f;
-                        if (str.endsWith("°")) {
-                            value = Float.parseFloat(str.substring(0, str.length() - 1));
-                        } else {
-                            value = Float.parseFloat(str);
-                        }
-                        value = (float) Math.toRadians(value);
-                        if (value != blockEntity.rotateY) {
-                            final float v = value;
-                            updateBlockEntity(be -> be.rotateY = v);
-                        }
-                    } catch (NumberFormatException e) {
-                        // tz.setValue(blockEntity.translateZ + "cm");
-                    }  
+                ).setSaveConsumer(str -> {
+                    Float value = parseRotation(str).orElse(blockEntity.rotateY);
+                    if (value != blockEntity.rotateY) {
+                        final float v = value;
+                        update.add(be -> be.rotateY = v);
+                    }
                 }).setDefaultValue(Math.toDegrees(blockEntity.rotateY) + "°")
-                .build();
+                .setErrorSupplier(verifyRotation)
+                .build());
 
-            common.addEntry(ry);
-
-            StringListEntry rz = entryBuilder.startTextField(
+            common.addEntry(entryBuilder.startTextField(
                             Text.literal("RZ"),
                             Math.toDegrees(blockEntity.rotateZ) + "°"
-                ).setSaveConsumer(str -> {  
-                    try {
-                        Float value = 0f;
-                        if (str.endsWith("°")) {
-                            value = Float.parseFloat(str.substring(0, str.length() - 1));
-                        } else {
-                            value = Float.parseFloat(str);
-                        }
-                        value = (float) Math.toRadians(value);
-                        if (value != blockEntity.rotateZ) {
-                            final float v = value;
-                            updateBlockEntity(be -> be.rotateZ = v);
-                        }
-                    } catch (NumberFormatException e) {
-                        // tz.setValue(blockEntity.translateZ + "cm");
-                    }  
+                ).setSaveConsumer(str -> {
+                    Float value = parseRotation(str).orElse(blockEntity.rotateZ);
+                    if (value != blockEntity.rotateZ) {
+                        final float v = value;
+                        update.add(be -> be.rotateZ = v);
+                    }
                 }).setDefaultValue(Math.toDegrees(blockEntity.rotateZ) + "°")
-                .build();
-
-            common.addEntry(rz);
+                .setErrorSupplier(verifyRotation)
+                .build());
         }
 
         Set<String> keys = new HashSet<>(blockEntity.data.keySet());
@@ -301,31 +219,73 @@ public class EyeCandyScreen {
                         value
                 ).setSaveConsumer(str -> {
                     if (!str.equals(value)) {
-                        updateBlockEntity(be -> be.data.put(key, str));
+                        update.add(be -> be.data.put(key, str));
                     }
                 }).setDefaultValue(value).build());
             }
         }
         
 
-        builder.setSavingRunnable(() -> save());
+        builder.setSavingRunnable(() -> {
+            for (Consumer<BlockEntityEyeCandy> callback : update) {
+                callback.accept(blockEntity);
+            }
+            blockEntity.sendUpdateC2S();
+        });
 
         return builder.build();
     }
 
-    private void updateBlockEntity(Consumer<BlockEyeCandy.BlockEntityEyeCandy> callback) {
-        updateBlockEntityCallbacks.add(callback);
-    }
-
-    private void save() {
-        for (Consumer<BlockEntityEyeCandy> callback : updateBlockEntityCallbacks) {
-            callback.accept(blockEntity);
+    private static Optional<Float> parseMovement(String str) {
+        try {
+            Float value = 0f;
+            str = str.toLowerCase().trim();
+            if (str.endsWith("cm")) {
+                value = Float.parseFloat(str.substring(0, str.length() - 2)) / 100;
+            } else if (str.endsWith("m")) {
+                value = Float.parseFloat(str.substring(0, str.length() - 1));
+            } else {
+                value = Float.parseFloat(str);
+            }
+            return Optional.of(value);
+        } catch (NumberFormatException e) {
+            return Optional.empty();
         }
-        updateBlockEntityCallbacks.clear();
-        PacketUpdateBlockEntity.sendUpdateC2S(blockEntity);
     }
 
-    private Optional<BlockEyeCandy.BlockEntityEyeCandy> getBlockEntity() {
+    private static Optional<Float> parseRotation(String str) {
+        try {
+            Float value = 0f;
+            str = str.toLowerCase().trim();
+            if (str.endsWith("°")) {
+                value = Float.parseFloat(str.substring(0, str.length() - 1));
+            } else {
+                value = Float.parseFloat(str);
+            }
+            value = (float) Math.toRadians(value);
+            return Optional.of(value);
+        } catch (NumberFormatException e) {
+            return Optional.empty();
+        }
+    }
+
+    private static Function<String, Optional<Component>> verifyMovement = (str) -> {
+        if (parseMovement(str).isEmpty()) {
+            return Optional.of(Text.literal("不是有效的数值"));
+        } else {
+            return Optional.empty();
+        }
+    };
+
+    private static Function<String, Optional<Component>> verifyRotation = (str) -> {
+        if (parseRotation(str).isEmpty()) {
+            return Optional.of(Text.literal("不是有效的数值"));
+        } else {
+            return Optional.empty();
+        }
+    };
+
+    private static Optional<BlockEyeCandy.BlockEntityEyeCandy> getBlockEntity(BlockPos blockPos) {
         Level level = Minecraft.getInstance().level;
         if (level == null) return Optional.empty();
         return level.getBlockEntity(blockPos, Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get());

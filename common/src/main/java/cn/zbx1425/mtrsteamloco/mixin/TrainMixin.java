@@ -69,7 +69,7 @@ public abstract class TrainMixin {
 						int[] f = new int[]{1, 0, 0, 1, 0, 0};
 						for (int i = 0; i < 3; i++) {
 							for (int j = 0; j < 2; j++) {
-								for (int k = 1; k <= 20; k++) {
+								for (int k = 0; k <= 20; k++) {
 									int v = dir[j] * k;
 									BlockPos pos = checkPos.offset(f[i] * v, f[i + 1] * v, f[i + 2] * v);
 									if (OKPos.contains(pos.toString())) break;
@@ -101,6 +101,7 @@ public abstract class TrainMixin {
 		}
 		OKPos.clear();
         ci.setReturnValue(hasPlatform);
+		return;
     }
 
 }
