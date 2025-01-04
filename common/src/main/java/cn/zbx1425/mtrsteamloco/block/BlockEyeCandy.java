@@ -237,7 +237,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                 byte[] dataBytes = compoundTag.getByteArray("data");
                 data = Serializer.deserialize(dataBytes);
             }catch (IOException e) {
-                data = new HashMap<String, String>();
             }
             
             translateX = compoundTag.contains("translateX") ? compoundTag.getFloat("translateX") : 0;
@@ -247,8 +246,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             rotateY = compoundTag.contains("rotateY") ? compoundTag.getFloat("rotateY") : 0;
             rotateZ = compoundTag.contains("rotateZ") ? compoundTag.getFloat("rotateZ") : 0;
             bePlatform = compoundTag.contains("bePlatform") ? compoundTag.getBoolean("bePlatform") : true;
-            doorValue = compoundTag.contains("doorValue") ? compoundTag.getFloat("doorValue") : 0;
-            doorTarget = compoundTag.contains("doorTarget") ? compoundTag.getBoolean("doorTarget") : false;
+            // doorValue = compoundTag.contains("doorValue") ? compoundTag.getFloat("doorValue") : 0;
+            // doorTarget = compoundTag.contains("doorTarget") ? compoundTag.getBoolean("doorTarget") : false;
             shape = compoundTag.contains("shape") ? compoundTag.getString("shape") : "0, 0, 0, 16, 16, 16";
             noCollision = compoundTag.contains("noCollision") ? compoundTag.getBoolean("noCollision") : true;
             fixedShape = compoundTag.contains("fixedShape") ? compoundTag.getBoolean("fixedShape") : true;
@@ -276,8 +275,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putFloat("rotateY", rotateY);
             compoundTag.putFloat("rotateZ", rotateZ);
             compoundTag.putBoolean("bePlatform", bePlatform);
-            compoundTag.putFloat("doorValue", doorValue);
-            compoundTag.putBoolean("doorTarget", doorTarget);
+            // compoundTag.putFloat("doorValue", doorValue);
+            // compoundTag.putBoolean("doorTarget", doorTarget);
             compoundTag.putString("shape", shape);
             compoundTag.putBoolean("noCollision", noCollision);
             compoundTag.putBoolean("fixedShape", fixedShape);

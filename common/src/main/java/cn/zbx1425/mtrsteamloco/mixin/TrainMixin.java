@@ -48,9 +48,10 @@ public abstract class TrainMixin {
 		}
 
 		boolean hasPlatform = false;
+		boolean isClientSide = world.isClientSide();
 		final Vec3 offsetVec = new Vec3(1, 0, 0).yRot(checkYaw).xRot(pitch);
 		final Vec3 traverseVec = new Vec3(0, 0, 1).yRot(checkYaw).xRot(pitch);
-		Set<String> OKPos = new HashSet<>();
+		Set<BlockPos> OKPos = new HashSet<>();
 		for (int checkX = 1; checkX <= 3; checkX++) {
 			for (int checkY = -2; checkY <= 3; checkY++) {
 				for (double checkZ = -halfSpacing; checkZ <= halfSpacing; checkZ++) {
@@ -58,39 +59,22 @@ public abstract class TrainMixin {
 					final Block block = world.getBlockState(checkPos).getBlock();
 
 					if (block instanceof BlockPlatform || block instanceof BlockPSDAPGBase) {
-						if (openDoors(world, block, checkPos, dwellTicks)) {
-                            ci.setReturnValue(true);
-							return;
-						}
+						openDoors(world, block, checkPos, dwellTicks);
 						hasPlatform = true;
 					}else if (block instanceof BlockEyeCandy) {
-						if (OKPos.contains(checkPos.toString())) continue;
+						if (OKPos.contains(checkPos)) continue;
 						int[] dir = new int[]{1, -1};
 						int[] f = new int[]{1, 0, 0, 1, 0, 0};
+						if (checkEyeCandy(world, checkPos, isClientSide)) hasPlatform = true;
 						for (int i = 0; i < 3; i++) {
 							for (int j = 0; j < 2; j++) {
-								for (int k = 0; k <= 20; k++) {
+								for (int k = 1; k <= 40; k++) {
 									int v = dir[j] * k;
 									BlockPos pos = checkPos.offset(f[i] * v, f[i + 1] * v, f[i + 2] * v);
-									if (OKPos.contains(pos.toString())) break;
-									final BlockEntity entity = world.getBlockEntity(pos);
-									if (entity instanceof BlockEyeCandy.BlockEntityEyeCandy) {
-										OKPos.add(pos.toString());
-										BlockEyeCandy.BlockEntityEyeCandy e = (BlockEyeCandy.BlockEntityEyeCandy) entity;
-										if (!world.isClientSide()) {
-											e.setDoorValue(doorValue);
-											e.setDoorTarget(doorTarget);
-											e.setChanged();
-                    						((ServerLevel) world).getChunkSource().blockChanged(pos);
-										}
-										if (e.isPlatform()) {
-											if (openDoors(world, block, pos, dwellTicks)) {
-												ci.setReturnValue(true);
-												return;
-											}
-											hasPlatform = true;
-										} else break;
-									} else break;
+									if (OKPos.contains(pos)) break;
+									OKPos.add(pos);
+									if (checkEyeCandy(world, pos, isClientSide)) hasPlatform = true;
+									else break;
 								}
 							}
 						}
@@ -99,9 +83,23 @@ public abstract class TrainMixin {
 				}
 			}
 		}
-		OKPos.clear();
         ci.setReturnValue(hasPlatform);
 		return;
     }
 
+	private boolean checkEyeCandy(Level world, BlockPos pos, boolean isClientSide) {
+		final BlockEntity entity = world.getBlockEntity(pos);
+		if (entity instanceof BlockEyeCandy.BlockEntityEyeCandy) {
+			BlockEyeCandy.BlockEntityEyeCandy e = (BlockEyeCandy.BlockEntityEyeCandy) entity;
+			if (e.isPlatform()) {
+				if (isClientSide) {
+					e.setDoorTarget(doorTarget);
+					e.setDoorValue(doorValue);
+				}
+				return true;
+			} else return false;
+		} else {
+			return false;
+		}
+	}
 }
