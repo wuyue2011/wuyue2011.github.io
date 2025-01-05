@@ -42,7 +42,7 @@ public class CustomResources {
     }
 
     public static void init(ResourceManager resourceManager) {
-        Main.LOGGER.info("MTR-NTE has started loading custom resources.");
+        Main.LOGGER.info("MTR-ANTE has started loading custom resources.");
 
         EyeCandyRegistry.reload(resourceManager);
         RailModelRegistry.reload(resourceManager);
@@ -55,7 +55,7 @@ public class CustomResources {
         RenderTrainDK3.initGLModel(resourceManager);
         RenderTrainDK3Mini.initGLModel(resourceManager);
 
-        Main.LOGGER.info("MTR-NTE: "
+        Main.LOGGER.info("MTR-ANTE: "
                 + "Uploaded Models: " + MainClient.modelManager.uploadedVertArrays.size()
                 + " (" + MainClient.modelManager.vaoCount + " VAOs, "
                 + MainClient.modelManager.vboCount + " VBOs)"
