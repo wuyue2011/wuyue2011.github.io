@@ -24,6 +24,7 @@
     "gui.mtrsteamloco.eye_candy.as_platform": "플랫폼으로 삼다",
     "gui.mtrsteamloco.eye_candy.fixed": "모델 위치가 고정되어 편집할 수 없습니다.",
     "gui.mtrsteamloco.eye_candy.custom_data": "사용자 정의 데이터",
+    "gui.mtrsteamloco.eye_candy.shape": "현재 모양:%s",
     "gui.mtrsteamloco.brush_edit_rail.brush_hint": "브러시의 기능을 설정합니다.다음으로 다른 곳을 우클릭하면 대량 적용됩니다.",
     "gui.mtrsteamloco.brush_edit_rail.enable_model_key": "모델 적용",
     "gui.mtrsteamloco.brush_edit_rail.enable_vertical_curve_radius": "누진 커브 반지름 변경",

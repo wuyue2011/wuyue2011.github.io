@@ -24,6 +24,7 @@
     "gui.mtrsteamloco.eye_candy.as_platform": "В качестве платформы",
     "gui.mtrsteamloco.eye_candy.fixed": "Позиция модели фиксирована, редактировать невозможно",
     "gui.mtrsteamloco.eye_candy.custom_data": "Пользовательские данные",
+    "gui.mtrsteamloco.eye_candy.shape": "Текущая форма:%s",
     "gui.mtrsteamloco.brush_edit_rail.brush_hint": "Настройка функции кисти. Затем щёлкните правой кнопкой мыши на других местах для массового применения.",
     "gui.mtrsteamloco.brush_edit_rail.enable_model_key": "Прикладная модель",
     "gui.mtrsteamloco.brush_edit_rail.enable_vertical_curve_radius": "Изменить радиус продольной кривой",

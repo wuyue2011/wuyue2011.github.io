@@ -113,6 +113,10 @@ public class EyeCandyScreen {
                 }).setDefaultValue(blockEntity.asPlatform).build()
         );
 
+        common.addEntry(entryBuilder.startTextDescription(
+                    Text.translatable("gui.mtrsteamloco.eye_candy.shape", blockEntity.shape)
+            ).build());
+
         if (blockEntity.fixedMatrix) {
             common.addEntry(entryBuilder.startTextDescription(
                     tr("fixed")

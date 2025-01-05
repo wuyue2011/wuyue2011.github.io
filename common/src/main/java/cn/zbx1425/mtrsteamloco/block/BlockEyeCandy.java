@@ -153,9 +153,9 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         final BlockEntity entity = world.getBlockEntity(pos);
         if (entity instanceof BlockEntityEyeCandy) {
             if (((BlockEyeCandy.BlockEntityEyeCandy) entity).hasCollision) {
-                return Shapes.empty();
-            } else {
                 return getShape(state, world, pos);
+            } else {
+                return Shapes.empty();
             }
         }
         return getShape(state, world, pos);
@@ -347,10 +347,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public void setDoorTarget(boolean target) {
             doorTarget = target;
-        }
-
-        public boolean isOpen() {
-            return doorValue > 0;
         }
 
         public boolean isPlatform() {

@@ -24,6 +24,7 @@
     "gui.mtrsteamloco.eye_candy.as_platform": "As a platform",
     "gui.mtrsteamloco.eye_candy.fixed": "The model position is fixed and cannot be edited",
     "gui.mtrsteamloco.eye_candy.custom_data": "Custom data",
+    "gui.mtrsteamloco.eye_candy.shape": "Current shape:%s",
     "gui.mtrsteamloco.brush_edit_rail.brush_hint": "Set the function of the brush. Next, right-click on other areas to apply in bulk.",
     "gui.mtrsteamloco.brush_edit_rail.enable_model_key": "Application model",
     "gui.mtrsteamloco.brush_edit_rail.enable_vertical_curve_radius": "Change the radius of the longitudinal curve",

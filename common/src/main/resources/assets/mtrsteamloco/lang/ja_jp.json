@@ -24,6 +24,7 @@
     "gui.mtrsteamloco.eye_candy.as_platform": "ホームとして",
     "gui.mtrsteamloco.eye_candy.fixed": "モデルの場所は固定されており、編集できません",
     "gui.mtrsteamloco.eye_candy.custom_data": "カスタムデータ",
+    "gui.mtrsteamloco.eye_candy.shape": "現在のシェイプ:%s",
     "gui.mtrsteamloco.brush_edit_rail.brush_hint": "ブラシの機能を設定します。次に、他の場所を右クリックして一括適用します。",
     "gui.mtrsteamloco.brush_edit_rail.enable_model_key": "モデルの適用",
     "gui.mtrsteamloco.brush_edit_rail.enable_vertical_curve_radius": "縦線半径の変更",
