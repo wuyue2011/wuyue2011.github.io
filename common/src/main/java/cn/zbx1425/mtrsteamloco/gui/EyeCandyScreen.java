@@ -69,7 +69,7 @@ public class EyeCandyScreen {
 
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(null)
-                .setTitle(Text.literal("装饰物件设置"))
+                .setTitle(tr("title"))
                 .setDoesConfirmSave(false)
                 .transparentBackground();
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
@@ -78,11 +78,11 @@ public class EyeCandyScreen {
         );
 
         common.addEntry(entryBuilder.startTextDescription(
-                Text.literal("当前模型: " + (properties != null ? properties.name.getString() : blockEntity.prefabId + " (???)"))
+                Text.translatable("gui.mtrsteamloco.eye_candy.present", (properties != null ? properties.name.getString() : blockEntity.prefabId + " (???)"))
         ).build());
 
         common.addEntry(entryBuilder.startDropdownMenu(
-            Text.literal("选择模型"),
+            tr("select"),
             DropdownMenuBuilder.TopCellElementBuilder.of(pid, str -> str))
             .setDefaultValue(pid).setSelections(elementList).setSaveConsumer(btnKey -> {
                 update.add((be) -> {
@@ -93,7 +93,7 @@ public class EyeCandyScreen {
 
         common.addEntry(entryBuilder
                 .startBooleanToggle(
-                        Text.translatable("gui.mtrsteamloco.eye_candy.full_light"),
+                        tr("full_light"),
                         blockEntity.fullLight
                 ).setSaveConsumer(checked -> {
                     if (checked != blockEntity.fullLight) {
@@ -104,18 +104,18 @@ public class EyeCandyScreen {
 
         common.addEntry(entryBuilder
                 .startBooleanToggle(
-                        Text.literal("当作站台"),
-                        blockEntity.bePlatform
+                        tr("as_platform"), 
+                        blockEntity.asPlatform
                 ).setSaveConsumer(checked -> {
-                    if (checked != blockEntity.bePlatform) {
-                        update.add(be -> be.bePlatform = checked);
+                    if (checked != blockEntity.asPlatform) {
+                        update.add(be -> be.asPlatform = checked);
                     }
-                }).setDefaultValue(blockEntity.bePlatform).build()
+                }).setDefaultValue(blockEntity.asPlatform).build()
         );
 
         if (blockEntity.fixedMatrix) {
             common.addEntry(entryBuilder.startTextDescription(
-                    Text.literal("模型位置已固定，无法编辑")
+                    tr("fixed")
             ).build());
 
             common.addEntry(entryBuilder.startTextDescription(
@@ -210,7 +210,7 @@ public class EyeCandyScreen {
         Collections.sort(sortedKeys);
         if (!sortedKeys.isEmpty()) {
             common.addEntry(entryBuilder.startTextDescription(
-                    Text.literal("自定义数据")
+                    tr("custom_data")
             ).build());
             for (String key : sortedKeys) {
                 String value = blockEntity.data.get(key);
@@ -271,7 +271,7 @@ public class EyeCandyScreen {
 
     private static Function<String, Optional<Component>> verifyMovement = (str) -> {
         if (parseMovement(str).isEmpty()) {
-            return Optional.of(Text.literal("不是有效的数值"));
+            return Optional.of(Text.translatable("gui.mtrsteamloco.error.invalid_value"));
         } else {
             return Optional.empty();
         }
@@ -279,7 +279,7 @@ public class EyeCandyScreen {
 
     private static Function<String, Optional<Component>> verifyRotation = (str) -> {
         if (parseRotation(str).isEmpty()) {
-            return Optional.of(Text.literal("不是有效的数值"));
+            return Optional.of(Text.translatable("gui.mtrsteamloco.error.invalid_value"));
         } else {
             return Optional.empty();
         }
@@ -289,5 +289,9 @@ public class EyeCandyScreen {
         Level level = Minecraft.getInstance().level;
         if (level == null) return Optional.empty();
         return level.getBlockEntity(blockPos, Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get());
+    }
+
+    private static Component tr(String key) {
+        return Text.translatable("gui.mtrsteamloco.eye_candy." + key);
     }
 }

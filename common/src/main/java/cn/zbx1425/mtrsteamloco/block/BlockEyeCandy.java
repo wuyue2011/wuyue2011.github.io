@@ -152,7 +152,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext collisionContext) {
         final BlockEntity entity = world.getBlockEntity(pos);
         if (entity instanceof BlockEntityEyeCandy) {
-            if (((BlockEyeCandy.BlockEntityEyeCandy) entity).noCollision) {
+            if (((BlockEyeCandy.BlockEntityEyeCandy) entity).hasCollision) {
                 return Shapes.empty();
             } else {
                 return getShape(state, world, pos);
@@ -211,12 +211,12 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public EyeCandyScriptContext scriptContext = new EyeCandyScriptContext(this);
 
-        public boolean bePlatform = true;
+        public boolean asPlatform = true;
         public float doorValue = 0;
         public boolean doorTarget = false;
 
         public String shape = "0, 0, 0, 16, 16, 16";
-        public boolean noCollision = true;
+        public boolean hasCollision = true;
         public boolean fixedShape = true;
         public boolean fixedMatrix = false;
         public int lightLevel = 0;
@@ -245,11 +245,11 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             rotateX = compoundTag.contains("rotateX") ? compoundTag.getFloat("rotateX") : 0;
             rotateY = compoundTag.contains("rotateY") ? compoundTag.getFloat("rotateY") : 0;
             rotateZ = compoundTag.contains("rotateZ") ? compoundTag.getFloat("rotateZ") : 0;
-            bePlatform = compoundTag.contains("bePlatform") ? compoundTag.getBoolean("bePlatform") : true;
+            asPlatform = compoundTag.contains("asPlatform") ? compoundTag.getBoolean("asPlatform") : true;
             // doorValue = compoundTag.contains("doorValue") ? compoundTag.getFloat("doorValue") : 0;
             // doorTarget = compoundTag.contains("doorTarget") ? compoundTag.getBoolean("doorTarget") : false;
             shape = compoundTag.contains("shape") ? compoundTag.getString("shape") : "0, 0, 0, 16, 16, 16";
-            noCollision = compoundTag.contains("noCollision") ? compoundTag.getBoolean("noCollision") : true;
+            hasCollision = compoundTag.contains("hasCollision") ? compoundTag.getBoolean("hasCollision") : true;
             fixedShape = compoundTag.contains("fixedShape") ? compoundTag.getBoolean("fixedShape") : true;
             fixedMatrix = compoundTag.contains("fixedMatrix") ? compoundTag.getBoolean("fixedMatrix") : false;
             lightLevel = compoundTag.contains("lightLevel") ? compoundTag.getInt("lightLevel") : 0;
@@ -274,11 +274,11 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putFloat("rotateX", rotateX);
             compoundTag.putFloat("rotateY", rotateY);
             compoundTag.putFloat("rotateZ", rotateZ);
-            compoundTag.putBoolean("bePlatform", bePlatform);
+            compoundTag.putBoolean("asPlatform", asPlatform);
             // compoundTag.putFloat("doorValue", doorValue);
             // compoundTag.putBoolean("doorTarget", doorTarget);
             compoundTag.putString("shape", shape);
-            compoundTag.putBoolean("noCollision", noCollision);
+            compoundTag.putBoolean("hasCollision", hasCollision);
             compoundTag.putBoolean("fixedShape", fixedShape);
             compoundTag.putBoolean("fixedMatrix", fixedMatrix);
             compoundTag.putInt("lightLevel", lightLevel);
@@ -298,7 +298,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                 properties = EyeCandyRegistry.elements.get(prefabId);
                 if (properties != null) {
                     shape = properties.shape;
-                    noCollision = properties.noCollision;
+                    hasCollision = properties.hasCollision;
                     fixedShape = properties.fixedShape;
                     fixedMatrix = properties.fixedMatrix;
                     lightLevel = properties.lightLevel;
@@ -354,7 +354,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
 
         public boolean isPlatform() {
-            return bePlatform;
+            return asPlatform;
         }
 
         public boolean isTicketBarrier() {

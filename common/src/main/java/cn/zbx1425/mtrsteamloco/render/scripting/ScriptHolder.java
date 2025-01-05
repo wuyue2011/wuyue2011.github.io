@@ -19,6 +19,7 @@ import mtr.block.IBlock;
 import net.minecraft.world.entity.player.Player;
 import cn.zbx1425.mtrsteamloco.render.scripting.util.WapperedEntity;
 import cn.zbx1425.mtrsteamloco.render.scripting.AbstractDrawCalls;
+import cn.zbx1425.mtrsteamloco.ClientConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +81,7 @@ public class ScriptHolder {
             scope.put("TickableSound", scope, new NativeJavaClass(scope, TickableSound.class));
             scope.put("GlobalRegister", scope, new NativeJavaClass(scope, GlobalRegister.class));
             scope.put("WapperedEntity", scope, new NativeJavaClass(scope, WapperedEntity.class));
+            scope.put("ComponentUtil", scope, new NativeJavaClass(scope, ComponentUtil.class));
 
             scope.put("DrawCall", scope, new NativeJavaClass(scope, AbstractDrawCalls.DrawCall.class));
             scope.put("ClusterDrawCall", scope, new NativeJavaClass(scope, AbstractDrawCalls.ClusterDrawCall.class));
@@ -98,6 +100,7 @@ public class ScriptHolder {
             scope.put("MTRClientData", scope, new NativeJavaClass(scope, ClientData.class));
             scope.put("IBlock", scope, new NativeJavaClass(scope, IBlock.class));
 
+            scope.put("ClientConfig", scope, new NativeJavaClass(scope, ClientConfig.class));
             scope.put("MinecraftClient", scope, new NativeJavaClass(scope, MinecraftClientUtil.class));
             scope.put("MinecraftClientUtil", scope, new NativeJavaClass(scope, MinecraftClientUtil.class));
 

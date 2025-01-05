@@ -6,11 +6,15 @@ import cn.zbx1425.mtrsteamloco.render.ShadersModHandler;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
+import me.shedaniel.clothconfig2.gui.entries.StringListEntry;
+import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import mtr.mappings.Text;
 import net.minecraft.client.Minecraft;
 #if MC_VERSION >= "12000"
 #endif
 import net.minecraft.client.gui.screens.Screen;
+
+import java.util.List;
 
 public final class ConfigScreen {
 
@@ -127,6 +131,14 @@ public final class ConfigScreen {
                         ClientConfig.enableSmoke
                 ).setSaveConsumer(checked -> ClientConfig.enableSmoke = checked).setDefaultValue(true).build()
         );
+
+        List<AbstractConfigListEntry> customConfigs = ClientConfig.getCustomConfigEntrys();
+        if (!customConfigs.isEmpty()) {
+            
+            for (AbstractConfigListEntry entry : customConfigs) {
+                common.addEntry(entry);
+            }
+        }
 
         builder.setSavingRunnable(ClientConfig::save);
         return builder.build();

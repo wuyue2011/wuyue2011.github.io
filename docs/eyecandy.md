@@ -57,7 +57,7 @@ NTE 允许通过 ”装饰物件“ 方块在游戏内显示 OBJ 模型。
         "scriptFiles": ["mtrsteamloco:eyecandies/script.js"],
         "shape": "0, 0, 0, 16, 8, 16/ 0, 8, 8, 16, 16,16",
         "fixedShape": false,
-        "noCollision": false,
+        "hasCollision": false,
         "lightLevel": 15
     }
 }
@@ -85,7 +85,7 @@ NTE 允许通过 ”装饰物件“ 方块在游戏内显示 OBJ 模型。
 - `mod_version` 设定物件所使用的 NTE 版本。
 - `shape` 是方块的形状，每组六个值分别代表了最小点的坐标和最大点的坐标，每组用/分割，进行 or 运算。
 - `fixedShape` (Shape 大写) 设为 false 方块形状将跟随物件平移移动。
-- `noCollision` (Collision 大写) 设为 false 方块将有碰撞箱。
+- `hasCollision` (Collision 大写) 设为 false 方块将有碰撞箱。
 - `lightLevel` 设置光照级别 0 到 15，默认为 0 (不发光)。
   
 对于包含 `model` 的物件：
