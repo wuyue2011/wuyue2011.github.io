@@ -25,6 +25,7 @@
     "gui.mtrsteamloco.eye_candy.fixed": "模型位置已固定，无法编辑",
     "gui.mtrsteamloco.eye_candy.custom_data": "自定义数据",
     "gui.mtrsteamloco.eye_candy.shape": "当前形状: %s",
+    "gui.mtrsteamloco.eye_candy.collision": "当前碰撞箱: %s",
     "gui.mtrsteamloco.brush_edit_rail.brush_hint": "设置刷子的功能。接下来右击其他处可批量应用。",
     "gui.mtrsteamloco.brush_edit_rail.enable_model_key": "应用模型",
     "gui.mtrsteamloco.brush_edit_rail.enable_vertical_curve_radius": "更改纵曲线半径",

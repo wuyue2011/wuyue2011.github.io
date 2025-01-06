@@ -25,6 +25,7 @@
     "gui.mtrsteamloco.eye_candy.fixed": "Die Modellposition ist fix und kann nicht bearbeitet werden",
     "gui.mtrsteamloco.eye_candy.custom_data": "Benutzerdefinierte Daten",
     "gui.mtrsteamloco.eye_candy.shape": "Aktuelle Form:%s",
+    "gui.mtrsteamloco.eye_candy.collision": "Aktuelle Kollisionsbox:%s",
     "gui.mtrsteamloco.brush_edit_rail.brush_hint": "Stellen Sie die Funktion des Pinsels ein. Klicken Sie als nächstes mit der rechten Maustaste auf andere Bereiche, die in Massen angewendet werden sollen.",
     "gui.mtrsteamloco.brush_edit_rail.enable_model_key": "Anwendungsmodell",
     "gui.mtrsteamloco.brush_edit_rail.enable_vertical_curve_radius": "Ändern des Radius der Längskurve",

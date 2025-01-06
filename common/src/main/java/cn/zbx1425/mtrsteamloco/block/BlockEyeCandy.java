@@ -130,12 +130,13 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     public RenderShape getRenderShape(@NotNull BlockState blockState) {
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }
-    
-    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos) {
-        BlockEntity entity = world.getBlockEntity(pos);
-        VoxelShape shape = Block.box(0, 0, 0, 16, 24, 16);
+
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext collisionContext) {
+        final BlockEntity entity = world.getBlockEntity(pos);
+        VoxelShape shape = Shapes.block();
         if (entity instanceof BlockEntityEyeCandy) {
-            shape = ((BlockEntityEyeCandy) entity).getShape();
+            shape = Shapes.or(Shapes.empty(), ((BlockEntityEyeCandy) entity).shape.get());
         } else {
             Main.LOGGER.warn("BlockEntityEyeCandy not found at " + pos + ", " + world);
         }
@@ -143,22 +144,15 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext collisionContext) {
-        VoxelShape shape = getShape(state, world, pos);
-        return shape;
-    }
-
-    @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext collisionContext) {
         final BlockEntity entity = world.getBlockEntity(pos);
+        VoxelShape shape = Shapes.empty();
         if (entity instanceof BlockEntityEyeCandy) {
-            if (((BlockEyeCandy.BlockEntityEyeCandy) entity).hasCollision) {
-                return getShape(state, world, pos);
-            } else {
-                return Shapes.empty();
-            }
+            shape = Shapes.or(Shapes.empty(), ((BlockEntityEyeCandy) entity).collision.get());
+        } else {
+            Main.LOGGER.warn("BlockEntityEyeCandy not found at " + pos + ", " + world);
         }
-        return getShape(state, world, pos);
+        return shape;
     }
 
     @Override
@@ -209,14 +203,15 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public Map<String, String> data = new HashMap<>();
 
-        public EyeCandyScriptContext scriptContext = new EyeCandyScriptContext(this);
+        public EyeCandyScriptContext scriptContext = null;
 
         public boolean asPlatform = true;
         public float doorValue = 0;
         public boolean doorTarget = false;
 
-        public String shape = "0, 0, 0, 16, 16, 16";
-        public boolean hasCollision = true;
+        public final SerializableShape shape = new SerializableShape(this, "0, 0, 0, 16, 16, 16", Shapes.block());
+        public final SerializableShape collision = new SerializableShape(this, "0, 0, 0, 0, 0, 0", Shapes.empty());
+
         public boolean fixedShape = true;
         public boolean fixedMatrix = false;
         public int lightLevel = 0;
@@ -248,8 +243,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             asPlatform = compoundTag.contains("asPlatform") ? compoundTag.getBoolean("asPlatform") : true;
             // doorValue = compoundTag.contains("doorValue") ? compoundTag.getFloat("doorValue") : 0;
             // doorTarget = compoundTag.contains("doorTarget") ? compoundTag.getBoolean("doorTarget") : false;
-            shape = compoundTag.contains("shape") ? compoundTag.getString("shape") : "0, 0, 0, 16, 16, 16";
-            hasCollision = compoundTag.contains("hasCollision") ? compoundTag.getBoolean("hasCollision") : true;
+            shape.readFrom(compoundTag, "shape");
+            collision.readFrom(compoundTag, "collision");
             fixedShape = compoundTag.contains("fixedShape") ? compoundTag.getBoolean("fixedShape") : true;
             fixedMatrix = compoundTag.contains("fixedMatrix") ? compoundTag.getBoolean("fixedMatrix") : false;
             lightLevel = compoundTag.contains("lightLevel") ? compoundTag.getInt("lightLevel") : 0;
@@ -277,8 +272,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putBoolean("asPlatform", asPlatform);
             // compoundTag.putFloat("doorValue", doorValue);
             // compoundTag.putBoolean("doorTarget", doorTarget);
-            compoundTag.putString("shape", shape);
-            compoundTag.putBoolean("hasCollision", hasCollision);
+            shape.writeTo(compoundTag, "shape");
+            collision.writeTo(compoundTag, "collision");
             compoundTag.putBoolean("fixedShape", fixedShape);
             compoundTag.putBoolean("fixedMatrix", fixedMatrix);
             compoundTag.putInt("lightLevel", lightLevel);
@@ -297,8 +292,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                 this.prefabId = prefabId;
                 properties = EyeCandyRegistry.elements.get(prefabId);
                 if (properties != null) {
-                    shape = properties.shape;
-                    hasCollision = properties.hasCollision;
+                    shape.set(properties.shape);
+                    collision.set(properties.collision);
                     fixedShape = properties.fixedShape;
                     fixedMatrix = properties.fixedMatrix;
                     lightLevel = properties.lightLevel;
@@ -366,77 +361,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             }
         }
 
-        public void setShape(String shape) {
-            this.shape = shape;
-            getShape();
-        }
-
-        public VoxelShape getShape() {
-            try {
-                if (false) return Block.box(0, 0, 0, 16, 24, 16);
-                String[] shapeArray = shape.split("/");
-                VoxelShape[] voxelShapes= new VoxelShape[shapeArray.length];
-                for (int i = 0; i < shapeArray.length; i++) {
-                    String[] posArray = shapeArray[i].split(",");
-                    if (posArray.length!= 6) {
-                        shape = "0, 0, 0, 16, 16, 16";
-                        sendUpdateC2S();
-                        return Shapes.block();
-                    }
-                    Double[] pos = new Double[6];
-                    try {
-                        for (int j = 0; j < posArray.length; j++) {
-                            pos[j] = Double.parseDouble(posArray[j]);
-                        }
-                    } catch (NumberFormatException e) {
-                        shape = "0, 0, 0, 16, 16, 16";
-                        sendUpdateC2S();
-                        return Shapes.block();
-                    }
-                    try {
-                        Double x1 = pos[0], y1 = pos[1], z1 = pos[2], x2 = pos[3], y2 = pos[4], z2 = pos[5];
-                        Double[] newPos = null;
-                        int yRot = (int)getBlockYRot();
-                        switch (yRot) {
-                            case 0: {
-                                newPos = new Double[]{x1, y1, z1, x2, y2, z2};
-                                break;
-                            }
-                            case 90: {
-                                newPos = new Double[]{16 - z2, y1, x1, 16 - z1, y2, x2};
-                                break;
-                            }
-                            case 180: {
-                                newPos = new Double[]{16 - x2, y1, 16 - z2, 16 - x1, y2, 16 - z1};
-                                break;
-                            }
-                            case 270: {
-                                newPos = new Double[]{z1, y1, 16 - x2, z2, y2, 16 - x1};
-                                break;
-                            }
-                            default: {
-                                newPos = new Double[]{x1, y1, z1, x2, y2, z2};
-                                break;
-                            }
-                        }
-                        VoxelShape voxelShape = Block.box(newPos[0], newPos[1], newPos[2], newPos[3], newPos[4], newPos[5]);
-                        if (!fixedShape) {
-                            double tx = (double)translateX, ty = (double)translateY, tz = (double)translateZ;
-                            voxelShapes[i] = voxelShape.move(tx, ty, tz);
-                        }
-                    } catch (IllegalArgumentException e) {
-                        shape = "0, 0, 0, 16, 16, 16";
-                        sendUpdateC2S();
-                        return Shapes.block();
-                    }
-                }
-                return Shapes.or(Shapes.empty(), voxelShapes);
-            } catch (Exception e) {
-                Main.LOGGER.error("Error in getShape:" + e.getMessage());
-                return Shapes.block();
-            }
-        }
-
         public void tryCallBeClickedFunctionAsync(Player player) {
             if (scriptContext == null) return;
             EyeCandyProperties prop = EyeCandyRegistry.elements.get(prefabId);
@@ -444,6 +368,140 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             ScriptHolder scriptHolder = prop.script;
             if (scriptHolder == null) return;
             scriptHolder.tryCallBeClickedFunctionAsync(scriptContext, player);
+        }
+        
+        public static class SerializableShape {
+            private String shape;
+            private VoxelShape voxelShape;
+            private BlockEntityEyeCandy blockEntity;
+            public final VoxelShape defaultShape;
+            public final String defaultString;
+
+            public SerializableShape(BlockEntityEyeCandy blockEntity, String defaultString, VoxelShape defaultShape) {
+                this.blockEntity = blockEntity;
+                this.shape = defaultString;
+                this.defaultString = defaultString;
+                this.defaultShape = defaultShape;
+                this.voxelShape = defaultShape;
+            }
+
+            public boolean set(String shape) {
+                if (shape.equals(this.shape)) {
+                    return false;
+                }
+                this.shape = shape;
+                this.voxelShape = getShapeIn();
+                return true;
+            }
+
+            public VoxelShape get() {
+                if (voxelShape == null) {
+                    Main.LOGGER.error("VoxelShape is null for " + blockEntity.getWorldPos() + ", " + blockEntity.prefabId);
+                    return defaultShape;
+                }
+                return voxelShape;
+            }
+
+            public void writeTo(CompoundTag tag, String key) {
+                tag.putString(key, shape);
+            }
+
+            public void readFrom(CompoundTag tag, String key) {
+                if (tag.contains(key)) {
+                    set(tag.getString(key));
+                }
+            }
+
+            public String toString() {
+                return shape;
+            }
+
+            private VoxelShape getShapeIn() {
+                try {
+                    if (shape == null || shape.isEmpty()) {
+                        return getDefaultShape();
+                    }
+
+                    String[] shapeArray = shape.split("/");
+                    VoxelShape[] voxelShapes = new VoxelShape[shapeArray.length];
+
+                    for (int i = 0; i < shapeArray.length; i++) {
+                        String[] posArray = shapeArray[i].split(",");
+                        
+                        if (posArray.length != 6) {
+                            return handleInvalidShape();
+                        }
+
+                        Double[] pos = parsePositions(posArray);
+                        if (pos == null) {
+                            return handleInvalidShape();
+                        }
+
+                        Double[] rotatedPos = applyRotation(pos);
+                        VoxelShape voxelShape = Block.box(rotatedPos[0], rotatedPos[1], rotatedPos[2], rotatedPos[3], rotatedPos[4], rotatedPos[5]);
+
+                        voxelShapes[i] = voxelShape;
+                    }
+
+                    return combineShapes(voxelShapes);
+                } catch (Exception e) {
+                    Main.LOGGER.error("Error in getShape: " + e.getMessage(), e);
+                    return defaultShape;
+                }
+            }
+
+            private VoxelShape getDefaultShape() {
+                return defaultShape;
+            }
+
+            private VoxelShape handleInvalidShape() {
+                Main.LOGGER.error("Invalid shape: " + shape);
+                shape = defaultString;
+                blockEntity.sendUpdateC2S();
+                return defaultShape;
+            }
+
+            private Double[] parsePositions(String[] posArray) {
+                Double[] pos = new Double[6];
+                try {
+                    for (int j = 0; j < posArray.length; j++) {
+                        pos[j] = Double.parseDouble(posArray[j].trim());
+                    }
+                } catch (NumberFormatException e) {
+                    return null;
+                }
+                return pos;
+            }
+
+            private Double[] applyRotation(Double[] pos) {
+                int yRot = (int) blockEntity.getBlockYRot();
+                double x1 = pos[0], y1 = pos[1], z1 = pos[2], x2 = pos[3], y2 = pos[4], z2 = pos[5];
+
+                switch (yRot) {
+                    case 90:
+                        return new Double[]{16 - z2, y1, x1, 16 - z1, y2, x2};
+                    case 180:
+                        return new Double[]{16 - x2, y1, 16 - z2, 16 - x1, y2, 16 - z1};
+                    case 270:
+                        return new Double[]{z1, y1, 16 - x2, z2, y2, 16 - x1};
+                    default:
+                        return new Double[]{x1, y1, z1, x2, y2, z2};
+                }
+            }
+
+            private VoxelShape combineShapes(VoxelShape[] voxelShapes) {
+                VoxelShape finalShape = voxelShapes[0];
+                for (int i = 1; i < voxelShapes.length; i++) {
+                    if (voxelShapes[i] == null || finalShape == null) {
+                        return handleInvalidShape();
+                    }
+                    finalShape = Shapes.or(finalShape, voxelShapes[i]);
+                }
+                if (!blockEntity.fixedShape) {
+                    finalShape = finalShape.move(blockEntity.translateX, blockEntity.translateY, blockEntity.translateZ);
+                }
+                return finalShape;
+            }
         }
     }
 }

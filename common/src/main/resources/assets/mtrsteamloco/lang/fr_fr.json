@@ -25,6 +25,7 @@
     "gui.mtrsteamloco.eye_candy.fixed": "La position du modèle est fixe et ne peut pas être modifiée",
     "gui.mtrsteamloco.eye_candy.custom_data": "Données personnalisées",
     "gui.mtrsteamloco.eye_candy.shape": "Forme actuelle:%s",
+    "gui.mtrsteamloco.eye_candy.collision": "Boîte de collision actuelle:%s",
     "gui.mtrsteamloco.brush_edit_rail.brush_hint": "Définir les fonctions de la brosse. Ensuite, faites un clic droit ailleurs pour l'application par lots.",
     "gui.mtrsteamloco.brush_edit_rail.enable_model_key": "Modèle d'application",
     "gui.mtrsteamloco.brush_edit_rail.enable_vertical_curve_radius": "Changer le rayon de la courbe longitudinale",

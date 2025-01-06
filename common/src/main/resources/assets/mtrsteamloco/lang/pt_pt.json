@@ -25,6 +25,7 @@
     "gui.mtrsteamloco.eye_candy.fixed": "A posição do modelo é fixa e não pode ser editada",
     "gui.mtrsteamloco.eye_candy.custom_data": "Dados personalizados",
     "gui.mtrsteamloco.eye_candy.shape": "Forma actual:%s",
+    "gui.mtrsteamloco.eye_candy.collision": "Caixa de colisão actual:%s",
     "gui.mtrsteamloco.brush_edit_rail.brush_hint": "Defina a função do pincel. Em seguida, clique com o botão direito do mouse em outras áreas para aplicar em massa.",
     "gui.mtrsteamloco.brush_edit_rail.enable_model_key": "Modelo de aplicação",
     "gui.mtrsteamloco.brush_edit_rail.enable_vertical_curve_radius": "Alterar o raio da curva longitudinal",
