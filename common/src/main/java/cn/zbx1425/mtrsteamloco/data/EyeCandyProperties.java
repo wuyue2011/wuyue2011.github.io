@@ -17,19 +17,19 @@ public class EyeCandyProperties implements Closeable {
     public ModelCluster model;
     public ScriptHolder script;
     public String shape;
-    public String collision;
+    public String collisionShape;
     public boolean fixedShape;
     public boolean fixedMatrix;
     public int lightLevel;
     public boolean isTicketBarrier;
     public boolean isEntrance;
 
-    public EyeCandyProperties(Component name, ModelCluster model, ScriptHolder script, String shape, String collision, boolean fixedShape, boolean fixedMatrix, int lightLevel, boolean isTicketBarrier, boolean isEntrance) {
+    public EyeCandyProperties(Component name, ModelCluster model, ScriptHolder script, String shape, String collisionShape, boolean fixedShape, boolean fixedMatrix, int lightLevel, boolean isTicketBarrier, boolean isEntrance) {
         this.name = name;
         this.model = model;
         this.script = script;
         this.shape = shape;
-        this.collision = collision;
+        this.collisionShape = collisionShape;
         this.fixedShape = fixedShape;
         this.fixedMatrix = fixedMatrix;
         this.lightLevel = lightLevel;
