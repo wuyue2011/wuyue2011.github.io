@@ -315,28 +315,36 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             }
         }
 
-        public void setShape(String shape) {
+        public boolean setShape(String shape) {
             try {
                 if (ShapeSerializer.isValid(shape, (int)getBlockYRot())) {
-                    this.shape = shape;
+                    if (this.shape != shape) {
+                        this.shape = shape;
+                        return true;
+                    }
                 } else {
                     throw new Exception("Invalid!");
                 }
             } catch (Exception e) {
                 Main.LOGGER.error("Error setting shape for " + shape + " : " + e);
             }
+            return false;
         }
 
-        public void setCollisionShape(String collisionShape) {
+        public boolean setCollisionShape(String collisionShape) {
             try {
                 if (ShapeSerializer.isValid(collisionShape, (int)getBlockYRot())) {
-                    this.collisionShape = collisionShape;
+                    if (this.collisionShape != collisionShape) {
+                        this.collisionShape = collisionShape;
+                        return true;
+                    }
                 } else {
                     throw new Exception("Invalid!");
                 }
             } catch (Exception e) {
                 Main.LOGGER.error("Error setting collision shape for " + collisionShape + " : " + e);
             }
+            return false;
         }
 
         public String getShape() {
