@@ -113,13 +113,13 @@ public class EyeCandyScreen {
                 }).setDefaultValue(blockEntity.asPlatform).build()
         );
 
-        // common.addEntry(entryBuilder.startTextDescription(
-        //             Text.translatable("gui.mtrsteamloco.eye_candy.shape", blockEntity.shape.toString())
-        //     ).build());
+        common.addEntry(entryBuilder.startTextDescription(
+                    Text.translatable("gui.mtrsteamloco.eye_candy.shape", blockEntity.getShape())
+            ).build());
 
-        // common.addEntry(entryBuilder.startTextDescription(
-        //             Text.translatable("gui.mtrsteamloco.eye_candy.collision", blockEntity.collision.toString())
-        //     ).build());
+        common.addEntry(entryBuilder.startTextDescription(
+                    Text.translatable("gui.mtrsteamloco.eye_candy.collision", blockEntity.getCollisionShape())
+            ).build());
 
         if (blockEntity.fixedMatrix) {
             common.addEntry(entryBuilder.startTextDescription(

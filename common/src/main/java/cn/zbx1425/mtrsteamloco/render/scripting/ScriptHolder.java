@@ -20,6 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import cn.zbx1425.mtrsteamloco.render.scripting.util.WapperedEntity;
 import cn.zbx1425.mtrsteamloco.render.scripting.AbstractDrawCalls;
 import cn.zbx1425.mtrsteamloco.ClientConfig;
+import cn.zbx1425.mtrsteamloco.data.ShapeSerializer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,6 +97,7 @@ public class ScriptHolder {
             scope.put("Vector3f", scope, new NativeJavaClass(scope, Vector3f.class));   
             scope.put("OrderedMap", scope, new NativeJavaClass(scope, OrderedMap.class));   
             scope.put("PlacementOrder", scope, new NativeJavaClass(scope, OrderedMap.PlacementOrder.class));
+            scope.put("ShapeSerializer", scope, new NativeJavaClass(scope, ShapeSerializer.class));
 
             scope.put("MTRClientData", scope, new NativeJavaClass(scope, ClientData.class));
             scope.put("IBlock", scope, new NativeJavaClass(scope, IBlock.class));

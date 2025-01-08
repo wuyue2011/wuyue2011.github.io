@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class EyeCandyProperties implements Closeable {
 
-    public static final EyeCandyProperties DEFAULT = new EyeCandyProperties(Text.literal(""), null, null, "0, 0, 0, 16, 16, 16", "0, 0, 0, 0, 0, 0", true, true, 0, false, false);
+    public static final EyeCandyProperties DEFAULT = new EyeCandyProperties(Text.literal(""), null, null, "0, 0, 0, 16, 16, 16", "0, 0, 0, 0, 0, 0", true, 0, false, false);
 
     public Component name;
 
@@ -18,19 +18,17 @@ public class EyeCandyProperties implements Closeable {
     public ScriptHolder script;
     public String shape;
     public String collisionShape;
-    public boolean fixedShape;
     public boolean fixedMatrix;
     public int lightLevel;
     public boolean isTicketBarrier;
     public boolean isEntrance;
 
-    public EyeCandyProperties(Component name, ModelCluster model, ScriptHolder script, String shape, String collisionShape, boolean fixedShape, boolean fixedMatrix, int lightLevel, boolean isTicketBarrier, boolean isEntrance) {
+    public EyeCandyProperties(Component name, ModelCluster model, ScriptHolder script, String shape, String collisionShape, boolean fixedMatrix, int lightLevel, boolean isTicketBarrier, boolean isEntrance) {
         this.name = name;
         this.model = model;
         this.script = script;
         this.shape = shape;
         this.collisionShape = collisionShape;
-        this.fixedShape = fixedShape;
         this.fixedMatrix = fixedMatrix;
         this.lightLevel = lightLevel;
         this.isTicketBarrier = isTicketBarrier;

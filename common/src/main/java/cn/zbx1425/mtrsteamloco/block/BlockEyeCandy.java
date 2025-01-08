@@ -58,7 +58,7 @@ import mtr.SoundEvents;
 import cn.zbx1425.mtrsteamloco.data.EyeCandyRegistry;
 import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolder;
 import cn.zbx1425.mtrsteamloco.data.EyeCandyProperties;
-import cn.zbx1425.mtrsteamloco.data.StringProperty;
+import cn.zbx1425.mtrsteamloco.data.ShapeSerializer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -74,8 +74,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     public static final ToIntFunction<BlockState> LIGHT_EMISSION = (p_153701_) -> {
         return p_153701_.getValue(LEVEL);
     };
-    public static final StringProperty SHAPE = StringProperty.create("shape");
-    public static final StringProperty COLLISION_SHAPE = StringProperty.create("collision_shape");
 
     public BlockEyeCandy() {
         super(
@@ -93,14 +91,12 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         return defaultBlockState()
             .setValue(FACING, ctx.getHorizontalDirection())
             .setValue(LEVEL, 0)
-            .setValue(OPEN, TicketSystem.EnumTicketBarrierOpen.CLOSED)
-            .setValue(SHAPE, "0, 0, 0, 16, 16, 16")
-            .setValue(COLLISION_SHAPE, "0, 0, 0, 0, 0, 0");
+            .setValue(OPEN, TicketSystem.EnumTicketBarrierOpen.CLOSED);
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, LEVEL, OPEN, SHAPE, COLLISION_SHAPE);
+        builder.add(FACING, LEVEL, OPEN);
     }
 
     @Override
@@ -141,20 +137,32 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext collisionContext) {
-        try {
-            return ShapeSerializer.getShape(state.getValue(SHAPE), (int)state.getValue(FACING).toYRot());
-        } catch (Exception e) {
-            Main.LOGGER.error("Error getting shape for " + state.getValue(SHAPE), e);
+        final BlockEntity entity = world.getBlockEntity(pos);
+        if (entity instanceof BlockEntityEyeCandy) {
+            BlockEntityEyeCandy e = (BlockEntityEyeCandy) entity;
+            try {
+                return ShapeSerializer.getShape(e.getShape(), (int)state.getValue(FACING).toYRot());
+            } catch (Exception e1) {
+                Main.LOGGER.error("Error getting shape :" + e1);
+                return Shapes.block();
+            }
+        } else {
             return Shapes.block();
         }
     }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext collisionContext) {
-        try {
-            return ShapeSerializer.getShape(state.getValue(COLLISION_SHAPE), (int)state.getValue(FACING).toYRot());
-        } catch (Exception e) {
-            Main.LOGGER.error("Error getting collision shape for " + state.getValue(COLLISION_SHAPE), e);
+        final BlockEntity entity = world.getBlockEntity(pos);
+        if (entity instanceof BlockEntityEyeCandy) {
+            BlockEntityEyeCandy e = (BlockEntityEyeCandy) entity;
+            try {
+                return ShapeSerializer.getShape(e.getCollisionShape(), (int)state.getValue(FACING).toYRot());
+            } catch (Exception e1) {
+                Main.LOGGER.error("Error getting collision shape :" + e1);
+                return Shapes.empty();
+            }
+        } else {
             return Shapes.empty();
         }
     }
@@ -213,7 +221,9 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public float doorValue = 0;
         public boolean doorTarget = false;
 
-        public boolean fixedShape = true;
+        private String shape = "0, 0, 0, 16, 16, 16";
+        private String collisionShape = "0, 0, 0, 0, 0, 0";
+
         public boolean fixedMatrix = false;
         public int lightLevel = 0;
         public boolean isTicketBarrier = false;
@@ -244,7 +254,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             asPlatform = compoundTag.contains("asPlatform") ? compoundTag.getBoolean("asPlatform") : true;
             // doorValue = compoundTag.contains("doorValue") ? compoundTag.getFloat("doorValue") : 0;
             // doorTarget = compoundTag.contains("doorTarget") ? compoundTag.getBoolean("doorTarget") : false;
-            fixedShape = compoundTag.contains("fixedShape") ? compoundTag.getBoolean("fixedShape") : true;
+            shape = compoundTag.contains("shape") ? compoundTag.getString("shape") : "0, 0, 0, 16, 16, 16";
+            collisionShape = compoundTag.contains("collisionShape") ? compoundTag.getString("collisionShape") : "0, 0, 0, 16, 16, 16";
             fixedMatrix = compoundTag.contains("fixedMatrix") ? compoundTag.getBoolean("fixedMatrix") : false;
             lightLevel = compoundTag.contains("lightLevel") ? compoundTag.getInt("lightLevel") : 0;
             isTicketBarrier = compoundTag.contains("isTicketBarrier") ? compoundTag.getBoolean("isTicketBarrier") : false;
@@ -271,7 +282,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putBoolean("asPlatform", asPlatform);
             // compoundTag.putFloat("doorValue", doorValue);
             // compoundTag.putBoolean("doorTarget", doorTarget);
-            compoundTag.putBoolean("fixedShape", fixedShape);
+            compoundTag.putString("shape", shape);
+            compoundTag.putString("collisionShape", collisionShape);
             compoundTag.putBoolean("fixedMatrix", fixedMatrix);
             compoundTag.putInt("lightLevel", lightLevel);
             compoundTag.putBoolean("isTicketBarrier", isTicketBarrier);
@@ -291,7 +303,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                 if (properties != null) {
                     setShape(properties.shape);
                     setCollisionShape(properties.collisionShape);
-                    fixedShape = properties.fixedShape;
                     fixedMatrix = properties.fixedMatrix;
                     lightLevel = properties.lightLevel;
                     data.clear();
@@ -307,25 +318,33 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public void setShape(String shape) {
             try {
                 if (ShapeSerializer.isValid(shape, (int)getBlockYRot())) {
-                    getBlockState().setValue(SHAPE, shape);
+                    this.shape = shape;
                 } else {
                     throw new Exception("Invalid!");
                 }
             } catch (Exception e) {
-                Main.LOGGER.error("Error setting shape for " + shape, e);
+                Main.LOGGER.error("Error setting shape for " + shape + " : " + e);
             }
         }
 
         public void setCollisionShape(String collisionShape) {
             try {
                 if (ShapeSerializer.isValid(collisionShape, (int)getBlockYRot())) {
-                    getBlockState().setValue(COLLISION_SHAPE, collisionShape);
+                    this.collisionShape = collisionShape;
                 } else {
                     throw new Exception("Invalid!");
                 }
             } catch (Exception e) {
-                Main.LOGGER.error("Error setting collision shape for " + collisionShape, e);
+                Main.LOGGER.error("Error setting collision shape for " + collisionShape + " : " + e);
             }
+        }
+
+        public String getShape() {
+            return shape;
+        }
+
+        public String getCollisionShape() {
+            return collisionShape;
         }
 
         public BlockPos getWorldPos() {
@@ -389,85 +408,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             ScriptHolder scriptHolder = prop.script;
             if (scriptHolder == null) return;
             scriptHolder.tryCallBeClickedFunctionAsync(scriptContext, player);
-        }
-    }
-
-    public static class ShapeSerializer {
-        private static final Map<String, VoxelShape> shapeMap = new HashMap<>();
-
-        public static boolean isValid(String shape, int yRot) {
-            if (shape == null || shape.isEmpty()) return false;
-            if (shapeMap.containsKey(shape)) return true;
-            try {
-                VoxelShape v = parseShape(shape, yRot);
-                shapeMap.put(shape + "_" + yRot, v);
-                return true;
-            } catch (Exception e) {
-                return false;
-            }
-        }
-
-        public static VoxelShape getShape(String shape, int yRot) throws Exception {
-            if (shape == null || shape.isEmpty()) return Shapes.empty();
-            String key = shape + "_" + yRot;
-            if (shapeMap.containsKey(key)) {
-                return shapeMap.get(key);
-            } else {
-                VoxelShape v = parseShape(shape, yRot);
-                shapeMap.put(key, v);
-                return v;
-            }
-        }
-
-        private static VoxelShape parseShape(String shape, int yRot) throws Exception {
-            if (shape == null || shape.isEmpty()) throw new Exception("Invalid shape: " + shape);
-            String[] shapeArray = shape.split("/");
-            VoxelShape[] voxelShapes = new VoxelShape[shapeArray.length];
-            for (int i = 0; i < shapeArray.length; i++) {
-                String[] posArray = shapeArray[i].split(",");
-                
-                if (posArray.length != 6) {
-                    throw new Exception("Invalid shape: " + shape);
-                }
-                Double[] pos = parsePositions(posArray);
-                Double[] rotatedPos = applyRotation(pos, yRot);
-                VoxelShape voxelShape = Block.box(rotatedPos[0], rotatedPos[1], rotatedPos[2], rotatedPos[3],rotatedPos[4], rotatedPos[5]);
-                voxelShapes[i] = voxelShape;
-            }
-            return combineShapes(voxelShapes);
-        }
-
-        private static Double[] parsePositions(String[] posArray) throws Exception {
-            Double[] pos = new Double[6];
-            for (int j = 0; j < posArray.length; j++) {
-                pos[j] = Double.parseDouble(posArray[j].trim());
-            }
-            return pos;
-        }
-
-        private static Double[] applyRotation(Double[] pos, int yRot) {
-            double x1 = pos[0], y1 = pos[1], z1 = pos[2], x2 = pos[3], y2 = pos[4], z2 = pos[5];
-            switch (yRot) {
-                case 90:
-                    return new Double[]{16 - z2, y1, x1, 16 - z1, y2, x2};
-                case 180:
-                    return new Double[]{16 - x2, y1, 16 - z2, 16 - x1, y2, 16 - z1};
-                case 270:
-                    return new Double[]{z1, y1, 16 - x2, z2, y2, 16 - x1};
-                default:
-                    return new Double[]{x1, y1, z1, x2, y2, z2};
-            }
-        }
-
-        private static VoxelShape combineShapes(VoxelShape[] voxelShapes) throws Exception {
-            VoxelShape finalShape = voxelShapes[0];
-            for (int i = 1; i < voxelShapes.length; i++) {
-                if (voxelShapes[i] == null || finalShape == null) {
-                    throw new Exception("Invalid VoxelShape: one of the shapes is null");
-                }
-                finalShape = Shapes.or(finalShape, voxelShapes[i]);
-            }
-            return finalShape;
         }
     }
 }
