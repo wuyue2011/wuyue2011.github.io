@@ -63,6 +63,8 @@ NTE 调用这几个函数时会使用三个参数，稍后介绍其各自的内�
 
 
 ## EyeCandyScriptContext
+
+### 以下方法仅在render中保证线程安全，请勿在其他线程使用
 调用以下函数可以**控制渲染**。每次 `render` 时都需要为想绘制的模型调用相应的函数，
 
 - `EyeCandyScriptContext.drawModel(model: ModelCluster, poseStack: Matrices): void`
@@ -73,17 +75,30 @@ NTE 调用这几个函数时会使用三个参数，稍后介绍其各自的内�
 
   `poseStack`：模型放置位置的变换，传入 `null` 表示就放在中心不变换。
 
-调用以下函数可以**播放声音**。只在需要开始播放时调用，重复调用会使多个声音叠加。
+调用以下函数可以**播放声音**。只在需要第一次播放声音时调用，重复播放会导致声音叠加。`
 
 - `EyeCandyScriptContext.playSound(sound: ResourceLocation, volume: float, pitch: float): void`
 
   播放声音。
 
+### 以下方法保证线程安全，可在所有线程调用
+
+向下面的Map中添加、替换或删除键值对可以**控制渲染**。
+
+- `EyeCandyScriptContext.drawCalls: Map<Object, DrawCall>`
+  
+  绘制调用表。(此Map为java的Map，请使用java的语法获取值)。
+
 此外，还有一组函数以 **辅助开发调试**。
 
-- `EyeCandyScriptContext.setDebugInfo(key: String, value: Object)`
+- `EyeCandyScriptContext.setDebugInfo(key: String, value: Object...)`
 
-  在屏幕左上角输出调试信息。需在设置中开启 “显示JS调试信息” 才会显示。`key` 为值的名称，`value` 为内容（`GraphicsTexture` 类型的会被显示出来，其他的会被转为字符串显示）。
+    在屏幕左上角输出调试信息。需在设置中开启 “显示JS调试信息” 才会显示。`key` 为值的名称，`value` 为内容（`GraphicsTexture` 类型的会被显示出来，其他的会被转为字符串显示）。可传入多个值，若value有多个值则会转换为数组。
+
+- `EyeCandyScriptContext.setDebugInfo(key: String, order: PlacementOrder, value: Object...)`
+
+    添加一个调试信息，并按 `order` 的顺序显示。
+
 
 
 

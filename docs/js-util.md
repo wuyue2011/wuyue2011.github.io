@@ -314,3 +314,46 @@ MTR 的客户端数据，可以用来读取换乘线路等。参见 MTR 源码 C
 - `static ParticleHelper.getParticleType(particleName :String): <T> SimpleParticleType`
 
   根据名字获取一个 `SimpleParticleType` 或 `ParticleType`。名称可以查看 [Minecraft Wiki](https://zh.minecraft.wiki/wiki/%E7%B2%92%E5%AD%90) 的 `JAVA版ID名` 一栏。
+
+## ComponentUtil
+
+为了方便创建我的世界(文本)组件，我向JS环境中添加了ComponentUtil类，含有以下方法：
+
+- `static MutableComponent(Component) translatable(String text, Object... objects)`
+  获取一个可翻译的组件，参数为文本和可变参数，返回一个可翻译的组件。
+
+- `static MutableComponent(Component) literal(String text)`
+将字符串转化为组件
+
+- `static String getString(Component component)`
+将组件转化为字符串
+
+### 示例
+
+例如在aph:lang文件夹中放入了 zh_cn.json 文件，内容如下：
+```json
+{
+    "text.aph.qssnn": "晴纱是男娘",
+    "text.aph.is": "%s是%s"
+}
+```
+
+在aph:lang文件夹中放入了 en_us.json 文件，内容如下：
+```json
+{
+    "text.aph.qssnn": "Qingsha is a male girl",
+    "text.aph.is": "%s is %s"
+}
+```
+
+```javascript
+// 若为英语环境 则组件内容为 "Qingsha is a male girl"，若为中文环境 则组件内容为 "晴纱是男娘"。
+const qssnn = ComponentUtil.translatable("text.aph.qssnn");
+
+// 若为英语环境 则组件内容为 "A is B"，若为中文环境 则组件内容为 "A是B"。
+const is = ComponentUtil.translatable("text.aph.is", "A", "B");
+
+const text = "Hello, world!";
+const component = ComponentUtil.literal(text);// 转换为 Component
+const result = ComponentUtil.getString(component);// 转换为 String
+```
