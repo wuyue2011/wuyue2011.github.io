@@ -357,3 +357,24 @@ const text = "Hello, world!";
 const component = ComponentUtil.literal(text);// 转换为 Component
 const result = ComponentUtil.getString(component);// 转换为 String
 ```
+
+## OrderedMap
+
+为了更好的排序调试信息，信息使用 `OrderedMap` 来存储，这是一个 ANTE 实现的 Map 类。用法与 Map 类基本相同，添加了一些其他方法。
+
+## PlacementOrder
+
+`PlacementOrder` 是 一个枚举类，用于描述方块的放置顺序。
+含有以下属性：
+
+- `PlacementOrder.UPSIDE`
+
+  上面。
+
+- `PlacementOrder.Midpoint`
+
+  中间。
+
+- `PlacementOrder.DOWNSIDE`
+
+  下面。

@@ -1,19 +1,8 @@
-# 最新功能
+# ClientConfig
 
-有些功能最近被加入，可能会有变动。
+为了让资源包可以在游戏中调整设置，ANTE向Js环境提供了 `ClientConfig` 类，可以注册和获取配置，配置文件会被保存在客户端。
 
-## JavaScript 环境
-
-
-
-
-
-
-### ClientConfig
-
-为可以在客户端调整设置，我向JS环境中添加了ClientConfig类，可以注册和获取配置，配置文件会被保存在客户端。
-
-- `static void register(String key, Component name, String defaultValue, Function<String, String> transformer, Function<String, Optional<Component>> errorSupplier, Consumer<String> saveConsumer) `
+- `static ClientConfig.register(key: String, name: Component, defaultValue: String, transformer: Function<String, String>, errorSupplier: Function<String, Optional<Component>>, saveConsumer: Consumer<String>): void `
 
     `String` key: 配置项的标识
     `Component` name: 显示的标签名称
@@ -22,15 +11,15 @@
     `Function<String, Optional<Component>>` errorSupplier: 错误提示
     `Consumer<String>` saveConsumer: 保存配置项的回调
 
-- `static String get(String key)`
+- `static get(key: String): String`
 
     `String` key: 配置项的标识
 
-- `static void save()`
+- `static save(): void`
 
-保存所有配置项到本地文件
+    保存所有配置项到本地文件
 
-#### 示例
+## 示例
 
 ```javascript
 // ···
@@ -50,7 +39,3 @@ function render(ctx, state, entity) {
 }
 // ···
 ```
-
-### EyeCandy
-
-请查看 [JavaScript 装饰物件相关](https://aphrodite281.github.io/mtr-ante/#/js-eyecandy)

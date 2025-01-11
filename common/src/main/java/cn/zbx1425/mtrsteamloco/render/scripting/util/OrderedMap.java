@@ -13,13 +13,13 @@ public class OrderedMap<K, V> implements Map<K, V> {
     private HashMap<K, V> valueMap;
 
     private List<K> upsideList;
-    private List<K> neutralList;
+    private List<K> midpointList;
     private List<K> downsideList;
 
     public OrderedMap() {
         valueMap = new LinkedHashMap<>();
         upsideList = new ArrayList<>();
-        neutralList = new ArrayList<>();
+        midpointList = new ArrayList<>();
         downsideList = new ArrayList<>();
     }
 
@@ -30,7 +30,7 @@ public class OrderedMap<K, V> implements Map<K, V> {
 
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
-        putAll(m, PlacementOrder.NEUTRAL);
+        putAll(m, PlacementOrder.Midpoint);
     }
 
     public void putAll(Map<? extends K, ? extends V> m, PlacementOrder order) {
@@ -39,8 +39,8 @@ public class OrderedMap<K, V> implements Map<K, V> {
             for (K key : other.upsideList) {
                 put(key, other.valueMap.get(key), PlacementOrder.UPSIDE);
             }
-            for (K key : other.neutralList) {
-                put(key, other.valueMap.get(key), PlacementOrder.NEUTRAL);
+            for (K key : other.midpointList) {
+                put(key, other.valueMap.get(key), PlacementOrder.MIDPOINT);
             }
             for (K key : other.downsideList) {
                 put(key, other.valueMap.get(key), PlacementOrder.DOWNSIDE);
@@ -54,7 +54,7 @@ public class OrderedMap<K, V> implements Map<K, V> {
 
     @Override
     public V put(K key, V value) {
-        return put(key, value, PlacementOrder.NEUTRAL);
+        return put(key, value, PlacementOrder.MIDPOINT);
     }
 
     public V put(K key, V value, PlacementOrder order) {
@@ -62,8 +62,8 @@ public class OrderedMap<K, V> implements Map<K, V> {
             case UPSIDE:
                 if (!upsideList.contains(key)) upsideList.add(key);
                 break;
-            case NEUTRAL:
-                if (!neutralList.contains(key)) neutralList.add(key);
+            case MIDPOINT:
+                if (!midpointList.contains(key)) midpointList.add(key);
                 break;
             case DOWNSIDE:
                 if (!downsideList.contains(key)) downsideList.add(key);
@@ -99,9 +99,9 @@ public class OrderedMap<K, V> implements Map<K, V> {
         if (upsideList.contains(key)) {
             int index = upsideList.indexOf(key);
             upsideList.remove(index);
-        }else if(neutralList.contains(key)) {
-            int index = neutralList.indexOf(key);
-            neutralList.remove(index);
+        }else if(midpointList.contains(key)) {
+            int index = midpointList.indexOf(key);
+            midpointList.remove(index);
         }else if(downsideList.contains(key)) {
             int index = downsideList.indexOf(key);
             downsideList.remove(index);
@@ -118,7 +118,7 @@ public class OrderedMap<K, V> implements Map<K, V> {
     public void clear() {
         valueMap.clear();
         upsideList.clear();
-        neutralList.clear();
+        midpointList.clear();
         downsideList.clear();
     }
 
@@ -127,7 +127,7 @@ public class OrderedMap<K, V> implements Map<K, V> {
         for (K key : upsideList) {
             entryList.add(new Entry<>(key, valueMap.get(key)));
         }
-        for (K key : neutralList) {
+        for (K key : midpointList) {
             entryList.add(new Entry<>(key, valueMap.get(key)));
         }
         for (K key : downsideList) {
@@ -146,7 +146,7 @@ public class OrderedMap<K, V> implements Map<K, V> {
     public Set<K> keySet() {
         List<K> keyList = new ArrayList<>();
         keyList.addAll(upsideList);
-        keyList.addAll(neutralList);
+        keyList.addAll(midpointList);
         keyList.addAll(downsideList);
         return new LinkedHashSet<>(keyList);
     }
@@ -158,7 +158,7 @@ public class OrderedMap<K, V> implements Map<K, V> {
 
     public enum PlacementOrder {
         UPSIDE,
-        NEUTRAL,
+        MIDPOINT,
         DOWNSIDE
     }
 
