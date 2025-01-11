@@ -30,7 +30,7 @@ public class OrderedMap<K, V> implements Map<K, V> {
 
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
-        putAll(m, PlacementOrder.Midpoint);
+        putAll(m, PlacementOrder.MIDPOINT);
     }
 
     public void putAll(Map<? extends K, ? extends V> m, PlacementOrder order) {

@@ -45,7 +45,7 @@ public abstract class AbstractScriptContext {
 
     public void setDebugInfo(String key, Object... values) {
         synchronized (debugInfo) {
-            OrderedMap.PlacementOrder order = OrderedMap.PlacementOrder.NEUTRAL;
+            OrderedMap.PlacementOrder order = OrderedMap.PlacementOrder.MIDPOINT;
             
             List<Object> list = new ArrayList<>();
             for (Object value : values) {
