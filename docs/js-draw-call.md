@@ -1,6 +1,6 @@
 # JavaScript DrawCall
 
-在 (A)NTE 中，使用 `DrawCall` 类表示绘制调用。
+在 ANTE 中，使用 `DrawCall` 类实现绘制调用实现。
 
 `DrawCall` 是一个接口, 它仅含有一个方法:
 
