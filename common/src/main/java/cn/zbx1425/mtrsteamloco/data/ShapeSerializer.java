@@ -7,6 +7,8 @@ import net.minecraft.world.level.block.Block;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ShapeSerializer {
     private static final Map<String, VoxelShape> shapeMap = new HashMap<>();
@@ -39,17 +41,24 @@ public class ShapeSerializer {
     private static VoxelShape parseShape(String shape, int yRot) throws Exception {
         if (shape == null || shape.isEmpty()) throw new Exception("Invalid shape: " + shape);
         String[] shapeArray = shape.split("/");
-        VoxelShape[] voxelShapes = new VoxelShape[shapeArray.length];
+        List<VoxelShape> voxelShapes = new ArrayList<>();
+        
         for (int i = 0; i < shapeArray.length; i++) {
             String[] posArray = shapeArray[i].split(",");
             
             if (posArray.length != 6) {
                 throw new Exception("Invalid shape: " + shape);
             }
+            
             Double[] pos = parsePositions(posArray);
+            
             Double[] rotatedPos = applyRotation(pos, yRot);
-            VoxelShape voxelShape = Block.box(rotatedPos[0], rotatedPos[1], rotatedPos[2], rotatedPos[3],rotatedPos[4],rotatedPos[5]);
-            voxelShapes[i] = voxelShape;
+            
+            VoxelShape voxelShape = Block.box(
+                rotatedPos[0], rotatedPos[1], rotatedPos[2],
+                rotatedPos[3], rotatedPos[4], rotatedPos[5]
+            );
+            voxelShapes.add(voxelShape);
         }
         return combineShapes(voxelShapes);
     }
@@ -76,13 +85,17 @@ public class ShapeSerializer {
         }
     }
 
-    private static VoxelShape combineShapes(VoxelShape[] voxelShapes) throws Exception {
-        VoxelShape finalShape = voxelShapes[0];
-        for (int i = 1; i < voxelShapes.length; i++) {
-            if (voxelShapes[i] == null || finalShape == null) {
-                throw new Exception("Invalid VoxelShape: one of the shapes is null");
+    private static VoxelShape combineShapes(List<VoxelShape> voxelShapes) throws Exception {
+        if (voxelShapes.isEmpty()) {
+            return Shapes.empty();
+        }
+        VoxelShape finalShape = null;
+        for (VoxelShape voxelShape : voxelShapes) {
+            if (finalShape == null) {
+                finalShape = voxelShape;
+            } else {
+                finalShape = Shapes.or(finalShape, voxelShape);
             }
-            finalShape = Shapes.or(finalShape, voxelShapes[i]);
         }
         return finalShape;
     }

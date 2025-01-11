@@ -55,7 +55,7 @@ NTE 调用这几个函数时会使用三个参数，稍后介绍其各自的内�
 | ----------------- | ------------------------------------------------------------ |
 | 第一个 (`ctx`)    | 用于向 NTE 输出要如何渲染的相关操作。类型是 EyeCandyScriptContext |
 | 第二个 (`state`)  | 一个和某一个装饰物件方块关联的 JavaScript 对象。初始值是 `{}`，可随意设置其上的成员，用来存储一些需要每个方块都不同的内容。 |
-| 第三个 (`entity`)  | 用于获取方块的状态。类型是 BlockEyeCandy.BlockEntityEyeCandy。                           |
+| 第三个 (`entity`)  | 用于获取方块的状态。类型是 BlockEntityEyeCandy。                           |
 
 
 接下来列出您可以进行的所有渲染控制操作，和可以获取到的所有关于方块的信息。
@@ -87,13 +87,30 @@ NTE 调用这几个函数时会使用三个参数，稍后介绍其各自的内�
 
 
 
-## BlockEyeCandy
+## BlockEntityEyeCandy
 | 属性                                          | 说明                                                         |
 | --------------------------------------------- | ------------------------------------------------------------ |
-| `BlockEyeCandy.getWorldPos(): BlockPos` | 获取方块坐标，返回的是原版的 BlockPos 类型。 |
-| `BlockEyeCandy.getWorldPosVector3f(): Vector3f` | 获取方块坐标，返回的是 Vector3f。 |
-| `BlockEyeCandy.getTransformPosVector3f(): Vector3f`| 获取方块坐标，返回的是 Vector3f，且已经应用了方块的变换。 |
-| `BlockEyeCandy.translateX: float` | 获取方块在 X 方向上的偏移量。YZ同理。 |
-| `BlockEyeCandy.rotateX: float` | 获取方块在 X 轴上的旋转。YZ同理。 |
-| `BlockEyeCandy.prefabId: String` | 获取方块的预制体 ID。 |
-| `BlockEyeCandy.fullLight: boolean` | 获取方块是否为全光照。 |
+| `BlockEntityEyeCandy.translateX: float` | 获取方块在 X 方向上的偏移量。YZ同理。 |
+| `BlockEntityEyeCandy.rotateX: float` | 获取方块在 X 轴上的旋转。YZ同理。 |
+| `BlockEntityEyeCandy.prefabId: String` | 获取方块的预制体 ID。 |
+| `BlockEntityEyeCandy.fullLight: boolean` | 获取方块是否为全光照。 |
+| `BlockEntityEyeCandy.asPlatform: boolean`| 获取方块是否为当作站台。 |
+| `BlockEntityEyeCandy.isTicketBarrier: boolean`| 获取方块是否为闸机。 |
+| `BlockEntityEyeCandy.isEntrance: boolean`| 是入口 |
+| `BlockEntityEyeCandy.doorValue: float`| 附近列车门的值 |
+| `BlockEntityEyeCandy.doorTarget: boolean`| 附近列车车门的目标状态(false为关闭，true为打开) |
+| `BlockEntityEyeCandy.fixedMatrix: boolean`| 获取方块是否固定。 |
+
+| 方法                                          | 说明                                                         |
+| --------------------------------------------- | ------------------------------------------------------------ |
+| `BlockEntityEyeCandy.setShape(shape: String): void` | 设置方块的形状。 |
+| `BlockEntityEyeCandy.getShape(): String` | 获取方块的形状。 |
+| `BlockEntityEyeCandy.setCollisionShape(shape: String): void` | 设置方块的碰撞形状。 |
+| `BlockEntityEyeCandy.getCollisionShape(): String` | 获取方块的碰撞形状。 |
+| `BlockEntityEyeCandy.getWorldPos(): BlockPos` | 获取方块坐标，返回的是原版的 BlockPos 类型。 |
+| `BlockEntityEyeCandy.getWorldPosVector3f(): Vector3f` | 获取方块坐标，返回的是 Vector3f。 |
+| `BlockEntityEyeCandy.getTransformPosVector3f(): Vector3f`| 获取方块坐标，返回的是 Vector3f，且已经应用了方块的变换。 |
+| `BlockEntityEyeCandy.sendUpdateC2S(): void`| 发送方块状态更新。 |
+| `BlockEntityEyeCandy.getBlockYRot(): float`| 获取方块在 Y 轴上的旋转。(摆放方向，0-270) |
+| `BlockEntityEyeCandy.setLightLevel(level: int): void`| 设置发光等级(0-15)。 |
+| `BlockEntityEyeCandy.getLightLevel(): int`| 获取发光等级(0-15)。 |

@@ -147,6 +147,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                 return Shapes.block();
             }
         } else {
+            Main.LOGGER.error("BlockEntityEyeCandy not found at " + pos + ", " + world + ", " + state + ", " + entity);
             return Shapes.block();
         }
     }
@@ -163,6 +164,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                 return Shapes.empty();
             }
         } else {
+            Main.LOGGER.error("BlockEntityEyeCandy not found at " + pos + ", " + world + ", " + state + ", " + entity);
             return Shapes.empty();
         }
     }
@@ -225,7 +227,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         private String collisionShape = "0, 0, 0, 0, 0, 0";
 
         public boolean fixedMatrix = false;
-        public int lightLevel = 0;
+        private int lightLevel = 0;
         public boolean isTicketBarrier = false;
         public boolean isEntrance = false;
 
@@ -304,7 +306,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                     setShape(properties.shape);
                     setCollisionShape(properties.collisionShape);
                     fixedMatrix = properties.fixedMatrix;
-                    lightLevel = properties.lightLevel;
+                    setLightLevel(properties.lightLevel);
                     data.clear();
                     isTicketBarrier = properties.isTicketBarrier;
                     isEntrance = properties.isEntrance;
@@ -313,6 +315,18 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                     }
                 }
             }
+        }
+
+        public void setLightLevel(int lightLevel) {
+            if (lightLevel >= 0 && lightLevel <= 15) {
+                this.lightLevel = lightLevel;
+            } else {
+                Main.LOGGER.error("Invalid light level: " + lightLevel);
+            }
+        }
+
+        public int getLightLevel() {
+            return lightLevel;
         }
 
         public boolean setShape(String shape) {

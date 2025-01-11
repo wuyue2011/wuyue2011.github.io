@@ -19,3 +19,5 @@
     - [装饰物件渲染样例](js-example-eyecandy.md)
   - [动态贴图](js-dynamic-texture.md)
     - [显示屏工具类](js-display-helper.md)
+  - [最新功能](js-latest.md)
+  - [高阶技巧](js-advanced.md)
