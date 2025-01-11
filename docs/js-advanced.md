@@ -2,9 +2,7 @@
 
 ## 异步编程
 
-在 (A)NTE 中，会间隔调用 `render` 方法，但存在诸多问题，如内容过多、延迟过大、不流畅等诸多问题。
-不难发现，许多任务是可以同时执行的，
-我们可以使用 `java` 提供的异步编程机制，如为每个 `entity` 创建一个自己的线程等。
+在 (A)NTE 中，会间隔调用 `render` 方法，但存在诸多问题，如内容过多导致的延迟过大进而导致动画不流畅等诸多问题。不难发现，许多任务是可以同时执行的。因此，我们可以使用 `java` 提供的异步编程机制，为每个 `entity` 创建一个自己的线程。
 
 下面是一段示例代码:
 
@@ -29,7 +27,7 @@ function create(ctx, state, entity) {
             // 在最上方添加调试信息
             ctx.setDebugInfo("lastTime", PlacementOrder.UPSIDE, state.lastTime);
 
-            // 添加绘制，在这里不要使用drawModel、playSound等方法
+            // 更新绘制，在这里不要使用drawModel、playSound等方法
             // 这些方法仅在render中使用时正确的，在异步线程中调用会导致线程安全问题
             ctx.drawCalls.put(123, new ClusterDrawCall(model, new Matrix4f()));
         }}, 0, 1000 / 24, TimeUnit.MILLISECONDS));

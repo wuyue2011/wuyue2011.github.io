@@ -97,7 +97,7 @@ NTE 调用这几个函数时会使用三个参数，稍后介绍其各自的内�
 
 - `EyeCandyScriptContext.setDebugInfo(key: String, order: PlacementOrder, value: Object...)`
 
-    添加一个调试信息，并按 `order` 的顺序显示。
+    添加一个调试信息，并按 [PlacementOrder](https://aphrodite281.github.io/mtr-ante/#/js-util?id=placementorder) 的顺序添加。
 
 
 
