@@ -216,7 +216,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public boolean fullLight = false;
 
-        private static Map<String, String> customConfig = new HashMap<>();
+        private static Map<String, String> customConfigs = new HashMap<>();
         private static Map<String, ConfigResponder> customResponders = new HashMap<>();
 
         public EyeCandyScriptContext scriptContext = null;
@@ -246,10 +246,10 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             try {
                 if (compoundTag.contains("data")) {
                     byte[] dataBytes = compoundTag.getByteArray("data");
-                    customConfig = Serializer.deserialize(dataBytes);
-                } else if (compoundTag.contains("customConfig")) {
-                    byte[] configBytes = compoundTag.getByteArray("customConfig");
-                    customConfig = Serializer.deserialize(configBytes);
+                    customConfigs = Serializer.deserialize(dataBytes);
+                } else if (compoundTag.contains("customConfigs")) {
+                    byte[] configBytes = compoundTag.getByteArray("customConfigs");
+                    customConfigs = Serializer.deserialize(configBytes);
                 }
             }catch (IOException e) {
             }
@@ -276,8 +276,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putString("prefabId", prefabId == null ? "" : prefabId);
             compoundTag.putBoolean("fullLight", fullLight);
             try {
-                byte[] configBytes = Serializer.serialize(customConfig);
-                compoundTag.putByteArray("customConfig", configBytes);
+                byte[] configBytes = Serializer.serialize(customConfigs);
+                compoundTag.putByteArray("customConfigs", configBytes);
             }catch (IOException e) {
             }
             
@@ -313,7 +313,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                     setCollisionShape(properties.collisionShape);
                     fixedMatrix = properties.fixedMatrix;
                     setLightLevel(properties.lightLevel);
-                    customConfig.clear();
+                    customConfigs.clear();
                     customResponders.clear();
                     isTicketBarrier = properties.isTicketBarrier;
                     isEntrance = properties.isEntrance;
@@ -436,41 +436,41 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
 
         public Map<String, String> getCustomConfig() {
-            return customConfig;
+            return customConfigs;
         } 
 
         public String getCustomConfig(String key) {
-            return customConfig.get(key);
+            return customConfigs.get(key);
         }
 
-        public void registerCustomConfig(ConfigResponder responder) {
-            if (!customConfig.containsKey(responder.key)) {
-                customConfig.put(responder.key, responder.defaultValue);
+        public void registerCustomConfigs(ConfigResponder responder) {
+            if (!customConfigs.containsKey(responder.key)) {
+                customConfigs.put(responder.key, responder.defaultValue);
             }
-            responder.bind(customConfig);
+            responder.bind(customConfigs);
             customResponders.put(responder.key, responder);
         }
 
         public void removeCustomConfig(String key) {
-            customConfig.remove(key);
+            customConfigs.remove(key);
             customResponders.remove(key);
         }
 
         public void putCustomConfig(String key, String value) {
-            customConfig.put(key, value);
+            customConfigs.put(key, value);
         }
 
         public List<AbstractConfigListEntry> getCustomConfigEntrys() {
             Map<String, AbstractConfigListEntry> hasResponders = new HashMap<>();
             Map<String, AbstractConfigListEntry> noResponders = new HashMap<>();
-            if (!customConfig.isEmpty()) {
-                Set<String> keys = customConfig.keySet();
+            if (!customConfigs.isEmpty()) {
+                Set<String> keys = customConfigs.keySet();
                 for (String key : keys) {
                     if (customResponders.containsKey(key)) {
                         ConfigResponder responder = customResponders.get(key);
-                        hasResponders.put(key, responder.getListEntry(customConfig.get(key)));
+                        hasResponders.put(key, responder.getListEntry(customConfigs.get(key)));
                     } else {
-                        noResponders.put(key, new TextDescriptionBuilder(ConfigResponder.resetButtonKey, Text.literal(UUID.randomUUID().toString()), Text.literal(key + " : " + customConfig.get(key))).build());
+                        noResponders.put(key, new TextDescriptionBuilder(ConfigResponder.resetButtonKey, Text.literal(UUID.randomUUID().toString()), Text.literal(key + " : " + customConfigs.get(key))).build());
                     }
                 }
             }
