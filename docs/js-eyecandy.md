@@ -87,7 +87,7 @@ NTE 调用这几个函数时会使用三个参数，稍后介绍其各自的内�
 
 - `EyeCandyScriptContext.drawCalls: Map<Object, DrawCall>`
   
-  绘制调用表。(此Map为java的Map，请使用java的语法获取值)。
+  [绘制调用](https://aphrodite281.github.io/mtr-ante/#/js-draw-call)表。(此Map为java的Map，请使用[java-Map](https://docs.oracle.com/javase/8/docs/api/java/util/Map.html)的方法)。
 
 此外，还有一组函数以 **辅助开发调试**。
 
@@ -97,7 +97,7 @@ NTE 调用这几个函数时会使用三个参数，稍后介绍其各自的内�
 
 - `EyeCandyScriptContext.setDebugInfo(key: String, order: PlacementOrder, value: Object...)`
 
-    添加一个调试信息，并按 [PlacementOrder](https://aphrodite281.github.io/mtr-ante/#/js-util?id=placementorder) 的顺序添加。
+    添加一个调试信息，并按 order: [PlacementOrder](https://aphrodite281.github.io/mtr-ante/#/js-util?id=placementorder) 的顺序添加。
 
 
 

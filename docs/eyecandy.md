@@ -1,6 +1,7 @@
 # 装饰物件
 
-NTE 允许通过 ”装饰物件“ 方块在游戏内显示 OBJ 模型。
+(A)NTE 允许通过 ”装饰物件“ 方块在游戏内显示 OBJ 模型。
+本篇主要与装饰物件的注册有关，更深一步的，您可以查看[源代码-EyeCandyRegistry](https://github.com/aphrodite281/mtr-ante/blob/alpha/common/src/main/java/cn/zbx1425/mtrsteamloco/data/EyeCandyRegistry.java)
 
 ![Teapot](img/teapot.jpg)
 
@@ -52,12 +53,11 @@ NTE 允许通过 ”装饰物件“ 方块在游戏内显示 OBJ 模型。
         "scriptFiles": ["mtrsteamloco:eyecandies/script.js"]
     },
     "key4": {
-        "mod_version": "0.5.4",
-        "name": "Name4",
+        "name": "obj.aph.obj4",
         "scriptFiles": ["mtrsteamloco:eyecandies/script.js"],
         "shape": "0, 0, 0, 16, 8, 16/ 0, 8, 8, 16, 16,16",
-        "fixedShape": false,
-        "hasCollision": true,
+        "collisionShape": "0, 0, 0, 16, 8, 16/ 0, 8, 8, 16, 16,16",
+        "fixedMatrix": true,
         "isTicketBarrier": true,
         "isEntrance": true,
         "lightLevel": 15
@@ -70,9 +70,9 @@ NTE 允许通过 ”装饰物件“ 方块在游戏内显示 OBJ 模型。
 - 在一个 JSON 文件内说明多个物件的写法中，`key1`、`key2` 等是内部记录这个模型时所使用的名称，可任意选取，不会显示给玩家，但每个必须不同。在一个 JSON 文件说明一个模型的写法中，会把 JSON 文件的文件名用作这一用途。
 
 ### 使用模型
-如 `key1`、`key2`：
+- `key` 是这个模型的内部名称，不可重复，不能为""。
 
-- `name` 是这个模型显示在选择列表里的名称。
+- `name` 是这个模型显示在选择列表里的名称，可以是字符串，也可以是lang文件加中的key。
 
 - `model` 是这个模型所使用的 OBJ 文件的位置。
 
@@ -84,11 +84,12 @@ NTE 允许通过 ”装饰物件“ 方块在游戏内显示 OBJ 模型。
 
 以上是必填项。以下是可选项：
 
-- `mod_version` 设定物件所使用的 NTE 版本。
-- `shape` 是方块的形状，每组六个值分别代表了最小点的坐标和最大点的坐标，每组用/分割，进行 or 运算。
-- `fixedShape` (Shape 大写) 设为 false 方块形状将跟随物件平移移动。
-- `hasCollision` (Collision 大写) 设为 true 方块将有碰撞箱。
-- `lightLevel` 设置光照级别 0 到 15，默认为 0 (不发光)。
+- `shape` 是方块的形状，每组六个值分别代表了最小点的坐标和最大点的坐标，每组用/分割，进行 or 运算。 默认为 `0, 0, 0, 16, 16, 16`。
+- `collisionShape` 是方块的碰撞形状，同 `shape`。 默认为 `0, 0, 0, 0, 0, 0`。 **超出16 * 16 *16范围的碰撞箱可能不起作用**
+- `isTicketBarrier` (Ticket 大写) 是否作为闸机，默认为 false。
+- `isEntrance` 是否作为入口，默认为 false。
+- `fixedMatrix` (Matrix 大写) 设为 true 后，物件的移动与旋转将会在装饰物件设置中锁定。默认为 false。
+- `lightLevel` (Level 大写) 设置光照级别 0 到 15，默认为 0 (不发光)。
   
 对于包含 `model` 的物件：
 - `textureId` 可用于创建多个同一模型不同贴图的物件。用法与 OBJ 列车模型中相同。
@@ -107,4 +108,3 @@ NTE 允许通过 ”装饰物件“ 方块在游戏内显示 OBJ 模型。
 - `name` 是这个模型显示在选择列表里的名称。
 
 - `scriptFiles` 是这个模型所使用的脚本文件的位置。注意与 `model` 一同出现时不起作用。详见 [装饰物件相关](js-eyecandy.md)。
-  
