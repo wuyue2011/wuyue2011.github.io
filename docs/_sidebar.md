@@ -14,6 +14,7 @@
   - [数学](js-math.md)
   - [工具类](js-util.md)
   - [绘制调用](js-draw-call.md)
+  - [自定义配置](js-custom-config.md)
   - [列车相关](js-train.md)
     - [列车渲染样例](js-example-train.md)
   - [装饰物件相关](js-eyecandy.md)

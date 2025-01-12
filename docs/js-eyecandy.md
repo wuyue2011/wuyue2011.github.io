@@ -103,6 +103,7 @@ NTE 调用这几个函数时会使用三个参数，稍后介绍其各自的内�
 
 
 ## BlockEntityEyeCandy
+
 | 属性                                          | 说明                                                         |
 | --------------------------------------------- | ------------------------------------------------------------ |
 | `BlockEntityEyeCandy.translateX: float` | 获取方块在 X 方向上的偏移量。YZ同理。 |
@@ -129,3 +130,29 @@ NTE 调用这几个函数时会使用三个参数，稍后介绍其各自的内�
 | `BlockEntityEyeCandy.getBlockYRot(): float`| 获取方块在 Y 轴上的旋转。(摆放方向，0-270) |
 | `BlockEntityEyeCandy.setLightLevel(level: int): void`| 设置发光等级(0-15)。 |
 | `BlockEntityEyeCandy.getLightLevel(): int`| 获取发光等级(0-15)。 |
+
+### 信息的保存与交互
+
+`BlockEntityEyeCandy` 含有两个私有的 Map，用于保存配置信息。
+
+- `BlockEntityEyeCandy.customConfig: Map<String, String>` 存储所有自定义配置项。
+- `BlockEntityEyeCandy.customResponders: Map<String, ConfigResponder>` 可交互的配置项。
+
+您无法直接访问或修改 `customConfig` 与 `customResponders`，但可以通过以下方法来操作：
+
+
+- `BlockEntityEyeCandy.registerCustomConfig(responder: ConfigResponder): void`
+
+  注册一个[响应器](js-custom-config.md)，如果原来没有值则会自动添加。
+
+- `BlockEntityEyeCandy.removeCustomConfig(key: String): void`
+
+  移除一项配置。
+
+- `BlockEntityEyeCandy.putCustomConfig(key: String, value: String): void`
+
+  添加或修改一项配置(如果没有注册相应器则在装饰物件的屏幕中无法修改)
+
+- `BlockEntityEyeCandy.getCustomConfig(key: String): String`
+
+  获取一项配置。
