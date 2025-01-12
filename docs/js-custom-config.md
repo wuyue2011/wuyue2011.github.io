@@ -2,7 +2,7 @@
 
 ## ConfigResponder
 
-ANTE 提供 `ConfigResponder` 类来表示配置的响应器，存储配置的信息。
+ANTE 提供 `ConfigResponder` 类来表示配置的响应器，存储配置的信息。更进一步的，请查看[源代码-ConfigResponder.java](https://github.com/aphrodite281/mtr-ante/blob/alpha/common/src/main/java/cn/zbx1425/mtrsteamloco/ClientConfig.java)
 
 - `new ConfigResponder(key: String, name: Component, defaultValue: String, transformer: Function<String, String>, errorSupplier: Function<String, Optional<Component>>, saveConsumer: Consumer<String>, consumer: Consumer<TextFieldBuilder>)`
 

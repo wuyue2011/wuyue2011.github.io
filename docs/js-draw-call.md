@@ -1,6 +1,6 @@
 # JavaScript DrawCall
 
-在 ANTE 中，使用 `DrawCall` 接口表示绘制调用。更深一步的，您可以查看[源代码-AbstractDrawCalls](https://github.com/aphrodite281/mtr-ante/blob/alpha/common/src/main/java/cn/zbx1425/mtrsteamloco/render/scripting/AbstractDrawCalls.java)
+在 ANTE 中，使用 `DrawCall` 接口表示绘制调用。更深一步的，您可以查看[源代码-AbstractDrawCalls.java](https://github.com/aphrodite281/mtr-ante/blob/alpha/common/src/main/java/cn/zbx1425/mtrsteamloco/render/scripting/AbstractDrawCalls.java)
 
 `DrawCall` 仅含有一个方法:
 
