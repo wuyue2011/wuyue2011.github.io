@@ -31,7 +31,7 @@ ANTE 提供 `ConfigResponder` 类来表示配置的响应器，存储配置的�
 
 ## ClientConfig
 
-为了让资源包可以在游戏中调整设置，ANTE向Js环境提供了 `ClientConfig` 类，可以注册和获取配置，配置文件会被保存在客户端。
+为了让资源包可以在游戏中调整设置，ANTE向Js环境提供了 `ClientConfig` 类，可以注册和获取配置，配置文件会被保存在客户端。注册后的配置将会出现在 由 `/mtrnte config` 命令调出的设置界面的最下方。
 
 - `static ClientConfig.register(response: ConfigResponder): void `
 
