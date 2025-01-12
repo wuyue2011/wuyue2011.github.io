@@ -29,6 +29,7 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.gui.entries.StringListEntry;
 import me.shedaniel.clothconfig2.gui.entries.FloatListEntry;
 import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
+import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import net.minecraft.client.gui.screens.Screen;
 import cn.zbx1425.mtrsteamloco.Main;
 import net.minecraft.network.chat.Component;
@@ -213,26 +214,10 @@ public class EyeCandyScreen {
                 .build());
         }
 
-        Set<String> keys = new HashSet<>(blockEntity.data.keySet());
-        List<String> sortedKeys = new ArrayList<>(keys);
-        Collections.sort(sortedKeys);
-        if (!sortedKeys.isEmpty()) {
-            common.addEntry(entryBuilder.startTextDescription(
-                    tr("custom_data")
-            ).build());
-            for (String key : sortedKeys) {
-                String value = blockEntity.data.get(key);
-                common.addEntry(entryBuilder.startTextField(
-                        Text.literal(key),
-                        value
-                ).setSaveConsumer(str -> {
-                    if (!str.equals(value)) {
-                        update.add(be -> be.data.put(key, str));
-                    }
-                }).setDefaultValue(value).build());
-            }
+        List<AbstractConfigListEntry> customEntrys = blockEntity.getCustomConfigEntrys();
+        for (AbstractConfigListEntry entry : customEntrys) {
+            common.addEntry(entry);
         }
-        
 
         builder.setSavingRunnable(() -> {
             for (Consumer<BlockEntityEyeCandy> callback : update) {

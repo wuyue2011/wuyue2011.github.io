@@ -59,12 +59,13 @@ import cn.zbx1425.mtrsteamloco.data.EyeCandyRegistry;
 import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolder;
 import cn.zbx1425.mtrsteamloco.data.EyeCandyProperties;
 import cn.zbx1425.mtrsteamloco.data.ShapeSerializer;
+import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
+import mtr.mappings.Text;
+import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
+import me.shedaniel.clothconfig2.impl.builders.TextDescriptionBuilder;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.ToIntFunction;
 
 public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlockMapper {
@@ -215,7 +216,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public boolean fullLight = false;
 
-        public Map<String, String> data = new HashMap<>();
+        private static Map<String, String> customConfig = new HashMap<>();
+        private static Map<String, ConfigResponder> customResponders = new HashMap<>();
 
         public EyeCandyScriptContext scriptContext = null;
 
@@ -242,8 +244,13 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             setPrefabId(id);
             fullLight = compoundTag.getBoolean("fullLight");
             try {
-                byte[] dataBytes = compoundTag.getByteArray("data");
-                data = Serializer.deserialize(dataBytes);
+                if (compoundTag.contains("data")) {
+                    byte[] dataBytes = compoundTag.getByteArray("data");
+                    customConfig = Serializer.deserialize(dataBytes);
+                } else if (compoundTag.contains("customConfig")) {
+                    byte[] configBytes = compoundTag.getByteArray("customConfig");
+                    customConfig = Serializer.deserialize(configBytes);
+                }
             }catch (IOException e) {
             }
             
@@ -269,10 +276,9 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putString("prefabId", prefabId == null ? "" : prefabId);
             compoundTag.putBoolean("fullLight", fullLight);
             try {
-                byte[] dataBytes = Serializer.serialize(data);
-                compoundTag.putByteArray("data", dataBytes);
+                byte[] configBytes = Serializer.serialize(customConfig);
+                compoundTag.putByteArray("customConfig", configBytes);
             }catch (IOException e) {
-                compoundTag.putByteArray("data", new byte[0]);
             }
             
             compoundTag.putFloat("translateX", translateX);
@@ -307,7 +313,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                     setCollisionShape(properties.collisionShape);
                     fixedMatrix = properties.fixedMatrix;
                     setLightLevel(properties.lightLevel);
-                    data.clear();
+                    customConfig.clear();
+                    customResponders.clear();
                     isTicketBarrier = properties.isTicketBarrier;
                     isEntrance = properties.isEntrance;
                     if (properties.script != null) {
@@ -394,10 +401,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             }
         }
 
-        public synchronized Map<String, String> getData() {
-            return data;
-        }
-
         public void setDoorValue(float value) {
             doorValue = value;
         }
@@ -430,6 +433,62 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             ScriptHolder scriptHolder = prop.script;
             if (scriptHolder == null) return;
             scriptHolder.tryCallBeClickedFunctionAsync(scriptContext, player);
+        }
+
+        public String getCustomConfig(String key) {
+            return customConfig.get(key);
+        }
+
+        public void registerCustomConfig(ConfigResponder responder) {
+            if (!customConfig.containsKey(responder.key)) {
+                customConfig.put(responder.key, responder.defaultValue);
+            }
+            responder.bind(customConfig);
+            customResponders.put(responder.key, responder);
+        }
+
+        public void removeCustomConfig(String key) {
+            customConfig.remove(key);
+            customResponders.remove(key);
+        }
+
+        public void putCustomConfig(String key, String value) {
+            customConfig.put(key, value);
+        }
+
+        public List<AbstractConfigListEntry> getCustomConfigEntrys() {
+            Map<String, AbstractConfigListEntry> hasResponders = new HashMap<>();
+            Map<String, AbstractConfigListEntry> noResponders = new HashMap<>();
+            if (!customConfig.isEmpty()) {
+                Set<String> keys = customConfig.keySet();
+                for (String key : keys) {
+                    if (customResponders.containsKey(key)) {
+                        ConfigResponder responder = customResponders.get(key);
+                        hasResponders.put(key, responder.getListEntry(customConfig.get(key)));
+                    } else {
+                        noResponders.put(key, new TextDescriptionBuilder(ConfigResponder.resetButtonKey, Text.literal(UUID.randomUUID().toString()), Text.literal(key + " : " + customConfig.get(key))).build());
+                    }
+                }
+            }
+            List<String> sortedHasKeys = new ArrayList<>(hasResponders.keySet());
+            Collections.sort(sortedHasKeys);
+            List<String> sortedNoKeys = new ArrayList<>(noResponders.keySet());
+            Collections.sort(sortedNoKeys);
+            List<AbstractConfigListEntry> entries = new ArrayList<>();
+            if (!sortedHasKeys.isEmpty()) {
+                entries.add(new TextDescriptionBuilder(ConfigResponder.resetButtonKey, Text.literal(UUID.randomUUID().toString()), Text.translatable("gui.mtrsteamloco.eye_candy.custom_config")).build());
+                for (String key : sortedHasKeys) {
+                    entries.add(hasResponders.get(key));
+                }
+            }
+
+            if (!sortedNoKeys.isEmpty()) {
+                entries.add(new TextDescriptionBuilder(ConfigResponder.resetButtonKey, Text.literal(UUID.randomUUID().toString()), Text.translatable("gui.mtrsteamloco.eye_candy.custom_config.cannot_edit")).build());
+                for (String key : sortedNoKeys) {
+                    entries.add(noResponders.get(key));
+                }
+            }
+            return entries;
         }
     }
 }

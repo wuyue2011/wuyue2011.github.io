@@ -1,6 +1,7 @@
 package cn.zbx1425.mtrsteamloco;
 
 import cn.zbx1425.mtrsteamloco.render.ShadersModHandler;
+import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -125,12 +126,12 @@ public class ClientConfig {
         load(Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve("mtrsteamloco.json"));
     }
 
-    public static void register(String key, Component name, String defaultValue, Function<String, String> transformer, Function<String, Optional<Component>> errorSupplier, Consumer<String> saveConsumer) {
-        if (!customConfig.containsKey(key)) {
-            customConfig.put(key, defaultValue);
+    public static void register(ConfigResponder responder) {
+        if (!customConfig.containsKey(responder.key)) {
+            customConfig.put(responder.key, responder.defaultValue);
         }
-        ConfigResponder responder = new ConfigResponder(key, name, defaultValue, transformer, errorSupplier, saveConsumer);
-        customResponders.put(key, responder);
+        responder.bind(customConfig);
+        customResponders.put(responder.key, responder);
     }
 
     public static String get(String key) {
@@ -152,7 +153,7 @@ public class ClientConfig {
         if (!usedKeys.isEmpty()) {
             entries.add(new TextDescriptionBuilder(ConfigResponder.resetButtonKey, Text.literal(UUID.randomUUID().toString()), Text.literal("已使用的自定义配置")).build());
             for (String key : usedKeys) {
-                entries.add(customResponders.get(key).getListEntry());
+                entries.add(customResponders.get(key).getListEntry(customConfig.get(key)));
             }
         }
         if (!unusedKeys.isEmpty()) {
@@ -162,34 +163,5 @@ public class ClientConfig {
             };
         }
         return entries;
-    }
-
-    private static class ConfigResponder {
-        public static final Component resetButtonKey = Text.translatable("text.cloth-config.reset_value");
-
-        public Function<String, String> transformer;
-        public Function<String, Optional<Component>> errorSupplier;
-        public Consumer<String> saveConsumer;
-        public String key;
-        public String defaultValue;
-        public Component name;
-
-        public ConfigResponder(String key, Component name, String defaultValue, Function<String, String> transformer, Function<String, Optional<Component>> errorSupplier, Consumer<String> saveConsumer) {
-            this.transformer = transformer;
-            this.errorSupplier =  errorSupplier;
-            this.saveConsumer = str -> {
-                saveConsumer.accept(str);
-                customConfig.put(key, str);
-            };
-            this.key = key;
-            this.defaultValue = defaultValue;
-            this.name = name;
-        }
-
-        public StringListEntry getListEntry() {
-            StringFieldBuilder builder = new StringFieldBuilder(resetButtonKey, name, transformer.apply(customConfig.get(key)));
-            builder.setErrorSupplier(errorSupplier).setSaveConsumer(saveConsumer).setDefaultValue(defaultValue);
-            return builder.build();
-        }
     }
 }

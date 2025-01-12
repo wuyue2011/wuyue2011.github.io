@@ -21,6 +21,7 @@ import cn.zbx1425.mtrsteamloco.render.scripting.util.WapperedEntity;
 import cn.zbx1425.mtrsteamloco.render.scripting.AbstractDrawCalls;
 import cn.zbx1425.mtrsteamloco.ClientConfig;
 import cn.zbx1425.mtrsteamloco.data.ShapeSerializer;
+import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,6 +103,7 @@ public class ScriptHolder {
             scope.put("MTRClientData", scope, new NativeJavaClass(scope, ClientData.class));
             scope.put("IBlock", scope, new NativeJavaClass(scope, IBlock.class));
 
+            scope.put("ConfigResponder", scope, new NativeJavaClass(scope, ConfigResponder.class));
             scope.put("ClientConfig", scope, new NativeJavaClass(scope, ClientConfig.class));
             scope.put("MinecraftClient", scope, new NativeJavaClass(scope, MinecraftClientUtil.class));
             scope.put("MinecraftClientUtil", scope, new NativeJavaClass(scope, MinecraftClientUtil.class));
