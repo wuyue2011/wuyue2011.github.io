@@ -61,9 +61,9 @@ public class ClientConfig {
             customConfig.clear();
             if (configObject.has("custom")) {
                 JsonObject customObject = configObject.getAsJsonObject("custom");
-                Set<String> keys = customObject.keySet();
-                for (String key : keys) {
-                    customConfig.put(key, customObject.get(key).getAsString());
+                Set<Map.Entry<String, JsonElement>> entries = customObject.entrySet();
+                for (Map.Entry<String, JsonElement> entry : entries) {
+                    customConfig.put(entry.getKey(), entry.getValue().getAsString());
                 }
             }
         } catch (Exception ex) {
