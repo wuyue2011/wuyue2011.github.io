@@ -23,8 +23,8 @@
     "gui.mtrsteamloco.eye_candy.select": "Objectos de Selecção",
     "gui.mtrsteamloco.eye_candy.as_platform": "Como plataforma",
     "gui.mtrsteamloco.eye_candy.fixed": "A posição do modelo é fixa e não pode ser editada",
-    "gui.mtrsteamloco.eye_candy.custom_config": "Configuração personalizada",
-    "gui.mtrsteamloco.eye_candy.custom_config.cannot_edit": "Não é possível editar os itens de configuração",
+    "gui.mtrsteamloco.eye_candy.custom_config.editable": "Itens de configuração personalizados",
+    "gui.mtrsteamloco.eye_candy.custom_config.uneditable": "Não é possível editar os itens de configuração",
     "gui.mtrsteamloco.eye_candy.shape": "Forma actual:%s",
     "gui.mtrsteamloco.eye_candy.collision": "Caixa de colisão actual:%s",
     "gui.mtrsteamloco.brush_edit_rail.brush_hint": "Defina a função do pincel. Em seguida, clique com o botão direito do mouse em outras áreas para aplicar em massa.",
@@ -54,5 +54,7 @@
     "gui.mtrsteamloco.config.client.preloadbbmodel": "Otimização da pré-carga BBMODEL",
     "gui.mtrsteamloco.config.client.preloadbbmodel.description": "Esta otimização melhora a eficiência de renderização de trens personalizados usando BBMODEL, especialmente para modelos finos.",
     "gui.mtrsteamloco.config.client.scriptdebugoverlay": "Mostrar as informações de depuração do JS",
+    "gui.mtrsteamloco.config.client.custom_config.engaged": "Configurações personalizadas usadas",
+    "gui.mtrsteamloco.config.client.custom_config.untapped": "Configurações personalizadas não utilizadas",
     "gui.mtrsteamloco.mtr_version_low": "Actualize por favor o MTR: ANTE%s requer MTR%s e versão superior, enquanto a versão atualmente instalada%s é menor."
 }

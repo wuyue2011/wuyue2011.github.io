@@ -12,6 +12,7 @@ import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.impl.builders.TextDescriptionBuilder;
 import net.minecraft.network.chat.Component;
 import mtr.mappings.Text;
+import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,7 +38,7 @@ public class ClientConfig {
 
     public static boolean hideRidingTrain = false;
 
-    private static Map<String, String> customConfig = new HashMap<>();
+    private static Map<String, String> customConfigs = new HashMap<>();
     private static Map<String, ConfigResponder> customResponders = new HashMap<>();
 
     public static void load(Path path) {
@@ -58,12 +59,12 @@ public class ClientConfig {
             enableSmoke = getOrDefault(configObject, "enableSmoke", JsonElement::getAsBoolean, true);
             hideRidingTrain = getOrDefault(configObject, "hideRidingTrain", JsonElement::getAsBoolean, false);
 
-            customConfig.clear();
+            customConfigs.clear();
             if (configObject.has("custom")) {
                 JsonObject customObject = configObject.getAsJsonObject("custom");
                 Set<Map.Entry<String, JsonElement>> entries = customObject.entrySet();
                 for (Map.Entry<String, JsonElement> entry : entries) {
-                    customConfig.put(entry.getKey(), entry.getValue().getAsString());
+                    customConfigs.put(entry.getKey(), entry.getValue().getAsString());
                 }
             }
         } catch (Exception ex) {
@@ -110,7 +111,7 @@ public class ClientConfig {
             configObject.addProperty("hideRidingTrain", hideRidingTrain);
 
             JsonObject customObject = new JsonObject();
-            for (Map.Entry<String, String> entry : customConfig.entrySet()) {
+            for (Map.Entry<String, String> entry : customConfigs.entrySet()) {
                 customObject.addProperty(entry.getKey(), entry.getValue());
             }
 
@@ -127,19 +128,18 @@ public class ClientConfig {
     }
 
     public static void register(ConfigResponder responder) {
-        if (!customConfig.containsKey(responder.key)) {
-            customConfig.put(responder.key, responder.defaultValue);
+        if (!customConfigs.containsKey(responder.key)) {
+            customConfigs.put(responder.key, responder.defaultValue);
         }
-        responder.bind(customConfig);
         customResponders.put(responder.key, responder);
     }
 
     public static String get(String key) {
-        return customConfig.get(key);
+        return customConfigs.get(key);
     }
 
-    public static List<AbstractConfigListEntry> getCustomConfigEntrys() {
-        Set<String> keys = customConfig.keySet();
+    public static List<AbstractConfigListEntry> getCustomConfigEntrys(ConfigEntryBuilder builder) {
+        Set<String> keys = customConfigs.keySet();
         List<String> usedKeys = new ArrayList<>();
         List<String> unusedKeys = new ArrayList<>();
         for (String key : keys) {
@@ -151,15 +151,15 @@ public class ClientConfig {
         }
         List<AbstractConfigListEntry> entries = new ArrayList<>();
         if (!usedKeys.isEmpty()) {
-            entries.add(new TextDescriptionBuilder(ConfigResponder.resetButtonKey, Text.literal(UUID.randomUUID().toString()), Text.literal("已使用的自定义配置")).build());
+            entries.add(builder.startTextDescription(Text.translatable("gui.mtrsteamloco.config.client.custom_config.engaged")).build());
             for (String key : usedKeys) {
-                entries.add(customResponders.get(key).getListEntry(customConfig.get(key)));
+                entries.add(customResponders.get(key).getListEntry(customConfigs, builder));
             }
         }
         if (!unusedKeys.isEmpty()) {
-            entries.add(new TextDescriptionBuilder(ConfigResponder.resetButtonKey, Text.literal(UUID.randomUUID().toString()), Text.literal("未使用的自定义配置")).build());
+            entries.add(builder.startTextDescription(Text.translatable("gui.mtrsteamloco.config.client.custom_config.untapped")).build());
             for (String key : unusedKeys) {
-                entries.add(new StringFieldBuilder(ConfigResponder.resetButtonKey, Text.translatable(key), customConfig.get(key)).setSaveConsumer(str -> customConfig.put(key, str)).setDefaultValue(customConfig.get(key)).build());
+                entries.add(builder.startTextDescription(Text.literal(key + " : " + customConfigs.get(key))).build());
             };
         }
         return entries;

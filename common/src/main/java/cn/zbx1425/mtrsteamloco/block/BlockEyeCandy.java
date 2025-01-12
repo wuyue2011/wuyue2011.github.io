@@ -63,6 +63,7 @@ import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
 import mtr.mappings.Text;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.impl.builders.TextDescriptionBuilder;
+import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 
 import java.util.*;
 import java.io.IOException;
@@ -216,8 +217,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public boolean fullLight = false;
 
-        private static Map<String, String> customConfigs = new HashMap<>();
-        private static Map<String, ConfigResponder> customResponders = new HashMap<>();
+        private Map<String, String> customConfigs;
+        private Map<String, ConfigResponder> customResponders;
 
         public EyeCandyScriptContext scriptContext = null;
 
@@ -235,6 +236,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public BlockEntityEyeCandy(BlockPos pos, BlockState state) {
             super(Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get(), pos, state);
+            customConfigs = new HashMap<>();
+            customResponders = new HashMap<>();
         }
 
         @Override
@@ -443,11 +446,10 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             return customConfigs.get(key);
         }
 
-        public void registerCustomConfigs(ConfigResponder responder) {
+        public void registerCustomConfig(ConfigResponder responder) {
             if (!customConfigs.containsKey(responder.key)) {
                 customConfigs.put(responder.key, responder.defaultValue);
             }
-            responder.bind(customConfigs);
             customResponders.put(responder.key, responder);
         }
 
@@ -460,7 +462,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             customConfigs.put(key, value);
         }
 
-        public List<AbstractConfigListEntry> getCustomConfigEntrys() {
+        public List<AbstractConfigListEntry> getCustomConfigEntrys(ConfigEntryBuilder builder) {
             Map<String, AbstractConfigListEntry> hasResponders = new HashMap<>();
             Map<String, AbstractConfigListEntry> noResponders = new HashMap<>();
             if (!customConfigs.isEmpty()) {
@@ -468,9 +470,9 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                 for (String key : keys) {
                     if (customResponders.containsKey(key)) {
                         ConfigResponder responder = customResponders.get(key);
-                        hasResponders.put(key, responder.getListEntry(customConfigs.get(key)));
+                        hasResponders.put(key, responder.getListEntry(customConfigs, builder));
                     } else {
-                        noResponders.put(key, new TextDescriptionBuilder(ConfigResponder.resetButtonKey, Text.literal(UUID.randomUUID().toString()), Text.literal(key + " : " + customConfigs.get(key))).build());
+                        noResponders.put(key, builder.startTextDescription(Text.literal(key + " : " + customConfigs.get(key))).build());
                     }
                 }
             }
@@ -480,14 +482,14 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             Collections.sort(sortedNoKeys);
             List<AbstractConfigListEntry> entries = new ArrayList<>();
             if (!sortedHasKeys.isEmpty()) {
-                entries.add(new TextDescriptionBuilder(ConfigResponder.resetButtonKey, Text.literal(UUID.randomUUID().toString()), Text.translatable("gui.mtrsteamloco.eye_candy.custom_config")).build());
+                entries.add(builder.startTextDescription(Text.translatable("gui.mtrsteamloco.eye_candy.custom_config.editable")).build());
                 for (String key : sortedHasKeys) {
                     entries.add(hasResponders.get(key));
                 }
             }
 
             if (!sortedNoKeys.isEmpty()) {
-                entries.add(new TextDescriptionBuilder(ConfigResponder.resetButtonKey, Text.literal(UUID.randomUUID().toString()), Text.translatable("gui.mtrsteamloco.eye_candy.custom_config.cannot_edit")).build());
+                entries.add(builder.startTextDescription(Text.translatable("gui.mtrsteamloco.eye_candy.custom_config.uneditable")).build());
                 for (String key : sortedNoKeys) {
                     entries.add(noResponders.get(key));
                 }

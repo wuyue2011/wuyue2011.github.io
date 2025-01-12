@@ -23,8 +23,8 @@
     "gui.mtrsteamloco.eye_candy.select": "Auswahlobjekte",
     "gui.mtrsteamloco.eye_candy.as_platform": "Als Plattform",
     "gui.mtrsteamloco.eye_candy.fixed": "Die Modellposition ist fix und kann nicht bearbeitet werden",
-    "gui.mtrsteamloco.eye_candy.custom_config": "Benutzerdefinierte Konfiguration",
-    "gui.mtrsteamloco.eye_candy.custom_config.cannot_edit": "Konfigurationselemente können nicht bearbeitet werden",
+    "gui.mtrsteamloco.eye_candy.custom_config.editable": "Benutzerdefinierte Konfigurationselemente",
+    "gui.mtrsteamloco.eye_candy.custom_config.uneditable": "Konfigurationselemente können nicht bearbeitet werden",
     "gui.mtrsteamloco.eye_candy.shape": "Aktuelle Form:%s",
     "gui.mtrsteamloco.eye_candy.collision": "Aktuelle Kollisionsbox:%s",
     "gui.mtrsteamloco.brush_edit_rail.brush_hint": "Stellen Sie die Funktion des Pinsels ein. Klicken Sie als nächstes mit der rechten Maustaste auf andere Bereiche, die in Massen angewendet werden sollen.",
@@ -54,5 +54,7 @@
     "gui.mtrsteamloco.config.client.preloadbbmodel": "Optimierung der Vorspannung BBMODEL",
     "gui.mtrsteamloco.config.client.preloadbbmodel.description": "Diese Optimierung verbessert die Rendereffizienz von Sonderzügen mit BBMODEL, insbesondere bei feinen Modellen.",
     "gui.mtrsteamloco.config.client.scriptdebugoverlay": "JS-Debugging-Informationen anzeigen",
+    "gui.mtrsteamloco.config.client.custom_config.engaged": "Verwendete benutzerdefinierte Konfigurationen",
+    "gui.mtrsteamloco.config.client.custom_config.untapped": "Nicht verwendete benutzerdefinierte Konfigurationen",
     "gui.mtrsteamloco.mtr_version_low": "Bitte aktualisieren Sie MTR: ANTE%s erfordert MTR%s und höher Version, während die aktuell installierte%s Version niedriger ist."
 }

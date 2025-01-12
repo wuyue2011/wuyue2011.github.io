@@ -23,8 +23,8 @@
     "gui.mtrsteamloco.eye_candy.select": "选择物件",
     "gui.mtrsteamloco.eye_candy.as_platform": "当作站台",
     "gui.mtrsteamloco.eye_candy.fixed": "模型位置已固定，无法编辑",
-    "gui.mtrsteamloco.eye_candy.custom_config": "自定义配置",
-    "gui.mtrsteamloco.eye_candy.custom_config.cannot_edit": "无法编辑的配置项",
+    "gui.mtrsteamloco.eye_candy.custom_config.editable": "自定义配置项",
+    "gui.mtrsteamloco.eye_candy.custom_config.uneditable": "无法编辑的配置项",
     "gui.mtrsteamloco.eye_candy.shape": "当前形状: %s",
     "gui.mtrsteamloco.eye_candy.collision": "当前碰撞箱: %s",
     "gui.mtrsteamloco.brush_edit_rail.brush_hint": "设置刷子的功能。接下来右击其他处可批量应用。",
@@ -54,5 +54,7 @@
     "gui.mtrsteamloco.config.client.preloadbbmodel": "BBMODEL 预加载优化",
     "gui.mtrsteamloco.config.client.preloadbbmodel.description": "这项优化提升使用 BBMODEL 的自定义列车的渲染效率，对于精细的模型尤其有提升。\n但是它增加内存用量，且据报在一些设备上优化效果不佳或甚至负优化。",
     "gui.mtrsteamloco.config.client.scriptdebugoverlay": "显示 JS 调试信息",
+    "gui.mtrsteamloco.config.client.custom_config.engaged": "已使用的自定义配置",
+    "gui.mtrsteamloco.config.client.custom_config.untapped": "未使用的自定义配置",
     "gui.mtrsteamloco.mtr_version_low": "请更新 MTR: ANTE %s 需要 MTR %s 及以上版本, 而现安装的 %s 版本较低。"
 }

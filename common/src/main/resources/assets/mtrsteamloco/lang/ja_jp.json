@@ -23,8 +23,8 @@
     "gui.mtrsteamloco.eye_candy.select": "アイテムの選択",
     "gui.mtrsteamloco.eye_candy.as_platform": "ホームとして",
     "gui.mtrsteamloco.eye_candy.fixed": "モデルの場所は固定されており、編集できません",
-    "gui.mtrsteamloco.eye_candy.custom_config": "カスタム構成",
-    "gui.mtrsteamloco.eye_candy.custom_config.cannot_edit": "編集できない構成項目",
+    "gui.mtrsteamloco.eye_candy.custom_config.editable": "カスタム構成アイテム",
+    "gui.mtrsteamloco.eye_candy.custom_config.uneditable": "編集できない構成項目",
     "gui.mtrsteamloco.eye_candy.shape": "現在のシェイプ:%s",
     "gui.mtrsteamloco.eye_candy.collision": "現在の衝突ボックス:%s",
     "gui.mtrsteamloco.brush_edit_rail.brush_hint": "ブラシの機能を設定します。次に、他の場所を右クリックして一括適用します。",
@@ -54,5 +54,7 @@
     "gui.mtrsteamloco.config.client.preloadbbmodel": "BBMODELプリロード最適化",
     "gui.mtrsteamloco.config.client.preloadbbmodel.description": "この最適化により、BBMODELを使用したカスタム列車のレンダリング効率が向上し、特に細かいモデルに対して向上します。",
     "gui.mtrsteamloco.config.client.scriptdebugoverlay": "JSデバッグ情報の表示",
+    "gui.mtrsteamloco.config.client.custom_config.engaged": "使用されているカスタム構成",
+    "gui.mtrsteamloco.config.client.custom_config.untapped": "未使用のカスタム構成",
     "gui.mtrsteamloco.mtr_version_low": "MTRを更新してください:ANTE%sにはMTR%s以上のバージョンが必要ですが、現在インストールされている%sバージョンは低いです。"
 }

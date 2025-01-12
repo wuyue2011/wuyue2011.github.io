@@ -14,10 +14,6 @@ ANTE 提供 `ConfigResponder` 类来表示配置的响应器，存储配置的�
     `errorSupplier` 配置项的错误提示，用于提示用户输入错误。
     `saveConsumer` 配置项的保存函数，您只需要在此函数中写入您的处理逻辑即可。
 
-- `ConfigResponder.bind(map: Map<String, String>)`
-
-    绑定一个数据表。(您不需要调用此方法。)
-
 `ConfigResponder` 含有以下属性，除了 `key` 以外，其他属性您可以随时修改。
 
 | 属性 | 说明 |

@@ -214,7 +214,7 @@ public class EyeCandyScreen {
                 .build());
         }
 
-        List<AbstractConfigListEntry> customEntrys = blockEntity.getCustomConfigEntrys();
+        List<AbstractConfigListEntry> customEntrys = blockEntity.getCustomConfigEntrys(entryBuilder);
         for (AbstractConfigListEntry entry : customEntrys) {
             common.addEntry(entry);
         }

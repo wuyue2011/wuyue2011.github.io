@@ -23,8 +23,8 @@
     "gui.mtrsteamloco.eye_candy.select": "Choisir un objet",
     "gui.mtrsteamloco.eye_candy.as_platform": "Comme plate - forme",
     "gui.mtrsteamloco.eye_candy.fixed": "La position du modèle est fixe et ne peut pas être modifiée",
-    "gui.mtrsteamloco.eye_candy.custom_config": "Configuration personnalisée",
-    "gui.mtrsteamloco.eye_candy.custom_config.cannot_edit": "Éléments de configuration qui ne peuvent pas être modifiés",
+    "gui.mtrsteamloco.eye_candy.custom_config.editable": "Personnaliser les éléments de configuration",
+    "gui.mtrsteamloco.eye_candy.custom_config.uneditable": "Éléments de configuration qui ne peuvent pas être modifiés",
     "gui.mtrsteamloco.eye_candy.shape": "Forme actuelle:%s",
     "gui.mtrsteamloco.eye_candy.collision": "Boîte de collision actuelle:%s",
     "gui.mtrsteamloco.brush_edit_rail.brush_hint": "Définir les fonctions de la brosse. Ensuite, faites un clic droit ailleurs pour l'application par lots.",
@@ -54,5 +54,7 @@
     "gui.mtrsteamloco.config.client.preloadbbmodel": "Optimisation du préchargement bbmodel",
     "gui.mtrsteamloco.config.client.preloadbbmodel.description": "Cette optimisation améliore l'efficacité de rendu des trains personnalisés avec bbmodel, en particulier pour les modèles fins.",
     "gui.mtrsteamloco.config.client.scriptdebugoverlay": "Afficher les informations de débogage JS",
+    "gui.mtrsteamloco.config.client.custom_config.engaged": "Configuration personnalisée déjà utilisée",
+    "gui.mtrsteamloco.config.client.custom_config.untapped": "Configuration personnalisée non utilisée",
     "gui.mtrsteamloco.mtr_version_low": "Veuillez mettre à jour MTR: Ante%s nécessite MTR%s et supérieur, alors que la version%s installée est inférieure."
 }
