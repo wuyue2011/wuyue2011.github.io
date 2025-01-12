@@ -153,7 +153,7 @@ NTE 调用这几个函数时会使用三个参数，稍后介绍其各自的内�
 
 - `BlockEntityEyeCandy.putCustomConfig(key: String, value: String): void`
 
-  添加或修改一项配置(如果没有注册相应器则在装饰物件的屏幕中无法修改)
+  添加或修改一项配置(如果没有注册响应器则在装饰物件的屏幕中无法修改)
 
 - `BlockEntityEyeCandy.getCustomConfig(key: String): String`
 
