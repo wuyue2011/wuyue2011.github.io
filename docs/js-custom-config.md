@@ -49,18 +49,18 @@ ANTE 提供 `ConfigResponder` 类来表示配置的响应器，存储配置的�
 
 ```javascript
 // ···
-
+// 如果值不是 true 或 false，则提示用户输入错误
 const errorSupplier = (str) => {
     if (str == "true" || str == "false") return java.util.Optional.empty();
     else return java.util.Optional.of(ComponentUtil.translatable("text.aph.config.error"));
 }
-let times = 0;
 
-ClientConfig.register("myConfig", ComponentUtil.translatable("text.aph.config.myConfig"), "true", value => value, errorSupplier, str => times++);
+ClientConfig.register("myConfig", ComponentUtil.translatable("text.aph.config.myConfig"), "true", value => value, errorSupplier, str => {});
 
 function render(ctx, state, entity) {
     // ···
     const config = ClientConfig.get("myConfig");// String
+    ctx.setDebugInfo("myConfig: " + config)
     // ···
 }
 // ···
