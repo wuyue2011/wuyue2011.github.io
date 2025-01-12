@@ -36,7 +36,7 @@
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_set_none": "Kurve abbrechen",
     "gui.mtrsteamloco.error.title": "Fehler beim Laden von ANTE-Ressourcen ist aufgetreten",
     "gui.mtrsteamloco.error.explain": "Wenn Sie ein gewöhnlicher Spieler sind, klicken Sie einfach auf Abbrechen. Wenn Sie der Autor des Ressourcenpakets sind, können Sie die Fehlermeldung anzeigen.",
-    "gui.mtrsteamloco.error.invalid_value": "Kein gültiger Wert!",
+    "gui.mtrsteamloco.error.invalid_value": "Kein gültiger Wert",
     "gui.mtrsteamloco.config.client.title": "ANTE-Client-Konfiguration",
     "gui.mtrsteamloco.config.client.category.common": "Häufig verwendet",
     "gui.mtrsteamloco.config.client.category.misc": "Sonstiges",

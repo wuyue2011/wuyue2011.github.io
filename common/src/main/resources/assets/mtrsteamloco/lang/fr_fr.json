@@ -36,7 +36,7 @@
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_set_none": "Annuler la courbe",
     "gui.mtrsteamloco.error.title": "Erreur lors du chargement de la ressource ante",
     "gui.mtrsteamloco.error.explain": "Si vous êtes un joueur régulier, cliquez directement sur Annuler. Si vous êtes l'auteur du package de ressources, vous pouvez afficher les informations d'erreur.",
-    "gui.mtrsteamloco.error.invalid_value": "Pas une valeur valide!",
+    "gui.mtrsteamloco.error.invalid_value": "Pas une valeur valide",
     "gui.mtrsteamloco.config.client.title": "Configuration du client ante",
     "gui.mtrsteamloco.config.client.category.common": "Couramment utilisé",
     "gui.mtrsteamloco.config.client.category.misc": "Divers",

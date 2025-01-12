@@ -435,6 +435,10 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             scriptHolder.tryCallBeClickedFunctionAsync(scriptContext, player);
         }
 
+        public String getCustomConfig() {
+            return customConfig.toString();
+        } 
+
         public String getCustomConfig(String key) {
             return customConfig.get(key);
         }

@@ -36,7 +36,7 @@
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_set_none": "커브 취소",
     "gui.mtrsteamloco.error.title": "ANTE 리소스 로드 중 오류 발생",
     "gui.mtrsteamloco.error.explain": "일반 플레이어인 경우 취소를 클릭하면 됩니다.리소스 패키지 작성자라면 오류 정보를 볼 수 있습니다.",
-    "gui.mtrsteamloco.error.invalid_value": "유효한 값이 아닙니다!",
+    "gui.mtrsteamloco.error.invalid_value": "유효한 값이 아닙니다.",
     "gui.mtrsteamloco.config.client.title": "ANTE 클라이언트 구성",
     "gui.mtrsteamloco.config.client.category.common": "상용",
     "gui.mtrsteamloco.config.client.category.misc": "기타",

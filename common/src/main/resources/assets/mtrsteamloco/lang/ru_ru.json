@@ -36,7 +36,7 @@
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_set_none": "Отменить кривую",
     "gui.mtrsteamloco.error.title": "Ошибка при загрузке ресурса ANTE",
     "gui.mtrsteamloco.error.explain": "Если вы обычный игрок, просто нажмите кнопку отменить. Если вы являетесь автором пакета ресурсов, вы можете просматривать информацию об ошибке.",
-    "gui.mtrsteamloco.error.invalid_value": "Не эффективное значение!",
+    "gui.mtrsteamloco.error.invalid_value": "Не эффективное значение",
     "gui.mtrsteamloco.config.client.title": "Настройка клиента ANTE",
     "gui.mtrsteamloco.config.client.category.common": "Обычно",
     "gui.mtrsteamloco.config.client.category.misc": "Разное",

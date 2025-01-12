@@ -36,7 +36,7 @@
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_set_none": "取消曲線",
     "gui.mtrsteamloco.error.title": "ANTE資源加載過程中出現錯誤",
     "gui.mtrsteamloco.error.explain": "如果您是普通玩家，直接點擊取消即可。 如果您是資源包作者，您可檢視錯誤資訊。",
-    "gui.mtrsteamloco.error.invalid_value": "不是有效值！",
+    "gui.mtrsteamloco.error.invalid_value": "不是有效值",
     "gui.mtrsteamloco.config.client.title": "ANTE用戶端配寘",
     "gui.mtrsteamloco.config.client.category.common": "常用",
     "gui.mtrsteamloco.config.client.category.misc": "雜項",

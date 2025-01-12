@@ -36,7 +36,7 @@
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_set_none": "Cancelar Curva",
     "gui.mtrsteamloco.error.title": "Ocorreu um erro durante o processo de carregamento de recursos ANTE",
     "gui.mtrsteamloco.error.explain": "Se você é um jogador comum, basta clicar em cancelar. Se você for o autor do pacote de recursos, poderá exibir a mensagem de erro.",
-    "gui.mtrsteamloco.error.invalid_value": "Não é um valor válido!",
+    "gui.mtrsteamloco.error.invalid_value": "Não é um valor válido",
     "gui.mtrsteamloco.config.client.title": "Configuração do cliente ANTE",
     "gui.mtrsteamloco.config.client.category.common": "Comumente utilizado",
     "gui.mtrsteamloco.config.client.category.misc": "diversos",

@@ -36,7 +36,7 @@
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_set_none": "カーブのキャンセル",
     "gui.mtrsteamloco.error.title": "ANTEリソースロード中にエラーが発生しました",
     "gui.mtrsteamloco.error.explain": "普通のプレイヤーであれば、キャンセルをクリックしてください。リソースバンドルの作成者であれば、エラー情報をチェックできます。",
-    "gui.mtrsteamloco.error.invalid_value": "有効な値ではありません！",
+    "gui.mtrsteamloco.error.invalid_value": "有効な値ではありません",
     "gui.mtrsteamloco.config.client.title": "ANTEクライアント構成",
     "gui.mtrsteamloco.config.client.category.common": "一般的な",
     "gui.mtrsteamloco.config.client.category.misc": "その他",

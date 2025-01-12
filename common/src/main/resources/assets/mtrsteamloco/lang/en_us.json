@@ -36,7 +36,7 @@
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_set_none": "Cancel Curve",
     "gui.mtrsteamloco.error.title": "Error occurred during ANTE resource loading process",
     "gui.mtrsteamloco.error.explain": "If you are an ordinary player, simply click cancel. If you are the author of the resource package, you can view the error message.",
-    "gui.mtrsteamloco.error.invalid_value": "Not a valid value!",
+    "gui.mtrsteamloco.error.invalid_value": "Not a valid value",
     "gui.mtrsteamloco.config.client.title": "ANTE client configuration",
     "gui.mtrsteamloco.config.client.category.common": "Commonly used",
     "gui.mtrsteamloco.config.client.category.misc": "miscellaneous",

@@ -36,7 +36,7 @@
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_set_none": "Cancelar la curva",
     "gui.mtrsteamloco.error.title": "Se produjo un error durante la carga de recursos ante",
     "gui.mtrsteamloco.error.explain": "Si usted es un jugador ordinario, haga clic directamente para cancelar. Si es el autor del paquete de recursos, puede revisar la información errónea.",
-    "gui.mtrsteamloco.error.invalid_value": "¡¡ no es un valor válido!",
+    "gui.mtrsteamloco.error.invalid_value": "No es un valor válido",
     "gui.mtrsteamloco.config.client.title": "Configuración del cliente ante",
     "gui.mtrsteamloco.config.client.category.common": "Uso común",
     "gui.mtrsteamloco.config.client.category.misc": "Diversos",
