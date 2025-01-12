@@ -38,7 +38,7 @@ public class ScriptHolder {
     private final List<Function> createFunctions = new ArrayList<>();
     private final List<Function> renderFunctions = new ArrayList<>();
     private final List<Function> disposeFunctions = new ArrayList<>();
-    private final List<Function> beClickedFunctions = new ArrayList<>();
+    private final List<Function> useFunctions = new ArrayList<>();
 
     public long failTime = 0;
     public Exception failException = null;
@@ -54,7 +54,7 @@ public class ScriptHolder {
         this.createFunctions.clear();
         this.renderFunctions.clear();
         this.disposeFunctions.clear();
-        this.beClickedFunctions.clear();
+        this.useFunctions.clear();
         this.failTime = 0;
         this.failException = null;
 
@@ -144,8 +144,8 @@ public class ScriptHolder {
                 acquireFunction("render" + contextTypeName, renderFunctions);
                 acquireFunction("dispose", disposeFunctions);
                 acquireFunction("dispose" + contextTypeName, disposeFunctions);
-                acquireFunction("beClicked", beClickedFunctions);
-                acquireFunction("beClicked" + contextTypeName, beClickedFunctions);
+                acquireFunction("use", useFunctions);
+                acquireFunction("use" + contextTypeName, useFunctions);
             }
             ScriptResourceUtil.activeContext = null;
             ScriptResourceUtil.activeScope = null;
@@ -229,7 +229,7 @@ public class ScriptHolder {
         if (!(scriptCtx.scriptStatus == null || scriptCtx.scriptStatus.isDone())) return;
         if (scriptCtx.disposed) return;
         if (scriptCtx.created) {
-            scriptCtx.scriptStatus = callFunctionAsync(beClickedFunctions, scriptCtx, null, new WapperedEntity(player));
+            scriptCtx.scriptStatus = callFunctionAsync(useFunctions, scriptCtx, null, new WapperedEntity(player));
         }
     }
 

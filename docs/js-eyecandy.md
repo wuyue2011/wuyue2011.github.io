@@ -38,16 +38,18 @@ NTE 支持通过 JavaScript 控制装饰物件的渲染。但只能选择完全�
 您的脚本中应包含以下函数，NTE 会按需调用它们：
 
 ```javascript
-function create(ctx, state, block) { ... }
-function render(ctx, state, block) { ... }
-function dispose(ctx, state, block) { ... }
+function create(ctx, state, entity) { ... }
+function render(ctx, state, entity) { ... }
+function dispose(ctx, state, entity) { ... }
+function use(ctx, state, entity, player) { ... }
 ```
 
 | 函数    | 说明                                                         |
 | ------- | ------------------------------------------------------------ |
 | create  | 在列车最开始被加载时调用，可用于进行一些初始化的操作，例如创建动态贴图。 |
-| render  | *大致*每帧调用一次。用于主要的显示逻辑。代码在单独线程上运行以便不拖低 FPS。如果代码耗时太长，就可能实际上好几帧才运行一次。 |
-| dispose | 在列车驶出可视范围时调用。可用于释放动态贴图之类的操作。     |
+| render  | **大致**每帧调用一次。用于主要的显示逻辑。代码在单独线程上运行以便不拖低 FPS。如果代码耗时太长，就可能实际上好几帧才运行一次。 |
+| dispose | 超出可视范围时调用。可用于释放动态贴图之类的操作。     |
+| use | 玩家使用装饰物件时使用。(除了手持刷子使用) |
 
 NTE 调用这几个函数时会使用三个参数，稍后介绍其各自的内容。
 
@@ -55,8 +57,8 @@ NTE 调用这几个函数时会使用三个参数，稍后介绍其各自的内�
 | ----------------- | ------------------------------------------------------------ |
 | 第一个 (`ctx`)    | 用于向 NTE 输出要如何渲染的相关操作。类型是 EyeCandyScriptContext |
 | 第二个 (`state`)  | 一个和某一个装饰物件方块关联的 JavaScript 对象。初始值是 `{}`，可随意设置其上的成员，用来存储一些需要每个方块都不同的内容。 |
-| 第三个 (`entity`)  | 用于获取方块的状态。类型是 BlockEntityEyeCandy。                           |
-
+| 第三个 (`entity`)  | 用于获取方块的状态。类型是 BlockEntityEyeCandy。|
+| 第四个 (`player`)  | 使用装饰物件的玩家。类型是 WapperedEntity |
 
 接下来列出您可以进行的所有渲染控制操作，和可以获取到的所有关于方块的信息。
 

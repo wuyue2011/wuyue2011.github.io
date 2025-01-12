@@ -378,3 +378,31 @@ const result = ComponentUtil.getString(component);// 转换为 String
 - `PlacementOrder.DOWNSIDE`
 
   下面。
+
+## WapperedEntity
+
+由于混淆表原因，我的世界的Player等实体对象不能直接被使用，这里 ANTE 提供了 `WapperedEntity` 类来处理这些问题，并提供了一些方法来获取实体的相关信息。
+
+- `new WapperedEntity(entity :Entity)`
+
+  创建一个 `WapperedEntity`。
+
+- `WapperedEntity.getX(): double`
+
+  获取实体的 X 坐标。
+
+- `WapperedEntity.getY(): double`
+
+  获取实体的 Y 坐标。
+
+- `WapperedEntity.getZ(): double`
+
+  获取实体的 Z 坐标。
+
+- `WapperedEntity.getLookAngle(): Vector3f`
+
+  获取实体的视线方向。
+
+- `WapperedEntity.getPosition(): Vector3f`
+
+  获取实体的位置。
