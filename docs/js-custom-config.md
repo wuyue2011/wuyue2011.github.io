@@ -4,26 +4,18 @@
 
 ANTE 提供 `ConfigResponder` 类来表示配置的响应器，存储配置的信息。
 
-- `new ConfigResponder(key: String, name: Component, defaultValue: String, transformer: Function<String, String>, errorSupplier: Function<String, Optional<Component>>, saveConsumer: Consumer<String>)`
+- `new ConfigResponder(key: String, name: Component, defaultValue: String, transformer: Function<String, String>, errorSupplier: Function<String, Optional<Component>>, saveConsumer: Consumer<String>, consumer: Consumer<TextFieldBuilder>)`
 
     创建一个配置响应器。
-    `key` 配置项的标识。
-    `name` 配置项的名称。
-    `defaultValue` 配置项的默认值。
-    `transformer` 配置项的转换器，显示的值是保存的值经过转换器转换后的结果。
-    `errorSupplier` 配置项的错误提示，用于提示用户输入错误。
-    `saveConsumer` 配置项的保存函数，您只需要在此函数中写入您的处理逻辑即可。
+    `key`: 配置项的标识。
+    `name`: 配置项的名称。
+    `defaultValue`: 配置项的默认值。
+    `transformer`: 配置项的转换器，显示的值是保存的值经过转换器转换后的结果。
+    `errorSupplier`: 配置项的错误提示，用于提示用户输入错误。
+    `saveConsumer`: 配置项的保存函数，您只需要在此函数中写入您的处理逻辑即可。
+    `consumer`: 对 `TextFieldBuilder` 的更多操作。
 
-`ConfigResponder` 含有以下属性，除了 `key` 以外，其他属性您可以随时修改。
-
-| 属性 | 说明 |
-| ------------------- | ------------------- |
-| key | 配置项的标识 |
-| name | 配置项的名称 |
-| defaultValue | 配置项的默认值 |
-| transformer | 配置项的转换器 |
-| errorSupplier | 配置项的错误提示 |
-| saveConsumer | 配置项的保存函数 |
+`ConfigResponder` 含有以上属性，除了 `key` 以外，其他属性您可以随时修改。
 
 ## ClientConfig
 
