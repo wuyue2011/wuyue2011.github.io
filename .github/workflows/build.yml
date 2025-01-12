@@ -1,7 +1,9 @@
 # Automatically build the project and run any configured tests for every push
 # and submitted pull request. This can help catch issues that only occur on
 # certain platforms or Java versions, and provides a first line of defence
-# against bad commits.
+# against bad commits
+#      - name: Validate gradle wrapper
+#        uses: gradle/wrapper-validation-action@v1.
 
 name: Build
 on: [ pull_request, push ]
