@@ -156,7 +156,8 @@ public class ClientConfig {
                 entries.add(customResponders.get(key).getListEntry(customConfigs, builder));
             }
         }
-        if (!unusedKeys.isEmpty()) {
+        // if (!unusedKeys.isEmpty()) {
+        if (false) {
             entries.add(builder.startTextDescription(Text.translatable("gui.mtrsteamloco.config.client.custom_config.untapped")).build());
             for (String key : unusedKeys) {
                 entries.add(builder.startTextDescription(Text.literal(key + " : " + customConfigs.get(key))).build());
