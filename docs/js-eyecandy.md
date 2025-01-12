@@ -145,7 +145,7 @@ NTE 调用这几个函数时会使用三个参数，稍后介绍其各自的内�
 
 - `BlockEntityEyeCandy.registerCustomConfig(responder: ConfigResponder): void`
 
-  注册一个[响应器](js-custom-config.md)，如果原来没有值则会自动添加。
+  注册一个[响应器](js-custom-config.md)，如果原来没有值则会添加默认值，如果原来有则不会变动。
 
 - `BlockEntityEyeCandy.removeCustomConfig(key: String): void`
 
