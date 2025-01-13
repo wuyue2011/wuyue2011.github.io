@@ -46,7 +46,10 @@ const errorSupplier = (str) => {
     else return java.util.Optional.of(ComponentUtil.translatable("text.aph.config.error"));
 }
 
-const res = new ConfigResponder(configKey, ComponentUtil.translatable("text.aph.config.myConfig"), "true", value => value, errorSupplier, str => {}, (builder, value) => {});
+const res = new ConfigResponder(configKey, 
+    ComponentUtil.translatable("text.aph.config.myConfig"), "true", 
+    value => value, errorSupplier, str => {}, 
+    (builder, value) => {});
 
 ClientConfig.register(res);
 
