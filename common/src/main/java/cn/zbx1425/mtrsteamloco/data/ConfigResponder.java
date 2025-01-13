@@ -23,19 +23,19 @@ public class ConfigResponder {
 
     public ConfigResponder(String key, Component name, String defaultValue) {
         this.key = key;
-        this.defaultValue = defaultValue;
-        this.name = name;
+        setName(name);
+        setDefaultValue(defaultValue);
     }
 
-    public ConfigResponder(String key, Component name, String defaultValue, Function<String, String> transformer,Function<String, Optional<Component>> errorSupplier, Consumer<String> saveConsumer, Function<String, Optional<Component[]>> tooltipSupplier, boolean requireRestart) {
-        this.transformer = transformer;
-        this.errorSupplier =  errorSupplier;
-        this.saveConsumer = saveConsumer;
+    public ConfigResponder(String key, Component name, String defaultValue, Function<String, String> transformer,Function<String, Optional<Component>> errorSupplier, Consumer<String> saveConsumer, Function<String, Optional<List<Component>>> tooltipSupplier, boolean requireRestart) {
         this.key = key;
-        this.defaultValue = defaultValue;
-        this.name = name;
-        this.tooltipSupplier = tooltipSupplier;
-        this.requireRestart = requireRestart;
+        setName(name);
+        setDefaultValue(defaultValue);
+        setTransformer(transformer);
+        setErrorSupplier(errorSupplier);
+        setSaveConsumer(saveConsumer);
+        setTooltipSupplier(tooltipSupplier);
+        setRequireRestart(requireRestart);
     }
 
     public StringListEntry getListEntry(Map<String, String> map, ConfigEntryBuilder builder) {
@@ -71,8 +71,8 @@ public class ConfigResponder {
         return this;
     }
 
-    public ConfigResponder setTooltipSupplier(Function<String, Optional<Component[]>> tooltipSupplier) {
-        this.tooltipSupplier = tooltipSupplier;
+    public ConfigResponder setTooltipSupplier(Function<String, Optional<List<Component>>> tooltipSupplier) {
+        this.tooltipSupplier = str -> tooltipSupplier.apply(str).map(list -> list.toArray(new Component[0]));
         return this;
     }
 

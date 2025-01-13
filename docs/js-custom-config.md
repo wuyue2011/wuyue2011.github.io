@@ -2,7 +2,9 @@
 
 ## ConfigResponder
 
-ANTE 提供 `ConfigResponder` 类来表示配置的响应器，存储配置的信息。更进一步的，请查看[源代码-ConfigResponder.java](https://github.com/aphrodite281/mtr-ante/blob/alpha/common/src/main/java/cn/zbx1425/mtrsteamloco/ClientConfig.java)
+ANTE 提供 `ConfigResponder` 类来表示配置的响应器，存储配置的信息。更进一步的，请查看[源代码-ConfigResponder.java](https://github.com/aphrodite281/mtr-ante/blob/alpha/common/src/main/java/cn/zbx1425/mtrsteamloco/data/ConfigResponder.java)
+
+- `new ConfigResponder(key: String, name: Component, defaultValue: String)`
 
 - `new ConfigResponder(key: String, name: Component, defaultValue: String, transformer: Function<String, String>, errorSupplier: Function<String, Optional<Component>>, saveConsumer: Consumer<String>, consumer: BiConsumer<String, TextFieldBuilder>)`
 
@@ -19,7 +21,7 @@ ANTE 提供 `ConfigResponder` 类来表示配置的响应器，存储配置的�
 
 ## ClientConfig
 
-为了让资源包可以在游戏中调整设置，ANTE向Js环境提供了 `ClientConfig` 类，可以注册和获取配置，配置文件会被保存在客户端。注册后的配置将会出现在 由 `/mtrnte config` 命令调出的设置界面的最下方。
+为了让资源包可以在游戏中调整设置，ANTE向Js环境提供了 `ClientConfig` 类，可以注册和获取配置，配置文件会被保存在客户端。注册后的配置将会出现在 由 `/mtrnte config` 命令调出的设置界面的最下方。更进一步的，请查看[源代码-ClientConfig.java](https://github.com/aphrodite281/mtr-ante/blob/alpha/common/src/main/java/cn/zbx1425/mtrsteamloco/ClientConfig.java)
 
 - `static ClientConfig.register(response: ConfigResponder): void `
 

@@ -30,7 +30,7 @@ public class Main {
 
 	public static final String MOD_ID = "mtrsteamloco";
 
-	public static final Logger LOGGER = LoggerFactory.getLogger("MTR-NTE");
+	public static final Logger LOGGER = LoggerFactory.getLogger("MTR-ANTE");
 	public static final JsonParser JSON_PARSER = new JsonParser();
 
 	public static final boolean enableRegistry;
@@ -63,7 +63,7 @@ public class Main {
 	public static SimpleParticleType PARTICLE_STEAM_SMOKE;
 
 	public static void init(RegistriesWrapper registries) {
-		LOGGER.info("MTR-NTE " + BuildConfig.MOD_VERSION + " built at "
+		LOGGER.info("MTR-ANTE " + BuildConfig.MOD_VERSION + " built at "
 				+ DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.systemDefault()).format(BuildConfig.BUILD_TIME));
 		if (enableRegistry) {
 			registries.registerBlockAndItem("departure_bell", BLOCK_DEPARTURE_BELL, CreativeModeTabs.RAILWAY_FACILITIES);

@@ -23,6 +23,7 @@ import cn.zbx1425.mtrsteamloco.render.scripting.AbstractDrawCalls;
 import cn.zbx1425.mtrsteamloco.ClientConfig;
 import cn.zbx1425.mtrsteamloco.data.ShapeSerializer;
 import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
+import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,6 +110,7 @@ public class ScriptHolder {
             scope.put("ClientConfig", scope, new NativeJavaClass(scope, ClientConfig.class));
             scope.put("MinecraftClient", scope, new NativeJavaClass(scope, MinecraftClientUtil.class));
             scope.put("MinecraftClientUtil", scope, new NativeJavaClass(scope, MinecraftClientUtil.class));
+            scope.put("Component", scope, new NativeJavaClass(scope, Component.class));
 
             try {
                 String[] classesToLoad = {
