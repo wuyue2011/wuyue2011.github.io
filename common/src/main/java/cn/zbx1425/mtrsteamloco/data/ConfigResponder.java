@@ -7,9 +7,10 @@ import me.shedaniel.clothconfig2.gui.entries.StringListEntry;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.impl.builders.TextFieldBuilder;
 
-import java.util.function.Function;
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 public class ConfigResponder {
     // public static final Component resetButtonKey = Text.translatable("text.cloth-config.reset_value");
@@ -19,8 +20,8 @@ public class ConfigResponder {
     public final String key;
     public String defaultValue;
     public Component name;
-    Consumer<TextFieldBuilder> consumer;
-    public ConfigResponder(String key, Component name, String defaultValue, Function<String, String> transformer,Function<String, Optional<Component>> errorSupplier, Consumer<String> saveConsumer, Consumer<TextFieldBuilder> consumer) {
+    public BiConsumer<String, TextFieldBuilder> consumer;
+    public ConfigResponder(String key, Component name, String defaultValue, Function<String, String> transformer,Function<String, Optional<Component>> errorSupplier, Consumer<String> saveConsumer, BiConsumer<String, TextFieldBuilder> consumer) {
         this.transformer = transformer;
         this.errorSupplier =  errorSupplier;
         this.saveConsumer = saveConsumer;
@@ -32,7 +33,7 @@ public class ConfigResponder {
 
     public StringListEntry getListEntry(Map<String, String> map, ConfigEntryBuilder builder) {
         TextFieldBuilder textFieldbuilder = builder.startTextField(name, transformer.apply(map.getOrDefault(key, defaultValue))).setSaveConsumer((str) -> {saveConsumer.accept(str); map.put(key, str);}).setDefaultValue(defaultValue).setErrorSupplier(errorSupplier);
-        consumer.accept(textFieldbuilder);
+        consumer.accept(map.getOrDefault(key, defaultValue), textFieldbuilder);
         return textFieldbuilder.build();
     }
 }
