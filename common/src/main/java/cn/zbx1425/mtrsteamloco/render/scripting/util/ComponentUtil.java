@@ -6,11 +6,11 @@ import net.minecraft.network.chat.Component;
 public interface ComponentUtil{
 
     public static Component translatable(String key, Object... args) {
-        return Text.translatable(key, args);
+        return (Component) Text.translatable(key, args);
     }
 
     public static Component literal(String text) {
-        return Text.literal(text);
+        return (Component) Text.literal(text);
     }
 
     public static String getString(Component component) {
