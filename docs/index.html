@@ -12,7 +12,7 @@
       :root {
         --content-max-width: 65em;
       }
-      #deeplx_translate_element {
+      #google_translate_element {
         position: absolute;
         right: 0;
       }
@@ -28,54 +28,18 @@
     </script>
   </head>
   <body>
-    <div id="deeplx_translate_element">
-      <select id="languageSelector">
-        <option value="EN">English</option>
-        <option value="ZH">中文</option>
-        <option value="JA">日本語</option>
-        <!-- 添加更多语言选项 -->
-      </select>
-      <button onclick="translatePage(document.getElementById('languageSelector').value)">翻译</button>
-    </div>
-    
-    <script>
-      function translateText(text, targetLang) {
-        return fetch('https://api.deeplx.org/translate', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            text: text,
-            target_lang: targetLang,
-          }),
-        })
-        .then(response => response.json())
-        .then(data => data.translated_text)
-        .catch(error => {
-          console.error('翻译出错:', error);
-          return text; // 如果翻译失败，返回原文
-        });
+    <div id="google_translate_element"></div>
+          
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+          { pageLanguage: 'zh-CN' },
+          "google_translate_element"
+        );
       }
-
-      function translatePage(targetLang) {
-        const elements = document.querySelectorAll('body *:not(script):not(style)');
-        elements.forEach(element => {
-          if (element.childNodes.length === 1 && element.childNodes[0].nodeType === Node.TEXT_NODE) {
-            const text = element.childNodes[0].nodeValue.trim();
-            if (text) {
-              translateText(text, targetLang).then(translatedText => {
-                element.childNodes[0].nodeValue = translatedText;
-              });
-            }
-          }
-        });
-      }
-
-      // 默认翻译为英文
-      translatePage('EN');
     </script>
-
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    
     <div id="app"></div>
     <script>
       window.$docsify = {
