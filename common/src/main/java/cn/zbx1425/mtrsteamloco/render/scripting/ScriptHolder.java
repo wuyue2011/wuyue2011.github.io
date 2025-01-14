@@ -28,6 +28,7 @@ import net.minecraft.network.chat.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -111,6 +112,7 @@ public class ScriptHolder {
             scope.put("MinecraftClient", scope, new NativeJavaClass(scope, MinecraftClientUtil.class));
             scope.put("MinecraftClientUtil", scope, new NativeJavaClass(scope, MinecraftClientUtil.class));
             scope.put("Component", scope, new NativeJavaClass(scope, Component.class));
+            scope.put("Optional", scope, new NativeJavaClass(scope, Optional.class))
 
             try {
                 String[] classesToLoad = {
