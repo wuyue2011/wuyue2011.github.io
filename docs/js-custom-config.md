@@ -6,8 +6,6 @@ ANTE 提供 `ConfigResponder` 类来表示配置的响应器，存储配置的�
 
 - `new ConfigResponder(key: String, name: Component, defaultValue: String)`
 
-    创建一个配置响应器。
-
 - `new ConfigResponder(key: String, name: Component, defaultValue: String, transformer: Function<String, String>, errorSupplier: Function<String, Optional<Component>>, saveConsumer: Consumer<String>, tooltipSupplier: Function<String, Optional<List<Component>>>, requireRestart: boolean)`
 
     创建一个配置响应器。
@@ -25,8 +23,10 @@ ANTE 提供 `ConfigResponder` 类来表示配置的响应器，存储配置的�
 | `ConfigResponder.tooltipSupplier: Function<String, Optional<Component[]>>` | `ConfigResponder.setTooltipSupplier(tooltipSupplier: Function<String, Optional<List<Component>>>): ConfigResponder` | 配置项的提示信息 |
 | `ConfigResponder.requireRestart: boolean` | `ConfigResponder.setRequireRestart(requireRestart: boolean): ConfigResponder` | 配置项是否需要重启游戏 |
 
-上文中的 [Optional](https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html) 是 Java 8 引入的类，用来表示一个值可能为空。您可以使用 `importClass(java.util.Optional)` 、 `importClass(java.util)` 引入该类或直接使用 `java.util.Optional` 来表示Optional。
+上文中的 [Optional](https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html) 是 Java 8 引入的类，用来表示一个值可能为空，防止空指针异常。您可以使用 `importClass(java.util.Optional)` 、 `importClass(java.util)` 引入该类或直接使用 `java.util.Optional` 来表示Optional。
+
 `tooltipSupplier` 变量的返回值应该是 `Optional<Component[]>` 而不是 `Optional<List<Component>>` , 由于在 JavaScirpt 环境中得到 `Component[]` 太过麻烦，所以这里提供了 `ConfigResponder.setErrorSupplier(errorSupplier: Function<String, Optional<List<Component>>>)` 方法来代替，您可以直接将 [JavaScirpt的数组](https://github.com/aphrodite281/mtr-ante/blob/alpha/rhino/src/main/java/vendor/cn/zbx1425/mtrsteamloco/org/mozilla/javascript/NativeArray.java)传入(因为它实现了List接口)
+
 最后，本类支持链式调用。
 
 ## ClientConfig
