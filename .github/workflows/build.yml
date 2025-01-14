@@ -1,9 +1,5 @@
 name: Build and Release
-on:
-  pull_request:
-  push:
-    branches:
-      - '**'  # 监听所有分支的 push 事件
+on: [ pull_request, push ]
 
 jobs:
   build:
