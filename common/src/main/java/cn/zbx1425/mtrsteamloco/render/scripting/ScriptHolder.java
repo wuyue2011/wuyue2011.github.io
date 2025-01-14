@@ -112,7 +112,7 @@ public class ScriptHolder {
             scope.put("MinecraftClient", scope, new NativeJavaClass(scope, MinecraftClientUtil.class));
             scope.put("MinecraftClientUtil", scope, new NativeJavaClass(scope, MinecraftClientUtil.class));
             scope.put("Component", scope, new NativeJavaClass(scope, Component.class));
-            scope.put("Optional", scope, new NativeJavaClass(scope, Optional.class))
+            scope.put("Optional", scope, new NativeJavaClass(scope, Optional.class));
 
             try {
                 String[] classesToLoad = {
