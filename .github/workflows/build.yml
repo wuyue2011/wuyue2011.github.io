@@ -1,15 +1,13 @@
-# Automatically build the project and run any configured tests for every push
-# and submitted pull request. This can help catch issues that only occur on
-# certain platforms or Java versions, and provides a first line of defence
-# against bad commits
-#      - name: Validate gradle wrapper
-#        uses: gradle/wrapper-validation-action@v1.
-
 name: Build
-on: [ pull_request, push ]
+on:
+  pull_request:
+  push:
+    branches:
+      - '**'  # 监听所有分支的 push 事件
 
 jobs:
   build:
+    if: "!startsWith(github.ref, 'refs/tags/V')"  # 仅在 push 事件的引用不以 "V" 开头时运行
     strategy:
       matrix:
         minecraft: [ 1.17.1, 1.18.2, 1.19.2, 1.19.3, 1.19.4, 1.20.1 ]
