@@ -358,51 +358,51 @@ const component = ComponentUtil.literal(text);// 转换为 Component
 const result = ComponentUtil.getString(component);// 转换为 String
 ```
 
-## OrderedMap
+## OrderedMap 与 PlacementOrder
 
 为了更好的排序调试信息，信息使用 `OrderedMap` 来存储，这是一个 ANTE 实现的 Map 类。用法与 Map 类基本相同，添加了一些其他方法。
 
-## PlacementOrder
-
-`PlacementOrder` 是 一个枚举类，用于描述方块的放置顺序。
+`PlacementOrder` 是 `OrderedMap` 里的一个枚举类，用于描述方块的放置顺序。
 含有以下属性：
 
-- `PlacementOrder.UPSIDE`
+- `PlacementOrder.UPPER`
 
   上面。
 
-- `PlacementOrder.Midpoint`
+- `PlacementOrder.CENTRAL`
 
   中间。
 
-- `PlacementOrder.DOWNSIDE`
+- `PlacementOrder.LOWER`
 
   下面。
 
-## WapperedEntity
+更进一步的，请查看[源代码-OrderedMap.java](https://github.com/aphrodite281/mtr-ante/blob/alpha/common/src/main/java/cn/zbx1425/mtrsteamloco/render/scripting/AbstractDrawCalls.java)
 
-由于混淆表原因，我的世界的Player等实体对象不能直接被使用，这里 ANTE 提供了 `WapperedEntity` 类来处理这些问题，并提供了一些方法来获取实体的相关信息。
+## WrappedEntity
 
-- `new WapperedEntity(entity :Entity)`
+由于混淆表原因，我的世界的Player等实体对象不能直接被使用，这里 ANTE 提供了 `WrappedEntity` 类来处理这些问题，并提供了一些方法来获取实体的相关信息。
 
-  创建一个 `WapperedEntity`。
+- `new WrappedEntity(entity :Entity)`
 
-- `WapperedEntity.getX(): double`
+  创建一个 `WrappedEntity`。
+
+- `WrappedEntity.getX(): double`
 
   获取实体的 X 坐标。
 
-- `WapperedEntity.getY(): double`
+- `WrappedEntity.getY(): double`
 
   获取实体的 Y 坐标。
 
-- `WapperedEntity.getZ(): double`
+- `WrappedEntity.getZ(): double`
 
   获取实体的 Z 坐标。
 
-- `WapperedEntity.getLookAngle(): Vector3f`
+- `WrappedEntity.getLookAngle(): Vector3f`
 
   获取实体的视线方向。
 
-- `WapperedEntity.getPosition(): Vector3f`
+- `WrappedEntity.getPosition(): Vector3f`
 
   获取实体的位置。

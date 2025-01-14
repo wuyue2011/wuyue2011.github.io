@@ -219,12 +219,12 @@ public class MinecraftClientUtil {
 		return Math.asin(value);
 	}
 
-    public static WapperedEntity getCameraEntity() {
-        return new WapperedEntity(Minecraft.getInstance().cameraEntity);
+    public static WrappedEntity getCameraEntity() {
+        return new WrappedEntity(Minecraft.getInstance().cameraEntity);
     }
 
-    public static WapperedEntity getPlayer() {
-        return new WapperedEntity(Minecraft.getInstance().player);
+    public static WrappedEntity getPlayer() {
+        return new WrappedEntity(Minecraft.getInstance().player);
     }
 
     public static int packLightTexture(int p_109886_, int  p_109887_) {

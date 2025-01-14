@@ -3,10 +3,10 @@ package cn.zbx1425.mtrsteamloco.render.scripting.util;
 import net.minecraft.world.entity.Entity;
 import cn.zbx1425.sowcer.math.Vector3f;
 
-public class WapperedEntity {
+public class WrappedEntity {
     public Entity entity;
     
-    public WapperedEntity(Entity entity) {
+    public WrappedEntity(Entity entity) {
         this.entity = entity;
     }
 

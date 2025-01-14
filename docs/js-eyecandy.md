@@ -58,7 +58,7 @@ NTE 调用这几个函数时会使用三个参数，稍后介绍其各自的内�
 | 第一个 (`ctx`)    | 用于向 NTE 输出要如何渲染的相关操作。类型是 [EyeCandyScriptContext](#eyecandyscriptcontext) |
 | 第二个 (`state`)  | 一个和某一个装饰物件方块关联的 JavaScript 对象。初始值是 `{}`，可随意设置其上的成员，用来存储一些需要每个方块都不同的内容。 |
 | 第三个 (`entity`)  | 用于获取方块的状态。类型是 [BlockEntityEyeCandy](#blockentityeyecandy)。|
-| 第四个 (`player`)  | 使用装饰物件的玩家。类型是 [WapperedEntity](js-util.md?id=wapperedentity) |
+| 第四个 (`player`)  | 使用装饰物件的玩家。类型是 [WrappedEntity](js-util.md?id=WrappedEntity) |
 
 接下来列出您可以进行的所有渲染控制操作，和可以获取到的所有关于方块的信息。
 
@@ -99,7 +99,7 @@ NTE 调用这几个函数时会使用三个参数，稍后介绍其各自的内�
 
 - `EyeCandyScriptContext.setDebugInfo(key: String, order: PlacementOrder, value: Object...)`
 
-    添加一个调试信息，并按 order: [PlacementOrder](https://aphrodite281.github.io/mtr-ante/#/js-util?id=placementorder) 的顺序添加。
+    添加一个调试信息，并按 order: [PlacementOrder](js-util.md?id=orderedMap与placementOrder) 的顺序添加。
 
 
 

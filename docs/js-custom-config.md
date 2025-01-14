@@ -6,18 +6,28 @@ ANTE 提供 `ConfigResponder` 类来表示配置的响应器，存储配置的�
 
 - `new ConfigResponder(key: String, name: Component, defaultValue: String)`
 
-- `new ConfigResponder(key: String, name: Component, defaultValue: String, transformer: Function<String, String>, errorSupplier: Function<String, Optional<Component>>, saveConsumer: Consumer<String>, consumer: BiConsumer<String, TextFieldBuilder>)`
+    创建一个配置响应器。
+
+- `new ConfigResponder(key: String, name: Component, defaultValue: String, transformer: Function<String, String>, errorSupplier: Function<String, Optional<Component>>, saveConsumer: Consumer<String>, tooltipSupplier: Function<String, Optional<List<Component>>>, requireRestart: boolean)`
 
     创建一个配置响应器。
-    `key`: 配置项的标识。
-    `name`: 配置项的名称。
-    `defaultValue`: 配置项的默认值。
-    `transformer`: 配置项的转换器，显示的值是保存的值经过转换器转换后的结果。
-    `errorSupplier`: 配置项的错误提示，用于提示用户输入错误。
-    `saveConsumer`: 配置项的保存函数，您只需要在此函数中写入您的处理逻辑即可。
-    `consumer`: 在创建条目时会调用此函数，您可以用它来对 [`TextFieldBuilder`](https://github.com/shedaniel/cloth-config/blob/v8/common/src/main/java/me/shedaniel/clothconfig2/impl/builders/TextFieldBuilder.java) 进行更多操作。
 
-`ConfigResponder` 含有以上属性，除了 `key` 以外，其他属性您可以随时修改。
+包含以下属性以及对应方法：
+
+| 属性 | 方法 | 说明 |
+| ------------- | ------------- | ------------- |
+| `final ConfigResponder.key: String` | 无 | 配置项的标识。无法修改 |
+| `ConfigResponder.name: Component` | `ConfigResponder.setName(name: Component): ConfigResponder` | 配置项的名称 |
+| `ConfigResponder.defaultValue: String` | `ConfigResponder.setDefaultValue(defaultValue: String): ConfigResponder` | 配置项的默认值 |
+| `ConfigResponder.transformer: Function<String, String>` | `ConfigResponder.setTransformer(transformer: Function<String, String>): ConfigResponder` | 配置项的转换器 |
+| `ConfigResponder.errorSupplier: Function<String, Optional<Component>>` | `ConfigResponder.setErrorSupplier(errorSupplier: Function<String, Optional<Component>>): ConfigResponder` | 配置项的错误提示 |
+| `ConfigResponder.saveConsumer: Consumer<String>` | `ConfigResponder.setSaveConsumer(saveConsumer: Consumer<String>): ConfigResponder` | 配置项的保存函数 |
+| `ConfigResponder.tooltipSupplier: Function<String, Optional<Component[]>>` | `ConfigResponder.setTooltipSupplier(tooltipSupplier: Function<String, Optional<List<Component>>>): ConfigResponder` | 配置项的提示信息 |
+| `ConfigResponder.requireRestart: boolean` | `ConfigResponder.setRequireRestart(requireRestart: boolean): ConfigResponder` | 配置项是否需要重启游戏 |
+
+上文中的 [Optional](https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html) 是 Java 8 引入的类，用来表示一个值可能为空。您可以使用 `importClass(java.util.Optional)` 、 `importClass(java.util)` 引入该类或直接使用 `java.util.Optional` 来表示Optional。
+`tooltipSupplier` 变量的返回值应该是 `Optional<Component[]>` 而不是 `Optional<List<Component>>` , 由于在 JavaScirpt 环境中得到 `Component[]` 太过麻烦，所以这里提供了 `ConfigResponder.setErrorSupplier(errorSupplier: Function<String, Optional<List<Component>>>)` 方法来代替，您可以直接将 [JavaScirpt的数组](https://github.com/aphrodite281/mtr-ante/blob/alpha/rhino/src/main/java/vendor/cn/zbx1425/mtrsteamloco/org/mozilla/javascript/NativeArray.java)传入(因为它实现了List接口)
+最后，本类支持链式调用。
 
 ## ClientConfig
 
@@ -37,7 +47,9 @@ ANTE 提供 `ConfigResponder` 类来表示配置的响应器，存储配置的�
 
 `ClientConfig`
 
-### 示例
+## 示例
+
+### 使用长构造函数
 
 ```javascript
 const configKey = "myConfig";
@@ -51,7 +63,7 @@ const errorSupplier = (str) => {
 const res = new ConfigResponder(configKey, 
     ComponentUtil.translatable("text.aph.config.myConfig"), "true", 
     value => value, errorSupplier, str => {}, 
-    (builder, value) => {});
+    str => java.util.Optional.empty(), false);
 
 ClientConfig.register(res);
 
@@ -62,4 +74,21 @@ function render(ctx, state, entity) {
     // ···
 }
 // ···
+```
+
+### 使用链式调用
+
+```javascript
+const configKey = "myConfig";
+const errorSupplier = (str) => {
+    if (str == "true" || str == "false") return java.util.Optional.empty();
+    else return java.util.Optional.of(ComponentUtil.translatable("text.aph.config.error"));
+}
+
+const res = new ConfigResponder(configKey, 
+    ComponentUtil.translatable("text.aph.config.myConfig"), "true")
+    .setErrorSupplier(errorSupplier);
+    .setTooltipSupplier(str => java.util.Optional.of([ComponentUtil.translatable("text.aph.config.tooltip")]));
+
+ClientConfig.register(res);
 ```

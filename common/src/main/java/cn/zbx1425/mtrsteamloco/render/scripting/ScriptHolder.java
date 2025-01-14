@@ -18,7 +18,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import vendor.cn.zbx1425.mtrsteamloco.org.mozilla.javascript.*;
 import mtr.block.IBlock;
 import net.minecraft.world.entity.player.Player;
-import cn.zbx1425.mtrsteamloco.render.scripting.util.WapperedEntity;
+import cn.zbx1425.mtrsteamloco.render.scripting.util.WrappedEntity;
 import cn.zbx1425.mtrsteamloco.render.scripting.AbstractDrawCalls;
 import cn.zbx1425.mtrsteamloco.ClientConfig;
 import cn.zbx1425.mtrsteamloco.data.ShapeSerializer;
@@ -84,7 +84,7 @@ public class ScriptHolder {
             scope.put("ParticleHelper", scope, new NativeJavaClass(scope, ParticleHelper.class));
             scope.put("TickableSound", scope, new NativeJavaClass(scope, TickableSound.class));
             scope.put("GlobalRegister", scope, new NativeJavaClass(scope, GlobalRegister.class));
-            scope.put("WapperedEntity", scope, new NativeJavaClass(scope, WapperedEntity.class));
+            scope.put("WrappedEntity", scope, new NativeJavaClass(scope, WrappedEntity.class));
             scope.put("ComponentUtil", scope, new NativeJavaClass(scope, ComponentUtil.class));
 
             scope.put("DrawCall", scope, new NativeJavaClass(scope, AbstractDrawCalls.DrawCall.class));
@@ -233,7 +233,7 @@ public class ScriptHolder {
         if (!(scriptCtx.scriptStatus == null || scriptCtx.scriptStatus.isDone())) return;
         if (scriptCtx.disposed) return;
         if (scriptCtx.created) {
-            scriptCtx.scriptStatus = callFunctionAsync(useFunctions, scriptCtx, null, new WapperedEntity(player));
+            scriptCtx.scriptStatus = callFunctionAsync(useFunctions, scriptCtx, null, new WrappedEntity(player));
         }
     }
 

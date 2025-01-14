@@ -30,20 +30,20 @@ public class OrderedMap<K, V> implements Map<K, V> {
 
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
-        putAll(m, PlacementOrder.MIDPOINT);
+        putAll(m, PlacementOrder.CENTRAL);
     }
 
     public void putAll(Map<? extends K, ? extends V> m, PlacementOrder order) {
         if (m instanceof OrderedMap) {
             OrderedMap<K, V> other = (OrderedMap<K, V>) m;
             for (K key : other.upsideList) {
-                put(key, other.valueMap.get(key), PlacementOrder.UPSIDE);
+                put(key, other.valueMap.get(key), PlacementOrder.UPPER);
             }
             for (K key : other.midpointList) {
-                put(key, other.valueMap.get(key), PlacementOrder.MIDPOINT);
+                put(key, other.valueMap.get(key), PlacementOrder.CENTRAL);
             }
             for (K key : other.downsideList) {
-                put(key, other.valueMap.get(key), PlacementOrder.DOWNSIDE);
+                put(key, other.valueMap.get(key), PlacementOrder.LOWER);
             }
         } else {
             for (Map.Entry<? extends K, ? extends V> entry : m.entrySet()) {
@@ -54,18 +54,18 @@ public class OrderedMap<K, V> implements Map<K, V> {
 
     @Override
     public V put(K key, V value) {
-        return put(key, value, PlacementOrder.MIDPOINT);
+        return put(key, value, PlacementOrder.CENTRAL);
     }
 
     public V put(K key, V value, PlacementOrder order) {
         switch (order) {
-            case UPSIDE:
+            case UPPER:
                 if (!upsideList.contains(key)) upsideList.add(key);
                 break;
-            case MIDPOINT:
+            case CENTRAL:
                 if (!midpointList.contains(key)) midpointList.add(key);
                 break;
-            case DOWNSIDE:
+            case LOWER:
                 if (!downsideList.contains(key)) downsideList.add(key);
                 break;
         }
@@ -157,9 +157,9 @@ public class OrderedMap<K, V> implements Map<K, V> {
     }
 
     public enum PlacementOrder {
-        UPSIDE,
-        MIDPOINT,
-        DOWNSIDE
+        UPPER,
+        CENTRAL,
+        LOWER
     }
 
     public class Entry<K, V> implements Map.Entry<K, V> {
