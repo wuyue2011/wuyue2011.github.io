@@ -1,7 +1,6 @@
 # JavaScript 工具类
 
-NTE 提供了一些工具类，以便获取一些信息或更简单地实现功能。
-
+NTE 提供了一些工具类，以便获取一些信息或更简单地实现功能。更进一步的，您可以查看[源代码-util.*](https://github.com/aphrodite281/mtr-ante/blob/alpha/common/src/main/java/cn/zbx1425/mtrsteamloco/render/scripting/util)
 
 
 ## 输出测试信息
