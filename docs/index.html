@@ -12,7 +12,7 @@
       :root {
         --content-max-width: 65em;
       }
-      #google_translate_element {
+      #baidu_translate_element {
         position: absolute;
         right: 0;
       }
@@ -28,17 +28,23 @@
     </script>
   </head>
   <body>
-    <div id="google_translate_element"></div>
-          
+    <div id="baidu_translate_element"></div>
+          
     <script type="text/javascript">
-      function googleTranslateElementInit() {
-        new google.translate.TranslateElement(
-          { pageLanguage: 'zh-CN' },
-          "google_translate_element"
-        );
+      // 百度翻译初始化函数
+      function baiduTranslateElementInit() {
+        new BaiduTranslateElement({
+          pageLanguage: 'zh',
+          includedLanguages: 'en,zh', // 设置需要翻译的语言
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        }, 'baidu_translate_element');
       }
     </script>
-    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script type="text/javascript" src="https://fanyi.baidu.com/static/translationapi/translate_main.js"></script>
+    <script type="text/javascript">
+      // 初始化百度翻译
+      baiduTranslateElementInit();
+    </script>
     
     <div id="app"></div>
     <script>
