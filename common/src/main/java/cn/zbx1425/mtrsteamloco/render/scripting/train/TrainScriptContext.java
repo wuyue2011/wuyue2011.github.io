@@ -37,7 +37,7 @@ public class TrainScriptContext extends AbstractScriptContext {
     public TrainScriptContext(TrainClient train) {
         scriptResult = new TrainDrawCalls(train.trainCars);
         scriptResultWriting = new TrainDrawCalls(train.trainCars);
-        train = train;
+        this.train = train;
         trainExtra = new TrainWrapper(train);
         trainExtraWriting = new TrainWrapper(train);
         drawCalls = new Map[train.trainCars];
