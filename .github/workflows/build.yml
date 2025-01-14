@@ -34,11 +34,6 @@ jobs:
         with:
           name: MTR-ANTE-${{ steps.vars.outputs.sha_short }}+${{ matrix.minecraft }}
           path: build/*.jar
-      - name: Capture release artifacts collectively
-        uses: actions/upload-artifact@v4
-        with:
-          name: MTR-ANTE-${{ steps.vars.outputs.sha_short }}
-          path: build/*.jar
 
   release:
     if: startsWith(github.ref, 'refs/tags/V')  # 仅在 push 事件的引用以 "V" 开头时运行
