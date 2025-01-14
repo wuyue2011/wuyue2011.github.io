@@ -1,8 +1,8 @@
 # JavaScript 支持
 
-(A)NTE 支持通过编写 JavaScript 代码来完全自定义地控制渲染和其他功能。本文档列出在 (A)NTE 中使用 JavaScript 时提供的各种函数等。
+(A)NTE 支持通过编写 JavaScript 代码来完全自定义地控制渲染和其他功能。
 (A)NTE 的 JavaScript 环境基于 Rhino 脚本引擎，并为其添加了一些类和函数。许多浏览器中的类或函数在环境中并不存在，无法使用。
-
+(A)NTE 通过 `ScriptHolder` 类管理 JavaScript 环境，更近一步的，您可以查看[源代码-ScriptHolder.java](https://github.com/aphrodite281/mtr-ante/blob/alpha/common/src/main/java/cn/zbx1425/mtrsteamloco/render/scripting/ScriptHolder.java)
 
 ### 为什么这么麻烦？
 
