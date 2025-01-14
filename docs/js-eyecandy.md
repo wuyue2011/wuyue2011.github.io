@@ -99,7 +99,7 @@ NTE 调用这几个函数时会使用三个参数，稍后介绍其各自的内�
 
 - `EyeCandyScriptContext.setDebugInfo(key: String, order: PlacementOrder, value: Object...)`
 
-    添加一个调试信息，并按 order: [PlacementOrder](js-util.md?id=orderedMap与placementOrder) 的顺序添加。
+    添加一个调试信息，并按 [PlacementOrder](js-util.md?id=orderedMap-与-placementOrder) 的顺序添加。
 
 
 
