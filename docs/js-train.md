@@ -74,6 +74,7 @@ NTE 调用这几个函数时会使用三个参数，稍后介绍其各自的内�
 
 
 ## TrainScriptContext
+### 以下方法仅在render中保证线程安全，请勿在其他线程使用
 调用以下函数可以**控制渲染**。每次 `render` 时都需要为想绘制的模型调用相应的函数，
 
 - `TrainScriptContext.drawCarModel(model: ModelCluster, carIndex: int, poseStack: Matrices): void`
@@ -108,6 +109,14 @@ NTE 调用这几个函数时会使用三个参数，稍后介绍其各自的内�
 - `TrainScriptContext.playAnnSound(sound: ResourceLocation, volume: float, pitch: float): void`
 
   播放广播声音。只能被当前在车上的玩家听到。
+
+### 以下保证线程安全，可在所有线程调用
+
+向下面的Map中添加、替换或删除键值对可以**控制渲染**。
+
+- `EyeCandyScriptContext.drawCalls: Map<Object, DrawCall>[]`
+  
+  按列车分的[绘制调用](https://aphrodite281.github.io/mtr-ante/#/js-draw-call)表。(此Map为java的Map，请使用[java-Map](https://docs.oracle.com/javase/8/docs/api/java/util/Map.html)的方法)。
 
 此外，还有一组函数以 **辅助开发调试**。
 
