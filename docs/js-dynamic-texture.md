@@ -1,6 +1,6 @@
 # JavaScript 动态贴图
 
-NTE 提供了一个 GraphicsTexture 类以在模型上使用通过 JS 控制的有动态内容的贴图，以用于 LCD 显示屏、闪灯图、LED 滚动文字等。
+ANTE 提供了一个 GraphicsTexture 类以在模型上使用通过 JS 控制的有动态内容的贴图，以用于 LCD 显示屏、闪灯图、LED 滚动文字等。
 
 
 
@@ -27,6 +27,11 @@ NTE 提供了一个 GraphicsTexture 类以在模型上使用通过 JS 控制的�
 - `GraphicsTexture.upload(): void`
 
   将 bufferedImage 里的内容正式上传到显存，立刻应用到模型上显示。这个操作可能相对较为拉低 FPS，建议尽量使用 `RateLimit` 减少贴图更新的频率，如显示屏可以只每秒刷新十次，不需要在较远距离下刷新，某些信息不需要一直刷新，等等。
+  或者，将刷新逻辑放到一个单独的线程里，避免影响游戏主线程的运行。
+
+- `GraphicsTexture.upload(img: BufferedImage): void`
+
+  上传 img 到贴图，用它来替换贴图内容。如此便不用清空 bufferedImage 的内容再重新绘制，也不会出现线程安全问题。
 
 - `GraphicsTexture.identifier: ResourceLocation`
 

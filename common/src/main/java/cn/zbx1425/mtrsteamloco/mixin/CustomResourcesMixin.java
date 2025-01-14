@@ -38,7 +38,7 @@ public class CustomResourcesMixin {
         ContextCapability.checkContextVersion();
         String glVersionStr = "OpenGL " + ContextCapability.contextVersion / 10 + "."
                 + ContextCapability.contextVersion % 10;
-        Main.LOGGER.info("NTE detected " + glVersionStr + (ContextCapability.isGL4ES ? " (GL4ES)." : "."));
+        Main.LOGGER.info("ANTE detected " + glVersionStr + (ContextCapability.isGL4ES ? " (GL4ES)." : "."));
 
         GlStateTracker.capture();
         MtrModelRegistryUtil.loadingErrorList.clear();

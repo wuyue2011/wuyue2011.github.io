@@ -197,7 +197,7 @@ public class ScriptHolder {
                 if (finishCallback != null) finishCallback.run();
                 scriptCtx.lastExecuteDuration = System.nanoTime() - startTime;
             } catch (Exception ex) {
-                Main.LOGGER.error("Error in NTE Resource Pack JavaScript", ex);
+                Main.LOGGER.error("Error in ANTE Resource Pack JavaScript", ex);
                 failTime = System.currentTimeMillis();
                 failException = ex;
             } finally {

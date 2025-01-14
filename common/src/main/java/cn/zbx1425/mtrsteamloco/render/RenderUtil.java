@@ -38,7 +38,7 @@ public class RenderUtil {
     }
 
     public static String getRenderStatusMessage() {
-        return "\n=== NTE Rendering Status ===\n"
+        return "\n=== ANTE Rendering Status ===\n"
                 + "Draw Calls: " + MainClient.drawContext.drawCallCount
                 + ", Batches: " + MainClient.drawContext.batchCount
                 + "\n"

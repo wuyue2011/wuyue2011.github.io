@@ -46,7 +46,7 @@ public class ScriptResourceUtil {
     protected static Context activeContext;
     protected static Scriptable activeScope;
     private static final Stack<ResourceLocation> scriptLocationStack = new Stack<>();
-    private static final Logger LOGGER = LoggerFactory.getLogger("MTR-NTE JS");
+    private static final Logger LOGGER = LoggerFactory.getLogger("MTR-ANTE JS");
 
     public static void init(ResourceManager resourceManager) {
         hasNotoSansCjk = UtilitiesClient.hasResource(NOTO_SANS_CJK_LOCATION);
@@ -60,7 +60,7 @@ public class ScriptResourceUtil {
 
     public static void includeScript(Object pathOrIdentifier) throws IOException {
         if (activeContext == null) throw new RuntimeException(
-                "Cannot use include in functions, as by that time NTE no longer processes scripts."
+                "Cannot use include in functions, as by that time ANTE no longer processes scripts."
         );
         ResourceLocation identifier;
         if (pathOrIdentifier instanceof ResourceLocation) {
