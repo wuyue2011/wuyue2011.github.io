@@ -1,7 +1,7 @@
 # 装饰物件
 
 (A)NTE 允许通过 ”装饰物件“ 方块在游戏内显示 OBJ 模型。
-本篇主要与装饰物件的注册有关，更深一步的，您可以查看[源代码-EyeCandyRegistry.java](https://github.com/aphrodite281/mtr-ante/blob/alpha/common/src/main/java/cn/zbx1425/mtrsteamloco/data/EyeCandyRegistry.java)
+本篇主要与装饰物件的注册有关，更进一步的，您可以查看[源代码-EyeCandyRegistry.java](https://github.com/aphrodite281/mtr-ante/blob/alpha/common/src/main/java/cn/zbx1425/mtrsteamloco/data/EyeCandyRegistry.java)
 
 ![Teapot](img/teapot.jpg)
 
