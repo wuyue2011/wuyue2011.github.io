@@ -318,13 +318,13 @@ MTR 的客户端数据，可以用来读取换乘线路等。参见 MTR 源码 C
 
 为了方便创建我的世界(文本)组件，我向JS环境中添加了ComponentUtil类，含有以下方法：
 
-- `static Component(Component) translatable(String text, Object... objects)`
+- `static translatable(text: String, ...objects: Object): Component`
   获取一个可翻译的组件，参数为文本和可变参数，返回一个可翻译的组件。
 
-- `static Component(Component) literal(String text)`
+- `static literal(text: String): Component`
 将字符串转化为组件
 
-- `static String getString(Component component)`
+- `static getString(component: Component): String`
 将组件转化为字符串
 
 ### 示例
