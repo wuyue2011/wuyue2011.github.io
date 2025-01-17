@@ -446,11 +446,13 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             return customConfigs.get(key);
         }
 
-        public void registerCustomConfig(ConfigResponder responder) {
-            if (!customConfigs.containsKey(responder.key)) {
-                customConfigs.put(responder.key, responder.defaultValue);
+        public void registerCustomConfig(ConfigResponder... responders) {
+            for (ConfigResponder responder : responders) {
+                if (!customConfigs.containsKey(responder.key)) {
+                    customConfigs.put(responder.key, responder.defaultValue);
+                }
+                customResponders.put(responder.key, responder);
             }
-            customResponders.put(responder.key, responder);
         }
 
         public void removeCustomConfig(String key) {
