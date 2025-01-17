@@ -143,9 +143,9 @@ NTE 调用这几个函数时会使用三个参数，稍后介绍其各自的内�
 您无法直接访问或修改 `customConfig` 与 `customResponders`，但可以通过以下方法来操作：
 
 
-- `BlockEntityEyeCandy.registerCustomConfig(responder: ConfigResponder): void`
+- `BlockEntityEyeCandy.registerCustomConfig(responders: ConfigResponder...): void`
 
-  注册一个[响应器](js-custom-config.md)，如果原来没有值则会添加默认值，如果原来有则不会变动。
+  注册一些[响应器](js-custom-config.md)，如果原来没有值则会添加默认值，如果原来有则不会变动。
 
 - `BlockEntityEyeCandy.removeCustomConfig(key: String): void`
 
