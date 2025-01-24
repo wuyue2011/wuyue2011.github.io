@@ -43,6 +43,7 @@
     "gui.mtrsteamloco.config.client.shaderactive": "Optifineと競合するため、立体軌道機能とレンダリング最適化は使用できません。",
     "gui.mtrsteamloco.config.client.shadercompat": "レンダリング最適化の使用",
     "gui.mtrsteamloco.config.client.rail3d": "立体軌道モデル",
+    "gui.mtrsteamloco.config.client.slider": "スライダを使用した姿勢の調整",
     "gui.mtrsteamloco.config.client.rail3d.description": "立体軌道をオフにすると、WorldEditが接続された軌道ノードをコピーして作成した非表示の軌道ノードが表示されます。",
     "gui.mtrsteamloco.config.client.slsmoke": "蒸気機関車の煙を表示",
     "gui.mtrsteamloco.config.client.translucentsort": "半透明面を正確に表示",

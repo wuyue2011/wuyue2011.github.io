@@ -43,6 +43,7 @@
     "gui.mtrsteamloco.config.client.shaderactive": "因其與Optifine衝突，立體軌道功能及渲染優化現無法使用。",
     "gui.mtrsteamloco.config.client.shadercompat": "使用渲染優化",
     "gui.mtrsteamloco.config.client.rail3d": "立體軌道模型",
+    "gui.mtrsteamloco.config.client.slider": "使用滑塊調整姿態",
     "gui.mtrsteamloco.config.client.rail3d.description": "關閉立體軌道可使WorldEdit複製已連接的軌道節點造成的不可見的軌道節點可見。",
     "gui.mtrsteamloco.config.client.slsmoke": "顯示蒸汽機車的煙霧",
     "gui.mtrsteamloco.config.client.translucentsort": "精確地顯示半透明面",

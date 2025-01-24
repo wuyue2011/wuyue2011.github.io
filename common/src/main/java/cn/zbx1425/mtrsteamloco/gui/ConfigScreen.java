@@ -51,6 +51,14 @@ public final class ConfigScreen {
                     }
                 }).setDefaultValue(true).build()
         );
+        common.addEntry(entryBuilder
+                .startBooleanToggle(
+                        Text.translatable("gui.mtrsteamloco.config.client.slider"),
+                        ClientConfig.enableSlider
+                ).setSaveConsumer(checked -> {
+                    ClientConfig.enableSlider = checked;
+                }).setDefaultValue(true).build()
+        );
         common.addEntry(entryBuilder.startTextDescription(
                         Text.translatable("gui.mtrsteamloco.config.client.rail3d.description")
                 ).build()

@@ -43,6 +43,7 @@
     "gui.mtrsteamloco.config.client.shaderactive": "Optifine과의 충돌로 인해 입체 트랙 기능 및 렌더링 최적화를 사용할 수 없습니다.",
     "gui.mtrsteamloco.config.client.shadercompat": "렌더링 최적화 사용",
     "gui.mtrsteamloco.config.client.rail3d": "입체 궤도 모형",
+    "gui.mtrsteamloco.config.client.slider": "슬라이더를 사용하여 자세 조정",
     "gui.mtrsteamloco.config.client.rail3d.description": "입체 트랙을 끄면 WorldEdit가 연결된 트랙 노드를 복사하여 생긴 보이지 않는 트랙 노드가 표시됩니다.",
     "gui.mtrsteamloco.config.client.slsmoke": "증기 기관차의 연기를 표시하다",
     "gui.mtrsteamloco.config.client.translucentsort": "반투명도를 정확하게 표시하다",

@@ -43,6 +43,7 @@
     "gui.mtrsteamloco.config.client.shaderactive": "En raison de son conflit avec optifine, la fonctionnalité de piste stéréoscopique et l'optimisation du rendu ne sont plus disponibles.",
     "gui.mtrsteamloco.config.client.shadercompat": "Utiliser l'optimisation du rendu",
     "gui.mtrsteamloco.config.client.rail3d": "Modèle de piste stéréoscopique",
+    "gui.mtrsteamloco.config.client.slider": "Ajuster la posture avec le curseur",
     "gui.mtrsteamloco.config.client.rail3d.description": "La fermeture d'une piste stéréoscopique rend visibles les nœuds de piste invisibles causés par la réplication worldedit des nœuds de piste connectés.",
     "gui.mtrsteamloco.config.client.slsmoke": "Afficher la fumée de la locomotive à vapeur",
     "gui.mtrsteamloco.config.client.translucentsort": "Affichage précis des faces translucides",

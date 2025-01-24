@@ -33,6 +33,8 @@ import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import net.minecraft.client.gui.screens.Screen;
 import cn.zbx1425.mtrsteamloco.Main;
 import net.minecraft.network.chat.Component;
+import cn.zbx1425.mtrsteamloco.ClientConfig;
+import me.shedaniel.clothconfig2.gui.entries.*;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -135,83 +137,21 @@ public class EyeCandyScreen {
                     Text.literal("RX: " + Math.toDegrees(blockEntity.rotateX) + "°, RY: " + Math.toDegrees(blockEntity.rotateY) + "°, RZ: " + Math.toDegrees(blockEntity.rotateZ) + "°")
             ).build());
         } else {
-            common.addEntry(entryBuilder.startTextField(
-                            Text.literal("TX"),
-                            blockEntity.translateX * 100 + "cm"
-                ).setSaveConsumer(str -> {
-                    float value = parseMovement(str).orElse(blockEntity.translateX);
-                    if (value != blockEntity.translateX) {
-                        final float v = value;
-                        update.add(be -> be.translateX = v);
-                    } 
-                }).setDefaultValue(blockEntity.translateX * 100 + "cm")
-                .setErrorSupplier(verifyMovement)
-                .build());
-
-            common.addEntry(entryBuilder.startTextField(
-                            Text.literal("TY"),
-                            blockEntity.translateY * 100 + "cm"
-                ).setSaveConsumer(str -> {
-                    float value = parseMovement(str).orElse(blockEntity.translateY);
-                    if (value != blockEntity.translateY) {
-                        final float v = value;
-                        update.add(be -> be.translateY = v);
-                    } 
-                }).setDefaultValue(blockEntity.translateY * 100 + "cm")
-                .setErrorSupplier(verifyMovement)
-                .build());
-
-            common.addEntry(entryBuilder.startTextField(
-                            Text.literal("TZ"),
-                            blockEntity.translateZ * 100 + "cm"
-                ).setSaveConsumer(str -> {
-                    float value = parseMovement(str).orElse(blockEntity.translateZ);
-                    if (value != blockEntity.translateZ) {
-                        final float v = value;
-                        update.add(be -> be.translateZ = v);
-                    } 
-                }).setDefaultValue(blockEntity.translateZ * 100 + "cm")
-                .setErrorSupplier(verifyMovement)
-                .build());
-
-            common.addEntry(entryBuilder.startTextField(
-                            Text.literal("RX"),
-                            Math.toDegrees(blockEntity.rotateX) + "°"
-                ).setSaveConsumer(str -> {  
-                    Float value = parseRotation(str).orElse(blockEntity.rotateX);
-                    if (value != blockEntity.rotateX) {
-                        final float v = value;
-                        update.add(be -> be.rotateX = v);
-                    }
-                }).setDefaultValue(Math.toDegrees(blockEntity.rotateX) + "°")
-                .setErrorSupplier(verifyRotation)
-                .build());
-
-            common.addEntry(entryBuilder.startTextField(
-                            Text.literal("RY"),
-                            Math.toDegrees(blockEntity.rotateY) + "°"
-                ).setSaveConsumer(str -> {
-                    Float value = parseRotation(str).orElse(blockEntity.rotateY);
-                    if (value != blockEntity.rotateY) {
-                        final float v = value;
-                        update.add(be -> be.rotateY = v);
-                    }
-                }).setDefaultValue(Math.toDegrees(blockEntity.rotateY) + "°")
-                .setErrorSupplier(verifyRotation)
-                .build());
-
-            common.addEntry(entryBuilder.startTextField(
-                            Text.literal("RZ"),
-                            Math.toDegrees(blockEntity.rotateZ) + "°"
-                ).setSaveConsumer(str -> {
-                    Float value = parseRotation(str).orElse(blockEntity.rotateZ);
-                    if (value != blockEntity.rotateZ) {
-                        final float v = value;
-                        update.add(be -> be.rotateZ = v);
-                    }
-                }).setDefaultValue(Math.toDegrees(blockEntity.rotateZ) + "°")
-                .setErrorSupplier(verifyRotation)
-                .build());
+            if (ClientConfig.enableSlider) {
+                addTranslation0(common, entryBuilder, 0, update, blockEntity);
+                addTranslation0(common, entryBuilder, 1, update, blockEntity);
+                addTranslation0(common, entryBuilder, 2, update, blockEntity);
+                addRotation0(common, entryBuilder, 3, update, blockEntity);
+                addRotation0(common, entryBuilder, 4, update, blockEntity);
+                addRotation0(common, entryBuilder, 5, update, blockEntity);
+            } else {
+                addTranslation1(common, entryBuilder, 0, update, blockEntity);
+                addTranslation1(common, entryBuilder, 1, update, blockEntity);
+                addTranslation1(common, entryBuilder, 2, update, blockEntity);
+                addRotation1(common, entryBuilder, 3, update, blockEntity);
+                addRotation1(common, entryBuilder, 4, update, blockEntity);
+                addRotation1(common, entryBuilder, 5, update, blockEntity);
+            }
         }
 
         List<AbstractConfigListEntry> customEntrys = blockEntity.getCustomConfigEntrys(entryBuilder);
@@ -227,6 +167,106 @@ public class EyeCandyScreen {
         });
 
         return builder.build();
+    }
+
+    private static void save(int type, float value, BlockEntityEyeCandy blockEntity) {
+        switch (type) {
+            case 0: blockEntity.translateX = value; break;
+            case 1: blockEntity.translateY = value; break;
+            case 2: blockEntity.translateZ = value; break;
+            case 3: blockEntity.rotateX = value; break;
+            case 4: blockEntity.rotateY = value; break;
+            case 5: blockEntity.rotateZ = value; break;
+        }
+    }
+
+    private static float getValue(int type, BlockEntityEyeCandy blockEntity) {
+        switch (type) {
+            case 0: return blockEntity.translateX;
+            case 1: return blockEntity.translateY;
+            case 2: return blockEntity.translateZ;
+            case 3: return blockEntity.rotateX;
+            case 4: return blockEntity.rotateY;
+            case 5: return blockEntity.rotateZ;
+        }
+        return 0;
+    }
+
+    private static String getStr(int type, BlockEntityEyeCandy blockEntity) {
+        switch (type) {
+            case 0: return "TX";
+            case 1: return "TY";
+            case 2: return "TZ";
+            case 3: return "RX";
+            case 4: return "RY";
+            case 5: return "RZ";
+        }
+        return "";
+    }
+
+    private static void addTranslation0(ConfigCategory common, ConfigEntryBuilder entryBuilder, int type, List<Consumer<BlockEntityEyeCandy>> update, BlockEntityEyeCandy blockEntity) {
+        float rv = getValue(type, blockEntity);
+        String str = getStr(type, blockEntity);
+        int sv = (int) Math.round(rv * 20f);
+        IntegerSliderEntry entry = entryBuilder.startIntSlider(
+                Text.literal(str),
+                sv, -20, 20
+            ).setDefaultValue(0)
+            .setSaveConsumer(value -> {
+                update.add(be -> save(type, ((float) value) / 20f, be));
+            }).build();
+        entry.setTextGetter(value -> Text.literal(value * 5 + "cm"));
+        common.addEntry(entry);
+    }
+
+    private static void addRotation0(ConfigCategory common, ConfigEntryBuilder entryBuilder, int type, List<Consumer<BlockEntityEyeCandy>> update, BlockEntityEyeCandy blockEntity) {
+        float rv = getValue(type, blockEntity);
+        String str = getStr(type, blockEntity);
+        int sv = (int) Math.round(Math.toDegrees(rv) / 5f);
+        IntegerSliderEntry entry = entryBuilder.startIntSlider(
+                Text.literal(str),
+                sv, -18, 18
+            ).setDefaultValue(0)
+            .setSaveConsumer(value -> {
+                update.add(be -> save(type, (float) Math.toRadians(value * 5), be));
+            }).build();
+        entry.setTextGetter(value -> Text.literal(value * 5 + "°"));
+        common.addEntry(entry);
+    }
+
+    private static void addTranslation1(ConfigCategory common, ConfigEntryBuilder entryBuilder, int type, List<Consumer<BlockEntityEyeCandy>> update, BlockEntityEyeCandy blockEntity) {
+        float rv = getValue(type, blockEntity);
+        String str = getStr(type, blockEntity);
+        float sv = rv * 100f;
+        common.addEntry(entryBuilder.startTextField(
+                Text.literal(str),
+                sv + "cm"
+            ).setSaveConsumer(str1 -> {
+                float value = parseMovement(str1).orElse(blockEntity.translateX);
+                if (value != blockEntity.translateX) {
+                    final float v = value;
+                    update.add(be -> save(type, v, be));
+                }
+            }).setDefaultValue(sv + "cm")
+            .setErrorSupplier(verifyMovement)
+            .build());
+    }
+
+    private static void addRotation1(ConfigCategory common, ConfigEntryBuilder entryBuilder, int type, List<Consumer<BlockEntityEyeCandy>> update, BlockEntityEyeCandy blockEntity) {
+        float rv = getValue(type, blockEntity);
+        String str = getStr(type, blockEntity);
+        common.addEntry(entryBuilder.startTextField(
+                Text.literal(str),
+                Math.toDegrees(rv) + "°"
+            ).setSaveConsumer(str1 -> {
+                Float value = parseRotation(str1).orElse(blockEntity.rotateX);
+                if (value != blockEntity.rotateX) {
+                    final float v = value;
+                    update.add(be -> save(type + 3, v, be));
+                }
+            }).setDefaultValue(Math.toDegrees(rv) + "°")
+            .setErrorSupplier(verifyRotation)
+            .build());
     }
 
     private static Optional<Float> parseMovement(String str) {

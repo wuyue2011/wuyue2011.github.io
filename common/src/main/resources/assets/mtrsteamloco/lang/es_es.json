@@ -43,6 +43,7 @@
     "gui.mtrsteamloco.config.client.shaderactive": "Debido a su conflicto con optifine, la función de órbita estereoscópica y la optimización de renderización ya no están disponibles.",
     "gui.mtrsteamloco.config.client.shadercompat": "Optimizar con renderizado",
     "gui.mtrsteamloco.config.client.rail3d": "Modelo orbital tridimensional",
+    "gui.mtrsteamloco.config.client.slider": "Use el deslizador para ajustar la postura",
     "gui.mtrsteamloco.config.client.rail3d.description": "Cerrar la órbita estereoscópica permite a worldedit copiar los nodos orbitales invisibles causados es es por los nodos orbitales conectados.",
     "gui.mtrsteamloco.config.client.slsmoke": "Muestra el humo de la locomotora de vapor",
     "gui.mtrsteamloco.config.client.translucentsort": "Mostrar con precisión la superficie translúcida",

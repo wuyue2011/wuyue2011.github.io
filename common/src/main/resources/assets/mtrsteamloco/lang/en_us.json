@@ -43,6 +43,7 @@
     "gui.mtrsteamloco.config.client.shaderactive": "Due to its conflict with Optifine, the stereoscopic orbit function and rendering optimization are currently unavailable.",
     "gui.mtrsteamloco.config.client.shadercompat": "Using rendering optimization",
     "gui.mtrsteamloco.config.client.rail3d": "Stereoscopic orbit model",
+    "gui.mtrsteamloco.config.client.slider": "Adjust posture using slider",
     "gui.mtrsteamloco.config.client.rail3d.description": "Turning off the 3D track allows WorldEdit to make invisible track nodes visible caused by copying connected track nodes.",
     "gui.mtrsteamloco.config.client.slsmoke": "Display the smoke of steam locomotives",
     "gui.mtrsteamloco.config.client.translucentsort": "Accurately display semi transparent surfaces",

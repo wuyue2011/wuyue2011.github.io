@@ -35,6 +35,7 @@ public class ClientConfig {
     public static boolean enableTrainRender = true;
     public static boolean enableTrainSound = true;
     public static boolean enableSmoke = true;
+    public static boolean enableSlider = true;
 
     public static boolean hideRidingTrain = false;
 
@@ -58,6 +59,7 @@ public class ClientConfig {
             enableTrainSound = getOrDefault(configObject, "enableTrainSound", JsonElement::getAsBoolean, true);
             enableSmoke = getOrDefault(configObject, "enableSmoke", JsonElement::getAsBoolean, true);
             hideRidingTrain = getOrDefault(configObject, "hideRidingTrain", JsonElement::getAsBoolean, false);
+            enableSlider = getOrDefault(configObject, "enableSlider", JsonElement::getAsBoolean, true);
 
             customConfigs.clear();
             if (configObject.has("custom")) {
@@ -109,6 +111,7 @@ public class ClientConfig {
             configObject.addProperty("enableTrainSound", enableTrainSound);
             configObject.addProperty("enableSmoke", enableSmoke);
             configObject.addProperty("hideRidingTrain", hideRidingTrain);
+            configObject.addProperty("enableSlider", enableSlider);
 
             JsonObject customObject = new JsonObject();
             for (Map.Entry<String, String> entry : customConfigs.entrySet()) {
