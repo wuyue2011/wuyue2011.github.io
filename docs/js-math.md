@@ -39,7 +39,7 @@
 
 ## Matrix4f
 
-ANTE为了统一不同版本的矩阵类型，提供了 `Matrix4f` 类，用来表示一个 4x4 矩阵。它包装当前版本原版的 `Matrix4f`, 在1.19.0之前，它使用 `com.mojang.math.Matrix4f`，而在1.19.0及以后，它使用 `org.joml.Matrix4f`。  
+(A)NTE为了统一不同版本的矩阵类型，提供了 `Matrix4f` 类，用来表示一个 4x4 矩阵。它包装当前版本原版的 `Matrix4f`, 在1.19.0之前，它使用 `com.mojang.math.Matrix4f`，而在1.19.0及以后，它使用 `org.joml.Matrix4f`。  
 
 三维变换矩阵。代表了把一个点对应到另一个点的一种变换关系。例如，我可以说 “我要把这个模型先绕 Y 轴旋转 90 度，再沿 X 轴移动 10 米……”，而这样的一组变换操作就可以用一个矩阵来表示。  
 
@@ -51,8 +51,12 @@ ANTE为了统一不同版本的矩阵类型，提供了 `Matrix4f` 类，用来�
 | `new Matrix4f(other: Matrix4f)`                              | 创建一个新的 Matrix4f，它和原来的矩阵是完全相同的。        |
 | `Matrix4f.copy(): Matrix4f`                                  | 复制一个 Matrix4f，以便独立地进行一些修改。                  |
 | `Matrix4f.translate(x: float, y: float, z: float): void`     | 增加一个平移 (x,y,z) 的变换。                                |
+| `Matrix4f.translate(other: Vector3f): void`                 | 增加一个平移 (x,y,z) 的变换。                                |
 | `Matrix4f.rotate(axis: Vector3f, rad: float): void`          | 增加一个在原点绕某个方向旋转的变换。角度采用弧度制，正值为逆时针，axis 需要是单位矢量。 |
 | `Matrix4f.rotateX(rad: float): void`                         | 按照 X 轴旋转，角度采取弧度制。Y/Z 同理。                    |
+| `Matrix4f.rotateXYZ(rx: float, ry: float, rz: float): void` | 按照 X/Y/Z 轴旋转，角度采取弧度制。YXZ、ZYX同理。                           |
+| `Matrix4f.rotateXYZ(vs: Vector3f): void`                   | 按照 X/Y/Z 轴旋转，角度采取弧度制。 YXZ、ZYX同理。                         |
+| `Matrix4f.getEulerAnglesXYZ(): Vector3f`                   | 获取当前矩阵的欧拉角，返回一个 Vector3f，XYZ 依次为角度。YXZ、ZYX同理。       |
 | `Matrix4f.multiply(other: Matrix4f): void`                   | 右乘另一个变换矩阵，即把那个矩阵的变换接在这个的后面。       |
 | `Matrix4f.transform(vec: Vector3f): Vector3f`                | 计算一个坐标按照这个变换进行之后会到哪一个坐标。会返回一个新的 Vector3f，不会动输入值。 |
 | `Matrix4f.transform3(vec: Vector3f): Vector3f`               | 同上，但只计入旋转不计入平移。                               |
@@ -63,6 +67,7 @@ ANTE为了统一不同版本的矩阵类型，提供了 `Matrix4f` 类，用来�
 | `Matrix4f.load(buffer: FloatBuffer): void`  |  从一个 FloatBuffer 中加载。                                  |
 | `static Matrix4f.translation(x: float, y: float, z: float): Matrix4f` | 获取一个平移变换矩阵。                                       |
 
+顺带一提, 四维矩阵的缩放很简单只, 需要对m00-m23分别乘以x、y、z缩放即可, 但以前的版本中 Zbx 并没有提供, 大抵是因为 `com.mojang.math.Matrix4f` 里没有提供scale方法吧···
 
 
 ## Matrices
