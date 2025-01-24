@@ -67,8 +67,6 @@
 | `Matrix4f.load(buffer: FloatBuffer): void`  |  从一个 FloatBuffer 中加载。                                  |
 | `static Matrix4f.translation(x: float, y: float, z: float): Matrix4f` | 获取一个平移变换矩阵。                                       |
 
-顺带一提, 四维矩阵的缩放很简单只, 需要对m00-m23分别乘以x、y、z缩放即可, 但以前的版本中 Zbx 并没有提供, 大抵是因为 `com.mojang.math.Matrix4f` 里没有提供scale方法吧···
-
 
 ## Matrices
 
