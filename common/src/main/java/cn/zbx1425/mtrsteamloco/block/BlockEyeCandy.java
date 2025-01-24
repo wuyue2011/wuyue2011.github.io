@@ -210,7 +210,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
     public static class BlockEntityEyeCandy extends BlockEntityClientSerializableMapper {
 
         public String prefabId = null;
-        public EyeCandyProperties properties = null;
 
         public float translateX = 0, translateY = 0, translateZ = 0;
         public float rotateX = 0, rotateY = 0, rotateZ = 0;
@@ -302,15 +301,21 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
 
         public void setPrefabId(String prefabId) {
-            if (this.prefabId == null || !this.prefabId.equals(prefabId)) {
-                if (properties != null) {
-                    if (properties.script != null) {
-                        properties.script.tryCallDisposeFunctionAsync(scriptContext);
-                    }
+            setPrefabId(prefabId, false);
+        }
+
+        public void reset() {
+            setPrefabId(prefabId, true);
+        }
+
+        public void setPrefabId(String prefabId, boolean update) {
+            if (this.prefabId == null || !this.prefabId.equals(prefabId) || update) {
+                if (scriptContext != null) {
+                    scriptContext.disposeForReload = true;
                 }
                 scriptContext = null;
                 this.prefabId = prefabId;
-                properties = EyeCandyRegistry.elements.get(prefabId);
+                EyeCandyProperties properties = getProperties();
                 if (properties != null) {
                     setShape(properties.shape);
                     setCollisionShape(properties.collisionShape);
@@ -429,9 +434,13 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             }
         }
 
+        public EyeCandyProperties getProperties() {
+            return EyeCandyRegistry.elements.get(prefabId);
+        }
+
         public void tryCallBeClickedFunctionAsync(Player player) {
             if (scriptContext == null) return;
-            EyeCandyProperties prop = EyeCandyRegistry.elements.get(prefabId);
+            EyeCandyProperties prop = getProperties();
             if (prop == null) return;
             ScriptHolder scriptHolder = prop.script;
             if (scriptHolder == null) return;
@@ -446,13 +455,11 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             return customConfigs.get(key);
         }
 
-        public void registerCustomConfig(ConfigResponder... responders) {
-            for (ConfigResponder responder : responders) {
-                if (!customConfigs.containsKey(responder.key)) {
-                    customConfigs.put(responder.key, responder.defaultValue);
-                }
-                customResponders.put(responder.key, responder);
+        public void registerCustomConfig(ConfigResponder responder) {
+            if (!customConfigs.containsKey(responder.key)) {
+                customConfigs.put(responder.key, responder.defaultValue);
             }
+            customResponders.put(responder.key, responder);
         }
 
         public void removeCustomConfig(String key) {

@@ -60,7 +60,7 @@ public class BlockEntityEyeCandyRenderer extends BlockEntityRendererMapper<Block
         Vector3f candyPos = new Vector3f(blockEntity.getBlockPos());
         worldPose.translate(-candyPos.x(), -candyPos.y(), -candyPos.z());
 
-        EyeCandyProperties prop = EyeCandyRegistry.getProperty(blockEntity.prefabId);
+        EyeCandyProperties prop = blockEntity.getProperties();
         if (prop == null || RailRenderDispatcher.isHoldingBrush) {
             matrices.pushPose();
             matrices.translate(0.5f, 0.5f, 0.5f);
@@ -93,7 +93,7 @@ public class BlockEntityEyeCandyRenderer extends BlockEntityRendererMapper<Block
         if (prop.model != null) {
             MainClient.drawScheduler.enqueue(prop.model, candyPose, lightToUse);
         }
-        if (prop.script != null) {
+        if (blockEntity.scriptContext != null && prop.script != null) {
             synchronized (blockEntity.scriptContext) {
                 blockEntity.scriptContext.commit(MainClient.drawScheduler, candyPose, worldPose, lightToUse);
             }

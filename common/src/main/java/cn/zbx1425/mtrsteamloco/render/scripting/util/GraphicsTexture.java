@@ -8,10 +8,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.system.MemoryUtil;
-import cn.zbx1425.mtrsteamloco.Main;
 
 import java.awt.*;
-import java.awt.color.ColorSpace;
 import java.awt.image.*;
 import java.io.Closeable;
 import java.nio.ByteBuffer;
@@ -61,22 +59,63 @@ public class GraphicsTexture implements Closeable {
         upload(bufferedImage);
     }
 
-    public void upload(BufferedImage image) {
-        if (isClosed || dynamicTexture.getPixels() == null) Main.LOGGER.info("GraphicsTexture already closed");
-        else {
-            IntBuffer imgData = IntBuffer.wrap(((DataBufferInt)image.getRaster().getDataBuffer()).getData());
-            long pixelAddr = ((NativeImageAccessor)(Object)dynamicTexture.getPixels()).getPixels();
-            ByteBuffer target = MemoryUtil.memByteBuffer(pixelAddr, width * height * 4);
-            for (int i = 0; i < width * height; i++) {
-                // ARGB to RGBA
-                int pixel = imgData.get();
-                target.put((byte)((pixel >> 16) & 0xFF));
-                target.put((byte)((pixel >> 8) & 0xFF));
-                target.put((byte)(pixel & 0xFF));
-                target.put((byte)((pixel >> 24) & 0xFF));
-            }
-            Minecraft.getInstance().execute(dynamicTexture::upload);
+    public synchronized void upload(BufferedImage image) {
+        if (isClosed || dynamicTexture.getPixels() == null) {
+            Main.LOGGER.info("GraphicsTexture already closed");
+            return;
         }
+
+        if (image.getType() != BufferedImage.TYPE_INT_ARGB) {
+            Main.LOGGER.warn("Image type is not TYPE_INT_ARGB, converting...");
+            image = createArgbBufferedImage(image);
+        }
+
+        Raster raster = image.getRaster();
+        if (raster == null) {
+            Main.LOGGER.error("Image raster is null");
+            return;
+        }
+
+        DataBuffer dataBuffer = raster.getDataBuffer();
+        if (!(dataBuffer instanceof DataBufferInt)) {
+            Main.LOGGER.error("Image data buffer is not an instance of DataBufferInt");
+            return;
+        }
+
+        IntBuffer imgData = IntBuffer.wrap(((DataBufferInt) dataBuffer).getData());
+        if (imgData == null || imgData.remaining() < width * height) {
+            Main.LOGGER.error("Image data buffer is null or insufficient data");
+            return;
+        }
+
+        NativeImage nativeImage = dynamicTexture.getPixels();
+        if (nativeImage == null) {
+            Main.LOGGER.error("DynamicTexture pixels are null");
+            return;
+        }
+
+        long pixelAddr = ((NativeImageAccessor) (Object) nativeImage).getPixels();
+        if (pixelAddr == 0) {
+            Main.LOGGER.error("Pixel address is 0");
+            return;
+        }
+
+        ByteBuffer target = MemoryUtil.memByteBuffer(pixelAddr, width * height * 4);
+        if (target == null || target.remaining() < width * height * 4) {
+            Main.LOGGER.error("Target ByteBuffer is null or insufficient size");
+            return;
+        }
+
+        for (int i = 0; i < width * height; i++) {
+            // ARGB to RGBA
+            int pixel = imgData.get();
+            target.put((byte) ((pixel >> 16) & 0xFF)); // R
+            target.put((byte) ((pixel >> 8) & 0xFF));  // G
+            target.put((byte) (pixel & 0xFF));         // B
+            target.put((byte) ((pixel >> 24) & 0xFF));  // A
+        }
+
+        Minecraft.getInstance().execute(dynamicTexture::upload);
     }
 
     public boolean isClosed() {
@@ -85,8 +124,9 @@ public class GraphicsTexture implements Closeable {
 
     @Override
     public void close() {
-        if (isClosed) Main.LOGGER.info("GraphicsTexture already closed");
-        else {
+        if (isClosed) {
+            Main.LOGGER.info("GraphicsTexture already closed");
+        } else {
             Minecraft.getInstance().execute(() -> {
                 Minecraft.getInstance().getTextureManager().release(identifier);
             });

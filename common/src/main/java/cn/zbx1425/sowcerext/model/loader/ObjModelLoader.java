@@ -23,8 +23,32 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.io.InputStream;
 
 public class ObjModelLoader {
+
+    public static RawModel loadModel(InputStream obj, InputStream mtl, ResourceLocation location, AtlasManager atlasManager) throws IOException {
+        Obj srcObj = ObjReader.read(obj);
+        Map<String, Mtl> materials = loadMaterials(mtl);
+        RawModel model = loadModel(srcObj, location, materials, atlasManager);
+        model.sourceLocation = location;
+        return model;
+    }
+
+    public static Map<String, RawModel> loadModels(InputStream obj, InputStream mtl, ResourceLocation location, AtlasManager atlasManager) throws IOException {
+        Obj srcObj = ObjReader.read(obj);
+        Map<String, Mtl> materials = loadMaterials(mtl);
+
+        HashMap<String, RawModel> result = new HashMap<>();
+        Map<String, Obj> groupObjs = ObjSplitting.splitByGroups(srcObj);
+        for (Map.Entry<String, Obj> groupEntry : groupObjs.entrySet()) {
+            RawModel model = loadModel(groupEntry.getValue(), location, materials, atlasManager);
+            String compliantKey = groupEntry.getKey().toLowerCase(Locale.ROOT).replace('\\', '/').replaceAll("[^a-z0-9/._-]", "_");
+            model.sourceLocation = new ResourceLocation(location.getNamespace(), location.getPath() + "/" + compliantKey);
+            result.put(groupEntry.getKey(), model);
+        }
+        return result;
+    }
 
     public static RawModel loadModel(ResourceManager resourceManager, ResourceLocation objLocation, AtlasManager atlasManager) throws IOException {
         Obj srcObj = ObjReader.read(Utilities.getInputStream(resourceManager.getResource(objLocation)));
@@ -137,10 +161,16 @@ public class ObjModelLoader {
     private static Map<String, Mtl> loadMaterials(ResourceManager resourceManager, Obj srcObj, ResourceLocation objLocation) throws IOException {
         Map<String, Mtl> materials = new HashMap<>();
         for (String mtlFileName : srcObj.getMtlFileNames()) {
-            List<Mtl> srcMtls = MtlReader.read(Utilities.getInputStream(resourceManager.getResource(ResourceUtil.resolveRelativePath(objLocation, mtlFileName, ".mtl"))));
-            for (Mtl mtl : srcMtls) {
-                materials.put(mtl.getName(), mtl);
-            }
+            materials.putAll(loadMaterials(Utilities.getInputStream(resourceManager.getResource(ResourceUtil.resolveRelativePath(objLocation, mtlFileName, ".mtl")))));
+        }
+        return materials;
+    }
+
+    private static Map<String, Mtl> loadMaterials(InputStream mtlIn) throws IOException {
+        List<Mtl> srcMtls = MtlReader.read(mtlIn);
+        Map<String, Mtl> materials = new HashMap<>();
+        for (Mtl mtl : srcMtls) {
+            materials.put(mtl.getName(), mtl);
         }
         return materials;
     }

@@ -151,7 +151,7 @@ public class VertAttrState {
 
     public VertAttrState setModelMatrix(Matrix4f matrix) {
         this.matrixModel = (matrixIn) -> {
-            nowMatrix = matrix;    
+            // nowMatrix = matrix;    
             return matrix;
         };
         return this;

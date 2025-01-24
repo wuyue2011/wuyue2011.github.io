@@ -105,6 +105,11 @@ public class Matrix4f {
        org.joml.Vector3f result = new org.joml.Vector3f();
        return new Vector3f(impl.getTranslation(result));
     }
+
+    public void scale(float x, float y, float z) {
+        impl.scale(x, y, z);
+    }
+
 #else
 
     protected final com.mojang.math.Matrix4f impl;
@@ -200,6 +205,26 @@ public class Matrix4f {
         impl.store(srcFloatBuffer);
         return new Vector3f(srcValues[12], srcValues[13], srcValues[14]);
     }
+
+    public void scale(float x, float y, float z) {
+        float[] values = new float[16];
+        FloatBuffer floatBuffer = FloatBuffer.wrap(values);
+        impl.store(floatBuffer);
+        values[0] *= x;
+        values[1] *= x;
+        values[2] *= x;
+        values[3] *= x;
+        values[4] *= y;
+        values[5] *= y;
+        values[6] *= y;
+        values[7] *= y;
+        values[8] *= z;
+        values[9] *= z;
+        values[10] *= z;
+        values[11] *= z;
+        impl.load(FloatBuffer.wrap(values));
+    }
+
 #endif
 
     public void translate(Vector3f vec) {
