@@ -35,6 +35,9 @@ import cn.zbx1425.mtrsteamloco.Main;
 import net.minecraft.network.chat.Component;
 import cn.zbx1425.mtrsteamloco.ClientConfig;
 import me.shedaniel.clothconfig2.gui.entries.*;
+import net.minecraft.client.gui.components.Button;
+import cn.zbx1425.mtrsteamloco.gui.entries.*;
+import com.mojang.blaze3d.platform.Window;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -53,22 +56,11 @@ public class EyeCandyScreen {
 
         List<Consumer<BlockEntityEyeCandy>> update = new ArrayList<>();// updateBlockEntityCallbacks;
 
-        EyeCandyProperties properties = EyeCandyRegistry.elements.get(blockEntity.prefabId);
+        EyeCandyProperties properties = blockEntity.getProperties();
         String pid = "";
         if (properties != null) {
             pid = properties.name.getString() + " (" + blockEntity.prefabId + ")";
         }
-
-        Set<Map.Entry<String, EyeCandyProperties>> entries = EyeCandyRegistry.elements.entrySet();
-        Map<String, String> elementMap = new HashMap<>();
-        for (Map.Entry<String, EyeCandyProperties> entry : entries) {
-            EyeCandyProperties prop = entry.getValue();
-            String prid = entry.getKey();
-            String name = prop.name.getString();
-            elementMap.put(name + " (" + prid + ")", prid);
-        }
-        List<String> elementList = new ArrayList<>(elementMap.keySet());
-        Collections.sort(elementList);
 
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(null)
@@ -80,22 +72,15 @@ public class EyeCandyScreen {
                 Text.translatable("gui.mtrsteamloco.config.client.category.common")
         );
 
-        common.addEntry(entryBuilder.startTextDescription(
-                Text.translatable("gui.mtrsteamloco.eye_candy.present", (properties != null ? properties.name.getString() : blockEntity.prefabId + " (???)"))
-        ).build());
-
-        common.addEntry(entryBuilder.startDropdownMenu(
-            tr("select"),
-            DropdownMenuBuilder.TopCellElementBuilder.of(pid, str -> str))
-            .setDefaultValue(pid).setSelections(elementList).setSaveConsumer(btnKey -> {
-                update.add(be -> {
-                    if (be.prefabId!= elementMap.get(btnKey)) {
-                        be.setPrefabId(elementMap.get(btnKey));
-                        be.restore();
-                    }
-                });
-            }).build()
-        );
+        common.addEntry(new ButtonListEntry(
+            new Button(0, 0, 300, 20, 
+                Text.translatable("gui.mtrsteamloco.eye_candy.present", 
+                (properties != null ? (properties.name.getString() + " (" + blockEntity.prefabId + ")") : (blockEntity.prefabId + " (???)"))), 
+                btn -> Minecraft.getInstance().setScreen(new SelectScreen(blockPos))), 
+            (e, b, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10) -> {
+                Window window = Minecraft.getInstance().getWindow();
+                b.x = window.getGuiScaledWidth() / 2 - 150;
+        }));
 
         common.addEntry(entryBuilder
                 .startBooleanToggle(
@@ -173,6 +158,8 @@ public class EyeCandyScreen {
     }
 
     private static void save(int type, float value, BlockEntityEyeCandy blockEntity) {
+        float old = getValue(type, blockEntity);
+        if (old == value) return;
         switch (type) {
             case 0: blockEntity.translateX = value; break;
             case 1: blockEntity.translateY = value; break;
@@ -181,6 +168,7 @@ public class EyeCandyScreen {
             case 4: blockEntity.rotateY = value; break;
             case 5: blockEntity.rotateZ = value; break;
         }
+        blockEntity.sendUpdateC2S();
     }
 
     private static float getValue(int type, BlockEntityEyeCandy blockEntity) {
@@ -215,8 +203,9 @@ public class EyeCandyScreen {
                 Text.literal(str),
                 sv, -20, 20
             ).setDefaultValue(0)
-            .setSaveConsumer(value -> {
-                update.add(be -> save(type, ((float) value) / 20f, be));
+            .setErrorSupplier(value -> {
+                save(type, ((float) value) / 20f, blockEntity);
+                return Optional.empty();
             }).build();
         entry.setTextGetter(value -> Text.literal(value * 5 + "cm"));
         common.addEntry(entry);
@@ -230,8 +219,9 @@ public class EyeCandyScreen {
                 Text.literal(str),
                 sv, -18, 18
             ).setDefaultValue(0)
-            .setSaveConsumer(value -> {
-                update.add(be -> save(type, (float) Math.toRadians(value * 5), be));
+            .setErrorSupplier(value -> {
+                save(type, (float) Math.toRadians(value * 5), blockEntity);
+                return Optional.empty();
             }).build();
         entry.setTextGetter(value -> Text.literal(value * 5 + "°"));
         common.addEntry(entry);
@@ -329,5 +319,101 @@ public class EyeCandyScreen {
 
     private static Component tr(String key) {
         return Text.translatable("gui.mtrsteamloco.eye_candy." + key);
+    }
+
+    private static class SelectScreen extends SelectListScreen {
+        private static final String INSTRUCTION_LINK = "https://aphrodite281.github.io/mtr-ante/#/eyecandy";
+        private final WidgetLabel lblInstruction = new WidgetLabel(0, 0, 0, Text.translatable("gui.mtrsteamloco.eye_candy.tip_resource_pack"), () -> {
+            this.minecraft.setScreen(new ConfirmLinkScreen(bl -> {
+                if (bl) {
+                    Util.getPlatform().openUri(INSTRUCTION_LINK);
+                }
+                this.minecraft.setScreen(this);
+            }, INSTRUCTION_LINK, true));
+        });
+
+        private final BlockPos editingBlockPos;
+        private final List<Pair<String, String>> pairs = new ArrayList<>();
+        private final Map<String, String> nameMap = new HashMap<>();
+
+        public SelectScreen(BlockPos blockPos) {
+            super(Text.literal("Select EyeCandy"));
+            this.editingBlockPos = blockPos;
+            Set<Map.Entry<String, EyeCandyProperties>> entries = EyeCandyRegistry.elements.entrySet();
+
+            for (Map.Entry<String, EyeCandyProperties> entry : entries) {
+                EyeCandyProperties prop = entry.getValue();
+                String prid = entry.getKey();
+                String name = prop.name.getString();
+                pairs.add(new Pair<>(prid, name + " (" + prid + ")"));
+                nameMap.put(name + " (" + prid + ")", prid);
+            }
+        }
+
+        @Override
+        protected void init() {
+            super.init();
+
+            loadPage();
+        }
+
+        @Override
+#if MC_VERSION >= "12000"
+        public void render(@NotNull GuiGraphics guiGraphics, int i, int j, float f) {
+#else
+        public void render(@NotNull PoseStack guiGraphics, int i, int j, float f) {
+#endif
+            this.renderBackground(guiGraphics);
+            super.render(guiGraphics, i, j, f);
+            super.renderSelectPage(guiGraphics);
+        }
+
+        @Override
+        protected void loadPage() {
+            clearWidgets();
+
+            Optional<BlockEyeCandy.BlockEntityEyeCandy> optionalBlockEntity = getBlockEntity();
+            if (optionalBlockEntity.isEmpty()) { this.onClose(); return; }
+            BlockEyeCandy.BlockEntityEyeCandy blockEntity = optionalBlockEntity.get();
+            scrollList.visible = true;
+            loadSelectPage(key -> !key.equals(blockEntity.prefabId));
+            lblInstruction.alignR = true;
+            IDrawing.setPositionAndWidth(lblInstruction, width / 2 + SQUARE_SIZE, height - SQUARE_SIZE - TEXT_HEIGHT, 0);
+            lblInstruction.setWidth(width / 2 - SQUARE_SIZE * 2);
+            addRenderableWidget(lblInstruction);
+        }
+
+        @Override
+        protected void onBtnClick(String btnKey) {
+            updateBlockEntity(blockEntity -> blockEntity.setPrefabId(btnKey));
+        }
+
+        @Override
+        protected List<Pair<String, String>> getRegistryEntries() {
+            return pairs;
+        }
+
+        private void updateBlockEntity(Consumer<BlockEyeCandy.BlockEntityEyeCandy> modifier) {
+            getBlockEntity().ifPresent(blockEntity -> {
+                modifier.accept(blockEntity);
+                PacketUpdateBlockEntity.sendUpdateC2S(blockEntity);
+            });
+        }
+
+        private Optional<BlockEyeCandy.BlockEntityEyeCandy> getBlockEntity() {
+            Level level = Minecraft.getInstance().level;
+            if (level == null) return Optional.empty();
+            return level.getBlockEntity(editingBlockPos, Main.BLOCK_ENTITY_TYPE_EYE_CANDY.get());
+        }
+
+        @Override
+        public void onClose() {
+            this.minecraft.setScreen(EyeCandyScreen.createScreen(editingBlockPos));
+        }
+
+        @Override
+        public boolean isPauseScreen() {
+            return false;
+        }
     }
 }

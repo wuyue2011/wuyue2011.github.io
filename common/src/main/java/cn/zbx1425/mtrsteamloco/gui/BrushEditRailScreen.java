@@ -30,7 +30,7 @@ public class BrushEditRailScreen extends SelectListScreen {
 
     private boolean isSelectingModel = false;
 
-    private static final String INSTRUCTION_LINK = "https://www.zbx1425.cn/nautilus/mtr-nte/#/railmodel";
+    private static final String INSTRUCTION_LINK = "https://aphrodite281.github.io/mtr-ante/#/railmodel";
     private final WidgetLabel lblInstruction = new WidgetLabel(0, 0, 0, Text.translatable("gui.mtrsteamloco.eye_candy.tip_resource_pack"), () -> {
         this.minecraft.setScreen(new ConfirmLinkScreen(bl -> {
             if (bl) {

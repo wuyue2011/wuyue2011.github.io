@@ -300,8 +300,14 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putBoolean("isEntrance", isEntrance);
         }
 
-        public void setPrefabId(String prefabId) {
-            this.prefabId = prefabId;
+        public void setPrefabId(String new1) {
+            String old = prefabId;
+            prefabId = new1;
+            if ((old == null && prefabId != null) || (old != null && !old.equals(prefabId))) {
+                restore();
+            } else if (getProperties() != null && scriptContext == null) {
+                scriptContext = new EyeCandyScriptContext(this);
+            }
         }
 
         public void restore() {

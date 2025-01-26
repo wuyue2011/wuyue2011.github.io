@@ -59,11 +59,11 @@ public class RenderTrainsMixin {
             MainClient.railRenderDispatcher.drawRailNodes(Minecraft.getInstance().level, MainClient.drawScheduler, viewMatrix);
         }
 
-        if (ShadersModHandler.isRenderingShadowPass()) {
-            Main.LOGGER.info("0 shadow pass" + System.currentTimeMillis() + " " + entity);
-        } else {
-            Main.LOGGER.info("0 normal pass" + System.currentTimeMillis() + " " + entity);
-        }
+        // if (ShadersModHandler.isRenderingShadowPass()) {
+        //     Main.LOGGER.info("0 shadow pass" + System.currentTimeMillis() + " " + entity);
+        // } else {
+        //     Main.LOGGER.info("0 normal pass" + System.currentTimeMillis() + " " + entity);
+        // }
 
         BlockEntityEyeCandyRenderer.commit(matrices, vertexConsumers);
 

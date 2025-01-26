@@ -72,9 +72,7 @@ public class BlockEntityEyeCandyRenderer extends BlockEntityRendererMapper<Block
     public static void commit(@NotNull PoseStack matrices, @NotNull MultiBufferSource vertexConsumers) {
         Matrix4f worldPose = new Matrix4f(matrices.last().pose()).copy();
         HashSet<BlockEyeCandy.BlockEntityEyeCandy> temp = new HashSet<>(entitysToRender);
-        int num = 0;
         for (BlockEyeCandy.BlockEntityEyeCandy blockEntity : temp) {
-            num++;
             if (blockEntity == null) continue;
             
             final Level world = blockEntity.getLevel();
@@ -111,7 +109,7 @@ public class BlockEntityEyeCandyRenderer extends BlockEntityRendererMapper<Block
                 matrices.popPose();
 
             }
-            if (prop == null) return;
+            if (prop == null) continue;
             
             candyPose.translate(pos.getX(), pos.getY(), pos.getZ());
             candyPose.translate(0.5f, 0f, 0.5f);
