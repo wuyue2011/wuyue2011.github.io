@@ -4,14 +4,15 @@ import cn.zbx1425.mtrsteamloco.MainClient;
 import cn.zbx1425.mtrsteamloco.block.BlockEyeCandy;
 import cn.zbx1425.mtrsteamloco.data.EyeCandyProperties;
 import cn.zbx1425.mtrsteamloco.data.EyeCandyRegistry;
+import cn.zbx1425.mtrsteamloco.render.ShadersModHandler;
 import cn.zbx1425.mtrsteamloco.render.rail.RailRenderDispatcher;
 import cn.zbx1425.mtrsteamloco.render.scripting.ScriptContextManager;
 import cn.zbx1425.mtrsteamloco.render.scripting.eyecandy.EyeCandyScriptContext;
 import cn.zbx1425.mtrsteamloco.render.scripting.train.ScriptedTrainRenderer;
 import cn.zbx1425.sowcer.math.Matrix4f;
-import cn.zbx1425.sowcer.math.Vector3f;
 import cn.zbx1425.sowcer.math.PoseStackUtil;
 import cn.zbx1425.sowcerext.model.ModelCluster;
+import cn.zbx1425.sowcerext.model.integration.BufferSourceProxy;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mtr.RegistryObject;
 import mtr.block.IBlock;
@@ -34,6 +35,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import cn.zbx1425.mtrsteamloco.Main;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -57,10 +59,8 @@ public class BlockEntityEyeCandyRenderer extends BlockEntityRendererMapper<Block
         int lightToUse = blockEntity.fullLight ? LightTexture.pack(15, 15) : light;
         Matrix4f worldPose = new Matrix4f(matrices.last().pose()).copy();
         Matrix4f candyPose = worldPose.copy();
-        Vector3f candyPos = new Vector3f(blockEntity.getBlockPos());
-        worldPose.translate(-candyPos.x(), -candyPos.y(), -candyPos.z());
 
-        EyeCandyProperties prop = blockEntity.getProperties();
+        EyeCandyProperties prop = EyeCandyRegistry.getProperty(blockEntity.prefabId);
         if (prop == null || RailRenderDispatcher.isHoldingBrush) {
             matrices.pushPose();
             matrices.translate(0.5f, 0.5f, 0.5f);
@@ -93,11 +93,21 @@ public class BlockEntityEyeCandyRenderer extends BlockEntityRendererMapper<Block
         if (prop.model != null) {
             MainClient.drawScheduler.enqueue(prop.model, candyPose, lightToUse);
         }
-        if (blockEntity.scriptContext != null && prop.script != null) {
+        if (prop.script != null && blockEntity.scriptContext != null) {
             synchronized (blockEntity.scriptContext) {
                 blockEntity.scriptContext.commit(MainClient.drawScheduler, candyPose, worldPose, lightToUse);
             }
             prop.script.tryCallRenderFunctionAsync(blockEntity.scriptContext);
+        }
+
+        // TODO: Mixin into Iris to carry out the batching properly?
+        if (ShadersModHandler.isRenderingShadowPass()) {
+            Main.LOGGER.info("1 shadow pass" + System.currentTimeMillis() + blockEntity.hashCode());
+            BufferSourceProxy vertexConsumersProxy = new BufferSourceProxy(vertexConsumers);
+            MainClient.drawScheduler.commit(vertexConsumersProxy, MainClient.drawContext);
+            vertexConsumersProxy.commit();
+        } else {
+            Main.LOGGER.info("1 normal pass" + System.currentTimeMillis() + blockEntity.hashCode());
         }
     }
 

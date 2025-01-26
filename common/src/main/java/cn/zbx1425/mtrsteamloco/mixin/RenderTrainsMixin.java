@@ -4,6 +4,7 @@ import cn.zbx1425.mtrsteamloco.ClientConfig;
 import cn.zbx1425.mtrsteamloco.MainClient;
 import cn.zbx1425.mtrsteamloco.render.RailPicker;
 import cn.zbx1425.mtrsteamloco.render.RenderUtil;
+import cn.zbx1425.mtrsteamloco.render.ShadersModHandler;
 import cn.zbx1425.mtrsteamloco.render.rail.RailRenderDispatcher;
 import cn.zbx1425.mtrsteamloco.render.scripting.ScriptContextManager;
 import cn.zbx1425.sowcer.util.GlStateTracker;
@@ -14,6 +15,7 @@ import mtr.data.Rail;
 import mtr.entity.EntitySeat;
 import mtr.render.RenderTrains;
 import net.minecraft.client.Minecraft;
+import cn.zbx1425.mtrsteamloco.Main;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.Level;
@@ -54,6 +56,12 @@ public class RenderTrainsMixin {
             }
 
             MainClient.railRenderDispatcher.drawRailNodes(Minecraft.getInstance().level, MainClient.drawScheduler, viewMatrix);
+        }
+
+        if (ShadersModHandler.isRenderingShadowPass()) {
+            Main.LOGGER.info("0 shadow pass" + System.currentTimeMillis() + entity.hashCode());
+        } else {
+            Main.LOGGER.info("0 normal pass" + System.currentTimeMillis() + entity.hashCode());
         }
 
         MainClient.drawContext.drawWithBlaze = !ClientConfig.useRenderOptimization();

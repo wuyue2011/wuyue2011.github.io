@@ -90,6 +90,7 @@ public class EyeCandyScreen {
             .setDefaultValue(pid).setSelections(elementList).setSaveConsumer(btnKey -> {
                 update.add(be -> {
                     be.setPrefabId(elementMap.get(btnKey));
+                    be.restore();
                 });
             }).build()
         );

@@ -163,11 +163,11 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                 return ShapeSerializer.getShape(e.getCollisionShape(), (int)state.getValue(FACING).toYRot());
             } catch (Exception e1) {
                 Main.LOGGER.error("Error getting collision shape :" + e1);
-                return Shapes.empty();
+                return Block.box(0, 0, 0, 16, 32, 16);
             }
         } else {
             Main.LOGGER.error("BlockEntityEyeCandy not found at " + pos + ", " + world + ", " + state + ", " + entity);
-            return Shapes.empty();
+            return Block.box(0, 0, 0, 16, 32, 16);
         }
     }
 
@@ -301,34 +301,25 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
 
         public void setPrefabId(String prefabId) {
-            setPrefabId(prefabId, false);
+            this.prefabId = prefabId;
         }
 
-        public void reset() {
-            setPrefabId(prefabId, true);
-        }
-
-        public void setPrefabId(String prefabId, boolean update) {
-            if (this.prefabId == null || !this.prefabId.equals(prefabId) || update) {
-                if (scriptContext != null) {
-                    scriptContext.disposeForReload = true;
-                }
-                scriptContext = null;
-                this.prefabId = prefabId;
-                EyeCandyProperties properties = getProperties();
-                if (properties != null) {
-                    setShape(properties.shape);
-                    setCollisionShape(properties.collisionShape);
-                    fixedMatrix = properties.fixedMatrix;
-                    setLightLevel(properties.lightLevel);
-                    customConfigs.clear();
-                    customResponders.clear();
-                    isTicketBarrier = properties.isTicketBarrier;
-                    isEntrance = properties.isEntrance;
-                    if (properties.script != null) {
-                        scriptContext = new EyeCandyScriptContext(this);
-                    }
-                }
+        public void restore() {
+            if (scriptContext != null) {
+                scriptContext.disposeForReload = true;
+            }
+            scriptContext = null;
+            EyeCandyProperties properties = getProperties();
+            setShape(properties.shape);
+            setCollisionShape(properties.collisionShape);
+            fixedMatrix = properties.fixedMatrix;
+            setLightLevel(properties.lightLevel);
+            customConfigs.clear();
+            customResponders.clear();
+            isTicketBarrier = properties.isTicketBarrier;
+            isEntrance = properties.isEntrance;
+            if (properties.script != null) {
+                scriptContext = new EyeCandyScriptContext(this);
             }
         }
 
@@ -435,7 +426,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
 
         public EyeCandyProperties getProperties() {
-            return EyeCandyRegistry.elements.get(prefabId);
+            EyeCandyProperties property = EyeCandyRegistry.getProperty(prefabId);
+            return property != null ? property : EyeCandyProperties.DEFAULT;
         }
 
         public void tryCallBeClickedFunctionAsync(Player player) {

@@ -59,7 +59,7 @@ public class EyeCandyScriptContext extends AbstractScriptContext {
 
     @Override
     public boolean isBearerAlive() {
-        return !disposeForReload && !entity.isRemoved();
+        return !disposeForReload && !entity.isRemoved() && !disposed;
     }
 
     @Override

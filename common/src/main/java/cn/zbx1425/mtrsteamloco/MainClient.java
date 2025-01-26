@@ -14,7 +14,7 @@ import mtr.item.ItemBlockClickingBase;
 
 public class MainClient {
 
-	public static DrawScheduler drawScheduler = new DrawScheduler();
+	public static final DrawScheduler drawScheduler = new DrawScheduler();
 	public static ModelManager modelManager = new ModelManager();
 	public static AtlasManager atlasManager = new AtlasManager();
 

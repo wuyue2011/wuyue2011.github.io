@@ -6,7 +6,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
+import cn.zbx1425.mtrsteamloco.render.ShadersModHandler;
 import net.minecraft.client.renderer.LevelRenderer;
+import cn.zbx1425.mtrsteamloco.Main;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderBuffers;
 import org.spongepowered.asm.mixin.Final;
@@ -31,6 +33,13 @@ public class LevelRendererMixin {
         BufferSourceProxy vertexConsumersProxy = new BufferSourceProxy(renderBuffers.bufferSource());
         MainClient.drawScheduler.commit(vertexConsumersProxy, MainClient.drawContext);
         vertexConsumersProxy.commit();
+
+        if (ShadersModHandler.isRenderingShadowPass()) {
+            Main.LOGGER.info("2 shadow pass" + System.currentTimeMillis());
+        } else {
+            Main.LOGGER.info("2 normal pass" + System.currentTimeMillis());
+        }
+
     }
 
     @Inject(method = "renderLevel", at = @At("TAIL"))
