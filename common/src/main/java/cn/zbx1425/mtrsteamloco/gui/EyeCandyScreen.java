@@ -89,8 +89,10 @@ public class EyeCandyScreen {
             DropdownMenuBuilder.TopCellElementBuilder.of(pid, str -> str))
             .setDefaultValue(pid).setSelections(elementList).setSaveConsumer(btnKey -> {
                 update.add(be -> {
-                    be.setPrefabId(elementMap.get(btnKey));
-                    be.restore();
+                    if (be.prefabId!= elementMap.get(btnKey)) {
+                        be.setPrefabId(elementMap.get(btnKey));
+                        be.restore();
+                    }
                 });
             }).build()
         );
