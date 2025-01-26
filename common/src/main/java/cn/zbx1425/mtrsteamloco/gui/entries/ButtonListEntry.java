@@ -83,6 +83,11 @@ public class ButtonListEntry extends TooltipListEntry<String> implements Contain
     public List<? extends NarratableEntry> narratables() {
         return widgets;
     }
+    
+    @Override
+    public void save() {
+        
+    }
 
     public interface Processor {
         void process(ButtonListEntry entry, Button button, PoseStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta);

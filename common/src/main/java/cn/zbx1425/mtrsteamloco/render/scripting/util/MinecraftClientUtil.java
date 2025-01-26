@@ -230,4 +230,8 @@ public class MinecraftClientUtil {
     public static int packLightTexture(int p_109886_, int  p_109887_) {
        return p_109886_ << 4 | p_109887_ << 20;
     }
+
+    public static void setScreen(Screen screen) {
+        Minecraft.getInstance().setScreen(screen);
+    }
 }
