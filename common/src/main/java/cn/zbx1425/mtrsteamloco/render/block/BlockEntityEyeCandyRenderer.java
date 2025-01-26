@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.client.renderer.LevelRenderer;
 #if MC_VERSION >= "11904"
 import net.minecraft.world.item.ItemDisplayContext;
 #else
@@ -47,67 +48,87 @@ public class BlockEntityEyeCandyRenderer extends BlockEntityRendererMapper<Block
         super(dispatcher);
     }
 
+    private static HashSet<BlockEyeCandy.BlockEntityEyeCandy> entitysToRender = new HashSet<>();
+    private static HashSet<BlockEyeCandy.BlockEntityEyeCandy> entitysToRenderWritting = new HashSet<>();
+
     private static final RegistryObject<ItemStack> BRUSH_ITEM_STACK = new RegistryObject<>(() -> new ItemStack(mtr.Items.BRUSH.get(), 1));
 
     private static final RegistryObject<ItemStack> BARRIER_ITEM_STACK = new RegistryObject<>(() -> new ItemStack(net.minecraft.world.item.Items.BARRIER, 1));
 
     @Override
     public void render(BlockEyeCandy.BlockEntityEyeCandy blockEntity, float f, @NotNull PoseStack matrices, @NotNull MultiBufferSource vertexConsumers, int light, int overlay) {
-        final Level world = blockEntity.getLevel();
-        if (world == null) return;
+        entitysToRenderWritting.add(blockEntity);
+    }
 
-        int lightToUse = blockEntity.fullLight ? LightTexture.pack(15, 15) : light;
+    public static void exchange() {
+        entitysToRender = entitysToRenderWritting;
+        entitysToRenderWritting = new HashSet<>();
+    }
+
+    private static void print(String s) {
+        Main.LOGGER.info(s);
+    }
+
+    public static void commit(@NotNull PoseStack matrices, @NotNull MultiBufferSource vertexConsumers) {
         Matrix4f worldPose = new Matrix4f(matrices.last().pose()).copy();
-        Matrix4f candyPose = worldPose.copy();
+        HashSet<BlockEyeCandy.BlockEntityEyeCandy> temp = new HashSet<>(entitysToRender);
+        int num = 0;
+        for (BlockEyeCandy.BlockEntityEyeCandy blockEntity : temp) {
+            num++;
+            if (blockEntity == null) continue;
+            
+            final Level world = blockEntity.getLevel();
+            if (world == null) continue;
 
-        EyeCandyProperties prop = EyeCandyRegistry.getProperty(blockEntity.prefabId);
-        if (prop == null || RailRenderDispatcher.isHoldingBrush) {
-            matrices.pushPose();
-            matrices.translate(0.5f, 0.5f, 0.5f);
-            PoseStackUtil.rotY(matrices, (float) ((System.currentTimeMillis() % 1000) * (Math.PI * 2 / 1000)));
+            int light = LevelRenderer.getLightColor(world, blockEntity.getBlockPos());;
+
+            int lightToUse = blockEntity.fullLight ? LightTexture.pack(15, 15) : light;
+
+            Matrix4f candyPose = worldPose.copy();
+
+            final BlockPos pos = blockEntity.getBlockPos();
+            final Direction facing = IBlock.getStatePropertySafe(world, pos, BlockEyeCandy.FACING);
+
+            EyeCandyProperties prop = EyeCandyRegistry.getProperty(blockEntity.prefabId);
+            if (prop == null || RailRenderDispatcher.isHoldingBrush) {
+                matrices.pushPose();
+                matrices.translate(pos.getX(), pos.getY(), pos.getZ());
+                matrices.translate(0.5f, 0.5f, 0.5f);
+                PoseStackUtil.rotY(matrices, (float) ((System.currentTimeMillis() % 1000) * (Math.PI * 2 / 1000)));
 #if MC_VERSION >= "11904"
-            if (blockEntity.prefabId != null && prop == null) {
-                Minecraft.getInstance().getItemRenderer().renderStatic(BARRIER_ITEM_STACK.get(), ItemDisplayContext.GROUND, lightToUse, 0, matrices, vertexConsumers, world, 0);
-            } else {
-                Minecraft.getInstance().getItemRenderer().renderStatic(BRUSH_ITEM_STACK.get(), ItemDisplayContext.GROUND, lightToUse, 0, matrices, vertexConsumers, world, 0);
-            }
+                if (blockEntity.prefabId != null && prop == null) {
+                    Minecraft.getInstance().getItemRenderer().renderStatic(BARRIER_ITEM_STACK.get(), ItemDisplayContext.GROUND, lightToUse, 0, matrices, vertexConsumers, world, 0);
+                } else {
+                    Minecraft.getInstance().getItemRenderer().renderStatic(BRUSH_ITEM_STACK.get(), ItemDisplayContext.GROUND, lightToUse, 0, matrices, vertexConsumers, world, 0);
+                }
 #else
-            if (blockEntity.prefabId != null && prop == null) {
-                Minecraft.getInstance().getItemRenderer().renderStatic(BARRIER_ITEM_STACK.get(), ItemTransforms.TransformType.GROUND, lightToUse, 0, matrices, vertexConsumers, 0);
-            } else {
-                Minecraft.getInstance().getItemRenderer().renderStatic(BRUSH_ITEM_STACK.get(), ItemTransforms.TransformType.GROUND, lightToUse, 0, matrices, vertexConsumers, 0);
-            }
+                if (blockEntity.prefabId != null && prop == null) {
+                    Minecraft.getInstance().getItemRenderer().renderStatic(BARRIER_ITEM_STACK.get(), ItemTransforms.TransformType.GROUND, lightToUse, 0, matrices, vertexConsumers, 0);
+                } else {
+                    Minecraft.getInstance().getItemRenderer().renderStatic(BRUSH_ITEM_STACK.get(), ItemTransforms.TransformType.GROUND, lightToUse, 0, matrices, vertexConsumers, 0);
+                }
 #endif
-            matrices.popPose();
-        }
-        if (prop == null) return;
+                matrices.popPose();
 
-        final BlockPos pos = blockEntity.getBlockPos();
-        final Direction facing = IBlock.getStatePropertySafe(world, pos, BlockEyeCandy.FACING);
-        candyPose.translate(0.5f, 0f, 0.5f);
-        candyPose.translate(blockEntity.translateX, blockEntity.translateY, blockEntity.translateZ);
-        candyPose.rotateY(-(float)Math.toRadians(facing.toYRot()) + (float)(Math.PI));
-        candyPose.rotateX(blockEntity.rotateX);
-        candyPose.rotateY(blockEntity.rotateY);
-        candyPose.rotateZ(blockEntity.rotateZ);
-        if (prop.model != null) {
-            MainClient.drawScheduler.enqueue(prop.model, candyPose, lightToUse);
-        }
-        if (prop.script != null && blockEntity.scriptContext != null) {
-            synchronized (blockEntity.scriptContext) {
-                blockEntity.scriptContext.commit(MainClient.drawScheduler, candyPose, worldPose, lightToUse);
             }
-            prop.script.tryCallRenderFunctionAsync(blockEntity.scriptContext);
-        }
-
-        // TODO: Mixin into Iris to carry out the batching properly?
-        if (ShadersModHandler.isRenderingShadowPass()) {
-            Main.LOGGER.info("1 shadow pass" + System.currentTimeMillis() + blockEntity.hashCode());
-            BufferSourceProxy vertexConsumersProxy = new BufferSourceProxy(vertexConsumers);
-            MainClient.drawScheduler.commit(vertexConsumersProxy, MainClient.drawContext);
-            vertexConsumersProxy.commit();
-        } else {
-            Main.LOGGER.info("1 normal pass" + System.currentTimeMillis() + blockEntity.hashCode());
+            if (prop == null) return;
+            
+            candyPose.translate(pos.getX(), pos.getY(), pos.getZ());
+            candyPose.translate(0.5f, 0f, 0.5f);
+            candyPose.translate(blockEntity.translateX, blockEntity.translateY, blockEntity.translateZ);
+            candyPose.rotateY(-(float)Math.toRadians(facing.toYRot()) + (float)(Math.PI));
+            candyPose.rotateX(blockEntity.rotateX);
+            candyPose.rotateY(blockEntity.rotateY);
+            candyPose.rotateZ(blockEntity.rotateZ);
+            if (prop.model != null) {
+                MainClient.drawScheduler.enqueue(prop.model, candyPose, lightToUse);
+            }
+            if (prop.script != null && blockEntity.scriptContext != null) {
+                synchronized (blockEntity.scriptContext) {
+                    blockEntity.scriptContext.commit(MainClient.drawScheduler, candyPose, worldPose, lightToUse);
+                }
+                prop.script.tryCallRenderFunctionAsync(blockEntity.scriptContext);
+            }
         }
     }
 

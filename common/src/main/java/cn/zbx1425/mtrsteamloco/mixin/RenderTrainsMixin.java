@@ -13,6 +13,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import cn.zbx1425.sowcer.math.Matrix4f;
 import mtr.data.Rail;
 import mtr.entity.EntitySeat;
+import cn.zbx1425.mtrsteamloco.render.block.BlockEntityEyeCandyRenderer;
 import mtr.render.RenderTrains;
 import net.minecraft.client.Minecraft;
 import cn.zbx1425.mtrsteamloco.Main;
@@ -59,10 +60,12 @@ public class RenderTrainsMixin {
         }
 
         if (ShadersModHandler.isRenderingShadowPass()) {
-            Main.LOGGER.info("0 shadow pass" + System.currentTimeMillis() + entity.hashCode());
+            Main.LOGGER.info("0 shadow pass" + System.currentTimeMillis() + " " + entity);
         } else {
-            Main.LOGGER.info("0 normal pass" + System.currentTimeMillis() + entity.hashCode());
+            Main.LOGGER.info("0 normal pass" + System.currentTimeMillis() + " " + entity);
         }
+
+        BlockEntityEyeCandyRenderer.commit(matrices, vertexConsumers);
 
         MainClient.drawContext.drawWithBlaze = !ClientConfig.useRenderOptimization();
         MainClient.drawContext.sortTranslucentFaces = ClientConfig.translucentSort;

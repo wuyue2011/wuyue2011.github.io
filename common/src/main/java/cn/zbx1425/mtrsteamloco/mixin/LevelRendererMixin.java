@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.LevelRenderer;
 import cn.zbx1425.mtrsteamloco.Main;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderBuffers;
+import cn.zbx1425.mtrsteamloco.render.block.BlockEntityEyeCandyRenderer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -29,17 +30,10 @@ public class LevelRendererMixin {
 #else
     private void afterBlockEntities(PoseStack matrices, float f, long l, boolean bl, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, com.mojang.math.Matrix4f matrix4f, CallbackInfo ci) {
 #endif
-        Minecraft.getInstance().level.getProfiler().popPush("NTEBlockEntities");
-        BufferSourceProxy vertexConsumersProxy = new BufferSourceProxy(renderBuffers.bufferSource());
-        MainClient.drawScheduler.commit(vertexConsumersProxy, MainClient.drawContext);
-        vertexConsumersProxy.commit();
-
-        if (ShadersModHandler.isRenderingShadowPass()) {
-            Main.LOGGER.info("2 shadow pass" + System.currentTimeMillis());
-        } else {
-            Main.LOGGER.info("2 normal pass" + System.currentTimeMillis());
-        }
-
+        // Minecraft.getInstance().level.getProfiler().popPush("NTEBlockEntities");
+        // BufferSourceProxy vertexConsumersProxy = new BufferSourceProxy(renderBuffers.bufferSource());
+        // MainClient.drawScheduler.commit(vertexConsumersProxy, MainClient.drawContext);
+        // vertexConsumersProxy.commit();
     }
 
     @Inject(method = "renderLevel", at = @At("TAIL"))
@@ -48,6 +42,7 @@ public class LevelRendererMixin {
 #else
     private void renderLevelLast(PoseStack matrices, float f, long l, boolean bl, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, com.mojang.math.Matrix4f matrix4f, CallbackInfo ci) {
 #endif
+        BlockEntityEyeCandyRenderer.exchange();
         MainClient.drawContext.resetFrameProfiler();
     }
 
