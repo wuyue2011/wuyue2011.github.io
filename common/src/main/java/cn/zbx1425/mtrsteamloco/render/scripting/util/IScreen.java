@@ -124,7 +124,7 @@ public interface IScreen {
         }
 
         @Override
-#if MC_VERSION >= "11200"
+#if MC_VERSION >= "12100"
         public void render(GuiGraphics matrices, int mouseX, int mouseY, float delta) {
 #else
         public void render(PoseStack matrices, int mouseX, int mouseY, float delta) {
@@ -133,7 +133,7 @@ public interface IScreen {
 
             try {
                 if (texture != null && !texture.isClosed()) {
-#if MC_VERSION >= "11200"
+#if MC_VERSION >= "12100"
                     matrices.blit(texture.identifier, 0, 0, width, height, 0, 0, 1, 1, 1, 1);
 #else
                     RenderSystem.setShaderTexture(0, texture.identifier);

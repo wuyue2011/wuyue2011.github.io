@@ -52,6 +52,13 @@ public class ClientProxy {
     public static class ForgeEventBusListener {
 
         @SubscribeEvent
+        public void onRenderGameOverlay(RenderGameOverlayEvent.Post event) {
+            if (event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
+                ScriptDebugOverlay.render(event.getMatrixStack());
+            }
+        }
+
+        @SubscribeEvent
 #if MC_VERSION >= "11900"
         public static void onDebugOverlay(CustomizeGuiOverlayEvent.DebugText event) {
 #else
