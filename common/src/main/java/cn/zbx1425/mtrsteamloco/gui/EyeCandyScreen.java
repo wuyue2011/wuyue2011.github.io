@@ -77,7 +77,7 @@ public class EyeCandyScreen {
                 Text.translatable("gui.mtrsteamloco.eye_candy.present", 
                 (properties != null ? (properties.name.getString() + " (" + blockEntity.prefabId + ")") : (blockEntity.prefabId + " (???)"))), 
                 btn -> Minecraft.getInstance().setScreen(new SelectScreen(blockPos))), 
-            (e, b, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10) -> {
+            (e, b, a1, a2, a3, a4, a5, a6, a7, a8, a9) -> {
                 Window window = Minecraft.getInstance().getWindow();
 #if MC_VERSION >= "12000"
                 b.setX(window.getGuiScaledWidth() / 2 - 150);
