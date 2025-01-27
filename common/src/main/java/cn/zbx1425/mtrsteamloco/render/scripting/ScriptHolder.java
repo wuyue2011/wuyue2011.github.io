@@ -64,79 +64,7 @@ public class ScriptHolder {
         Context rhinoCtx = Context.enter();
         rhinoCtx.setLanguageVersion(Context.VERSION_ES6);
         try {
-            scope = new ImporterTopLevel(rhinoCtx);
-
-            // Populate Scope with global functions
-            scope.put("include", scope, new NativeJavaMethod(
-                    ScriptResourceUtil.class.getMethod("includeScript", Object.class), "includeScript"));
-            scope.put("print", scope, new NativeJavaMethod(
-                    ScriptResourceUtil.class.getMethod("print", Object[].class), "print"));
-
-            scope.put("ModelManager", scope, Context.toObject(MainClient.modelManager, scope));
-            scope.put("Resources", scope, new NativeJavaClass(scope, ScriptResourceUtil.class));
-            scope.put("GraphicsTexture", scope, new NativeJavaClass(scope, GraphicsTexture.class));
-
-            scope.put("Timing", scope, new NativeJavaClass(scope, TimingUtil.class));
-            scope.put("StateTracker", scope, new NativeJavaClass(scope, StateTracker.class));
-            scope.put("CycleTracker", scope, new NativeJavaClass(scope, CycleTracker.class));
-            scope.put("RateLimit", scope, new NativeJavaClass(scope, RateLimit.class));
-            scope.put("TextUtil", scope, new NativeJavaClass(scope, TextUtil.class));
-            scope.put("SoundHelper", scope, new NativeJavaClass(scope, SoundHelper.class));
-            scope.put("ParticleHelper", scope, new NativeJavaClass(scope, ParticleHelper.class));
-            scope.put("TickableSound", scope, new NativeJavaClass(scope, TickableSound.class));
-            scope.put("GlobalRegister", scope, new NativeJavaClass(scope, GlobalRegister.class));
-            scope.put("WrappedEntity", scope, new NativeJavaClass(scope, WrappedEntity.class));
-            scope.put("ComponentUtil", scope, new NativeJavaClass(scope, ComponentUtil.class));
-
-            scope.put("DrawCall", scope, new NativeJavaClass(scope, AbstractDrawCalls.DrawCall.class));
-            scope.put("ClusterDrawCall", scope, new NativeJavaClass(scope, AbstractDrawCalls.ClusterDrawCall.class));
-            scope.put("WorldDrawCall", scope, new NativeJavaClass(scope, AbstractDrawCalls.WorldDrawCall.class));
-
-            scope.put("RawModel", scope, new NativeJavaClass(scope, RawModel.class));
-            scope.put("RawMesh", scope, new NativeJavaClass(scope, RawMesh.class));
-            scope.put("RawMeshBuilder", scope, new NativeJavaClass(scope, RawMeshBuilder.class));
-            scope.put("ModelCluster", scope, new NativeJavaClass(scope, ModelCluster.class));
-            scope.put("DynamicModelHolder", scope, new NativeJavaClass(scope, DynamicModelHolder.class));
-            scope.put("Matrices", scope, new NativeJavaClass(scope, Matrices.class));
-            scope.put("Matrix4f", scope, new NativeJavaClass(scope, Matrix4f.class));
-            scope.put("Vector3f", scope, new NativeJavaClass(scope, Vector3f.class));   
-            scope.put("OrderedMap", scope, new NativeJavaClass(scope, OrderedMap.class));   
-            scope.put("PlacementOrder", scope, new NativeJavaClass(scope, OrderedMap.PlacementOrder.class));
-            scope.put("ShapeSerializer", scope, new NativeJavaClass(scope, ShapeSerializer.class));
-
-            scope.put("MTRClientData", scope, new NativeJavaClass(scope, ClientData.class));
-            scope.put("IBlock", scope, new NativeJavaClass(scope, IBlock.class));
-
-            scope.put("ConfigResponder", scope, new NativeJavaClass(scope, ConfigResponder.class));
-            scope.put("ClientConfig", scope, new NativeJavaClass(scope, ClientConfig.class));
-            scope.put("MinecraftClient", scope, new NativeJavaClass(scope, MinecraftClientUtil.class));
-            scope.put("MinecraftClientUtil", scope, new NativeJavaClass(scope, MinecraftClientUtil.class));
-            scope.put("Component", scope, new NativeJavaClass(scope, Component.class));
-            scope.put("Optional", scope, new NativeJavaClass(scope, Optional.class));
-            scope.put("ResourceLocation", scope, new NativeJavaClass(scope, ResourceLocation.class));
-
-            try {
-                String[] classesToLoad = {
-                        "util.AddParticleHelper",
-                        "particle.MadParticleOption",
-                        "particle.SpriteFrom",
-                        "command.inheritable.InheritableBoolean",
-                        "particle.ParticleRenderTypes",
-                        "particle.ChangeMode"
-                };
-                for (String classToLoad : classesToLoad) {
-                    Class<?> classToLoadClass = Class.forName("cn.ussshenzhou.madparticle." + classToLoad);
-                    scope.put(classToLoad.substring(classToLoad.lastIndexOf(".") + 1), scope,
-                            new NativeJavaClass(scope, classToLoadClass));
-                }
-                scope.put("foundMadParticle", scope, true);
-            } catch (ClassNotFoundException ignored) {
-                // Main.LOGGER.warn("MadParticle", ignored);
-                scope.put("foundMadParticle", scope, false);
-            }
-            scope.put("CompoundTag", scope, new NativeJavaClass(scope, CompoundTag.class));
-
-            rhinoCtx.evaluateString(scope, "\"use strict\"", "", 1, null);
+            ImporterTopLevel scope = createImporter(rhinoCtx);
 
             // Run scripts
             ScriptResourceUtil.activeContext = rhinoCtx;
@@ -159,6 +87,78 @@ public class ScriptHolder {
         } finally {
             Context.exit();
         }
+    }
+
+    private static ImporterTopLevel createImporter(Context rhinoCtx) throws Exception {
+        ImporterTopLevel scope = new ImporterTopLevel(rhinoCtx);
+
+        // Populate Scope with global functions
+        scope.put("include", scope, new NativeJavaMethod(
+                ScriptResourceUtil.class.getMethod("includeScript", Object.class), "includeScript"));
+        scope.put("print", scope, new NativeJavaMethod(
+                ScriptResourceUtil.class.getMethod("print", Object[].class), "print"));
+        scope.put("ModelManager", scope, Context.toObject(MainClient.modelManager, scope));
+        scope.put("Resources", scope, new NativeJavaClass(scope, ScriptResourceUtil.class));
+        scope.put("GraphicsTexture", scope, new NativeJavaClass(scope, GraphicsTexture.class));
+        scope.put("Timing", scope, new NativeJavaClass(scope, TimingUtil.class));
+        scope.put("StateTracker", scope, new NativeJavaClass(scope, StateTracker.class));
+        scope.put("CycleTracker", scope, new NativeJavaClass(scope, CycleTracker.class));
+        scope.put("RateLimit", scope, new NativeJavaClass(scope, RateLimit.class));
+        scope.put("TextUtil", scope, new NativeJavaClass(scope, TextUtil.class));
+        scope.put("SoundHelper", scope, new NativeJavaClass(scope, SoundHelper.class));
+        scope.put("ParticleHelper", scope, new NativeJavaClass(scope, ParticleHelper.class));
+        scope.put("TickableSound", scope, new NativeJavaClass(scope, TickableSound.class));
+        scope.put("GlobalRegister", scope, new NativeJavaClass(scope, GlobalRegister.class));
+        scope.put("WrappedEntity", scope, new NativeJavaClass(scope, WrappedEntity.class));
+        scope.put("ComponentUtil", scope, new NativeJavaClass(scope, ComponentUtil.class));
+        scope.put("IScreen", scope, new NativeJavaClass(scope, IScreen.class));
+        scope.put("DrawCall", scope, new NativeJavaClass(scope, AbstractDrawCalls.DrawCall.class));
+        scope.put("ClusterDrawCall", scope, new NativeJavaClass(scope, AbstractDrawCalls.ClusterDrawCall.class));
+        scope.put("WorldDrawCall", scope, new NativeJavaClass(scope, AbstractDrawCalls.WorldDrawCall.class));
+        scope.put("RawModel", scope, new NativeJavaClass(scope, RawModel.class));
+        scope.put("RawMesh", scope, new NativeJavaClass(scope, RawMesh.class));
+        scope.put("RawMeshBuilder", scope, new NativeJavaClass(scope, RawMeshBuilder.class));
+        scope.put("ModelCluster", scope, new NativeJavaClass(scope, ModelCluster.class));
+        scope.put("DynamicModelHolder", scope, new NativeJavaClass(scope, DynamicModelHolder.class));
+        scope.put("Matrices", scope, new NativeJavaClass(scope, Matrices.class));
+        scope.put("Matrix4f", scope, new NativeJavaClass(scope, Matrix4f.class));
+        scope.put("Vector3f", scope, new NativeJavaClass(scope, Vector3f.class));   
+        scope.put("OrderedMap", scope, new NativeJavaClass(scope, OrderedMap.class));   
+        scope.put("PlacementOrder", scope, new NativeJavaClass(scope, OrderedMap.PlacementOrder.class));
+        scope.put("ShapeSerializer", scope, new NativeJavaClass(scope, ShapeSerializer.class));
+        scope.put("MTRClientData", scope, new NativeJavaClass(scope, ClientData.class));
+        scope.put("IBlock", scope, new NativeJavaClass(scope, IBlock.class));
+        scope.put("ConfigResponder", scope, new NativeJavaClass(scope, ConfigResponder.class));
+        scope.put("ClientConfig", scope, new NativeJavaClass(scope, ClientConfig.class));
+        scope.put("MinecraftClient", scope, new NativeJavaClass(scope, MinecraftClientUtil.class));
+        scope.put("MinecraftClientUtil", scope, new NativeJavaClass(scope, MinecraftClientUtil.class));
+        scope.put("Component", scope, new NativeJavaClass(scope, Component.class));
+        scope.put("Optional", scope, new NativeJavaClass(scope, Optional.class));
+        scope.put("ResourceLocation", scope, new NativeJavaClass(scope, ResourceLocation.class));
+
+        try {
+            String[] classesToLoad = {
+                    "util.AddParticleHelper",
+                    "particle.MadParticleOption",
+                    "particle.SpriteFrom",
+                    "command.inheritable.InheritableBoolean",
+                    "particle.ParticleRenderTypes",
+                    "particle.ChangeMode"
+            };
+            for (String classToLoad : classesToLoad) {
+                Class<?> classToLoadClass = Class.forName("cn.ussshenzhou.madparticle." + classToLoad);
+                scope.put(classToLoad.substring(classToLoad.lastIndexOf(".") + 1), scope,
+                        new NativeJavaClass(scope, classToLoadClass));
+            }
+            scope.put("foundMadParticle", scope, true);
+        } catch (ClassNotFoundException ignored) {
+            // Main.LOGGER.warn("MadParticle", ignored);
+            scope.put("foundMadParticle", scope, false);
+        }
+        scope.put("CompoundTag", scope, new NativeJavaClass(scope, CompoundTag.class));
+        rhinoCtx.evaluateString(scope, "\"use strict\"", "", 1, null);
+
+        return scope;
     }
 
     public void reload(ResourceManager resourceManager) throws Exception {

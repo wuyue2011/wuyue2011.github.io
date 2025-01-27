@@ -31,6 +31,7 @@ import cn.zbx1425.mtrsteamloco.block.BlockEyeCandy;
 import net.minecraft.world.level.block.Block;
 import mtr.block.BlockPlatform;
 import mtr.block.BlockPSDAPGBase;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 
@@ -232,6 +233,6 @@ public class MinecraftClientUtil {
     }
 
     public static void setScreen(Screen screen) {
-        Minecraft.getInstance().setScreen(screen);
+        execute(() -> Minecraft.getInstance().setScreen(screen));
     }
 }
