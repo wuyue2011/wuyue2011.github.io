@@ -38,7 +38,6 @@ public interface IScreen {
         public MouseClickedFunction mouseClickedFunction = (screen, p_94695_, p_94696_, p_94697_) -> false;
         public MouseMovedFunction mouseMovedFunction = (screen, p_94758_, p_94759_) -> {};
         public IsMouseOverFunction isMouseOverFunction = (screen, p_94748_, p_94749_) -> false;
-        public ChangeFocusFunction changeFocusFunction = (screen, p_94756_) -> false;
         public CharTypedFunction charTypedFunction = (screen, p_94732_, p_94733_) -> false;
         public KeyReleasedFunction keyReleasedFunction = (screen, p_94750_, p_94751_, p_94752_) -> false;
         public MouseScrolledFunction mouseScrolledFunction = (screen, p_94734_, p_94735_, p_94736_) -> false;
@@ -51,7 +50,7 @@ public interface IScreen {
         }
 
 #if MC_VERSION >= "12000"
-        public <T extends Renderable> T _addRenderableWidget(T p_169406_) {
+        public <T extends GuiEventListener & Renderable & NarratableEntry> T _addRenderableWidget(T p_169406_) {
 #else
         public <T extends GuiEventListener & Widget & NarratableEntry> T _addRenderableWidget(T p_169406_) {
 #endif
@@ -135,7 +134,7 @@ public interface IScreen {
             try {
                 if (texture != null && !texture.isClosed()) {
 #if MC_VERSION >= "12000"
-                    matrices.blit(texture.identifier, x, y, width, height, 0, 0, 1, 1, 1, 1);
+                    matrices.blit(texture.identifier, 0, 0, width, height, 0, 0, 1, 1, 1, 1);
 #else
                     RenderSystem.setShaderTexture(0, texture.identifier);
                     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -217,18 +216,6 @@ public interface IScreen {
                 e.printStackTrace();
             }
             return flag || super.isMouseOver(p_94748_, p_94749_);
-        }
-
-        @Override
-        public boolean changeFocus(boolean p_94756_) {
-            boolean flag = false;
-            try {
-                flag = changeFocusFunction.changeFocus(this, p_94756_);
-            } catch (Exception e) {
-                print ("changeFocusFunction error: " + e.getMessage());
-                e.printStackTrace();
-            }
-            return flag || super.changeFocus(p_94756_);
         }
 
         @Override
@@ -333,10 +320,6 @@ public interface IScreen {
 
         public interface CharTypedFunction {
             boolean charTyped(WithTextrue screen, char p_94732_, int p_94733_);
-        }
-
-        public interface ChangeFocusFunction {
-            boolean changeFocus(WithTextrue screen, boolean p_94756_);
         }
 
         public interface IsMouseOverFunction {

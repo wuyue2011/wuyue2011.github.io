@@ -66,14 +66,24 @@ public class ButtonListEntry extends TooltipListEntry<String> implements Contain
     }
     
     @Override
+#if MC_VERSION >= "12000"
+    public void render(GuiGraphics graphics, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta) {
+        super.render(graphics, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
+        processor.process(this, buttonWidget, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
+        this.buttonWidget.active = isEditable();
+        this.buttonWidget.setY(y);
+        buttonWidget.render(graphics, mouseX, mouseY, delta);
+    }
+#else
     public void render(PoseStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta) {
         super.render(matrices, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
-        processor.process(this, buttonWidget, matrices, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
+        processor.process(this, buttonWidget, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
         this.buttonWidget.active = isEditable();
         this.buttonWidget.y = y;
         buttonWidget.render(matrices, mouseX, mouseY, delta);
     }
-    
+#endif
+
     @Override
     public List<? extends GuiEventListener> children() {
         return widgets;
@@ -90,6 +100,6 @@ public class ButtonListEntry extends TooltipListEntry<String> implements Contain
     }
 
     public interface Processor {
-        void process(ButtonListEntry entry, Button button, PoseStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta);
+        void process(ButtonListEntry entry, Button button, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta);
     }
 }

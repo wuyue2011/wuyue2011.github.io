@@ -79,7 +79,11 @@ public class EyeCandyScreen {
                 btn -> Minecraft.getInstance().setScreen(new SelectScreen(blockPos))), 
             (e, b, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10) -> {
                 Window window = Minecraft.getInstance().getWindow();
+#if MC_VERSION >= "12000"
+                b.setX(window.getGuiScaledWidth() / 2 - 150);
+#else
                 b.x = window.getGuiScaledWidth() / 2 - 150;
+#endif
         }));
 
         common.addEntry(entryBuilder
