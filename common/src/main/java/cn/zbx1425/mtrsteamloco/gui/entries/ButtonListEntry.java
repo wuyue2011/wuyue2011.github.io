@@ -70,7 +70,7 @@ public class ButtonListEntry extends TooltipListEntry<String> implements Contain
     }
     
     @Override
-#if MC_VERSION >= "12000"
+#if MC_VERSION >= "11902"
     public void render(GuiGraphics graphics, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta) {
         super.render(graphics, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
         processor.process(this, buttonWidget, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
