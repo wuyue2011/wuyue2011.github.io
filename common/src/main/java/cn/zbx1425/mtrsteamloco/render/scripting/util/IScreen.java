@@ -49,7 +49,7 @@ public interface IScreen {
             super(title);
         }
 
-#if MC_VERSION >= "19000"
+#if MC_VERSION >= "19002"
         public <T extends GuiEventListener & Renderable & NarratableEntry> T _addRenderableWidget(T p_169406_) {
 #else
         public <T extends GuiEventListener & Widget & NarratableEntry> T _addRenderableWidget(T p_169406_) {
@@ -57,7 +57,7 @@ public interface IScreen {
             return super.addRenderableWidget(p_169406_);
         }
 
-#if MC_VERSION >= "19000"
+#if MC_VERSION >= "19002"
         public <T extends Renderable> T _addRenderableOnly(T p_169395_) {
 #else
         public <T extends Widget> T _addRenderableOnly(T p_169395_) {

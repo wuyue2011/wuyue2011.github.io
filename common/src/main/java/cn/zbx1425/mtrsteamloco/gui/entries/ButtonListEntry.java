@@ -2,7 +2,11 @@ package cn.zbx1425.mtrsteamloco.gui.entries;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.Window;
+#if MC_VERSION >= "12000"
+import net.minecraft.client.gui.GuiGraphics;
+#else
 import com.mojang.blaze3d.vertex.PoseStack;
+#endif
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
