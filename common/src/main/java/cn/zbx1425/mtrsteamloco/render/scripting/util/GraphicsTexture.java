@@ -115,7 +115,7 @@ public class GraphicsTexture implements Closeable {
             target.put((byte) ((pixel >> 24) & 0xFF));  // A
         }
 
-        Minecraft.getInstance().execute(dynamicTexture::upload);
+        dynamicTexture.upload();
     }
 
     public boolean isClosed() {

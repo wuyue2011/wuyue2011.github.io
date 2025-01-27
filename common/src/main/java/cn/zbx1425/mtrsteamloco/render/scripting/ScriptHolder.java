@@ -64,7 +64,7 @@ public class ScriptHolder {
         Context rhinoCtx = Context.enter();
         rhinoCtx.setLanguageVersion(Context.VERSION_ES6);
         try {
-            ImporterTopLevel scope = createImporter(rhinoCtx);
+            scope = createImporter(rhinoCtx);
 
             // Run scripts
             ScriptResourceUtil.activeContext = rhinoCtx;

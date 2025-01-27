@@ -235,4 +235,12 @@ public class MinecraftClientUtil {
     public static void setScreen(Screen screen) {
         execute(() -> Minecraft.getInstance().setScreen(screen));
     }
+
+    public static void reloadResourcePacks() {
+        execute(Minecraft.getInstance()::reloadResourcePacks);
+    }
+
+    public static void markRendererAllChanged() {
+        Minecraft.getInstance().levelRenderer.allChanged();
+    }
 }
