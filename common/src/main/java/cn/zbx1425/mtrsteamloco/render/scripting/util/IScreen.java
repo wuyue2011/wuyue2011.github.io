@@ -9,12 +9,13 @@ import vendor.cn.zbx1425.mtrsteamloco.org.mozilla.javascript.NativeObject;
 import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.narration.NarratableEntry;
 #if MC_VERSION >= "12000"
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.GuiGraphics;
 #else
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.Widget;
 #endif
 
 import java.nio.file.Path;
@@ -49,11 +50,19 @@ public interface IScreen {
             super(title);
         }
 
+#if MC_VERSION >= "12000"
+        public <T extends Renderable> T _addRenderableWidget(T p_169406_) {
+#else
         public <T extends GuiEventListener & Widget & NarratableEntry> T _addRenderableWidget(T p_169406_) {
+#endif
             return super.addRenderableWidget(p_169406_);
         }
 
+#if MC_VERSION >= "12000"
+        public <T extends Renderable> T _addRenderableOnly(T p_169395_) {
+#else
         public <T extends Widget> T _addRenderableOnly(T p_169395_) {
+#endif
             return super.addRenderableOnly(p_169395_);
         }
 
