@@ -1,6 +1,5 @@
 package cn.zbx1425.mtrsteamloco.render.scripting.util;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import cn.zbx1425.mtrsteamloco.Main;
@@ -14,6 +13,8 @@ import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.narration.NarratableEntry;
 #if MC_VERSION >= "12000"
 import net.minecraft.client.gui.GuiGraphics;
+#else
+import com.mojang.blaze3d.vertex.PoseStack;
 #endif
 
 import java.nio.file.Path;
@@ -29,7 +30,7 @@ public interface IScreen {
         public InitFunction initFunction = (screen, width, height) -> {};
         public KeyPressResponder keyPressResponder = (screen, p_96552_, p_96553_, p_96554_) -> false;
         public InsertTextFunction insertTextFunction = (screen, text, p_96588_) -> {};
-        public RenderFunction renderFunction = (screen, matrices, mouseX, mouseY, delta) -> {};
+        public RenderFunction renderFunction = (screen, mouseX, mouseY, delta) -> {};
         public Consumer<WithTextrue> tickFunction = screen -> {};
         public BiConsumer<WithTextrue, List<Path>> onFilesDropFunction = (screen, paths) -> {};
         public Consumer<WithTextrue> onCloseFunction = screen -> Minecraft.getInstance().setScreen(null);
@@ -138,7 +139,7 @@ public interface IScreen {
             }
 
             try {
-                renderFunction.render(this, matrices, mouseX, mouseY, delta);
+                renderFunction.render(this, mouseX, mouseY, delta);
             } catch (Exception e) {
                 print ("renderFunction error: " + e.getMessage());
                 e.printStackTrace();
@@ -290,7 +291,7 @@ public interface IScreen {
         }
 
         public interface RenderFunction {
-            void render(WithTextrue screen, PoseStack matrices, int mouseX, int mouseY, float delta);
+            void render(WithTextrue screen, int mouseX, int mouseY, float delta);
         }
 
         public interface InsertTextFunction {
