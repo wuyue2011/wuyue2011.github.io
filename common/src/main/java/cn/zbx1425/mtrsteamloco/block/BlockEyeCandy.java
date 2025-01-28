@@ -61,13 +61,18 @@ import cn.zbx1425.mtrsteamloco.data.EyeCandyProperties;
 import cn.zbx1425.mtrsteamloco.data.ShapeSerializer;
 import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
 import mtr.mappings.Text;
+import net.minecraft.client.gui.screens.Screen;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
+import net.minecraft.world.phys.AABB;
 import me.shedaniel.clothconfig2.impl.builders.TextDescriptionBuilder;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 
 import java.util.*;
 import java.io.IOException;
 import java.util.function.ToIntFunction;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.function.Supplier;
 
 public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlockMapper {
     
@@ -127,6 +132,10 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
     }
 
+	public AABB getRenderBoundingBox() {
+		return new AABB(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+	}
+
     @Override
     public BlockEntityMapper createBlockEntity(BlockPos blockPos, BlockState blockState) {
         return new BlockEntityEyeCandy(blockPos, blockState);
@@ -145,11 +154,11 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             try {
                 return ShapeSerializer.getShape(e.getShape(), (int)state.getValue(FACING).toYRot());
             } catch (Exception e1) {
-                Main.LOGGER.error("Error getting shape :" + e1);
+                // Main.LOGGER.error("Error getting shape :" + e1);
                 return Shapes.block();
             }
         } else {
-            Main.LOGGER.error("BlockEntityEyeCandy not found at " + pos + ", " + world + ", " + state + ", " + entity);
+            // Main.LOGGER.error("BlockEntityEyeCandy not found at " + pos + ", " + world + ", " + state + ", " + entity);
             return Shapes.block();
         }
     }
@@ -162,11 +171,11 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             try {
                 return ShapeSerializer.getShape(e.getCollisionShape(), (int)state.getValue(FACING).toYRot());
             } catch (Exception e1) {
-                Main.LOGGER.error("Error getting collision shape :" + e1);
+                // Main.LOGGER.error("Error getting collision shape :" + e1);
                 return Block.box(0, 0, 0, 16, 32, 16);
             }
         } else {
-            Main.LOGGER.error("BlockEntityEyeCandy not found at " + pos + ", " + world + ", " + state + ", " + entity);
+            // Main.LOGGER.error("BlockEntityEyeCandy not found at " + pos + ", " + world + ", " + state + ", " + entity);
             return Block.box(0, 0, 0, 16, 32, 16);
         }
     }
@@ -454,10 +463,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
 
         public void registerCustomConfig(ConfigResponder responder) {
-            if (!customConfigs.containsKey(responder.key)) {
-                customConfigs.put(responder.key, responder.defaultValue);
-            }
-            customResponders.put(responder.key, responder);
+            responder.init(customConfigs);
+            customResponders.put(responder.key(), responder);
         }
 
         public void removeCustomConfig(String key) {
@@ -469,37 +476,29 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             customConfigs.put(key, value);
         }
 
-        public List<AbstractConfigListEntry> getCustomConfigEntrys(ConfigEntryBuilder builder) {
-            Map<String, AbstractConfigListEntry> hasResponders = new HashMap<>();
-            Map<String, AbstractConfigListEntry> noResponders = new HashMap<>();
+        public List<AbstractConfigListEntry> getCustomConfigEntrys(ConfigEntryBuilder builder, Supplier<Screen> screenSupplier) {
+            List<AbstractConfigListEntry> hasResponders = new ArrayList<>();
+            List<AbstractConfigListEntry> noResponders = new ArrayList<>();
             if (!customConfigs.isEmpty()) {
                 Set<String> keys = customConfigs.keySet();
                 for (String key : keys) {
                     if (customResponders.containsKey(key)) {
                         ConfigResponder responder = customResponders.get(key);
-                        hasResponders.put(key, responder.getListEntry(customConfigs, builder));
+                        hasResponders.addAll(responder.getListEntries(customConfigs, builder, screenSupplier));
                     } else {
-                        noResponders.put(key, builder.startTextDescription(Text.literal(key + " : " + customConfigs.get(key))).build());
+                        noResponders.add(builder.startTextDescription(Text.literal(key + " : " + customConfigs.get(key))).build());
                     }
                 }
             }
-            List<String> sortedHasKeys = new ArrayList<>(hasResponders.keySet());
-            Collections.sort(sortedHasKeys);
-            List<String> sortedNoKeys = new ArrayList<>(noResponders.keySet());
-            Collections.sort(sortedNoKeys);
             List<AbstractConfigListEntry> entries = new ArrayList<>();
-            if (!sortedHasKeys.isEmpty()) {
+            if (!hasResponders.isEmpty()) {
                 entries.add(builder.startTextDescription(Text.translatable("gui.mtrsteamloco.eye_candy.custom_config.editable")).build());
-                for (String key : sortedHasKeys) {
-                    entries.add(hasResponders.get(key));
-                }
+                entries.addAll(hasResponders);
             }
 
-            if (!sortedNoKeys.isEmpty()) {
+            if (!noResponders.isEmpty()) {
                 entries.add(builder.startTextDescription(Text.translatable("gui.mtrsteamloco.eye_candy.custom_config.uneditable")).build());
-                for (String key : sortedNoKeys) {
-                    entries.add(noResponders.get(key));
-                }
+                entries.addAll(noResponders);
             }
             return entries;
         }

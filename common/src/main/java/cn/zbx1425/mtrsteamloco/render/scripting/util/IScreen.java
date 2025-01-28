@@ -10,21 +10,52 @@ import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
-#if MC_VERSION >= "11902"
+#if MC_VERSION >= "11903"
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.GuiGraphics;
 #else
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Widget;
 #endif
+import me.shedaniel.clothconfig2.api.*;
+import cn.zbx1425.mtrsteamloco.gui.entries.*;
+import net.minecraft.client.gui.components.Button;
 
+import java.util.*;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public interface IScreen {
-    public class WithTextrue extends Screen {
+
+    public static interface ClothConfig2 {
+        public static ConfigBuilder createConfigBuilder() {
+            return ConfigBuilder.create();
+        }
+
+        public static ButtonListEntry newButtonListEntry(Button button, ButtonListEntry.Processor processor) {
+            return new ButtonListEntry(button, processor);
+        }
+
+        public static ButtonListEntry newButtonListEntry(Button button, ButtonListEntry.Processor processor, Supplier<Optional<Component[]>> tooltipSupplier) {
+            return new ButtonListEntry(button, processor, tooltipSupplier);
+        }
+
+        public static ButtonListEntry newButtonListEntry(Button button, ButtonListEntry.Processor processor, Supplier<Optional<Component[]>> tooltipSupplier, boolean requiresRestart) {
+            return new ButtonListEntry(button, processor, tooltipSupplier, requiresRestart);
+        }
+    }
+
+    public static Button newButton(int x, int y, int width, int height, Component text, Button.OnPress onPress) {
+        return new Button(x, y, width, height, text, onPress);
+    }
+
+    public static Button newButton(int x, int y, int width, int height, Component text, Button.OnPress onPress, Button.OnTooltip onTooltip) {
+        return new Button(x, y, width, height, text, onPress, onTooltip);
+    }
+
+    public static class WithTextrue extends Screen {
         public GraphicsTexture texture;
         public Scriptable state = new NativeObject();
 
@@ -49,7 +80,15 @@ public interface IScreen {
             super(title);
         }
 
-#if MC_VERSION >= "11902"
+        public int getWidth() {
+            return width;
+        }
+
+        public int getHeight() {
+            return height;
+        }
+
+#if MC_VERSION >= "11903"
         public <T extends GuiEventListener & Renderable & NarratableEntry> T _addRenderableWidget(T p_169406_) {
 #else
         public <T extends GuiEventListener & Widget & NarratableEntry> T _addRenderableWidget(T p_169406_) {
@@ -57,7 +96,7 @@ public interface IScreen {
             return super.addRenderableWidget(p_169406_);
         }
 
-#if MC_VERSION >= "11902"
+#if MC_VERSION >= "11903"
         public <T extends Renderable> T _addRenderableOnly(T p_169395_) {
 #else
         public <T extends Widget> T _addRenderableOnly(T p_169395_) {

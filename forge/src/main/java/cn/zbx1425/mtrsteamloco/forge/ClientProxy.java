@@ -52,10 +52,16 @@ public class ClientProxy {
     public static class ForgeEventBusListener {
 
         @SubscribeEvent
-        public void onRenderGameOverlay(RenderGameOverlayEvent.Post event) {
+#if MC_VERSION >= "11900"
+        public static void onOverlayRender(CustomizeGuiOverlayEvent event) {
+#else
+        public static void onOverlayRender(RenderGameOverlayEvent event) {
+#endif
+
             if (event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
                 ScriptDebugOverlay.render(event.getMatrixStack());
             }
+            Main.LOGGER.info("onOverlayRender");
         }
 
         @SubscribeEvent

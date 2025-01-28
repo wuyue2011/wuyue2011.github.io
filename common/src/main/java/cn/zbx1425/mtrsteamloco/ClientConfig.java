@@ -11,6 +11,7 @@ import me.shedaniel.clothconfig2.impl.builders.StringFieldBuilder;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.impl.builders.TextDescriptionBuilder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.client.gui.screens.Screen;
 import mtr.mappings.Text;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 
@@ -19,6 +20,7 @@ import java.nio.file.Path;
 import java.util.function.Function;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class ClientConfig {
 
@@ -131,17 +133,15 @@ public class ClientConfig {
     }
 
     public static void register(ConfigResponder responder) {
-        if (!customConfigs.containsKey(responder.key)) {
-            customConfigs.put(responder.key, responder.defaultValue);
-        }
-        customResponders.put(responder.key, responder);
+        responder.init(customConfigs);
+        customResponders.put(responder.key(), responder);
     }
 
     public static String get(String key) {
         return customConfigs.get(key);
     }
 
-    public static List<AbstractConfigListEntry> getCustomConfigEntrys(ConfigEntryBuilder builder) {
+    public static List<AbstractConfigListEntry> getCustomConfigEntrys(ConfigEntryBuilder builder, Supplier<Screen> screenSupplier) {
         Set<String> keys = customConfigs.keySet();
         List<String> usedKeys = new ArrayList<>();
         List<String> unusedKeys = new ArrayList<>();
@@ -156,7 +156,7 @@ public class ClientConfig {
         if (!usedKeys.isEmpty()) {
             entries.add(builder.startTextDescription(Text.translatable("gui.mtrsteamloco.config.client.custom_config.engaged")).build());
             for (String key : usedKeys) {
-                entries.add(customResponders.get(key).getListEntry(customConfigs, builder));
+                entries.addAll(customResponders.get(key).getListEntries(customConfigs, builder, screenSupplier));
             }
         }
         // if (!unusedKeys.isEmpty()) {

@@ -140,7 +140,7 @@ public final class ConfigScreen {
                 ).setSaveConsumer(checked -> ClientConfig.enableSmoke = checked).setDefaultValue(true).build()
         );
 
-        List<AbstractConfigListEntry> customConfigs = ClientConfig.getCustomConfigEntrys(entryBuilder);
+        List<AbstractConfigListEntry> customConfigs = ClientConfig.getCustomConfigEntrys(entryBuilder, () -> ConfigScreen.createScreen(parent));
         if (!customConfigs.isEmpty()) {
             
             for (AbstractConfigListEntry entry : customConfigs) {

@@ -1,7 +1,7 @@
 # MTR-ANTE
 
 
-![Feature Grid Image](https://www.zbx1425.cn/nautilus/mtr-nte/img/featgrid.jpg)
+![Feature Grid Image](https://aphrodite281.github.io/mtr-ante/img/featgrid.jpg)
 
 Video for feature introduction: https://www.bilibili.com/video/BV1kG4y1G7yx
 

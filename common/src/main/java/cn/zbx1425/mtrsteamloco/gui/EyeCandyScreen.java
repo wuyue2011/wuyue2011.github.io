@@ -47,7 +47,7 @@ import java.util.function.Function;
 
 public class EyeCandyScreen {
 
-    public static Screen createScreen(BlockPos blockPos) {
+    public static Screen createScreen(BlockPos blockPos, Screen parent) {
         Optional<BlockEntityEyeCandy> opt = getBlockEntity(blockPos);
         BlockEntityEyeCandy blockEntity = opt.orElse(null);
         if (blockEntity == null) {
@@ -63,7 +63,7 @@ public class EyeCandyScreen {
         }
 
         ConfigBuilder builder = ConfigBuilder.create()
-                .setParentScreen(null)
+                .setParentScreen(parent)
                 .setTitle(tr("title"))
                 .setDoesConfirmSave(false)
                 .transparentBackground();
@@ -146,7 +146,7 @@ public class EyeCandyScreen {
             }
         }
 
-        List<AbstractConfigListEntry> customEntrys = blockEntity.getCustomConfigEntrys(entryBuilder);
+        List<AbstractConfigListEntry> customEntrys = blockEntity.getCustomConfigEntrys(entryBuilder, () -> createScreen(blockPos, parent));
         for (AbstractConfigListEntry entry : customEntrys) {
             common.addEntry(entry);
         }
@@ -412,7 +412,7 @@ public class EyeCandyScreen {
 
         @Override
         public void onClose() {
-            this.minecraft.setScreen(EyeCandyScreen.createScreen(editingBlockPos));
+            this.minecraft.setScreen(EyeCandyScreen.createScreen(editingBlockPos, null));
         }
 
         @Override
