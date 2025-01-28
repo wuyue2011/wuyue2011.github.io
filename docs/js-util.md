@@ -10,6 +10,14 @@ NTE 提供了一些工具类，以便获取一些信息或更简单地实现功�
 调用这个函数会在 Minecraft 日志里打出信息（在游戏内没有信息显示）。可以传入任意多个任意类型的参数。
 
 
+## 转换类型
+
+- `static asJavaArray(array: [](List<T>)): T[]`
+
+把一个 `List` 转换成 Java 数组。
+更优雅的把JS的 [] 转为 Java 的 [] 的方法。
+其实只是调用了List.toArray()方法, 但是在JS环境中无法调用 [].toArray() 方法，所以提供了这个方法。
+
 
 ## 版本
 
@@ -165,6 +173,71 @@ MTR 的客户端数据，可以用来读取换乘线路等。参见 MTR 源码 C
 - `static MinecraftClient.displayMessage(message: String,actionBar :boolean): void`
 
   在聊天框或在操作栏（物品栏上方）显示一段文本。当 `actionBar` 为 `true` 时，显示在操作栏，否则显示在聊天框。
+
+- `static MinecraftClient.execute(task: Runnable): void`
+
+  在主线程中执行一个任务。
+
+- `static MinecraftClient.levelEvent(p_109534_: int , p_109535_: Vector3f , p_109536_: int ): void`
+
+  触发一个世界事件。
+
+- `static MinecraftClient.getOccupiedAspect(vPos: Vector3f, facing: float, aspects: int): int`
+
+  获取某一个位置的通过等级。
+
+- `static MinecraftClient.getStationAt(pos: Vector3f): Station`
+
+  获取玩家所在的车站。
+
+- `static MinecraftClient.getPlatformAt(pos: Vector3f, radius: int, lower: int, upper: int): Platform`
+
+  获取某个范围内的站台。
+
+- `static MinecraftClient.getNodeAt(vPos: Vector3f, fFacing: float): Vector3f`
+
+  获取某个位置周围的节点的坐标。
+
+— `static MinecraftClient.getCameraPos(): Vector3f`
+
+  获取相机的位置。
+
+- `static MinecraftClient.getCameraDistance(from: Vector3f): float`
+
+  获取相机距离某个位置的距离。
+
+- `static MinecraftClient.getCameraEntity(): WrappedEntity`
+
+  获取相机的实体。
+
+- `static MinecraftClient.getPlayer(): WrappedEntity`
+
+  获取玩家的实体。
+
+- `static MinecraftClient.getLevel(): Level`
+
+  获取当前的世界。
+
+- `static MinecraftClient.canOpenDoorsAt(p1: Vector3f, p2: Vector3f): boolean[]`
+
+  检查从p1到p2的两侧是否可以开门。返回{doorLeftOpen, doorRightOpen}。
+  这是一个暂时的办法，若客户端没有相关数据，则会返回 false。
+
+- `static MinecraftClient.packLightTexture(int a, int b): int`
+
+  包装一个光照贴图。
+
+- `static MinecraftClient.setScreen(screen: Screen): void`
+
+  设置屏幕。(若想关闭屏幕可传入 `null`)
+
+- `static MinecraftClient.reloadResourcePacks()`
+
+  重新加载资源包。
+
+- `static MinecraftClient.markRendererAllChanged(): void`
+
+  标记渲染器所有数据都已改变。
 
 
 
@@ -405,3 +478,172 @@ const result = ComponentUtil.getString(component);// 转换为 String
 - `WrappedEntity.getPosition(): Vector3f`
 
   获取实体的位置。
+
+
+
+## IScreen
+
+`ANTE` 通过 `IScreen` 提供屏幕支持。更进一步的，请查看[源代码-IScreen.java](https://github.com/aphrodite281/mtr-ante/blob/alpha/common/src/main/java/cn/zbx1425/mtrsteamloco/render/scripting/util/IScreen.java)
+
+`IScreen` 提供了以下方法：
+
+- `static IScreen.newButton(x: int, y: int, width: int, height: int, text: Component, onPress: Button.OnPress): Button`
+或
+- `static IScreen.newButton(x: int, y: int, width: int, height: int, text: Component, onPress: Button.OnPress, onTooltip: Button.OnTooltip): Button`
+
+  创建一个按钮。(我的世界的按钮)
+
+### IScreen.ClothConfig2
+
+[`ClothConfig2`](https://shedaniel.gitbook.io/cloth-config) 是一个优秀的开源项目，它可以方便的创建配置屏幕。`ANTE`的装饰物件屏幕和客户端配置屏幕都是使用的 `ClothConfig2`。
+
+`IScreen.ClothConfig2` 有以下方法：
+
+- `static IScreen.ClothConfig2.createConfigBuilder(): ConfigBuilder`
+
+  创建一个 `ConfigBuilder`。
+
+- `static IScreen.ClothConfig2.newButtonListEntry(name: Component, button: Button, processor: ButtonListEntry.Processor, tooltipSupplier: Supplier<Optional<Component[]>>, requiresRestart: boolean): ButtonListEntry`
+
+  这是 `ANTE` 添加的 ListEntry，用于创建按钮列表。
+  创建一个 `ButtonListEntry`，`tooltipSupplier` 可以为 `null`，表示没有提示。
+
+### IScreen.WithTextrue
+
+通过 `WithTextrue` 您可以高度自定义一个 `Screen`，它向您提供了一个 [`GraphicsTexture`](js-dynamic-texture.md) 实例，您可以用他来绘制自己屏幕。以下用 `WithTextrue` 指代 `IScreen.WithTextrue`：
+
+`WithTextrue` 继承自 `Screen` 类，但是由于 `Screen` 类被混淆了，所以如果您不去查映射表的话，您无法使用 `Screen` 类的方法。
+
+`WithTextrue` 提供了以下几个属性：
+
+- `new WithTextrue(title: Component)`
+
+  创建一个 `WithTextrue`。
+
+- `WithTextrue.texture: GraphicsTexture`
+
+  一个 `GraphicsTexture` 实例，您可以用它来绘制自己屏幕。
+  请注意，`GraphicsTexture` 的宽高是实际屏幕的宽高，其他地方的宽高是被缩放后的。
+  可能您需要进行转换。
+
+- `WithTextrue.state: Object`
+
+  一个对象，您可以用它来存储一些状态。
+
+- `WithTextrue.isPauseScreen: boolean`
+
+  一个布尔值，表示当前是否是暂停界面。
+
+- `WithTextrue.initFunction: InitFunction`
+
+  一个初始化函数，它会在 `WithTextrue` 被创建时或者调整窗口大小时被调用。
+InitFunction: (screen: WithTextrue, width: int, height: int) => void
+
+- `WithTextrue.keyPressResponder: KeyPressResponder`
+
+  一个键盘按下响应器，它会在用户按下某个键时被调用。
+KeyPressResponder: (screen: WithTextrue, i1: int, i2: int, i3: int) -> boolean
+
+- `WithTextrue.insertTextFunction: InsertTextFunction`
+
+  一个插入文本函数，它会在用户输入文本时被调用。
+InsertTextFunction: (screen: WithTextrue, text: String, i1: int) -> void
+
+- `WithTextrue.renderFunction: RenderFunction`
+
+  一个渲染函数，它会在屏幕渲染时被调用。
+RenderFunction: (screen: WithTextrue, mouseX: int, mouseY: int, delta: float) -> void
+
+- `WithTextrue.tickFunction: Consumer<WithTextrue>`
+
+  一个 tick 函数，它会在每一帧被调用。
+
+- `WithTextrue.onFilesDropFunction: BiConsumer<WithTextrue, List<Path>>`
+
+  一个文件拖放函数，它会在用户拖放文件时被调用。
+
+- `WithTextrue.onCloseFunction: Consumer<WithTextrue>`
+
+  一个关闭函数，它会在用户关闭窗口时被调用。
+
+- `WithTextrue.mouseClickedFunction: MouseClickedFunction`
+
+  一个鼠标点击函数，它会在用户点击鼠标时被调用。
+MouseClickedFunction: (screen: WithTextrue, x: double, y: double, i: int) -> boolean
+
+- `WithTextrue.mouseMovedFunction: MouseMovedFunction`
+
+  一个鼠标移动函数，它会在鼠标移动时被调用。
+MouseMovedFunction: (screen: WithTextrue, x: double, y: double) -> void
+
+- `WithTextrue.isMouseOverFunction: IsMouseOverFunction`
+
+  一个鼠标是否在某个组件上函数，它会在鼠标移动时被调用。
+IsMouseOverFunction: (screen: WithTextrue, x: double, y: double) -> boolean
+
+- `WithTextrue.charTypedFunction: CharTypedFunction`
+
+  一个字符输入函数，它会在用户输入字符时被调用。
+CharTypedFunction: (screen: WithTextrue, p_94732_: char, p_94733_: int) -> boolean
+
+- `WithTextrue.keyReleasedFunction: KeyReleasedFunction`
+
+  一个键盘释放函数，它会在用户释放某个键时被调用。
+KeyReleasedFunction: (screen: WithTextrue, p_94750_: int, p_94751_: int, p_94752_: int) -> void
+
+- `WithTextrue.mouseScrolledFunction: MouseScrolledFunction`
+
+  一个鼠标滚动函数，它会在用户滚动鼠标时被调用。
+MouseScrolledFunction: (screen: WithTextrue, x: double, y: double, value: double) -> boolean
+
+- `WithTextrue.mouseDraggedFunction: MouseDraggedFunction`
+
+  一个鼠标拖拽函数，它会在用户拖拽鼠标时被调用。
+MouseDraggedFunction: (screen: WithTextrue, sx: double, sy: double, ex: double, ey: double, i: int) -> void
+
+- `WithTextrue.mouseReleasedFunction: MouseReleasedFunction`
+
+  一个鼠标释放函数，它会在用户释放鼠标时被调用。
+MouseReleasedFunction: (screen: WithTextrue, x: double, y: double, i: int) -> void
+
+#### 示例
+
+下面是一个简单的例子，在使用装饰物件时，会打开一个自定义屏幕，它会在您的鼠标下面绘制一个方块，并将您输入的文本打印出来。(暂时没做删除或者移动光标的功能，因为我懒得写了)
+
+```javascript
+importPackage(java.awt);
+
+let font = new Font("宋体", Font.PLAIN, 200);
+let str = "";
+
+function use(ctx, state, entity, player) {
+  const screen = new IScreen.WithTextrue(ComponentUtil.literal("screen"));
+  screen.initFunction = (screen, w, h) => {
+      let state = screen.state;
+      if (state.str == null) state.str = "";
+      let tex = screen.texture;
+      let w0 = tex.width, h0 = tex.height;
+      state.fx = x => x * w0 / w;
+      state.fy = y => y * h0 / h;
+  }
+  screen.renderFunction = (screen, mx, my, d) => {
+      let state = screen.state;
+      let tex = screen.texture;
+      let g = tex.graphics;
+      g.setComposite(AlphaComposite.Clear);
+      g.fillRect(0, 0, tex.width, tex.height);
+      g.setComposite(AlphaComposite.SrcOver);
+      g.setColor(Color.WHITE);
+      g.setFont(font);
+      g.drawString(state.str, 10, 220);
+      g.fillRect(state.fx(mx) - 10, state.fy(my) - 10, 20, 20);
+      g.drawString(str, 10, 120);
+      tex.upload();
+  }
+  screen.charTypedFunction = (screen, c, b) => {
+      screen.state.str += c;
+      return true;
+  }
+    MinecraftClient.setScreen(screen);
+}
+```

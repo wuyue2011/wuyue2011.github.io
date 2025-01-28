@@ -35,20 +35,20 @@ public class ButtonListEntry extends TooltipListEntry<String> implements Contain
 
     @ApiStatus.Internal
     @Deprecated
-    public ButtonListEntry(Button button, Processor processor) {
+    public ButtonListEntry(Component name, Button button, Processor processor) {
         this(button, processor, null);
     }
     
     @ApiStatus.Internal
     @Deprecated
-    public ButtonListEntry(Button button, Processor processor, Supplier<Optional<Component[]>> tooltipSupplier) {
+    public ButtonListEntry(Component name, Button button, Processor processor, Supplier<Optional<Component[]>> tooltipSupplier) {
         this(button, processor, tooltipSupplier, false);
     }
     
     @ApiStatus.Internal
     @Deprecated
-    public ButtonListEntry(Button button, Processor processor, Supplier<Optional<Component[]>> tooltipSupplier, boolean requiresRestart) {
-        super(Text.literal(""), tooltipSupplier, requiresRestart);
+    public ButtonListEntry(Component name, Button button, Processor processor, Supplier<Optional<Component[]>> tooltipSupplier, boolean requiresRestart) {
+        super(name, tooltipSupplier, requiresRestart);
         this.processor = processor;
         this.buttonWidget = button;
         this.widgets = Lists.newArrayList(buttonWidget);

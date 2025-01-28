@@ -73,6 +73,7 @@ public class EyeCandyScreen {
         );
 
         common.addEntry(new ButtonListEntry(
+            Text.literal(""),
             new Button(0, 0, 300, 20, 
                 Text.translatable("gui.mtrsteamloco.eye_candy.present", 
                 (properties != null ? (properties.name.getString() + " (" + blockEntity.prefabId + ")") : (blockEntity.prefabId + " (???)"))), 
