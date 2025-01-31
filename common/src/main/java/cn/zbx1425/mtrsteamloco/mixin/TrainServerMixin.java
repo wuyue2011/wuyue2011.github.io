@@ -29,19 +29,4 @@ public abstract class TrainServerMixin extends Train {
     public TrainServerMixin(long id, long sidingId, float railLength, String trainId, String baseTrainType, int trainCars, List<PathData> path, List<Double> distances, int repeatIndex1, int repeatIndex2, float accelerationConstant, boolean isManualAllowed, int maxManualSpeed, int manualToAutomaticTime) {
         super(id, sidingId, railLength, trainId, baseTrainType, trainCars, path, distances, repeatIndex1, repeatIndex2, accelerationConstant, isManualAllowed, maxManualSpeed, manualToAutomaticTime);
     }
-
-    @Inject(method = "openDoors", at = @At("HEAD"), remap = false)
-    protected void onOpenDoors(Level world, Block block, BlockPos checkPos, int dwellTicks, CallbackInfo ci) {
-        try {
-			BlockEntity entity = world.getBlockEntity(checkPos);
-            if (((BlockEyeCandy.BlockEntityEyeCandy) entity).isPlatform()) {
-                ((BlockEyeCandy.BlockEntityEyeCandy) entity).setDoorValue(doorValue);
-            }
-        } catch (Exception e) {
-            
-        }
-        if (block instanceof BlockEyeCandy) {
-
-		}
-    }
 }

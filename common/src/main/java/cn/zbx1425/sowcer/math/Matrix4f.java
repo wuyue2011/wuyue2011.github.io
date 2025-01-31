@@ -227,6 +227,10 @@ public class Matrix4f {
 
 #endif
 
+    public void mul(Matrix4f other) {
+        multiply(other);
+    }
+
     public void translate(Vector3f vec) {
         translate(vec.x(), vec.y(), vec.z());
     }

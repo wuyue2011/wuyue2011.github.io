@@ -10,9 +10,9 @@ import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 
-public class Serializer {
+public class StringMapSerializer {
 
-    public static byte[] serialize(Map<String, String> map) throws IOException {
+    private static ByteArrayOutputStream serializeIn(Map<String, String> map) throws IOException{
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
 
@@ -24,10 +24,10 @@ public class Serializer {
         }
 
         dos.flush();
-        return baos.toByteArray();
+        return baos;
     }
 
-    public static Map<String, String> deserialize(byte[] bytes) throws IOException {
+    private static Map<String, String> deserializeIn(byte[] bytes) throws IOException {
         Map<String, String> map = new HashMap<>();
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         DataInputStream dis = new DataInputStream(bais);
@@ -42,5 +42,21 @@ public class Serializer {
 
         dis.close();
         return map;
+    }
+
+    public static byte[] serializeToByteArray(Map<String, String> map) throws IOException {
+        return serializeIn(map).toByteArray();
+    }
+
+    public static Map<String, String> deserialize(byte[] bytes) throws IOException {
+        return deserializeIn(bytes);
+    }
+
+    public static String serializeToString(Map<String, String> map) throws IOException {
+        return serializeIn(map).toString("UTF-8");
+    }
+
+    public static Map<String, String> deserialize(String str) throws IOException {
+        return deserializeIn(str.getBytes("UTF-8"));
     }
 }

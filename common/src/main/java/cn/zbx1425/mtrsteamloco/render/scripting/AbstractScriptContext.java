@@ -29,8 +29,6 @@ public abstract class AbstractScriptContext {
 
     public abstract boolean isBearerAlive();
 
-    public abstract boolean isTrain();
-
     public OrderedMap<String, Object> getDebugInfo() {
         synchronized (debugInfo) {
             return new OrderedMap<>(debugInfo);
@@ -48,6 +46,8 @@ public abstract class AbstractScriptContext {
             OrderedMap.PlacementOrder order = OrderedMap.PlacementOrder.CENTRAL;
             
             List<Object> list = new ArrayList<>();
+            
+            if (values == null || values.length == 0) return;
             for (Object value : values) {
                 list.add(value);
             }

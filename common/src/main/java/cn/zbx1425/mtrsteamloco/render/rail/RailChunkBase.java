@@ -9,6 +9,8 @@ import mtr.data.RailAngle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
+import cn.zbx1425.mtrsteamloco.render.scripting.util.DynamicModelHolder;
+import cn.zbx1425.sowcerext.reuse.DrawScheduler;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;

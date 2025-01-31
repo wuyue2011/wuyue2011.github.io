@@ -48,7 +48,7 @@ public class RenderTrainsMixin {
         MainClient.railRenderDispatcher.prepareDraw();
         if (ClientConfig.getRailRenderLevel() >= 2) {
             GlStateTracker.capture();
-            MainClient.railRenderDispatcher.drawRails(Minecraft.getInstance().level, MainClient.drawScheduler.batchManager, viewMatrix);
+            MainClient.railRenderDispatcher.drawRails(Minecraft.getInstance().level, MainClient.drawScheduler, viewMatrix);
             MainClient.drawScheduler.commitRaw(MainClient.drawContext);
 
             GlStateTracker.restore();

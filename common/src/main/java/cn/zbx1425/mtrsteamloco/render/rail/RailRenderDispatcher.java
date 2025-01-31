@@ -8,6 +8,7 @@ import cn.zbx1425.mtrsteamloco.mixin.LevelRendererAccessor;
 import cn.zbx1425.sowcer.batch.BatchManager;
 import cn.zbx1425.sowcer.batch.ShaderProp;
 import cn.zbx1425.sowcer.math.Matrix4f;
+import cn.zbx1425.sowcer.math.Vector3f;
 import cn.zbx1425.sowcerext.reuse.DrawScheduler;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -29,6 +30,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
+import cn.zbx1425.mtrsteamloco.data.RailModelProperties;
 
 import java.util.*;
 
@@ -78,6 +80,7 @@ public class RailRenderDispatcher {
         for (long chunkId : bakedRail.coveredChunks.keySet()) {
             chunkMap.get(chunkId).removeRail(bakedRail);
         }
+        bakedRail.dispose();
     }
 
     public boolean registerRail(Rail rail) {
@@ -88,6 +91,10 @@ public class RailRenderDispatcher {
 
     public void clearRail() {
         currentFrameRails.clear();
+        Collection<BakedRail> bakedRails = railRefMap.values();
+        for (BakedRail rail : bakedRails) {
+            rail.dispose();
+        }
         railRefMap.clear();
         for (HashMap<Long, RailChunkBase> chunkMap : railChunkMap.values()) {
             for (RailChunkBase chunk : chunkMap.values()) {
@@ -127,7 +134,8 @@ public class RailRenderDispatcher {
         }
     }
 
-    public void drawRails(Level level, BatchManager batchManager, Matrix4f viewMatrix) {
+    public void drawRails(Level level, DrawScheduler drawScheduler, Matrix4f viewMatrix) {
+        BatchManager batchManager = drawScheduler.batchManager;
         boolean shouldBeInstanced = ClientConfig.getRailRenderLevel() == 3;
         if (isInstanced != shouldBeInstanced) clearRail();
         isInstanced = shouldBeInstanced;
@@ -141,6 +149,7 @@ public class RailRenderDispatcher {
         currentFrameRails.clear();
 
         Vec3 cameraBlockPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+        Vector3f cameraPos = new Vector3f(cameraBlockPos);
         railChunkList.sort(Comparator.comparingDouble(chunk -> chunk.getCameraDistManhattanXZ(cameraBlockPos)));
 
         int buffersRebuilt = 0;
@@ -174,6 +183,17 @@ public class RailRenderDispatcher {
             if (chunk.bufferBuilt && cullingFrustum.isVisible(chunk.boundingBox)) {
                 chunk.enqueue(batchManager, shaderProp);
             }
+        }
+
+        Collection<BakedRail> bakedRails = railRefMap.values();
+        for (BakedRail rail : bakedRails) {
+            RailModelProperties prop = rail.getProperties();
+            if (prop == null) {
+                if (prop.script == null) continue;
+            }
+            if (rail.scriptContext == null) continue;
+            prop.script.tryCallRenderFunctionAsync(rail.scriptContext);
+            rail.scriptContext.commit(drawScheduler, viewMatrix, cullingFrustum, cameraPos, maxRailDistance);
         }
     }
 

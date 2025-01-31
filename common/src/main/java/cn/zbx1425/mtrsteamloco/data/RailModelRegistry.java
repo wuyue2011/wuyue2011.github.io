@@ -13,11 +13,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Pair;
 import mtr.mappings.Text;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import mtr.mappings.Utilities;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
+import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolder;
 import net.minecraft.server.packs.resources.ResourceManager;
+import cn.zbx1425.sowcerext.util.ResourceUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
@@ -43,9 +46,9 @@ public class RailModelRegistry {
         elements.clear();
 
         //
-        register("", new RailModelProperties(Text.translatable("rail.mtrsteamloco.default"), null, 1f, 0f));
+        register("", new RailModelProperties(Text.translatable("rail.mtrsteamloco.default"), null, 1f, 0f, null));
         // This is pulled from registry and shouldn't be shown
-        register("null", new RailModelProperties(Text.translatable("rail.mtrsteamloco.hidden"), null, Float.MAX_VALUE, 0f));
+        register("null", new RailModelProperties(Text.translatable("rail.mtrsteamloco.hidden"), null, Float.MAX_VALUE, 0f, null));
 
         try {
             RawModel railNodeRawModel = MainClient.modelManager.loadRawModel(resourceManager,
@@ -83,14 +86,14 @@ public class RailModelRegistry {
     }
 
     private static final RailModelProperties EMPTY_PROPERTY = new RailModelProperties(
-            Text.literal(""), null, 1f, 0
+            Text.literal(""), null, 1f, 0, null
     );
 
     public static RailModelProperties getProperty(String key) {
         return elements.getOrDefault(key, EMPTY_PROPERTY);
     }
 
-    private static RailModelProperties loadFromJson(ResourceManager resourceManager, String key, JsonObject obj) throws IOException {
+    private static RailModelProperties loadFromJson(ResourceManager resourceManager, String key, JsonObject obj) throws Exception {
         if (obj.has("atlasIndex")) {
             MainClient.atlasManager.load(
                     MtrModelRegistryUtil.resourceManager,  new ResourceLocation(obj.get("atlasIndex").getAsString())
@@ -112,6 +115,25 @@ public class RailModelRegistry {
         float repeatInterval = obj.has("repeatInterval") ? obj.get("repeatInterval").getAsFloat() : 0.5f;
         float yOffset = obj.has("yOffset") ? obj.get("yOffset").getAsFloat() : 0f;
 
-        return new RailModelProperties(Text.translatable(obj.get("name").getAsString()), rawModel, repeatInterval, yOffset);
+        ScriptHolder script = null;
+        if (obj.has("scriptFiles")) {
+            script = new ScriptHolder();
+            Map<ResourceLocation, String> scripts = new Object2ObjectArrayMap<>();
+            if (obj.has("scriptTexts")) {
+                JsonArray scriptTexts = obj.get("scriptTexts").getAsJsonArray();
+                for (int i = 0; i < scriptTexts.size(); i++) {
+                    scripts.put(new ResourceLocation("mtrsteamloco", "script_texts/" + key + "/" + i),
+                            scriptTexts.get(i).getAsString());
+                }
+            }
+            JsonArray scriptFiles = obj.get("scriptFiles").getAsJsonArray();
+            for (int i = 0; i < scriptFiles.size(); i++) {
+                ResourceLocation scriptLocation = new ResourceLocation(scriptFiles.get(i).getAsString());
+                scripts.put(scriptLocation, ResourceUtil.readResource(resourceManager, scriptLocation));
+            }
+            script.load("Rail " + key, "Rail", resourceManager, scripts);
+        }
+
+        return new RailModelProperties(Text.translatable(obj.get("name").getAsString()), rawModel, repeatInterval, yOffset, script);
     }
 }

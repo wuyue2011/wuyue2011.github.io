@@ -62,11 +62,6 @@ public class EyeCandyScriptContext extends AbstractScriptContext {
         return !disposeForReload && !entity.isRemoved() && !disposed;
     }
 
-    @Override
-    public boolean isTrain() {
-        return false;
-    }
-
     public void drawModel(ModelCluster model, Matrices poseStack) {
         scriptResultWriting.addModel(model, poseStack == null ? Matrix4f.IDENTITY : poseStack.last().copy());
     }

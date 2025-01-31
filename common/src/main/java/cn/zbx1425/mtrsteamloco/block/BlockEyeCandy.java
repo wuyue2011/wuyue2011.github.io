@@ -29,7 +29,7 @@ import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.phys.BlockHitResult;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import cn.zbx1425.mtrsteamloco.network.util.Serializer;
+import cn.zbx1425.mtrsteamloco.network.util.StringMapSerializer;
 import cn.zbx1425.mtrsteamloco.network.PacketUpdateBlockEntity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.core.Direction;
@@ -255,12 +255,12 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             setPrefabId(id);
             fullLight = compoundTag.getBoolean("fullLight");
             try {
-                if (compoundTag.contains("data")) {
-                    byte[] dataBytes = compoundTag.getByteArray("data");
-                    customConfigs = Serializer.deserialize(dataBytes);
-                } else if (compoundTag.contains("customConfigs")) {
-                    byte[] configBytes = compoundTag.getByteArray("customConfigs");
-                    customConfigs = Serializer.deserialize(configBytes);
+                if (compoundTag.contains("customConfigs")) {
+                    byte[] dataBytes = compoundTag.getByteArray("customConfigs");
+                    customConfigs = StringMapSerializer.deserialize(dataBytes);
+                } else if (compoundTag.contains("data")) {
+                    byte[] configBytes = compoundTag.getByteArray("data");
+                    customConfigs = StringMapSerializer.deserialize(configBytes);
                 }
             }catch (IOException e) {
             }
@@ -287,7 +287,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putString("prefabId", prefabId == null ? "" : prefabId);
             compoundTag.putBoolean("fullLight", fullLight);
             try {
-                byte[] configBytes = Serializer.serialize(customConfigs);
+                byte[] configBytes = StringMapSerializer.serializeToByteArray(customConfigs);
                 compoundTag.putByteArray("customConfigs", configBytes);
             }catch (IOException e) {
             }

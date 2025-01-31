@@ -80,6 +80,8 @@ public class Main {
 					PacketUpdateRail::receiveUpdateC2S);
 			mtr.Registry.registerNetworkReceiver(PacketUpdateHoldingItem.PACKET_UPDATE_HOLDING_ITEM,
 					PacketUpdateHoldingItem::receiveUpdateC2S);
+			mtr.Registry.registerNetworkReceiver(PacketUpdateTrainExtraData.PACKET_UPDATE_TRAIN_EXTRA_DATA,
+					PacketUpdateTrainExtraData::receiveUpdateC2S);
 
 			mtr.Registry.registerPlayerJoinEvent(PacketVersionCheck::sendVersionCheckS2C);
 		}

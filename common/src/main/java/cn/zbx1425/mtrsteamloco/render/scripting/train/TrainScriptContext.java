@@ -74,11 +74,6 @@ public class TrainScriptContext extends AbstractScriptContext {
         return !train.isRemoved && ClientData.TRAINS.contains(train);
     }
 
-    @Override
-    public boolean isTrain() {
-        return true;
-    }
-
     public void extraFinished() {
         synchronized (this) {
             TrainWrapper temp = trainExtraWriting;

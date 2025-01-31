@@ -5,10 +5,12 @@ import cn.zbx1425.mtrsteamloco.data.RailModelRegistry;
 import cn.zbx1425.sowcer.math.Matrix4f;
 import cn.zbx1425.sowcer.util.AttrUtil;
 import mtr.data.Rail;
+import cn.zbx1425.mtrsteamloco.data.RailModelProperties;
 import net.minecraft.util.Mth;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import cn.zbx1425.mtrsteamloco.render.scripting.rail.RailScriptContext;
 
 public class BakedRail {
 
@@ -18,15 +20,21 @@ public class BakedRail {
 
     public String modelKey;
     public int color;
+    public RailScriptContext scriptContext;
 
     public BakedRail(Rail rail) {
         modelKey = RailRenderDispatcher.getModelKeyForRender(rail);
+        RailModelProperties prop = getProperties();
         color = AttrUtil.argbToBgr(rail.railType.color | 0xFF000000);
+
+        if (prop.script != null) {
+            scriptContext = new RailScriptContext(rail);
+        }
 
         if (!modelKey.equals("null")) {
             final boolean reverse = ((RailExtraSupplier)rail).getRenderReversed();
-            final float interval = RailModelRegistry.getProperty(modelKey).repeatInterval;
-            final float yOffset = RailModelRegistry.getProperty(modelKey).yOffset;
+            final float interval = prop.repeatInterval;
+            final float yOffset = prop.yOffset;
             rail.render((x1, z1, x2, z2, x3, z3, x4, z4, y1, y2) -> {
                 float xc = (float) ((x1 + x4) / 2);
                 float yc = (float) ((y1 + y2) / 2);
@@ -36,6 +44,16 @@ public class BakedRail {
                         .add(getLookAtMat(xc, yc + yOffset, zc, (float) x4, (float) y2 + yOffset, (float) z4, interval, reverse));
             }, 0, 0);
         }
+    }
+
+    public void dispose() {
+        if (scriptContext != null) {
+            scriptContext.dispose();
+        }
+    }
+
+    public RailModelProperties getProperties() {
+        return RailModelRegistry.getProperty(modelKey);
     }
 
     public static long chunkIdFromWorldPos(float bpX, float bpZ) {

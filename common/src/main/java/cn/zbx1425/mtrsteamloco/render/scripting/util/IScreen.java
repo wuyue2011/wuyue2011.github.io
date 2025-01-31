@@ -35,7 +35,7 @@ public interface IScreen {
         }
 
         public static ButtonListEntry newButtonListEntry(Component name, Button button, ButtonListEntry.Processor processor, Supplier<Optional<Component[]>> tooltipSupplier, boolean requiresRestart) {
-            return new ButtonListEntry(button, processor, tooltipSupplier, requiresRestart);
+            return new ButtonListEntry(name, button, processor, tooltipSupplier, requiresRestart);
         }
     }
 

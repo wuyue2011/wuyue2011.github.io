@@ -36,13 +36,13 @@ public class ButtonListEntry extends TooltipListEntry<String> implements Contain
     @ApiStatus.Internal
     @Deprecated
     public ButtonListEntry(Component name, Button button, Processor processor) {
-        this(button, processor, null);
+        this(name, button, processor, null);
     }
     
     @ApiStatus.Internal
     @Deprecated
     public ButtonListEntry(Component name, Button button, Processor processor, Supplier<Optional<Component[]>> tooltipSupplier) {
-        this(button, processor, tooltipSupplier, false);
+        this(name, button, processor, tooltipSupplier, false);
     }
     
     @ApiStatus.Internal
