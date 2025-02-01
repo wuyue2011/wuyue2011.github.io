@@ -10,7 +10,7 @@ import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
-#if MC_VERSION >= "11903"
+#if MC_VERSION >= "12000"
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.GuiGraphics;
 #else
@@ -39,9 +39,15 @@ public interface IScreen {
         }
     }
 
+# if MC_VERSION >= "12000"
     public static Button newButton(int x, int y, int width, int height, Component text, Button.OnPress onPress) {
         return new Button(x, y, width, height, text, onPress);
     }
+# else
+    public static Button newButton(int x, int y, int width, int height, Component text, Button.OnPress onPress) {
+        return Button.Builder(text, onPress).pos(x, y).side(width, height).build();
+    }
+# endif
 
     public static class WithTextrue extends Screen {
         public GraphicsTexture texture;
