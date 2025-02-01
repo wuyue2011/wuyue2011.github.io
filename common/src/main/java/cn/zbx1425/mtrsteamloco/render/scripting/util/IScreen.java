@@ -10,7 +10,7 @@ import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
-#if MC_VERSION >= "12000"
+#if MC_VERSION >= "11903"
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.GuiGraphics;
 #else
