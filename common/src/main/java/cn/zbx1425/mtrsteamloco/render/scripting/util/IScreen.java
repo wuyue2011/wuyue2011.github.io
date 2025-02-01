@@ -11,10 +11,13 @@ import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 #if MC_VERSION >= "12000"
-import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.GuiGraphics;
 #else
 import com.mojang.blaze3d.vertex.PoseStack;
+#endif
+#if MC_VERSION >= "11903"
+import net.minecraft.client.gui.components.Renderable;
+#else
 import net.minecraft.client.gui.components.Widget;
 #endif
 import me.shedaniel.clothconfig2.api.*;
