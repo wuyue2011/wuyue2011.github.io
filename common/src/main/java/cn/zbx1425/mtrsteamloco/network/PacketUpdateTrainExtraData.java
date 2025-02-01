@@ -62,6 +62,7 @@ public class PacketUpdateTrainExtraData {
                 if (siding == null) continue;
                 if (siding.id == sidingId) {
                     Set<TrainServer> trains = ((SidingAccessor) siding).getTrains();
+                    Set<TrainServer> copy = new HashSet<>(trains);
                     for (TrainServer train : trains) {
                         if (train.id == trainId) {
                             (TrainExtraSupplier train).setExtraData(extraData);
