@@ -55,7 +55,11 @@ public class PacketUpdateTrainCustomConfigs {
         final Map<String, String> ed = customConfigs;
         
         server.execute(() -> {
+#if MC_VERSION >= "12000"
+            RailwayData railwayData = RailwayData.getInstance(player.level());
+#else
             RailwayData railwayData = RailwayData.getInstance(player.level);
+#endif
             if (railwayData == null) return;
             if (railwayData.sidings == null) return;
             Set<Siding> sidings = new HashSet<>(railwayData.sidings);
