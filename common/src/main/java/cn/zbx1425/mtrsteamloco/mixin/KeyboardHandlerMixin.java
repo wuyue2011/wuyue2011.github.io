@@ -35,7 +35,7 @@ public class KeyboardHandlerMixin {
                 GlStateTracker.capture();
                 MtrModelRegistryUtil.loadingErrorList.clear();
                 MtrModelRegistryUtil.resourceManager = minecraft.getResourceManager();
-                ScriptHolder.resetRunner();
+                // ScriptHolder.resetRunner();
 
                 for (TransportMode transportMode : TransportMode.values()) {
                     TrainClientRegistry.forEach(transportMode, (id, prop) -> {

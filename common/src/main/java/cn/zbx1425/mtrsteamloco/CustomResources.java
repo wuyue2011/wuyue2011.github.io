@@ -47,7 +47,7 @@ public class CustomResources {
         EyeCandyRegistry.reload(resourceManager);
         RailModelRegistry.reload(resourceManager);
 
-        ScriptHolder.resetRunner();
+        // ScriptHolder.resetRunner();
         ScriptResourceUtil.init(resourceManager);
         ScriptedCustomTrains.init(resourceManager);
 

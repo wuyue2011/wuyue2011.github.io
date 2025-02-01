@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import mtr.data.Train;
 import mtr.path.PathData;
+import cn.zbx1425.mtrsteamloco.data.TrainCustomConfigsSupplier;
 
 import java.util.List;
 
@@ -22,15 +23,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(TrainClient.class)
-public abstract class TrainClientMixin extends Train{
-
-    public TrainClientMixin(long id, long sidingId, float railLength, String trainId, String baseTrainType, int trainCars, List<PathData> path, List<Double> distances, int repeatIndex1, int repeatIndex2, float accelerationConstant, boolean isManualAllowed, int maxManualSpeed, int manualToAutomaticTime) {
-        super(id, sidingId, railLength, trainId, baseTrainType, trainCars, path, distances, repeatIndex1, repeatIndex2, accelerationConstant, isManualAllowed, maxManualSpeed, manualToAutomaticTime);
-    }
+public abstract class TrainClientMixin{
 
     @Inject(method = "<init>", at = @At("TAIL"), remap = false)
     private void initTail(FriendlyByteBuf packet, CallbackInfo ci) {
-        if (!ClientConfig.enableTrainRender) ((TrainClientAccessor)this).setTrainRenderer(NoopTrainRenderer.INSTANCE);
-        if (!ClientConfig.enableTrainSound) ((TrainClientAccessor)this).setTrainSound(NoopTrainSound.INSTANCE);
+        if (!ClientConfig.enableTrainRender) ((TrainClientAccessor) this).setTrainRenderer(NoopTrainRenderer.INSTANCE);
+        if (!ClientConfig.enableTrainSound) ((TrainClientAccessor) this).setTrainSound(NoopTrainSound.INSTANCE);
+    }
+
+    @Inject(method = "copyFromTrain", at = @At("TAIL"), remap = false)
+    private void copyFromTrainTail(Train other, CallbackInfo ci) {
+        ((TrainCustomConfigsSupplier) (Object) this).setCustomConfigs(((TrainCustomConfigsSupplier) (Object) other).getCustomConfigs());
     }
 }

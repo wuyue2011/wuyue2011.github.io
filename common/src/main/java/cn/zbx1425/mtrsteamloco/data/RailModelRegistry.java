@@ -99,21 +99,26 @@ public class RailModelRegistry {
                     MtrModelRegistryUtil.resourceManager,  new ResourceLocation(obj.get("atlasIndex").getAsString())
             );
         }
+        
+        RawModel rawModel = null;
 
-        RawModel rawModel = MainClient.modelManager.loadRawModel(resourceManager,
-                new ResourceLocation(obj.get("model").getAsString()), MainClient.atlasManager).copy();
+        if (obj.has("model")) {
+            rawModel = MainClient.modelManager.loadRawModel(resourceManager,
+                    new ResourceLocation(obj.get("model").getAsString()), MainClient.atlasManager).copy();
 
-        if (obj.has("textureId")) {
-            rawModel.replaceTexture("default.png", new ResourceLocation(obj.get("textureId").getAsString()));
+            if (obj.has("textureId")) {
+                rawModel.replaceTexture("default.png", new ResourceLocation(obj.get("textureId").getAsString()));
+            }
+            if (obj.has("flipV") && obj.get("flipV").getAsBoolean()) {
+                rawModel.applyUVMirror(false, true);
+            }
+
+            rawModel.sourceLocation = new ResourceLocation(rawModel.sourceLocation.toString() + "/" + key);
         }
-        if (obj.has("flipV") && obj.get("flipV").getAsBoolean()) {
-            rawModel.applyUVMirror(false, true);
-        }
-
-        rawModel.sourceLocation = new ResourceLocation(rawModel.sourceLocation.toString() + "/" + key);
-
+        
         float repeatInterval = obj.has("repeatInterval") ? obj.get("repeatInterval").getAsFloat() : 0.5f;
         float yOffset = obj.has("yOffset") ? obj.get("yOffset").getAsFloat() : 0f;
+
 
         ScriptHolder script = null;
         if (obj.has("scriptFiles")) {

@@ -32,7 +32,7 @@ public class BakedRail {
         }
 
         if (!modelKey.equals("null")) {
-            final boolean reverse = ((RailExtraSupplier)rail).getRenderReversed();
+            final boolean reverse = ((RailExtraSupplier) rail).getRenderReversed();
             final float interval = prop.repeatInterval;
             final float yOffset = prop.yOffset;
             rail.render((x1, z1, x2, z2, x3, z3, x4, z4, y1, y2) -> {

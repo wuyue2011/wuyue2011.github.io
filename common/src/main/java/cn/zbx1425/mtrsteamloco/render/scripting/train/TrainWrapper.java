@@ -12,8 +12,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import cn.zbx1425.mtrsteamloco.Main;
 import mtr.data.Train;
-import cn.zbx1425.mtrsteamloco.data.TrainExtraSupplier;
-import cn.zbx1425.mtrsteamloco.network.PacketUpdateTrainExtraData;
+import cn.zbx1425.mtrsteamloco.data.TrainCustomConfigsSupplier;
+import cn.zbx1425.mtrsteamloco.network.PacketUpdateTrainCustomConfigs;
 
 import java.util.*;
 import java.lang.reflect.InvocationTargetException;
@@ -44,7 +44,7 @@ public class TrainWrapper {
     public boolean isInDetailDistance;
 
     private final TrainClient train;
-    private final TrainExtraSupplier extra;
+    private final TrainCustomConfigsSupplier supplier;
     private PlatformLookupMap trainPlatforms;
     private List<PathData> trainPlatformsValidPath;
 
@@ -60,7 +60,7 @@ public class TrainWrapper {
         Arrays.setAll(lastCarPosition, ignored -> new Vector3f(0, -10000, 0));
         Arrays.setAll(lastCarRotation, ignored -> new Vector3f(0, 0, 0));
         this.train = train;
-        extra = (TrainExtraSupplier) train;
+        supplier = (TrainCustomConfigsSupplier) train;
         this.reset();
     }
 
@@ -273,9 +273,9 @@ public class TrainWrapper {
         }
     }
     
-    @SuppressWarnings("unused") public Map<String, String> getExtraData() { return extra.getExtraData(); }
-    @SuppressWarnings("unused") public void setExtraData(Map<String, String> map) { extra.setExtraData(map); }
+    @SuppressWarnings("unused") public Map<String, String> getCustomConfigs() { return supplier.getCustomConfigs(); }
+    @SuppressWarnings("unused") public void setCustomConfigs(Map<String, String> map) { supplier.setCustomConfigs(map); }
     @SuppressWarnings("unused") public void sendExtraDataUpdateC2S() {
-        PacketUpdateTrainExtraData.sendUpdateC2S(train.sidingId, train.id, getExtraData());
+        PacketUpdateTrainCustomConfigs.sendUpdateC2S(train.sidingId, train.id, getCustomConfigs());
     }
 }

@@ -53,8 +53,8 @@ public class ScriptDebugOverlay {
             ScriptHolder holder = entry.getKey();
             if (holder.failTime > 0) {
                 y = drawText(vdStuff, font, holder.name + " FAILED", 0, y, 0xFFFF0000);
-                for (String msgLine : Splitter.fixedLength(60).split(holder.failException.getMessage())) {
-                    y = drawText(vdStuff, font, msgLine, 5, y, 0xFFFF8888);
+                if (holder.failException != null) {
+                    y = drawText(vdStuff, font, holder.failException.getMessage(), 5, y, 0xFFFF8888);
                 }
             } else {
                 y = drawText(vdStuff, font, holder.name, 0, y, 0xFFAAAAFF);

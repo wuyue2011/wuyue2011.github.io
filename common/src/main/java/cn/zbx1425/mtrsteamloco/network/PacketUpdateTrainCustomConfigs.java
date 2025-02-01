@@ -12,46 +12,47 @@ import net.minecraft.server.MinecraftServer;
 import mtr.data.RailwayData;
 import mtr.data.Siding;
 import mtr.data.TrainServer;
-import cn.zbx1425.mtrsteamloco.data.TrainExtraSupplier;
+import cn.zbx1425.mtrsteamloco.data.TrainCustomConfigsSupplier;
 import cn.zbx1425.mtrsteamloco.mixin.SidingAccessor;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 
-public class PacketUpdateTrainExtraData {
+public class PacketUpdateTrainCustomConfigs {
     
-    public static ResourceLocation PACKET_UPDATE_TRAIN_EXTRA_DATA = new ResourceLocation(Main.MOD_ID, "update_train_extra_data");
+    public static ResourceLocation C2S = new ResourceLocation(Main.MOD_ID, "update_train_custom_configs");
 
-    public static void sendUpdateC2S(long sidingId, long trainId, Map<String, String> extraData) {
-        if (extraData == null) return;
+    public static void sendUpdateC2S(long sidingId, long trainId, Map<String, String> customConfigss) {
+        if (customConfigss == null) return;
 
         final FriendlyByteBuf packet = new FriendlyByteBuf(Unpooled.buffer());
         packet.writeLong(sidingId);
         packet.writeLong(trainId);
         String str = "";
         try {
-            str = StringMapSerializer.serializeToString(extraData);
+            str = StringMapSerializer.serializeToString(customConfigss);
         } catch (Exception e) {
             e.printStackTrace();
         }
         packet.writeUtf(str);
         
-        RegistryClient.sendToServer(PACKET_UPDATE_TRAIN_EXTRA_DATA, packet);
+        RegistryClient.sendToServer(C2S, packet);
     }
 
     public static void receiveUpdateC2S(MinecraftServer server, ServerPlayer player, FriendlyByteBuf packet) {
         long trainId = packet.readLong();
         long sidingId = packet.readLong();
         String str = packet.readUtf();
-        Map<String, String> extraData = null;
+        Map<String, String> customConfigs = null;
         try {
-            extraData = StringMapSerializer.deserialize(str);
+            customConfigs = StringMapSerializer.deserialize(str);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (extraData == null) return;
+        if (customConfigs == null) return;
         if (packet == null) return;
+        final Map<String, String> ed = customConfigs;
         
         server.execute(() -> {
             RailwayData railwayData = RailwayData.getInstance(player.level);
@@ -62,10 +63,11 @@ public class PacketUpdateTrainExtraData {
                 if (siding == null) continue;
                 if (siding.id == sidingId) {
                     Set<TrainServer> trains = ((SidingAccessor) siding).getTrains();
-                    Set<TrainServer> copy = new HashSet<>(trains);
+                    if (trains == null) return;
                     for (TrainServer train : trains) {
                         if (train.id == trainId) {
-                            (TrainExtraSupplier train).setExtraData(extraData);
+                            ((TrainCustomConfigsSupplier) train).setCustomConfigs(ed);
+                            ((TrainCustomConfigsSupplier) train).isConfigsChanged(true);
                             break;
                         }
                     }

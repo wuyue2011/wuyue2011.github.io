@@ -18,13 +18,14 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.util.Mth;
 import mtr.path.PathData;
 import cn.zbx1425.sowcer.math.Vector3f;
-import cn.zbx1425.mtrsteamloco.data.TrainExtraSupplier;
+import cn.zbx1425.mtrsteamloco.data.TrainCustomConfigsSupplier;
 import org.msgpack.core.MessagePacker;
 import cn.zbx1425.mtrsteamloco.network.util.StringMapSerializer;
 import org.msgpack.value.Value;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.nbt.CompoundTag;
 import cn.zbx1425.mtrsteamloco.Main;
+import mtr.path.PathData;
 
 import java.util.List;
 import java.util.Set;
@@ -41,18 +42,29 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(Train.class)
-public abstract class TrainMixin implements TrainExtraSupplier{
+public abstract class TrainMixin implements TrainCustomConfigsSupplier{
 
-    private Map<String, String> extraData = new HashMap<>();
+    public Map<String, String> customConfigs = new HashMap<>();
+	public boolean isConfigsChanged = false;
 	
 	@Override
-	public Map<String, String> getExtraData() {
-		return extraData;
+	public Map<String, String> getCustomConfigs() {
+		return customConfigs;
 	}
 
 	@Override
-	public void setExtraData(Map<String, String> extraData) {
-		this.extraData = extraData;
+	public void setCustomConfigs(Map<String, String> customConfigs) {
+		this.customConfigs = customConfigs;
+	}
+
+	@Override
+	public boolean isConfigsChanged() {
+		return isConfigsChanged;
+	}
+
+	@Override
+	public void isConfigsChanged(boolean isConfigsChanged) {
+		this.isConfigsChanged = isConfigsChanged;
 	}
 
 	@Inject(method = "<init>(JFLjava/util/List;Ljava/util/List;IIFZIILjava/util/Map;)V", at = @At("TAIL"), remap = false)
@@ -65,9 +77,9 @@ public abstract class TrainMixin implements TrainExtraSupplier{
 		print("Mixin-Train InitFromMassagePack" + map.toString());
 		MessagePackHelper messagePackHelper = new MessagePackHelper(map);
 		try {
-			extraData = StringMapSerializer.deserialize(messagePackHelper.getString("extra_data"));
+			customConfigs = StringMapSerializer.deserialize(messagePackHelper.getString("extra_data"));
 		} catch (IOException e) {
-			extraData = new HashMap<>();
+			customConfigs = new HashMap<>();
 		}
 	}
 
@@ -80,9 +92,9 @@ public abstract class TrainMixin implements TrainExtraSupplier{
 	) {
 		print("Mixin-Train InitFromCompoundTag" + compoundTag.toString());
 		try {
-			extraData = StringMapSerializer.deserialize(compoundTag.getString("extra_data"));
+			customConfigs = StringMapSerializer.deserialize(compoundTag.getString("extra_data"));
 		} catch (IOException e) {
-			extraData = new HashMap<>();
+			customConfigs = new HashMap<>();
 		}
 	}
 
@@ -90,9 +102,9 @@ public abstract class TrainMixin implements TrainExtraSupplier{
 	private void fromFriendlyByteBuf(FriendlyByteBuf buffer, CallbackInfo ci) {
 		print ("Mixin-Train InitFromFriendlyByteBuf" + buffer.toString());
 		try {
-			extraData = StringMapSerializer.deserialize(buffer.readUtf());
+			customConfigs = StringMapSerializer.deserialize(buffer.readUtf());
 		} catch (IOException e) {
-			extraData = new HashMap<>();
+			customConfigs = new HashMap<>();
 		}
 	}
 
@@ -100,7 +112,7 @@ public abstract class TrainMixin implements TrainExtraSupplier{
     private void toMessagePack(MessagePacker messagePacker, CallbackInfo ci) throws IOException {
 		String res;
 		try {
-			res = StringMapSerializer.serializeToString(extraData);
+			res = StringMapSerializer.serializeToString(customConfigs);
 		} catch (IOException e) {
 			res = "";
 		}
@@ -118,7 +130,7 @@ public abstract class TrainMixin implements TrainExtraSupplier{
     private void toPacket(FriendlyByteBuf packet, CallbackInfo ci) {
 		String res;
 		try {
-			res = StringMapSerializer.serializeToString(extraData);
+			res = StringMapSerializer.serializeToString(customConfigs);
 		} catch (IOException e) {
 			res = "";
 		}
