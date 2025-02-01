@@ -13,8 +13,11 @@ import mtr.data.RailwayData;
 import mtr.data.Siding;
 import mtr.data.TrainServer;
 import cn.zbx1425.mtrsteamloco.data.TrainExtraSupplier;
+import cn.zbx1425.mtrsteamloco.mixin.SidingAccessor;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 
 public class PacketUpdateTrainExtraData {
     
@@ -49,13 +52,17 @@ public class PacketUpdateTrainExtraData {
         }
         if (extraData == null) return;
         if (packet == null) return;
-
-        RailwayData railwayData = RailwayData.getInstance(player.level);
-        if (railwayData == null) return;
+        
         server.execute(() -> {
-            for (Siding siding : railwayData.sidings) {
+            RailwayData railwayData = RailwayData.getInstance(player.level);
+            if (railwayData == null) return;
+            if (railwayData.sidings == null) return;
+            Set<Siding> sidings = new HashSet<>(railwayData.sidings);
+            for (Siding siding : sidings) {
+                if (siding == null) continue;
                 if (siding.id == sidingId) {
-                    for (TrainServer train : siding.trains) {
+                    Set<TrainServer> trains = ((SidingAccessor) siding).getTrains();
+                    for (TrainServer train : trains) {
                         if (train.id == trainId) {
                             (TrainExtraSupplier train).setExtraData(extraData);
                             break;

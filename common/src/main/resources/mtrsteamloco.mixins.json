@@ -36,7 +36,8 @@
     "RailActionsMixin",
     "RailMixin",
     "RailwayDataAccessor",
-    "TrainMixin"
+    "TrainMixin",
+    "SidingAccessor"
   ],
   "server": [
     

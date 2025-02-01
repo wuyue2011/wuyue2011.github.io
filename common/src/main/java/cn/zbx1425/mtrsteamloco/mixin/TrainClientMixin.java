@@ -33,14 +33,4 @@ public abstract class TrainClientMixin extends Train{
         if (!ClientConfig.enableTrainRender) ((TrainClientAccessor)this).setTrainRenderer(NoopTrainRenderer.INSTANCE);
         if (!ClientConfig.enableTrainSound) ((TrainClientAccessor)this).setTrainSound(NoopTrainSound.INSTANCE);
     }
-
-    /*@Inject(method = "openDoors", at = @At("HEAD"), remap = false)
-    protected void onOpenDoors(Level world, Block block, BlockPos checkPos, int dwellTicks, CallbackInfoReturnable<Boolean> ci) {
-        if (block instanceof BlockEyeCandy) {
-            final BlockEntity entity = world.getBlockEntity(checkPos);
-            ((BlockEyeCandy.BlockEntityEyeCandy) entity).setDoorValue(doorValue);
-        }
-        ci.setReturnValue(false);
-        return;
-    }*/
 }
