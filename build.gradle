@@ -81,7 +81,7 @@ task setupLibrary() {
 	download {
 		src url1
 		dest "checkouts/files.zip"
-		overwrite false
+		overwrite true
 	}
 
 	copy {

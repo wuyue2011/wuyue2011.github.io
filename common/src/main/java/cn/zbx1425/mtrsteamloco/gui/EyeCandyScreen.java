@@ -87,7 +87,7 @@ public class EyeCandyScreen {
 #endif
             (e, b, a1, a2, a3, a4, a5, a6, a7, a8, a9) -> {
                 Window window = Minecraft.getInstance().getWindow();
-#if MC_VERSION >= "11904"
+#if MC_VERSION >= "11903"
                 b.setX(window.getGuiScaledWidth() / 2 - 150);
 #else
                 b.x = window.getGuiScaledWidth() / 2 - 150;

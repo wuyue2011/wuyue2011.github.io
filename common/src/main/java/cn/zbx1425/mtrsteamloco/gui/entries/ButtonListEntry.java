@@ -77,7 +77,7 @@ public class ButtonListEntry extends TooltipListEntry<String> implements Contain
 #endif
         super.render(matrices, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
         processor.process(this, buttonWidget, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
-#if MC_VERSION >= "11904"
+#if MC_VERSION >= "11903"
         this.buttonWidget.active = isEditable();
         this.buttonWidget.setY(y);
 #else
