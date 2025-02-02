@@ -35,9 +35,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: MTR-ANTE-${{ steps.vars.outputs.sha_short }}+${{ matrix.minecraft }}
-          path: build/*.jar
+          path: build/${{ matrix.minecraft }}/*.jar
       - name: Capture release artifacts collectively
         uses: actions/upload-artifact@v4
         with:
-          name: MTR-ANTE-${{ steps.vars.outputs.sha_short }}
+          name: MTR-ANTE-${{ steps.vars.outputs.sha_short }}-all
           path: build/*.jar
