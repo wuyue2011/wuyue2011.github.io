@@ -44,11 +44,11 @@ public interface IScreen {
 
 #if MC_VERSION >= "12000"
     public static Button newButton(int x, int y, int width, int height, Component text, Button.OnPress onPress) {
-        return new Button(x, y, width, height, text, onPress);
+        return Button.Builder(text, onPress).pos(x, y).side(width, height).build();
     }
 #else
     public static Button newButton(int x, int y, int width, int height, Component text, Button.OnPress onPress) {
-        return Button.Builder(text, onPress).pos(x, y).side(width, height).build();
+        return new Button(x, y, width, height, text, onPress);
     }
 #endif
 
