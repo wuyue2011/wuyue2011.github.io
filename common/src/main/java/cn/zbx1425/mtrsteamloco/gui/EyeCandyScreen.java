@@ -74,7 +74,7 @@ public class EyeCandyScreen {
 
         common.addEntry(new ButtonListEntry(
             Text.literal(""),
-#if MC_VERSION >= "11903"
+#if MC_VERSION >= "12000"
             Button.Builder(
                 Text.translatable("gui.mtrsteamloco.eye_candy.present", 
                     (properties != null ? (properties.name.getString() + " (" + blockEntity.prefabId + ")") : (blockEntity.prefabId + " (???)"))),
