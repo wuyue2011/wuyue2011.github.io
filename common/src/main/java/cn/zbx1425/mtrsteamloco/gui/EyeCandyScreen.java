@@ -75,12 +75,14 @@ public class EyeCandyScreen {
         common.addEntry(new ButtonListEntry(
             Text.literal(""),
 #if MC_VERSION >= "11903"
-            Button.Builder(Text.translatable("gui.mtrsteamloco.eye_candy.present", 
+            Button.Builder(
+                Text.translatable("gui.mtrsteamloco.eye_candy.present", 
+                    (properties != null ? (properties.name.getString() + " (" + blockEntity.prefabId + ")") : (blockEntity.prefabId + " (???)"))),
                 btn -> Minecraft.getInstance().setScreen(new SelectScreen(blockPos))).pos(0, 0).size(300, 20).build(),
 #else
             new Button(0, 0, 300, 20, 
                 Text.translatable("gui.mtrsteamloco.eye_candy.present", 
-                (properties != null ? (properties.name.getString() + " (" + blockEntity.prefabId + ")") : (blockEntity.prefabId + " (???)"))), 
+                    (properties != null ? (properties.name.getString() + " (" + blockEntity.prefabId + ")") : (blockEntity.prefabId + " (???)"))), 
                 btn -> Minecraft.getInstance().setScreen(new SelectScreen(blockPos))), 
 #endif
             (e, b, a1, a2, a3, a4, a5, a6, a7, a8, a9) -> {
@@ -90,7 +92,7 @@ public class EyeCandyScreen {
 #else
                 b.x = window.getGuiScaledWidth() / 2 - 150;
 #endif
-        });
+        }));
 
         common.addEntry(entryBuilder
                 .startBooleanToggle(
