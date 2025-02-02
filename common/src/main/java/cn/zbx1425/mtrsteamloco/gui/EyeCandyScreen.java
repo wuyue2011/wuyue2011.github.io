@@ -90,7 +90,7 @@ public class EyeCandyScreen {
 #else
                 b.x = window.getGuiScaledWidth() / 2 - 150;
 #endif
-        }));
+        });
 
         common.addEntry(entryBuilder
                 .startBooleanToggle(
