@@ -15,7 +15,7 @@ import net.minecraft.client.gui.GuiGraphics;
 #else
 import com.mojang.blaze3d.vertex.PoseStack;
 #endif
-#if MC_VERSION >= "11903"
+#if MC_VERSION >= "11902"
 import net.minecraft.client.gui.components.Renderable;
 #else
 import net.minecraft.client.gui.components.Widget;
@@ -42,7 +42,7 @@ public interface IScreen {
         }
     }
 
-#if MC_VERSION >= "12000"
+#if MC_VERSION >= "11902"
     public static Button newButton(int x, int y, int width, int height, Component text, Button.OnPress onPress) {
         return Button.Builder(text, onPress).pos(x, y).side(width, height).build();
     }
@@ -85,7 +85,7 @@ public interface IScreen {
             return height;
         }
 
-#if MC_VERSION >= "11903"
+#if MC_VERSION >= "11902"
         public <T extends GuiEventListener & Renderable & NarratableEntry> T _addRenderableWidget(T p_169406_) {
 #else
         public <T extends GuiEventListener & Widget & NarratableEntry> T _addRenderableWidget(T p_169406_) {
@@ -93,7 +93,7 @@ public interface IScreen {
             return super.addRenderableWidget(p_169406_);
         }
 
-#if MC_VERSION >= "11903"
+#if MC_VERSION >= "11902"
         public <T extends Renderable> T _addRenderableOnly(T p_169395_) {
 #else
         public <T extends Widget> T _addRenderableOnly(T p_169395_) {
