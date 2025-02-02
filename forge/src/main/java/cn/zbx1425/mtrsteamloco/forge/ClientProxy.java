@@ -11,6 +11,7 @@ import net.minecraft.client.Minecraft;
 #if MC_VERSION >= "11900"
 import net.minecraftforge.client.event.CustomizeGuiOverlayEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 #else
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -54,13 +55,17 @@ public class ClientProxy {
         @SubscribeEvent
 #if MC_VERSION >= "11900"
         public static void onOverlayRender(CustomizeGuiOverlayEvent event) {
+    #if MC_VERSION >= "12000"
+        ScriptDebugOverlay.render(event.getGuiGraphics());
+    #else
+        ScriptDebugOverlay.render(event.getPoseStack());
+    #endif
 #else
         public static void onOverlayRender(RenderGameOverlayEvent event) {
-#endif
-
             if (event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
                 ScriptDebugOverlay.render(event.getMatrixStack());
             }
+#endif
             Main.LOGGER.info("onOverlayRender");
         }
 

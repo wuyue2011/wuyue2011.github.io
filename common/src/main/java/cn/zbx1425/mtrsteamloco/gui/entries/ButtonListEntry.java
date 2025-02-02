@@ -70,23 +70,22 @@ public class ButtonListEntry extends TooltipListEntry<String> implements Contain
     }
     
     @Override
-#if MC_VERSION >= "11903"
-    public void render(GuiGraphics graphics, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta) {
-        super.render(graphics, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
-        processor.process(this, buttonWidget, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
-        this.buttonWidget.active = isEditable();
-        this.buttonWidget.setY(y);
-        buttonWidget.render(graphics, mouseX, mouseY, delta);
-    }
+#if MC_VERSION >= "12000"
+    public void render(GuiGraphics matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta) {
 #else
     public void render(PoseStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta) {
+#endif
         super.render(matrices, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
         processor.process(this, buttonWidget, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
+#if MC_VERSION >= "11902"
+        this.buttonWidget.active = isEditable();
+        this.buttonWidget.setY(y);
+#else
         this.buttonWidget.active = isEditable();
         this.buttonWidget.y = y;
+#endif
         buttonWidget.render(matrices, mouseX, mouseY, delta);
     }
-#endif
 
     @Override
     public List<? extends GuiEventListener> children() {

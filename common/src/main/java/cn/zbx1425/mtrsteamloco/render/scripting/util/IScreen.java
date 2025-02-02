@@ -42,9 +42,9 @@ public interface IScreen {
         }
     }
 
-#if MC_VERSION >= "11903"
+#if MC_VERSION >= "11902"
     public static Button newButton(int x, int y, int width, int height, Component text, Button.OnPress onPress) {
-        return Button.Builder(text, onPress).pos(x, y).side(width, height).build();
+        return new Button.Builder(text, onPress).pos(x, y).size(width, height).build();
     }
 #else
     public static Button newButton(int x, int y, int width, int height, Component text, Button.OnPress onPress) {
