@@ -6,6 +6,8 @@ import me.shedaniel.clothconfig2.impl.builders.StringFieldBuilder;
 import me.shedaniel.clothconfig2.gui.entries.StringListEntry;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
+import me.shedaniel.clothconfig2.impl.builders.TextDescriptionBuilder;
+import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.client.gui.screens.Screen;
 import me.shedaniel.clothconfig2.impl.builders.TextFieldBuilder;
 
@@ -94,4 +96,29 @@ public interface ConfigResponder {
         }
     }
     
+    public static List<AbstractConfigListEntry> getEntrysFromMaps(Map<String, String> customConfigs, Map<String, ConfigResponder> customResponders, ConfigEntryBuilder builder, Supplier<Screen> screenSupplier) {
+        List<AbstractConfigListEntry> hasResponders = new ArrayList<>();
+        List<AbstractConfigListEntry> noResponders = new ArrayList<>();
+        if (!customConfigs.isEmpty()) {
+            Set<String> keys = customConfigs.keySet();
+            for (String key : keys) {
+                if (customResponders.containsKey(key)) {
+                    ConfigResponder responder = customResponders.get(key);
+                    hasResponders.addAll(responder.getListEntries(customConfigs, builder, screenSupplier));
+                } else {
+                    noResponders.add(builder.startTextDescription(Text.literal(key + " : " + customConfigs.get(key))).build());
+                }
+            }
+        }
+        List<AbstractConfigListEntry> entries = new ArrayList<>();
+        if (!hasResponders.isEmpty()) {
+            entries.add(builder.startTextDescription(Text.translatable("gui.mtrsteamloco.custom_config.editable")).build());
+            entries.addAll(hasResponders);
+        }
+        if (!noResponders.isEmpty()) {
+            entries.add(builder.startTextDescription(Text.translatable("gui.mtrsteamloco.custom_config.uneditable")).build());
+            entries.addAll(noResponders);
+        }
+        return entries;
+    }
 }

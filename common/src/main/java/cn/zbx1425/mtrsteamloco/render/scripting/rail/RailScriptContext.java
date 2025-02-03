@@ -21,14 +21,14 @@ import java.util.Collection;
 
 public class RailScriptContext extends AbstractScriptContext {
 
-    public final Rail rail;
+    public final RailWrapper rail;
     public final Map<Object, RailDrawCall> drawCalls = new HashMap<>();
     public List<RailDrawCall> scriptResult = new ArrayList<>();
     public List<RailDrawCall> scriptResultWriting = new ArrayList<>();
     public boolean living = true;
 
     public RailScriptContext(Rail rail) {
-        this.rail = rail;
+        this.rail = new RailWrapper(rail);
     }
 
     public void commit(DrawScheduler drawScheduler, Matrix4f world, Frustum frustum, Vector3f cameraPos, int maxRailDistance) {
@@ -60,7 +60,6 @@ public class RailScriptContext extends AbstractScriptContext {
     public boolean isBearerAlive() {
         return living && !disposed;
     }
-
 
     public void drawModel(ModelCluster model, Matrices matrices) {
         scriptResultWriting.add(new SimpleRailDrawCall(model, matrices.last()));

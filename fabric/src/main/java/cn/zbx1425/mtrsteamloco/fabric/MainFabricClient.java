@@ -24,6 +24,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 #endif
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.Minecraft;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import cn.zbx1425.mtrsteamloco.render.scripting.ScriptContextManager;
 
 public class MainFabricClient implements ClientModInitializer {
@@ -85,6 +86,7 @@ public class MainFabricClient implements ClientModInitializer {
 			ScriptDebugOverlay.render(guiGraphics);
 		});
 
+		WorldRenderEvents.END.register(event -> MainClient.incrementGameTick());
 		MainClient.init();
 	}
 

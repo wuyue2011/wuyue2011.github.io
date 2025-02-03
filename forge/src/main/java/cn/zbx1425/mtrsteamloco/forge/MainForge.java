@@ -51,6 +51,7 @@ public class MainForge {
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 			eventBus.register(ClientProxy.ModEventBusListener.class);
 			MinecraftForge.EVENT_BUS.register(ClientProxy.ForgeEventBusListener.class);
+			ForgeUtilities.renderTickAction(MainClient::incrementGameTick);
 		});
 
 #if MC_VERSION >= "11900"

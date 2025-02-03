@@ -24,6 +24,7 @@ import cn.zbx1425.mtrsteamloco.ClientConfig;
 import cn.zbx1425.mtrsteamloco.data.ShapeSerializer;
 import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
 import net.minecraft.network.chat.Component;
+import cn.zbx1425.mtrsteamloco.render.scripting.rail.RailDrawCalls.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,6 +100,7 @@ public class ScriptHolder {
                 ScriptResourceUtil.class.getMethod("print", Object[].class), "print"));
         scope.put("asJavaArray", scope, new NativeJavaMethod(
                 JsFriendlyJavaUtils.class.getMethod("asJavaArray", List.class), "asJavaArray"));
+
         scope.put("ModelManager", scope, Context.toObject(MainClient.modelManager, scope));
         scope.put("Resources", scope, new NativeJavaClass(scope, ScriptResourceUtil.class));
         scope.put("GraphicsTexture", scope, new NativeJavaClass(scope, GraphicsTexture.class));
@@ -114,29 +116,36 @@ public class ScriptHolder {
         scope.put("WrappedEntity", scope, new NativeJavaClass(scope, WrappedEntity.class));
         scope.put("ComponentUtil", scope, new NativeJavaClass(scope, ComponentUtil.class));
         scope.put("IScreen", scope, new NativeJavaClass(scope, IScreen.class));
+        scope.put("OrderedMap", scope, new NativeJavaClass(scope, OrderedMap.class));   
+        scope.put("PlacementOrder", scope, new NativeJavaClass(scope, OrderedMap.PlacementOrder.class));
+        scope.put("ShapeSerializer", scope, new NativeJavaClass(scope, ShapeSerializer.class));
+        scope.put("ConfigResponder", scope, new NativeJavaClass(scope, ConfigResponder.class));
+        scope.put("ClientConfig", scope, new NativeJavaClass(scope, ClientConfig.class));
+        scope.put("MinecraftClient", scope, new NativeJavaClass(scope, MinecraftClientUtil.class));
+
         scope.put("DrawCall", scope, new NativeJavaClass(scope, AbstractDrawCalls.DrawCall.class));
         scope.put("ClusterDrawCall", scope, new NativeJavaClass(scope, AbstractDrawCalls.ClusterDrawCall.class));
         scope.put("WorldDrawCall", scope, new NativeJavaClass(scope, AbstractDrawCalls.WorldDrawCall.class));
+        scope.put("RailDrawCall", scope, new NativeJavaClass(scope, RailDrawCall.class));
+        scope.put("SimpleRailDrawCall", scope, new NativeJavaClass(scope, SimpleRailDrawCall.class));
+
         scope.put("RawModel", scope, new NativeJavaClass(scope, RawModel.class));
         scope.put("RawMesh", scope, new NativeJavaClass(scope, RawMesh.class));
         scope.put("RawMeshBuilder", scope, new NativeJavaClass(scope, RawMeshBuilder.class));
         scope.put("ModelCluster", scope, new NativeJavaClass(scope, ModelCluster.class));
         scope.put("DynamicModelHolder", scope, new NativeJavaClass(scope, DynamicModelHolder.class));
+
         scope.put("Matrices", scope, new NativeJavaClass(scope, Matrices.class));
         scope.put("Matrix4f", scope, new NativeJavaClass(scope, Matrix4f.class));
         scope.put("Vector3f", scope, new NativeJavaClass(scope, Vector3f.class));   
-        scope.put("OrderedMap", scope, new NativeJavaClass(scope, OrderedMap.class));   
-        scope.put("PlacementOrder", scope, new NativeJavaClass(scope, OrderedMap.PlacementOrder.class));
-        scope.put("ShapeSerializer", scope, new NativeJavaClass(scope, ShapeSerializer.class));
+        
+        
         scope.put("MTRClientData", scope, new NativeJavaClass(scope, ClientData.class));
         scope.put("IBlock", scope, new NativeJavaClass(scope, IBlock.class));
-        scope.put("ConfigResponder", scope, new NativeJavaClass(scope, ConfigResponder.class));
-        scope.put("ClientConfig", scope, new NativeJavaClass(scope, ClientConfig.class));
-        scope.put("MinecraftClient", scope, new NativeJavaClass(scope, MinecraftClientUtil.class));
-        scope.put("MinecraftClientUtil", scope, new NativeJavaClass(scope, MinecraftClientUtil.class));
+        
         scope.put("Component", scope, new NativeJavaClass(scope, Component.class));
+        
         scope.put("Optional", scope, new NativeJavaClass(scope, Optional.class));
-        scope.put("ResourceLocation", scope, new NativeJavaClass(scope, ResourceLocation.class));
 
         try {
             String[] classesToLoad = {

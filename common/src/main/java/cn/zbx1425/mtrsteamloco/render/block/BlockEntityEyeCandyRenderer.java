@@ -8,7 +8,6 @@ import cn.zbx1425.mtrsteamloco.render.ShadersModHandler;
 import cn.zbx1425.mtrsteamloco.render.rail.RailRenderDispatcher;
 import cn.zbx1425.mtrsteamloco.render.scripting.ScriptContextManager;
 import cn.zbx1425.mtrsteamloco.render.scripting.eyecandy.EyeCandyScriptContext;
-import cn.zbx1425.mtrsteamloco.render.scripting.train.ScriptedTrainRenderer;
 import cn.zbx1425.sowcer.math.Matrix4f;
 import cn.zbx1425.sowcer.math.PoseStackUtil;
 import cn.zbx1425.sowcerext.model.ModelCluster;

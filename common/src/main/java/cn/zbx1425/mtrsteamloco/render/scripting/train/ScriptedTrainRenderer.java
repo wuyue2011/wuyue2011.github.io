@@ -70,19 +70,19 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
         worldPose.translate(carPos.x(), carPos.y(), carPos.z());
         worldPose.rotateY((float) Math.PI + yaw);
         worldPose.rotateX(hasPitch ? pitch : 0);
-        trainScripting.trainExtraWriting.doorLeftOpen[carIndex] = doorLeftOpen;
-        trainScripting.trainExtraWriting.doorRightOpen[carIndex] = doorRightOpen;
-        trainScripting.trainExtraWriting.lastWorldPose[carIndex] = worldPose;
-        trainScripting.trainExtraWriting.lastCarPosition[carIndex] = carPos.copy();
-        trainScripting.trainExtraWriting.lastCarRotation[carIndex] = new Vector3f(hasPitch ? pitch : 0, (float) Math.PI + yaw, 0);
-        trainScripting.trainExtraWriting.isInDetailDistance |= posAverage != null
+        trainScripting.trainExtra.doorLeftOpen[carIndex] = doorLeftOpen;
+        trainScripting.trainExtra.doorRightOpen[carIndex] = doorRightOpen;
+        trainScripting.trainExtra.lastWorldPose[carIndex] = worldPose;
+        trainScripting.trainExtra.lastCarPosition[carIndex] = carPos.copy();
+        trainScripting.trainExtra.lastCarRotation[carIndex] = new Vector3f(hasPitch ? pitch : 0, (float) Math.PI + yaw, 0);
+        trainScripting.trainExtra.isInDetailDistance |= posAverage != null
                 && posAverage.distSqr(camera.getBlockPosition()) <= RenderTrains.DETAIL_RADIUS_SQUARED;
-        trainScripting.trainExtraWriting.shouldRender = shouldRender;
+        trainScripting.trainExtra.shouldRender = shouldRender;
 
         if (posAverage == null) {
             if (carIndex == train.trainCars - 1) {
                 // So it's outside visible range, but still need to call render function
-                trainScripting.extraFinished();
+                // trainScripting.extraFinished();
                 typeScripting.tryCallRenderFunctionAsync(trainScripting);
             }
             return;
@@ -102,7 +102,7 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
         matrices.popPose();
 
         if (carIndex == train.trainCars - 1) {
-            trainScripting.extraFinished();
+            // trainScripting.extraFinished();
             typeScripting.tryCallRenderFunctionAsync(trainScripting);
         }
     }

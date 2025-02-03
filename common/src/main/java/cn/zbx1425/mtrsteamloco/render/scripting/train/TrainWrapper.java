@@ -14,6 +14,7 @@ import cn.zbx1425.mtrsteamloco.Main;
 import mtr.data.Train;
 import cn.zbx1425.mtrsteamloco.data.TrainCustomConfigsSupplier;
 import cn.zbx1425.mtrsteamloco.network.PacketUpdateTrainCustomConfigs;
+import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
 
 import java.util.*;
 import java.lang.reflect.InvocationTargetException;
@@ -275,7 +276,26 @@ public class TrainWrapper {
     
     @SuppressWarnings("unused") public Map<String, String> getCustomConfigs() { return supplier.getCustomConfigs(); }
     @SuppressWarnings("unused") public void setCustomConfigs(Map<String, String> map) { supplier.setCustomConfigs(map); }
-    @SuppressWarnings("unused") public void sendExtraDataUpdateC2S() {
-        PacketUpdateTrainCustomConfigs.sendUpdateC2S(train.sidingId, train.id, getCustomConfigs());
+    @SuppressWarnings("unused") public void sendCustomConfigsUpdateC2S() {
+        PacketUpdateTrainCustomConfigs.sendUpdateC2S(train);
+    }
+    @SuppressWarnings("unused") public Map<String, ConfigResponder> getCustomResponders() { return supplier.getConfigResponders(); }
+    @SuppressWarnings("unused") public void setConfigResponders(Map<String, ConfigResponder> map) { supplier.setConfigResponders(map); }
+
+    @SuppressWarnings("unused") 
+    public void registerCustomConfig(ConfigResponder responder) {
+        responder.init(getCustomConfigs());
+        getCustomResponders().put(responder.key(), responder);
+    }
+
+    @SuppressWarnings("unused") 
+    public void removeCustomConfig(String key) {
+        getCustomResponders().remove(key);
+        getCustomConfigs().remove(key);
+    }
+    
+    @SuppressWarnings("unused") 
+    public void putCustomConfig(String key, String value) {
+        getCustomConfigs().put(key, value);
     }
 }

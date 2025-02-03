@@ -477,30 +477,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
 
         public List<AbstractConfigListEntry> getCustomConfigEntrys(ConfigEntryBuilder builder, Supplier<Screen> screenSupplier) {
-            List<AbstractConfigListEntry> hasResponders = new ArrayList<>();
-            List<AbstractConfigListEntry> noResponders = new ArrayList<>();
-            if (!customConfigs.isEmpty()) {
-                Set<String> keys = customConfigs.keySet();
-                for (String key : keys) {
-                    if (customResponders.containsKey(key)) {
-                        ConfigResponder responder = customResponders.get(key);
-                        hasResponders.addAll(responder.getListEntries(customConfigs, builder, screenSupplier));
-                    } else {
-                        noResponders.add(builder.startTextDescription(Text.literal(key + " : " + customConfigs.get(key))).build());
-                    }
-                }
-            }
-            List<AbstractConfigListEntry> entries = new ArrayList<>();
-            if (!hasResponders.isEmpty()) {
-                entries.add(builder.startTextDescription(Text.translatable("gui.mtrsteamloco.eye_candy.custom_config.editable")).build());
-                entries.addAll(hasResponders);
-            }
-
-            if (!noResponders.isEmpty()) {
-                entries.add(builder.startTextDescription(Text.translatable("gui.mtrsteamloco.eye_candy.custom_config.uneditable")).build());
-                entries.addAll(noResponders);
-            }
-            return entries;
+            return ConfigResponder.getEntrysFromMaps(customConfigs, customResponders, builder, screenSupplier);
         }
     }
 }

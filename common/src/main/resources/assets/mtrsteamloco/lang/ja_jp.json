@@ -16,6 +16,7 @@
     "rail.mtrsteamloco.builtin_concrete_sleeper": "ANTE内蔵（コンクリート製まくら）",
     "rail.mtrsteamloco.builtin_depot": "ANTE内蔵（自動車工場）",
     "rail.mtrsteamloco.builtin_flat": "ANTE内蔵（平面）",
+    "gui.mtrsteamloco.train_screen.title": "列車の設定",
     "gui.mtrsteamloco.eye_candy.full_light": "全輝度を維持",
     "gui.mtrsteamloco.eye_candy.tip_resource_pack": "リソースバンドルを介してより多くのアイテムをインポートできます。詳細はこちらをクリックしてご覧ください。",
     "gui.mtrsteamloco.eye_candy.title": "装飾品の設定",
@@ -23,8 +24,9 @@
     "gui.mtrsteamloco.eye_candy.select": "アイテムの選択",
     "gui.mtrsteamloco.eye_candy.as_platform": "ホームとして",
     "gui.mtrsteamloco.eye_candy.fixed": "モデルの場所は固定されており、編集できません",
-    "gui.mtrsteamloco.eye_candy.custom_config.editable": "カスタム構成アイテム",
-    "gui.mtrsteamloco.eye_candy.custom_config.uneditable": "編集できない構成項目",
+    "gui.mtrsteamloco.custom_config.editable": "カスタム構成アイテム",
+    "gui.mtrsteamloco.custom_config.uneditable": "編集できない構成項目",
+    "gui.mtrsteamloco.custom_config.null": "構成項目なし",
     "gui.mtrsteamloco.eye_candy.shape": "現在のシェイプ:%s",
     "gui.mtrsteamloco.eye_candy.collision": "現在の衝突ボックス:%s",
     "gui.mtrsteamloco.brush_edit_rail.brush_hint": "ブラシの機能を設定します。次に、他の場所を右クリックして一括適用します。",
@@ -57,5 +59,7 @@
     "gui.mtrsteamloco.config.client.scriptdebugoverlay": "JSデバッグ情報の表示",
     "gui.mtrsteamloco.config.client.custom_config.engaged": "使用されているカスタム構成",
     "gui.mtrsteamloco.config.client.custom_config.untapped": "未使用のカスタム構成",
-    "gui.mtrsteamloco.mtr_version_low": "MTRを更新してください:ANTE%sにはMTR%s以上のバージョンが必要ですが、現在インストールされている%sバージョンは低いです。"
+    "gui.mtrsteamloco.mtr_version_low": "MTRを更新してください:ANTE%sにはMTR%s以上のバージョンが必要ですが、現在インストールされている%sバージョンは低いです。",
+    "key.mtrsteamloco.train_screen": "列車のスクリーン",
+    "category.mtrsteamloco.keybinding": "ANTEキー・バインド"
 }

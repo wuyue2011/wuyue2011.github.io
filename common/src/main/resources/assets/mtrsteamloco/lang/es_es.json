@@ -16,6 +16,7 @@
     "rail.mtrsteamloco.builtin_concrete_sleeper": "Incorporado ante (traviesas de hormigón)",
     "rail.mtrsteamloco.builtin_depot": "Incorporado ante (fábrica de automóviles)",
     "rail.mtrsteamloco.builtin_flat": "Ante incorporado (plano)",
+    "gui.mtrsteamloco.train_screen.title": "Configuración del tren",
     "gui.mtrsteamloco.eye_candy.full_light": "Mantener el brillo completo",
     "gui.mtrsteamloco.eye_candy.tip_resource_pack": "Puede importar más objetos a través del paquete de recursos. Haga clic aquí para obtener más información.",
     "gui.mtrsteamloco.eye_candy.title": "Configuración del objeto decorativo",
@@ -23,8 +24,9 @@
     "gui.mtrsteamloco.eye_candy.select": "Seleccionar objetos",
     "gui.mtrsteamloco.eye_candy.as_platform": "Como plataforma",
     "gui.mtrsteamloco.eye_candy.fixed": "La posición del modelo está fija y no se puede editar",
-    "gui.mtrsteamloco.eye_candy.custom_config.editable": "Elementos de configuración personalizados",
-    "gui.mtrsteamloco.eye_candy.custom_config.uneditable": "Elementos de configuración que no se pueden editar",
+    "gui.mtrsteamloco.custom_config.editable": "Elementos de configuración personalizados",
+    "gui.mtrsteamloco.custom_config.uneditable": "Elementos de configuración que no se pueden editar",
+    "gui.mtrsteamloco.custom_config.null": "No hay elementos de configuración",
     "gui.mtrsteamloco.eye_candy.shape": "Forma actual: s",
     "gui.mtrsteamloco.eye_candy.collision": "Caja de choque actual%s",
     "gui.mtrsteamloco.brush_edit_rail.brush_hint": "Establezca la función del cepillo. A continuación, haga clic derecho en otros lugares para aplicarlo por lotes.",
@@ -57,5 +59,7 @@
     "gui.mtrsteamloco.config.client.scriptdebugoverlay": "Muestra la información de depuración de JS",
     "gui.mtrsteamloco.config.client.custom_config.engaged": "Configuración personalizada utilizada",
     "gui.mtrsteamloco.config.client.custom_config.untapped": "Configuración personalizada no utilizada",
-    "gui.mtrsteamloco.mtr_version_low": "Por favor, actualice mtr: Ante%s requiere una versión mtr%s y superior, mientras que la versión%s instalada ahora es más baja."
+    "gui.mtrsteamloco.mtr_version_low": "Por favor, actualice mtr: Ante%s requiere una versión mtr%s y superior, mientras que la versión%s instalada ahora es más baja.",
+    "key.mtrsteamloco.train_screen": "Pantalla del tren",
+    "category.mtrsteamloco.keybinding": "Enlace de teclas ante"
 }

@@ -1,4 +1,4 @@
-$sourcePath = "F:\mtr-nte\build\MTR-ANTE-1.0.0+1.18.2.jar"
+$sourcePath = "F:\mtr-ante\build\MTR-ANTE-1.0.0+1.18.2.jar"
 $destinationPath = "F:\mc\araf\mods"
 $executablePath = "F:\mc\Plain Craft Launcher 2"
 

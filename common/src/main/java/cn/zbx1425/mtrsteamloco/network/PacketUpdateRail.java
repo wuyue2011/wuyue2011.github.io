@@ -49,7 +49,7 @@ public class PacketUpdateRail {
             if (level == null) return;
 
             RailwayData railwayData = RailwayData.getInstance(level);
-            Map<BlockPos, Map<BlockPos, Rail>> rails = ((RailwayDataAccessor)railwayData).getRails();
+            Map<BlockPos, Map<BlockPos, Rail>> rails = ((RailwayDataAccessor) railwayData).getRails();
             Rail railForward = rails.get(posStart).get(posEnd);
             Rail railBackward = rails.get(posEnd).get(posStart);
             if (railForward == null || railBackward == null) return;
@@ -62,6 +62,8 @@ public class PacketUpdateRail {
             extraBackward.setVerticalCurveRadius(extraTarget.getVerticalCurveRadius());
             extraForward.setRenderReversed(extraTarget.getRenderReversed());
             extraBackward.setRenderReversed(!extraTarget.getRenderReversed());
+            extraForward.setCustomConfigs(extraTarget.getCustomConfigs());
+            extraBackward.setCustomConfigs(extraTarget.getCustomConfigs());
 
             final FriendlyByteBuf outboundPacket = new FriendlyByteBuf(Unpooled.buffer());
             outboundPacket.writeUtf(railForward.transportMode.toString());

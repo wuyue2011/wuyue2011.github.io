@@ -11,6 +11,10 @@ import cn.zbx1425.sowcerext.reuse.DrawScheduler;
 import cn.zbx1425.sowcerext.reuse.ModelManager;
 import mtr.RegistryClient;
 import mtr.item.ItemBlockClickingBase;
+import cn.zbx1425.mtrsteamloco.KeyMappings;
+import net.minecraft.client.Minecraft;
+import cn.zbx1425.mtrsteamloco.gui.TrainScreen;
+import mtr.client.ClientData;
 
 public class MainClient {
 
@@ -35,11 +39,16 @@ public class MainClient {
 			RegistryClient.registerNetworkReceiver(PacketScreen.PACKET_SHOW_SCREEN, PacketScreen::receiveScreenS2C);
 
 			RegistryClient.registerItemModelPredicate("mtr:selected", Main.BRIDGE_CREATOR_1.get(), ItemBlockClickingBase.TAG_POS);
+			RegistryClient.registerKeyBinding(KeyMappings.TRAIN_SCREEN);
 		}
 
 		RegistryClient.registerPlayerJoinEvent(localPlayer -> {
 			railRenderDispatcher.clearRail();
 		});
+	}
+
+	public static void incrementGameTick() {
+		TrainScreen.tick();
 	}
 
 }

@@ -16,6 +16,7 @@
     "rail.mtrsteamloco.builtin_concrete_sleeper": "Встроенная ANTE (бетонная шпала)",
     "rail.mtrsteamloco.builtin_depot": "Встроенный Ante (автомобильный завод)",
     "rail.mtrsteamloco.builtin_flat": "Встроенный ANTE (плоский)",
+    "gui.mtrsteamloco.train_screen.title": "Настройка поезда",
     "gui.mtrsteamloco.eye_candy.full_light": "Поддерживайте полную яркость.",
     "gui.mtrsteamloco.eye_candy.tip_resource_pack": "Вы можете импортировать больше объектов через пакет ресурсов. Подробнее читайте здесь.",
     "gui.mtrsteamloco.eye_candy.title": "Настройка декоративных объектов",
@@ -23,8 +24,9 @@
     "gui.mtrsteamloco.eye_candy.select": "Выберите объект",
     "gui.mtrsteamloco.eye_candy.as_platform": "В качестве платформы",
     "gui.mtrsteamloco.eye_candy.fixed": "Позиция модели фиксирована, редактировать невозможно",
-    "gui.mtrsteamloco.eye_candy.custom_config.editable": "Настроить параметры",
-    "gui.mtrsteamloco.eye_candy.custom_config.uneditable": "Невозможно редактировать элемент конфигурации",
+    "gui.mtrsteamloco.custom_config.editable": "Настроить параметры",
+    "gui.mtrsteamloco.custom_config.uneditable": "Невозможно редактировать элемент конфигурации",
+    "gui.mtrsteamloco.custom_config.null": "Без настроек",
     "gui.mtrsteamloco.eye_candy.shape": "Текущая форма:%s",
     "gui.mtrsteamloco.eye_candy.collision": "Текущий блок столкновений:%s",
     "gui.mtrsteamloco.brush_edit_rail.brush_hint": "Настройка функции кисти. Затем щёлкните правой кнопкой мыши на других местах для массового применения.",
@@ -57,5 +59,7 @@
     "gui.mtrsteamloco.config.client.scriptdebugoverlay": "Показать информацию об отладке JS",
     "gui.mtrsteamloco.config.client.custom_config.engaged": "Использованные настройки",
     "gui.mtrsteamloco.config.client.custom_config.untapped": "Неиспользованные настройки",
-    "gui.mtrsteamloco.mtr_version_low": "Обновите MTR: Для ANTE%s требуется MTR%s и более поздних версий, в то время как установленная версия%s ниже."
+    "gui.mtrsteamloco.mtr_version_low": "Обновите MTR: Для ANTE%s требуется MTR%s и более поздних версий, в то время как установленная версия%s ниже.",
+    "key.mtrsteamloco.train_screen": "Экран поезда",
+    "category.mtrsteamloco.keybinding": "Привязка клавиш ANTE"
 }

@@ -16,6 +16,7 @@
     "rail.mtrsteamloco.builtin_concrete_sleeper": "ANTE 内置 (混凝土轨枕)",
     "rail.mtrsteamloco.builtin_depot": "ANTE 内置 (车厂)",
     "rail.mtrsteamloco.builtin_flat": "ANTE 内置 (平面)",
+    "gui.mtrsteamloco.train_screen.title": "列车设置",
     "gui.mtrsteamloco.eye_candy.full_light": "保持全亮度",
     "gui.mtrsteamloco.eye_candy.tip_resource_pack": "您可通过资源包导入更多物件。请点击此处阅览详情。",
     "gui.mtrsteamloco.eye_candy.title": "装饰物件设置",
@@ -23,8 +24,9 @@
     "gui.mtrsteamloco.eye_candy.select": "选择物件",
     "gui.mtrsteamloco.eye_candy.as_platform": "当作站台",
     "gui.mtrsteamloco.eye_candy.fixed": "模型位置已固定，无法编辑",
-    "gui.mtrsteamloco.eye_candy.custom_config.editable": "自定义配置项",
-    "gui.mtrsteamloco.eye_candy.custom_config.uneditable": "无法编辑的配置项",
+    "gui.mtrsteamloco.custom_config.editable": "自定义配置项",
+    "gui.mtrsteamloco.custom_config.uneditable": "无法编辑的配置项",
+    "gui.mtrsteamloco.custom_config.null": "无配置项",
     "gui.mtrsteamloco.eye_candy.shape": "当前形状: %s",
     "gui.mtrsteamloco.eye_candy.collision": "当前碰撞箱: %s",
     "gui.mtrsteamloco.brush_edit_rail.brush_hint": "设置刷子的功能。接下来右击其他处可批量应用。",
@@ -57,5 +59,7 @@
     "gui.mtrsteamloco.config.client.scriptdebugoverlay": "显示 JS 调试信息",
     "gui.mtrsteamloco.config.client.custom_config.engaged": "已使用的自定义配置",
     "gui.mtrsteamloco.config.client.custom_config.untapped": "未使用的自定义配置",
-    "gui.mtrsteamloco.mtr_version_low": "请更新 MTR: ANTE %s 需要 MTR %s 及以上版本, 而现安装的 %s 版本较低。"
+    "gui.mtrsteamloco.mtr_version_low": "请更新 MTR: ANTE %s 需要 MTR %s 及以上版本, 而现安装的 %s 版本较低。",
+    "key.mtrsteamloco.train_screen": "列车屏幕",
+    "category.mtrsteamloco.keybinding": "ANTE 按键绑定"
 }

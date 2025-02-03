@@ -8,6 +8,7 @@ import cn.zbx1425.mtrsteamloco.render.rail.RailRenderDispatcher;
 import io.netty.buffer.Unpooled;
 import mtr.data.MessagePackHelper;
 import mtr.data.Rail;
+import cn.zbx1425.mtrsteamloco.network.util.StringMapSerializer;
 import mtr.data.RailType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
@@ -25,6 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.HashMap;
 
 @Mixin(value = Rail.class, priority = 1425)
 public abstract class RailMixin implements RailExtraSupplier {
@@ -32,6 +34,7 @@ public abstract class RailMixin implements RailExtraSupplier {
     private String modelKey = "";
     private boolean isSecondaryDir = false;
     private float verticalCurveRadius = 0f;
+    private Map<String, String> customConfigs = new HashMap<>();
 
     @Override
     public String getModelKey() {
@@ -68,12 +71,27 @@ public abstract class RailMixin implements RailExtraSupplier {
         return yEnd - yStart;
     }
 
+    @Override
+    public Map<String, String> getCustomConfigs() {
+        return customConfigs;
+    }
+
+    @Override
+    public void setCustomConfigs(Map<String, String> customConfigs) {
+        this.customConfigs = customConfigs;
+    }
+
     @Inject(method = "<init>(Ljava/util/Map;)V", at = @At("TAIL"), remap = false)
     private void fromMessagePack(Map<String, Value> map, CallbackInfo ci) {
         MessagePackHelper messagePackHelper = new MessagePackHelper(map);
         modelKey = messagePackHelper.getString("model_key", "");
         isSecondaryDir = messagePackHelper.getBoolean("is_secondary_dir", false);
         verticalCurveRadius = messagePackHelper.getFloat("vertical_curve_radius", 0);
+        try {
+			customConfigs = StringMapSerializer.deserialize(messagePackHelper.getString("custom_configs"));
+		} catch (IOException e) {
+			customConfigs = new HashMap<>();
+		}
     }
 
     @Inject(method = "toMessagePack", at = @At("TAIL"), remap = false)
@@ -81,11 +99,18 @@ public abstract class RailMixin implements RailExtraSupplier {
         messagePacker.packString("model_key").packString(modelKey);
         messagePacker.packString("is_secondary_dir").packBoolean(isSecondaryDir);
         messagePacker.packString("vertical_curve_radius").packFloat(verticalCurveRadius);
+        String res;
+		try {
+			res = StringMapSerializer.serializeToString(customConfigs);
+		} catch (IOException e) {
+			res = "";
+		}
+		messagePacker.packString("custom_configs").packString(res);
     }
 
     @Inject(method = "messagePackLength", at = @At("TAIL"), cancellable = true, remap = false)
     private void messagePackLength(CallbackInfoReturnable<Integer> cir) {
-        cir.setReturnValue(cir.getReturnValue() + 3);
+        cir.setReturnValue(cir.getReturnValue() + 4);
     }
 
     private final int NTE_PACKET_EXTRA_MAGIC = 0x25141425;
@@ -101,6 +126,11 @@ public abstract class RailMixin implements RailExtraSupplier {
         modelKey = packet.readUtf();
         isSecondaryDir = packet.readBoolean();
         verticalCurveRadius = packet.readFloat();
+        try {
+			customConfigs = StringMapSerializer.deserialize(packet.readUtf());
+		} catch (IOException e) {
+			customConfigs = new HashMap<>();
+		}
     }
 
     @Inject(method = "writePacket", at = @At("TAIL"))
@@ -110,6 +140,13 @@ public abstract class RailMixin implements RailExtraSupplier {
         packet.writeUtf(modelKey);
         packet.writeBoolean(isSecondaryDir);
         packet.writeFloat(verticalCurveRadius);
+        String res;
+		try {
+			res = StringMapSerializer.serializeToString(customConfigs);
+		} catch (IOException e) {
+			res = "";
+		}
+		packet.writeUtf(res);
     }
 
     @Redirect(method = "renderSegment", remap = false, at = @At(value = "INVOKE", target = "Ljava/lang/Math;round(D)J"))

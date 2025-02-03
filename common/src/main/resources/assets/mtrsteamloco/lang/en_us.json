@@ -16,6 +16,7 @@
     "rail.mtrsteamloco.builtin_concrete_sleeper": "ANTE built-in (concrete sleeper)",
     "rail.mtrsteamloco.builtin_depot": "ANTE built-in (car factory)",
     "rail.mtrsteamloco.builtin_flat": "ANTE built-in (flat)",
+    "gui.mtrsteamloco.train_screen.title": "Train configuration",
     "gui.mtrsteamloco.eye_candy.full_light": "Maintain full brightness",
     "gui.mtrsteamloco.eye_candy.tip_resource_pack": "You can import more objects through the resource pack. Please click here to view the details.",
     "gui.mtrsteamloco.eye_candy.title": "Decorative object settings",
@@ -23,8 +24,9 @@
     "gui.mtrsteamloco.eye_candy.select": "Selection Objects ",
     "gui.mtrsteamloco.eye_candy.as_platform": "As a platform",
     "gui.mtrsteamloco.eye_candy.fixed": "The model position is fixed and cannot be edited",
-    "gui.mtrsteamloco.eye_candy.custom_config.editable": "Custom configuration items",
-    "gui.mtrsteamloco.eye_candy.custom_config.uneditable": "Cannot edit configuration items",
+    "gui.mtrsteamloco.custom_config.editable": "Custom configuration items",
+    "gui.mtrsteamloco.custom_config.uneditable": "Cannot edit configuration items",
+    "gui.mtrsteamloco.custom_config.null": "No configuration items",
     "gui.mtrsteamloco.eye_candy.shape": "Current shape:%s",
     "gui.mtrsteamloco.eye_candy.collision": "Current collision box:%s",
     "gui.mtrsteamloco.brush_edit_rail.brush_hint": "Set the function of the brush. Next, right-click on other areas to apply in bulk.",
@@ -57,5 +59,7 @@
     "gui.mtrsteamloco.config.client.scriptdebugoverlay": "Display JS debugging information",
     "gui.mtrsteamloco.config.client.custom_config.engaged": "Used custom configurations",
     "gui.mtrsteamloco.config.client.custom_config.untapped": "Unused custom configurations",
-    "gui.mtrsteamloco.mtr_version_low": "Please update MTR: ANTE%s requires MTR%s and above version, while the currently installed%s version is lower."
+    "gui.mtrsteamloco.mtr_version_low": "Please update MTR: ANTE%s requires MTR%s and above version, while the currently installed%s version is lower.",
+    "key.mtrsteamloco.train_screen": "Train screen",
+    "category.mtrsteamloco.keybinding": "ANTE key binding"
 }

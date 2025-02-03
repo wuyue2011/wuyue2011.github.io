@@ -1,4 +1,4 @@
-package mixin.mtr.data;
+package cn.zbx1425.mtrsteamloco.mixin;
 
 import mtr.data.RailwayDataDriveTrainModule;
 import net.minecraft.core.BlockPos;

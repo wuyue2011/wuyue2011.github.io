@@ -16,6 +16,7 @@
     "rail.mtrsteamloco.builtin_concrete_sleeper": "ANTE 내장(콘크리트 레일 베개)",
     "rail.mtrsteamloco.builtin_depot": "ANTE 내장(자동차 공장)",
     "rail.mtrsteamloco.builtin_flat": "ANTE 내장형(평면)",
+    "gui.mtrsteamloco.train_screen.title": "열차 설치",
     "gui.mtrsteamloco.eye_candy.full_light": "전체 밝기 유지",
     "gui.mtrsteamloco.eye_candy.tip_resource_pack": "리소스 패키지를 통해 더 많은 객체를 가져올 수 있습니다.자세한 내용을 보려면 여기를 클릭하십시오.",
     "gui.mtrsteamloco.eye_candy.title": "인테리어 소품 설정",
@@ -23,8 +24,9 @@
     "gui.mtrsteamloco.eye_candy.select": "객체 선택",
     "gui.mtrsteamloco.eye_candy.as_platform": "플랫폼으로 삼다",
     "gui.mtrsteamloco.eye_candy.fixed": "모델 위치가 고정되어 편집할 수 없습니다.",
-    "gui.mtrsteamloco.eye_candy.custom_config.editable": "사용자 정의 구성 항목",
-    "gui.mtrsteamloco.eye_candy.custom_config.uneditable": "편집할 수 없는 구성 항목",
+    "gui.mtrsteamloco.custom_config.editable": "사용자 정의 구성 항목",
+    "gui.mtrsteamloco.custom_config.uneditable": "편집할 수 없는 구성 항목",
+    "gui.mtrsteamloco.custom_config.null": "구성 항목 없음",
     "gui.mtrsteamloco.eye_candy.shape": "현재 모양:%s",
     "gui.mtrsteamloco.eye_candy.collision": "현재 충돌 상자:%s",
     "gui.mtrsteamloco.brush_edit_rail.brush_hint": "브러시의 기능을 설정합니다.다음으로 다른 곳을 우클릭하면 대량 적용됩니다.",
@@ -57,5 +59,7 @@
     "gui.mtrsteamloco.config.client.scriptdebugoverlay": "JS 디버그 정보 표시",
     "gui.mtrsteamloco.config.client.custom_config.engaged": "사용된 사용자 정의 구성",
     "gui.mtrsteamloco.config.client.custom_config.untapped": "사용되지 않는 사용자 정의 구성",
-    "gui.mtrsteamloco.mtr_version_low": "MTR을 업데이트하십시오.ANTE%s은(는) MTR%s 이상이 필요하지만 현재 설치된%s 버전은 낮습니다."
+    "gui.mtrsteamloco.mtr_version_low": "MTR을 업데이트하십시오.ANTE%s은(는) MTR%s 이상이 필요하지만 현재 설치된%s 버전은 낮습니다.",
+    "key.mtrsteamloco.train_screen": "열차 스크린",
+    "category.mtrsteamloco.keybinding": "ANTE 키 바인딩"
 }

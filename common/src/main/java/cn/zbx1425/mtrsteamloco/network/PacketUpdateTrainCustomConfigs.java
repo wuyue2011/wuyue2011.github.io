@@ -11,6 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.MinecraftServer;
 import mtr.data.RailwayData;
 import mtr.data.Siding;
+import mtr.data.Train;
 import mtr.data.TrainServer;
 import cn.zbx1425.mtrsteamloco.data.TrainCustomConfigsSupplier;
 import cn.zbx1425.mtrsteamloco.mixin.SidingAccessor;
@@ -23,7 +24,11 @@ public class PacketUpdateTrainCustomConfigs {
     
     public static ResourceLocation C2S = new ResourceLocation(Main.MOD_ID, "update_train_custom_configs");
 
-    public static void sendUpdateC2S(long sidingId, long trainId, Map<String, String> customConfigss) {
+    public static void sendUpdateC2S(Train train) {
+        sendUpdateC2S(train.sidingId, train.id, ((TrainCustomConfigsSupplier) train).getCustomConfigs());
+    }
+
+    private static void sendUpdateC2S(long sidingId, long trainId, Map<String, String> customConfigss) {
         if (customConfigss == null) return;
 
         final FriendlyByteBuf packet = new FriendlyByteBuf(Unpooled.buffer());

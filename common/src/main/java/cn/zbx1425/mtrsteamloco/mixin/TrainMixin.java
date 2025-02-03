@@ -25,6 +25,7 @@ import org.msgpack.value.Value;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.nbt.CompoundTag;
 import cn.zbx1425.mtrsteamloco.Main;
+import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
 import mtr.path.PathData;
 
 import java.util.List;
@@ -44,8 +45,9 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(Train.class)
 public abstract class TrainMixin implements TrainCustomConfigsSupplier{
 
-    public Map<String, String> customConfigs = new HashMap<>();
-	public boolean isConfigsChanged = false;
+    private Map<String, String> customConfigs = new HashMap<>();
+	private Map<String, ConfigResponder> configResponders = new HashMap<>();
+	private boolean isConfigsChanged = false;
 	
 	@Override
 	public Map<String, String> getCustomConfigs() {
@@ -67,6 +69,16 @@ public abstract class TrainMixin implements TrainCustomConfigsSupplier{
 		this.isConfigsChanged = isConfigsChanged;
 	}
 
+	@Override
+	public void setConfigResponders(Map<String, ConfigResponder> configResponders) {
+		this.configResponders = configResponders;
+	}
+
+	@Override
+	public Map<String, ConfigResponder> getConfigResponders() {
+		return configResponders;
+	}
+
 	@Inject(method = "<init>(JFLjava/util/List;Ljava/util/List;IIFZIILjava/util/Map;)V", at = @At("TAIL"), remap = false)
 	private void fromMassagePack(
 			long sidingId, float railLength,
@@ -74,10 +86,9 @@ public abstract class TrainMixin implements TrainCustomConfigsSupplier{
 			float accelerationConstant, boolean isManualAllowed, int maxManualSpeed, int manualToAutomaticTime,
 			Map<String, Value> map, CallbackInfo ci
 	) {
-		print("Mixin-Train InitFromMassagePack" + map.toString());
 		MessagePackHelper messagePackHelper = new MessagePackHelper(map);
 		try {
-			customConfigs = StringMapSerializer.deserialize(messagePackHelper.getString("extra_data"));
+			customConfigs = StringMapSerializer.deserialize(messagePackHelper.getString("custom_configs"));
 		} catch (IOException e) {
 			customConfigs = new HashMap<>();
 		}
@@ -90,9 +101,8 @@ public abstract class TrainMixin implements TrainCustomConfigsSupplier{
 			float accelerationConstant, boolean isManualAllowed, int maxManualSpeed, int manualToAutomaticTime,
 			CompoundTag compoundTag, CallbackInfo ci
 	) {
-		print("Mixin-Train InitFromCompoundTag" + compoundTag.toString());
 		try {
-			customConfigs = StringMapSerializer.deserialize(compoundTag.getString("extra_data"));
+			customConfigs = StringMapSerializer.deserialize(compoundTag.getString("custom_configs"));
 		} catch (IOException e) {
 			customConfigs = new HashMap<>();
 		}
@@ -100,7 +110,6 @@ public abstract class TrainMixin implements TrainCustomConfigsSupplier{
 
 	@Inject(method = "<init>(Lnet/minecraft/network/FriendlyByteBuf;)V", at = @At("TAIL"))
 	private void fromFriendlyByteBuf(FriendlyByteBuf buffer, CallbackInfo ci) {
-		print ("Mixin-Train InitFromFriendlyByteBuf" + buffer.toString());
 		try {
 			customConfigs = StringMapSerializer.deserialize(buffer.readUtf());
 		} catch (IOException e) {
@@ -116,13 +125,11 @@ public abstract class TrainMixin implements TrainCustomConfigsSupplier{
 		} catch (IOException e) {
 			res = "";
 		}
-		messagePacker.packString("extra_data").packString(res);
-		print ("Mixin-Train ToMessagePack" + res);
+		messagePacker.packString("custom_configs").packString(res);
 	}
 
     @Inject(method = "messagePackLength", at = @At("TAIL"), cancellable = true, remap = false)
     private void messagePackLength(CallbackInfoReturnable<Integer> cir) {
-		print ("Mixin-Train MessagePackLength" + cir.getReturnValue() + 1);
         cir.setReturnValue(cir.getReturnValue() + 1);
     }
 
@@ -134,12 +141,7 @@ public abstract class TrainMixin implements TrainCustomConfigsSupplier{
 		} catch (IOException e) {
 			res = "";
 		}
-		print ("Mixin-Train ToPacket" + res);
 		packet.writeUtf(res);
-	}
-
-	private static void print(String s) {
-		Main.LOGGER.info(s);
 	}
 
 	protected abstract boolean skipScanBlocks(Level world, double trainX, double trainY, double trainZ);
