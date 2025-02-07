@@ -44,8 +44,8 @@ public class RailWrapper{
 
     public void sendUpdateC2S() {
         double length = rail.getLength();
-        BlockPos pos0 = rail.getPosition(0).toBlockPos();
-        BlockPos pos1 = rail.getPosition(0).toBlockPos();
+        BlockPos pos0 = getPosition(0).toBlockPos();
+        BlockPos pos1 = getPosition(getLength()).toBlockPos();
         PacketUpdateRail.sendUpdateC2S(rail, pos0, pos1);
     }
 
