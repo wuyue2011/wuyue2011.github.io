@@ -75,12 +75,12 @@ task setupLibrary() {
 			dest "checkouts/mtr-forge.jar"
 			overwrite true
 		}
+	}
 
-		download {
-			src url1
-			dest "checkouts/files.zip"
-			overwrite true
-		}
+	download {
+		src url1
+		dest "checkouts/files.zip"
+		overwrite true
 	}
 
 	copy {
