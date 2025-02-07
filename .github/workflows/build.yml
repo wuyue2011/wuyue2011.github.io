@@ -15,15 +15,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      # - name: Validate gradle wrapper
-      #   uses: gradle/wrapper-validation-action@v1
+      - name: Validate gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
       - name: Setup JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: 17
-      # - name: Make gradle wrapper executable
-      #   run: chmod +x ./gradlew
+      - name: Make gradle wrapper executable
+        run: chmod +x ./gradlew
       - name: Setup ${{ matrix.minecraft }}
         run: ./gradlew setupLibrary -PbuildVersion="${{ matrix.minecraft }}"
       - name: Build ${{ matrix.minecraft }}
