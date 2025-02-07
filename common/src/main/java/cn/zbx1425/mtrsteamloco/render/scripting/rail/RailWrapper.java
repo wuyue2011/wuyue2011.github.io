@@ -5,7 +5,7 @@ import cn.zbx1425.mtrsteamloco.data.RailExtraSupplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import cn.zbx1425.mtrsteamloco.network.PacketUpdateRail;
-import com.mojang.math.Vector3f;
+import cn.zbx1425.sowcer.math.Vector3f;
 
 import java.util.Map;
 
