@@ -38,8 +38,7 @@
     "RailwayDataAccessor",
     "TrainMixin",
     "SidingAccessor",
-    "SidingMixin",
-    "VehicleRidingClientMixin"
+    "SidingMixin"
   ],
   "server": [
     
