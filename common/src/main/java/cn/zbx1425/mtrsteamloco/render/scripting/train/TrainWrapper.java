@@ -12,7 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import cn.zbx1425.mtrsteamloco.Main;
 import mtr.data.Train;
-import cn.zbx1425.mtrsteamloco.data.TrainCustomConfigsSupplier;
+import cn.zbx1425.mtrsteamloco.data.TrainExtraSupplier;
 import cn.zbx1425.mtrsteamloco.network.PacketUpdateTrainCustomConfigs;
 import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
 
@@ -45,7 +45,7 @@ public class TrainWrapper {
     public boolean isInDetailDistance;
 
     private final TrainClient train;
-    private final TrainCustomConfigsSupplier supplier;
+    private final TrainExtraSupplier supplier;
     private PlatformLookupMap trainPlatforms;
     private List<PathData> trainPlatformsValidPath;
 
@@ -61,7 +61,7 @@ public class TrainWrapper {
         Arrays.setAll(lastCarPosition, ignored -> new Vector3f(0, -10000, 0));
         Arrays.setAll(lastCarRotation, ignored -> new Vector3f(0, 0, 0));
         this.train = train;
-        supplier = (TrainCustomConfigsSupplier) train;
+        supplier = (TrainExtraSupplier) train;
         this.reset();
     }
 

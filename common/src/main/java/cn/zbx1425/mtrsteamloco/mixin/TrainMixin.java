@@ -18,7 +18,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.util.Mth;
 import mtr.path.PathData;
 import cn.zbx1425.sowcer.math.Vector3f;
-import cn.zbx1425.mtrsteamloco.data.TrainCustomConfigsSupplier;
+import cn.zbx1425.mtrsteamloco.data.TrainExtraSupplier;
+import cn.zbx1425.mtrsteamloco.data.RailExtraSupplier;
 import org.msgpack.core.MessagePacker;
 import cn.zbx1425.mtrsteamloco.network.util.StringMapSerializer;
 import org.msgpack.value.Value;
@@ -26,7 +27,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.nbt.CompoundTag;
 import cn.zbx1425.mtrsteamloco.Main;
 import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
-import mtr.path.PathData;
+import mtr.data.Rail;
 
 import java.util.List;
 import java.util.Set;
@@ -43,7 +44,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(Train.class)
-public abstract class TrainMixin implements TrainCustomConfigsSupplier{
+public abstract class TrainMixin implements TrainExtraSupplier{
+
+	protected List<Double> distances;
+	protected List<PathData> path;
 
     private Map<String, String> customConfigs = new HashMap<>();
 	private Map<String, ConfigResponder> configResponders = new HashMap<>();
@@ -77,6 +81,18 @@ public abstract class TrainMixin implements TrainCustomConfigsSupplier{
 	@Override
 	public Map<String, ConfigResponder> getConfigResponders() {
 		return configResponders;
+	}
+
+	@Shadow(remap = false)
+    public abstract int getIndex(double tempRailProgress, boolean roundDown);
+
+	@Override
+	public float getRollAngleAt(double value) {
+		int i = getIndex(value, true);
+		if (i != 0) value -= distances.get(i - 1);
+        Rail r = path.get(i).rail;
+        float rot = RailExtraSupplier.getRollAngle(r, value);
+		return rot;
 	}
 
 	@Inject(method = "<init>(JFLjava/util/List;Ljava/util/List;IIFZIILjava/util/Map;)V", at = @At("TAIL"), remap = false)

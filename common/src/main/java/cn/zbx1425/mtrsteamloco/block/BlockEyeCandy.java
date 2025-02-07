@@ -132,10 +132,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
     }
 
-	public AABB getRenderBoundingBox() {
-		return new AABB(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-	}
-
     @Override
     public BlockEntityMapper createBlockEntity(BlockPos blockPos, BlockState blockState) {
         return new BlockEntityEyeCandy(blockPos, blockState);
@@ -307,6 +303,10 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putInt("lightLevel", lightLevel);
             compoundTag.putBoolean("isTicketBarrier", isTicketBarrier);
             compoundTag.putBoolean("isEntrance", isEntrance);
+        }
+
+        public AABB getRenderBoundingBox() {
+            return new AABB(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
         }
 
         public void setPrefabId(String new1) {

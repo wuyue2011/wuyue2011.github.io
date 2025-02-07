@@ -15,6 +15,9 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
+import cn.zbx1425.mtrsteamloco.data.RailExtraSupplier;
+import cn.zbx1425.mtrsteamloco.data.TrainExtraSupplier;
+import mtr.data.Rail;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -88,10 +91,17 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
             return;
         }
 
+
         worldPose = new Matrix4f(matrices.last().pose()).copy();
         matrices.translate(x, y, z);
         PoseStackUtil.rotY(matrices, (float) Math.PI + yaw);
         PoseStackUtil.rotX(matrices, hasPitch ? pitch : 0);
+
+        float roll = TrainExtraSupplier.getRollAngleAt(train, carIndex);
+        matrices.translate(0D, -1D, 0D);
+        PoseStackUtil.rotZ(matrices, -roll);
+        matrices.translate(0D, 1D, 0D);
+
         final int light = LightTexture.pack(world.getBrightness(LightLayer.BLOCK, posAverage), world.getBrightness(LightLayer.SKY, posAverage));
         Matrix4f drawPose = new Matrix4f(matrices.last().pose());
         if (shouldRender) {

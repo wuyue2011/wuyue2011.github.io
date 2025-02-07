@@ -6,6 +6,7 @@ import cn.zbx1425.mtrsteamloco.render.RenderUtil;
 import cn.zbx1425.sowcer.math.Matrix4f;
 import cn.zbx1425.sowcer.math.PoseStackUtil;
 import cn.zbx1425.sowcerext.multipart.MultipartContainer;
+import cn.zbx1425.mtrsteamloco.data.TrainExtraSupplier;
 import cn.zbx1425.sowcerext.multipart.MultipartUpdateProp;
 import cn.zbx1425.sowcerext.multipart.animated.AnimatedLoader;
 import cn.zbx1425.sowcerext.multipart.mi.MiLoader;
@@ -155,6 +156,11 @@ public class RenderTrainDK3 extends TrainRendererBase {
         PoseStackUtil.rotY(matrices, (float) Math.PI + yaw);
         final boolean hasPitch = pitch < 0 ? train.transportMode.hasPitchAscending : train.transportMode.hasPitchDescending;
         PoseStackUtil.rotX(matrices, hasPitch ? pitch : 0);
+
+        float roll = TrainExtraSupplier.getRollAngleAt(train, carIndex);
+        matrices.translate(0D, -1D, 0D);
+        PoseStackUtil.rotZ(matrices, -roll);
+        matrices.translate(0D, 1D, 0D);
 
         final int light = LightTexture.pack(world.getBrightness(LightLayer.BLOCK, posAverage), world.getBrightness(LightLayer.SKY, posAverage));
 

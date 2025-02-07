@@ -318,5 +318,23 @@ public class Matrix4f {
         return impl.equals(matrix4f.impl);
     }
 
+    public String toString() {
+        float[] src = new float[16];
+        FloatBuffer srcFloatBuffer = FloatBuffer.wrap(src);
+        store(srcFloatBuffer);
+        StringBuilder sb = new StringBuilder();
+        sb.append("Matrix4f[\n");
+        for (int i = 0; i < 4; i++) {
+            sb.append("  ");
+            for (int j = 0; j < 4; j++) {
+                sb.append(src[i * 4 + j]);
+                sb.append(", ");
+            }
+            sb.append("\n");
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
     public static final Matrix4f IDENTITY = new Matrix4f();
 }

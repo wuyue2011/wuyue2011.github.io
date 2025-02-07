@@ -29,14 +29,14 @@ public abstract class ItemWithCreativeTabBaseMixin extends Item {
             if (blockState.getBlock() instanceof mtr.block.BlockNode) {
                 if (context.isSecondaryUseActive()) {
                     if (level.isClientSide) {
-                        BrushEditRailScreen.acquirePickInfoWhenUse();
+                        // BrushEditRailScreen.acquirePickInfoWhenUse();
                         return super.useOn(context);
                     } else {
                         PacketScreen.sendScreenBlockS2C((ServerPlayer) context.getPlayer(), "brush_edit_rail", BlockPos.ZERO);
                     }
                 } else {
                     if (level.isClientSide) {
-                        BrushEditRailScreen.acquirePickInfoWhenUse();
+                        // BrushEditRailScreen.acquirePickInfoWhenUse();
                         CompoundTag railBrushProp = context.getPlayer().getMainHandItem().getTagElement("NTERailBrush");
                         BrushEditRailScreen.applyBrushToPickedRail(railBrushProp, true);
                     } else {

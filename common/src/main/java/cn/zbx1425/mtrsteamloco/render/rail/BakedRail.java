@@ -3,10 +3,13 @@ package cn.zbx1425.mtrsteamloco.render.rail;
 import cn.zbx1425.mtrsteamloco.data.RailExtraSupplier;
 import cn.zbx1425.mtrsteamloco.data.RailModelRegistry;
 import cn.zbx1425.sowcer.math.Matrix4f;
+import cn.zbx1425.sowcer.math.Vector3f;
 import cn.zbx1425.sowcer.util.AttrUtil;
+import net.minecraft.world.phys.Vec3;
 import mtr.data.Rail;
 import cn.zbx1425.mtrsteamloco.data.RailModelProperties;
 import net.minecraft.util.Mth;
+import cn.zbx1425.mtrsteamloco.Main;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,17 +35,24 @@ public class BakedRail {
         }
 
         if (!modelKey.equals("null")) {
-            final boolean reverse = ((RailExtraSupplier) rail).getRenderReversed();
+            RailExtraSupplier supplier = (RailExtraSupplier) rail;
+            final boolean reverse = supplier.getRenderReversed();
             final float interval = prop.repeatInterval;
             final float yOffset = prop.yOffset;
-            rail.render((x1, z1, x2, z2, x3, z3, x4, z4, y1, y2) -> {
-                float xc = (float) ((x1 + x4) / 2);
-                float yc = (float) ((y1 + y2) / 2);
-                float zc = (float) ((z1 + z4) / 2);
+            final double length = rail.getLength();
+            final double num = Math.floor(length / interval);
+            final double ins = (length - num * interval) / (num + 1);
+            Vec3 last = rail.getPosition(ins / 2);
+            for (double i = ins / 2; i < length - ins / 2; i = i + ins + interval) {
+                double midV = i + interval / 2;
+                Vec3 mid = rail.getPosition(midV);
+                Vec3 next = rail.getPosition(i + ins + interval);
+                float roll = RailExtraSupplier.getRollAngle(rail, midV);
                 coveredChunks
-                        .computeIfAbsent(chunkIdFromWorldPos(Mth.floor(xc), Mth.floor(zc)), ignored -> new ArrayList<>())
-                        .add(getLookAtMat(xc, yc + yOffset, zc, (float) x4, (float) y2 + yOffset, (float) z4, interval, reverse));
-            }, 0, 0);
+                    .computeIfAbsent(chunkIdFromWorldPos((int) mid.x, (int) mid.z), ignored -> new ArrayList<>())
+                    .add(getLookAtMat(mid, last, next, roll, yOffset, reverse));
+                last = next;
+            }
         }
     }
 
@@ -64,14 +74,18 @@ public class BakedRail {
         return ((long)(spX >> POS_SHIFT) << 32) | ((long)(spZ >> POS_SHIFT) & 0xFFFFFFFFL);
     }
 
-    public static Matrix4f getLookAtMat(float posX, float posY, float posZ, float tgX, float tgY, float tgZ, float len, boolean reverse) {
-        Matrix4f matrix4f = Matrix4f.translation(posX, posY, posZ);
+    public static Matrix4f getLookAtMat(Vec3 pos, Vec3 last, Vec3 next, float roll, float yOffset, boolean reverse) {
 
-        final float yaw = (float) Mth.atan2(tgX - posX, tgZ - posZ);
-        final float pitch = (float) Mth.atan2(tgY - posY, len / 2);
+        Matrix4f matrix4f = new Matrix4f();
+        matrix4f.translate((float) pos.x, (float) pos.y, (float) pos.z);
+
+        final float yaw = (float) Mth.atan2(next.x - last.x, next.z - last.z);
+        final float pitch = (float) Mth.atan2(next.y - last.y, (float) Math.sqrt((next.x - last.x) * (next.x - last.x) + (next.z - last.z) * (next.z - last.z)));
 
         matrix4f.rotateY((reverse ? (float) Math.PI : 0f) + yaw);
         matrix4f.rotateX(reverse ? pitch : -pitch);
+        matrix4f.translate(0, yOffset, 0);
+        matrix4f.rotateZ(roll);
 
         return matrix4f;
     }

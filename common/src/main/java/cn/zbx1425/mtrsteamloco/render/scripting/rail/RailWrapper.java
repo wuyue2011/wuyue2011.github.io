@@ -11,6 +11,7 @@ import java.util.Map;
 
 public class RailWrapper{
     private final Rail rail;
+    private final RailExtraSupplier supplier;
     public final RailType railType;
 	public final TransportMode transportMode;
 	public final RailAngle facingStart;
@@ -18,6 +19,7 @@ public class RailWrapper{
 
     public RailWrapper(Rail rail) {
         this.rail = rail;
+        this.supplier = (RailExtraSupplier) rail;
         this.railType = rail.railType;
         this.transportMode = rail.transportMode;
         this.facingStart = rail.facingStart;
@@ -25,11 +27,19 @@ public class RailWrapper{
     }
 
     public Map<String, String> getCustomConfigs() {
-        return ((RailExtraSupplier) rail).getCustomConfigs();
+        return supplier.getCustomConfigs();
     }
 
     public void setCustomConfigs(Map<String, String> customConfigs) {
-        ((RailExtraSupplier) rail).setCustomConfigs(customConfigs);
+        supplier.setCustomConfigs(customConfigs);
+    }
+
+    public Map<Double, Float> getRollAngleMap() {
+        return supplier.getRollAngleMap();
+    }
+
+    public void setRollAngleMap(Map<Double, Float> rollAngleMap) {
+        supplier.setRollAngleMap(rollAngleMap);
     }
 
     public void sendUpdateC2S() {
@@ -49,5 +59,9 @@ public class RailWrapper{
 
     public void render(Rail.RenderRail callback, float offsetRadius1, float offsetRadius2) {
         rail.render(callback, offsetRadius1, offsetRadius2);
+    }
+
+    public float getRollAngle(double value) {
+        return RailExtraSupplier.getRollAngle(rail, value);
     }
 }

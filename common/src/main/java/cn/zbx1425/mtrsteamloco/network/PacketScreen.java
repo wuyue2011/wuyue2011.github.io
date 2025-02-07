@@ -35,10 +35,10 @@ public class PacketScreen {
             minecraftClient.execute(() -> {
                 switch (screenName) {
                     case "eye_candy":
-                        Minecraft.getInstance().setScreen(EyeCandyScreen.createScreen(pos, null));
+                        minecraftClient.setScreen(EyeCandyScreen.createScreen(pos, null));
                         break;
                     case "brush_edit_rail":
-                        UtilitiesClient.setScreen(minecraftClient, new BrushEditRailScreen());
+                        minecraftClient.setScreen(BrushEditRailScreen.createScreen(null));
                         break;
                 }
             });

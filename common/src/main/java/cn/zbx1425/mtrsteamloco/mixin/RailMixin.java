@@ -8,7 +8,9 @@ import cn.zbx1425.mtrsteamloco.render.rail.RailRenderDispatcher;
 import io.netty.buffer.Unpooled;
 import mtr.data.MessagePackHelper;
 import mtr.data.Rail;
+import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
 import cn.zbx1425.mtrsteamloco.network.util.StringMapSerializer;
+import cn.zbx1425.mtrsteamloco.network.util.DoubleFloatMapSerializer;
 import mtr.data.RailType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
@@ -35,6 +37,8 @@ public abstract class RailMixin implements RailExtraSupplier {
     private boolean isSecondaryDir = false;
     private float verticalCurveRadius = 0f;
     private Map<String, String> customConfigs = new HashMap<>();
+    private Map<String, ConfigResponder> customResponders = new HashMap<>();
+    private Map<Double, Float> rollAngleMap = new HashMap<>();
 
     @Override
     public String getModelKey() {
@@ -72,6 +76,16 @@ public abstract class RailMixin implements RailExtraSupplier {
     }
 
     @Override
+    public Map<Double, Float> getRollAngleMap() {
+        return rollAngleMap;
+    }
+
+    @Override
+    public void setRollAngleMap(Map<Double, Float> rollAngleMap) {
+        this.rollAngleMap = rollAngleMap;
+    }
+
+    @Override
     public Map<String, String> getCustomConfigs() {
         return customConfigs;
     }
@@ -79,6 +93,16 @@ public abstract class RailMixin implements RailExtraSupplier {
     @Override
     public void setCustomConfigs(Map<String, String> customConfigs) {
         this.customConfigs = customConfigs;
+    }
+
+    @Override
+    public Map<String, ConfigResponder> getCustomResponders() {
+        return customResponders;
+    }
+
+    @Override
+    public void setCustomResponders(Map<String, ConfigResponder> customResponders) {
+        this.customResponders = customResponders;
     }
 
     @Inject(method = "<init>(Ljava/util/Map;)V", at = @At("TAIL"), remap = false)
@@ -92,6 +116,11 @@ public abstract class RailMixin implements RailExtraSupplier {
 		} catch (IOException e) {
 			customConfigs = new HashMap<>();
 		}
+        try {
+            rollAngleMap = DoubleFloatMapSerializer.deserialize(messagePackHelper.getString("roll_angle_map"));
+        } catch (Exception e) {
+            rollAngleMap = new HashMap<>();
+        }
     }
 
     @Inject(method = "toMessagePack", at = @At("TAIL"), remap = false)
@@ -106,11 +135,18 @@ public abstract class RailMixin implements RailExtraSupplier {
 			res = "";
 		}
 		messagePacker.packString("custom_configs").packString(res);
+        String res2;
+        try {
+			res2 = DoubleFloatMapSerializer.serializeToString(rollAngleMap);
+		} catch (Exception e) {
+			res2 = "";
+		}
+        messagePacker.packString("roll_angle_map").packString(res2);
     }
 
     @Inject(method = "messagePackLength", at = @At("TAIL"), cancellable = true, remap = false)
     private void messagePackLength(CallbackInfoReturnable<Integer> cir) {
-        cir.setReturnValue(cir.getReturnValue() + 4);
+        cir.setReturnValue(cir.getReturnValue() + 5);
     }
 
     private final int NTE_PACKET_EXTRA_MAGIC = 0x25141425;
@@ -131,6 +167,11 @@ public abstract class RailMixin implements RailExtraSupplier {
 		} catch (IOException e) {
 			customConfigs = new HashMap<>();
 		}
+        try {
+            rollAngleMap = DoubleFloatMapSerializer.deserialize(packet.readUtf());
+        } catch (Exception e) {
+            rollAngleMap = new HashMap<>();
+        }
     }
 
     @Inject(method = "writePacket", at = @At("TAIL"))
@@ -147,6 +188,13 @@ public abstract class RailMixin implements RailExtraSupplier {
 			res = "";
 		}
 		packet.writeUtf(res);
+        String res2;
+        try {
+			res2 = DoubleFloatMapSerializer.serializeToString(rollAngleMap);
+        } catch (Exception e) {
+            res2 = "";
+        }
+        packet.writeUtf(res2);
     }
 
     @Redirect(method = "renderSegment", remap = false, at = @At(value = "INVOKE", target = "Ljava/lang/Math;round(D)J"))

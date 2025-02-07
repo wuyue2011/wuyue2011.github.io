@@ -1,6 +1,6 @@
 package cn.zbx1425.mtrsteamloco.gui;
 
-import cn.zbx1425.mtrsteamloco.data.TrainCustomConfigsSupplier;
+import cn.zbx1425.mtrsteamloco.data.TrainExtraSupplier;
 import mtr.data.TrainClient;
 import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
 import mtr.mappings.Text;
@@ -36,7 +36,7 @@ public class TrainScreen {
     }
 
     public static Screen createScreen(TrainClient train, Screen parent) {
-        TrainCustomConfigsSupplier supplier = (TrainCustomConfigsSupplier) train;
+        TrainExtraSupplier supplier = (TrainExtraSupplier) train;
         Map<String, String> customConfigs = supplier.getCustomConfigs();
         Map<String, ConfigResponder> customResponders = supplier.getConfigResponders();
 

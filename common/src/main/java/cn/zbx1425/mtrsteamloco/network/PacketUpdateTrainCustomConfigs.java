@@ -13,7 +13,7 @@ import mtr.data.RailwayData;
 import mtr.data.Siding;
 import mtr.data.Train;
 import mtr.data.TrainServer;
-import cn.zbx1425.mtrsteamloco.data.TrainCustomConfigsSupplier;
+import cn.zbx1425.mtrsteamloco.data.TrainExtraSupplier;
 import cn.zbx1425.mtrsteamloco.mixin.SidingAccessor;
 
 import java.util.Map;
@@ -25,7 +25,7 @@ public class PacketUpdateTrainCustomConfigs {
     public static ResourceLocation C2S = new ResourceLocation(Main.MOD_ID, "update_train_custom_configs");
 
     public static void sendUpdateC2S(Train train) {
-        sendUpdateC2S(train.sidingId, train.id, ((TrainCustomConfigsSupplier) train).getCustomConfigs());
+        sendUpdateC2S(train.sidingId, train.id, ((TrainExtraSupplier) train).getCustomConfigs());
     }
 
     private static void sendUpdateC2S(long sidingId, long trainId, Map<String, String> customConfigss) {
@@ -75,8 +75,8 @@ public class PacketUpdateTrainCustomConfigs {
                     if (trains == null) return;
                     for (TrainServer train : trains) {
                         if (train.id == trainId) {
-                            ((TrainCustomConfigsSupplier) train).setCustomConfigs(ed);
-                            ((TrainCustomConfigsSupplier) train).isConfigsChanged(true);
+                            ((TrainExtraSupplier) train).setCustomConfigs(ed);
+                            ((TrainExtraSupplier) train).isConfigsChanged(true);
                             break;
                         }
                     }
