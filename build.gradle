@@ -31,6 +31,7 @@ configure(subprojects.findAll {it.name != 'rhino'}) {
 	}
 
 	dependencies {
+		modApi("me.shedaniel.cloth:basic-math:+")
 		annotationProcessor 'systems.manifold:manifold-preprocessor:+'
 		minecraft "com.mojang:minecraft:${minecraft_version}"
 		mappings parchment_version == "" ? loom.officialMojangMappings() : loom.layered() {
@@ -61,26 +62,26 @@ task setupLibrary() {
 		download {
 			src "${baseURL}${rootProject.mtr_version}/MTR-common-${minecraft_version}-${rootProject.mtr_version}-dev.jar"
 			dest "checkouts/mtr-common.jar"
-			overwrite true
+			overwrite false
 		}
 
 		download {
 			src "${baseURL}${rootProject.mtr_version}/MTR-fabric-${minecraft_version}-${rootProject.mtr_version}-dev-shadow.jar"
 			dest "checkouts/mtr-fabric.jar"
-			overwrite true
+			overwrite false
 		}
 
 		download {
 			src "${baseURL}${rootProject.mtr_version}/MTR-forge-${minecraft_version}-${rootProject.mtr_version}-dev-shadow.jar"
 			dest "checkouts/mtr-forge.jar"
-			overwrite true
+			overwrite false
 		}
 	}
 
 	download {
 		src url1
 		dest "checkouts/files.zip"
-		overwrite true
+		overwrite false
 	}
 
 	copy {
@@ -136,6 +137,7 @@ configure(allprojects.findAll {it.name != 'rhino'}) {
 	repositories {
 		maven { url = "https://maven.terraformersmc.com/" }
 		maven { url = "https://maven.parchmentmc.org/" }
+		maven { url "https://maven.shedaniel.me"}
 	}
 
 	tasks.withType(JavaCompile) {

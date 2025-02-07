@@ -17,7 +17,7 @@ import net.minecraft.client.player.LocalPlayer;
 import mtr.path.PathData;
 import mtr.sound.TrainSoundBase;
 import cn.zbx1425.mtrsteamloco.data.TrainExtraSupplier;
-import cn.zbx1425.mtrsteamloco.data.VehicleRidingClientExtraSupplier;
+// import cn.zbx1425.mtrsteamloco.data.VehicleRidingClientExtraSupplier;
 import cn.zbx1425.sowcer.math.Matrix4f;
 import cn.zbx1425.sowcer.math.Matrices;
 import net.minecraft.world.phys.Vec3;
@@ -92,8 +92,8 @@ public abstract class TrainClientMixin extends Train implements IGui{
 	@Shadow(remap = false) abstract int getPreviousStoppingIndex(int headIndex);
 	@Shadow(remap = false) abstract boolean justOpening();
 
-    @Override
-    protected boolean handlePositions(Level world, Vec3[] positions, float ticksElapsed) {
+    // @Override
+    protected boolean handlePositions123(Level world, Vec3[] positions, float ticksElapsed) {
 		final Minecraft client = Minecraft.getInstance();
 		final LocalPlayer clientPlayer = client.player;
 		if (clientPlayer == null) {
@@ -143,7 +143,7 @@ public abstract class TrainClientMixin extends Train implements IGui{
 					vehicleRidingClient.moveSelf(id, uuid, realSpacingRender, width, yaw, currentRidingCar, trainCars, doorLeftOpenRender, doorRightOpenRender, !trainProperties.hasGangwayConnection, ticksElapsed);
 
 					final int newRidingCar = Mth.clamp((int) Math.floor(vehicleRidingClient.getPercentageZ(uuid)), 0, positions.length - 2);
-                    ((VehicleRidingClientExtraSupplier) vehicleRidingClient).setRoll(TrainExtraSupplier.getRollAngleAt(((Train) (Object) this), newRidingCar));
+                    // ((VehicleRidingClientExtraSupplier) vehicleRidingClient).setRoll(TrainExtraSupplier.getRollAngleAt(((Train) (Object) this), newRidingCar));
 					if (currentRidingCar == newRidingCar) {
 						calculateCarCallback.calculateCarCallback(x, y, z, yaw, pitch, realSpacingRender, doorLeftOpenRender, doorRightOpenRender);
 					} else {
@@ -214,7 +214,7 @@ public abstract class TrainClientMixin extends Train implements IGui{
             pre.translate(0, 1, 0);
 
             Matrices thi = new Matrices();
-            thi.translate(carX, carY, carZ);
+            thi.translate(newX, newY, newZ);
             thi.rotateY(carYaw);
             thi.rotateX(carPitch);
             thi.translate(0, -1, 0);

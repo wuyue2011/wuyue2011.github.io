@@ -46,6 +46,7 @@ public interface RailExtraSupplier {
     static float getRollAngle(Rail rail, double value) {
         Map<Double, Float> rollAngleMap = ((RailExtraSupplier) rail).getRollAngleMap();
         boolean reversed = ((RailExtraSupplier) rail).getRenderReversed();
+        float k = reversed ? -1F : 1F;
         if (reversed) {
             value = rail.getLength() - value;
         }
@@ -55,20 +56,21 @@ public interface RailExtraSupplier {
         List<Double> keys = new ArrayList<>(rollAngleMap.keySet());
         keys.sort(Double::compareTo);
         if (value <= keys.get(0)) {
-            return rollAngleMap.get(keys.get(0));
+            return (float) k * rollAngleMap.get(keys.get(0));
         }
         int size = keys.size();
         if (value >= keys.get(size - 1)) {
-            return rollAngleMap.get(keys.get(size - 1));
+            return (float) k * rollAngleMap.get(keys.get(size - 1));
         }
-        for (int i = 0; i < size; i++) {
-            double t0 = keys.get(i);
-            if (value >= t0) {
-                double t1 = keys.get(i + 1);
-                float a0 = rollAngleMap.get(t0);
-                float a1 = rollAngleMap.get(t1);
-                return a0 + (a1 - a0) * (float) ((value - t0) / (t1 - t0));
-            } 
+        double last = keys.get(0);
+        for (int i = 1; i < size; i++) {
+            double t = keys.get(i);
+            if (last <= value && value < t) {
+                float a0 = rollAngleMap.get(last);
+                float a1 = rollAngleMap.get(t);
+                return (float) (k * (a0 + (a1 - a0) * (value - last) / (t - last)));
+            }
+            last = t;
         }
         return 0;
     }

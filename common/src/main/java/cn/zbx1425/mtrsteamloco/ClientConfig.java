@@ -39,6 +39,8 @@ public class ClientConfig {
     public static boolean enableSmoke = true;
     public static boolean enableSlider = true;
 
+    public static boolean useEditBoxSetRailRolling = true;
+
     public static boolean hideRidingTrain = false;
 
     private static Map<String, String> customConfigs = new HashMap<>();
@@ -62,6 +64,7 @@ public class ClientConfig {
             enableSmoke = getOrDefault(configObject, "enableSmoke", JsonElement::getAsBoolean, true);
             hideRidingTrain = getOrDefault(configObject, "hideRidingTrain", JsonElement::getAsBoolean, false);
             enableSlider = getOrDefault(configObject, "enableSlider", JsonElement::getAsBoolean, true);
+            useEditBoxSetRailRolling = getOrDefault(configObject, "useEditBoxSetRailRolling", JsonElement::getAsBoolean, true);
 
             customConfigs.clear();
             if (configObject.has("custom")) {
@@ -114,6 +117,7 @@ public class ClientConfig {
             configObject.addProperty("enableSmoke", enableSmoke);
             configObject.addProperty("hideRidingTrain", hideRidingTrain);
             configObject.addProperty("enableSlider", enableSlider);
+            configObject.addProperty("useEditBoxSetRailRolling", useEditBoxSetRailRolling);
 
             JsonObject customObject = new JsonObject();
             for (Map.Entry<String, String> entry : customConfigs.entrySet()) {

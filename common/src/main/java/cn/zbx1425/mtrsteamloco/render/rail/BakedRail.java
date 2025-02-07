@@ -41,17 +41,16 @@ public class BakedRail {
             final float yOffset = prop.yOffset;
             final double length = rail.getLength();
             final double num = Math.floor(length / interval);
-            final double ins = (length - num * interval) / (num + 1);
-            Vec3 last = rail.getPosition(ins / 2);
-            for (double i = ins / 2; i < length - interval; i = i + ins + interval) {
-                double midV = i + interval / 2;
-                Vec3 mid = rail.getPosition(midV);
-                Vec3 next = rail.getPosition(i + ins + interval);
-                float roll = RailExtraSupplier.getRollAngle(rail, midV);
+            final double ins = (length - num * interval) / num + interval;
+            Vec3 pre = rail.getPosition(0);
+            for (double i = ins; i < length + ins * 0.8D; i += ins) {
+                Vec3 thi = rail.getPosition(i);
+                Vec3 mid = rail.getPosition(i - interval / 2);
+                float roll = RailExtraSupplier.getRollAngle(rail, i - interval / 2);
                 coveredChunks
                     .computeIfAbsent(chunkIdFromWorldPos((int) mid.x, (int) mid.z), ignored -> new ArrayList<>())
-                    .add(getLookAtMat(mid, last, next, roll, yOffset, reverse));
-                last = next;
+                    .add(getLookAtMat(mid, pre, thi, roll, yOffset, reverse));
+                pre = thi;
             }
         }
     }

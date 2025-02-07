@@ -58,6 +58,11 @@ import org.jetbrains.annotations.ApiStatus;
 import me.shedaniel.clothconfig2.gui.entries.*;
 import mtr.mappings.Text;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
+import cn.zbx1425.sowcer.math.Vector3f;
+import cn.zbx1425.mtrsteamloco.ClientConfig;
+import net.minecraft.client.gui.components.EditBox;
+import me.shedaniel.clothconfig2.api.Tooltip;
+import me.shedaniel.math.Point;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -475,11 +480,12 @@ public class BrushEditRailScreen {
     private class RollAnglesListEntry extends TooltipListEntry<String> implements ContainerEventHandler {
         private final List<Node> nodes = new ArrayList<>();
         private Node now = null;
-        private final Slider angleSlider = new Slider(125 - 50, 0, 100, 20, -180D, 0D, 180D, 
+        private final Slider angleSlider = new Slider(50, 0, 200, 20, -180D, 0D, 180D, 
             value -> Text.translatable("gui.mtrsteamloco.brush_edit_rail.roll_angle", value * 360D - 180D), 
             value -> {
                 if (now != null) now.setAngle((float) Math.toRadians(value * 360D - 180D));
             });
+        private final EditBox angleInput = new EditBox(Minecraft.getInstance().font, 50, 0, 200, 20, Text.literal(""));
         
         Button btnAddNode = UtilitiesClient.newButton(
             Text.translatable("+"),
@@ -488,15 +494,25 @@ public class BrushEditRailScreen {
             Text.translatable("-"),
             sender -> removeNode(now));
         Button btnClear = UtilitiesClient.newButton(
-            Text.translatable("清空"),
+            Text.translatable("gui.mtrsteamloco.brush_edit_rail.clear"),
             sender -> removeAllNodes()
         );
+        Button btnChangeMode = UtilitiesClient.newButton(
+            Text.translatable("⇄"),
+            sender -> {
+                ClientConfig.useEditBoxSetRailRolling = !ClientConfig.useEditBoxSetRailRolling;
+                focusNode(now);
+            }
+        );
 
-        private final List<AbstractWidget> widgets = Lists.newArrayList(btnAddNode, btnRemoveNode, btnClear, angleSlider);
+        private final List<AbstractWidget> widgets = Lists.newArrayList(btnAddNode, btnRemoveNode, btnClear);
 
         private static final ResourceLocation WHITE = new ResourceLocation("minecraft", "textures/block/white_concrete_powder.png");
+        private static final ResourceLocation POS = new ResourceLocation(Main.MOD_ID, "textures/gui/rail/ante.png");
         private static final int START = 50;
         private static final int WIDTH = 200;
+
+        private final boolean flag;
 
         public RollAnglesListEntry() {
             super(Text.literal(""), null, false);
@@ -505,6 +521,25 @@ public class BrushEditRailScreen {
             for (Map.Entry<Double, Float> entry : entries) {
                 addNode(new Node(entry.getKey(), entry.getValue()));
             }
+            Vector3f p1 = new Vector3f(pickedRail.getPosition(0));
+            Vector3f p2 = new Vector3f(pickedRail.getPosition(pickedRail.getLength()));
+            Vector3f start = new Vector3f(pickedPosStart);
+            float d1 = p1.distance(start);
+            float d2 = p2.distance(start);
+            flag = d1 < d2;
+            angleInput.setResponder(str -> {
+                try {
+                    float angle = Float.parseFloat(str);
+                    if (now != null) now.setAngle((float) Math.toRadians(angle));
+                    angleInput.setTextColor(0x00FF00);
+                } catch (Exception ignored) {
+                    angleInput.setTextColor(0xFF0000);
+                }
+            });
+        }
+
+        public boolean mode() {
+            return ClientConfig.useEditBoxSetRailRolling;
         }
 
         public void update() {
@@ -520,7 +555,11 @@ public class BrushEditRailScreen {
         public void focusNode(Node node) {
             now = node;
             if (now != null) {
-                angleSlider.setValue(1 / 360D * ((Math.toDegrees((double) node.getAngle())) + 180D), true);
+                if (mode()) {
+                    angleInput.setValue(Math.toDegrees(node.getAngle()) + "");
+                    angleInput.setTextColor(0xFFFFFF);
+                } else angleSlider.setValue(1 / 360D * ((Math.toDegrees((double) node.getAngle())) + 180D), true);
+
                 for (int i = 0; i < nodes.size(); i++) {
                     if (nodes.get(i) == node) {
                         nodes.remove(i);
@@ -585,12 +624,23 @@ public class BrushEditRailScreen {
         @Override
         public List<? extends GuiEventListener> children() {
             List<GuiEventListener> res = new ArrayList<>(widgets);
+            if (now != null) {
+                if (ClientConfig.useEditBoxSetRailRolling) res.add(angleInput);
+                else res.add(angleSlider);
+                res.add(btnChangeMode);
+            }
             res.addAll(nodes);
             return res;
         }
         
         @Override
         public List<? extends NarratableEntry> narratables() {
+            List<NarratableEntry> res = new ArrayList<>(widgets);
+            if (now != null) {
+                if (ClientConfig.useEditBoxSetRailRolling) res.add(angleInput);
+                else res.add(angleSlider);
+                res.add(btnChangeMode);
+            }
             return widgets;
         }
 
@@ -601,20 +651,56 @@ public class BrushEditRailScreen {
         public void render(PoseStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta) {
 #endif
             super.render(matrices, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
+            drawText(matrices, Minecraft.getInstance().font, Text.translatable("gui.mtrsteamloco.brush_edit_rail.roll_setting").getString(), x, y + 6, 0xA8A8A8);
+            y += 22;
+
+            boolean reversed = ((RailExtraSupplier) pickedRail).getRenderReversed();
+            if (!reversed == flag) {
+                blit(matrices, POS, 25, y + 2, 20, 20);
+                if (25 <= mouseX && mouseX <= 45 && y + 2 <= mouseY && mouseY <= y + 22) {
+                    addTooltip(Tooltip.of(new Point(mouseX, mouseY), wrapLinesToScreen(new Component[] {Text.translatable("gui.mtrsteamloco.brush_edit_rail.roll_setting.pos")})));
+                }
+            } else {
+                blit(matrices, POS, 255, y + 2, 20, 20);
+                if (255 <= mouseX && mouseX <= 275 && y + 2 <= mouseY && mouseY <= y + 22) {
+                    addTooltip(Tooltip.of(new Point(mouseX, mouseY), wrapLinesToScreen(new Component[] {Text.translatable("gui.mtrsteamloco.brush_edit_rail.roll_setting.pos")})));
+                }
+            }
             blit(matrices, WHITE, 50, y + 8,  200, 8);
             for (int i = nodes.size() - 1; i >= 0; i--) {
                 Node node = nodes.get(i);
                 node.render(matrices, x, y, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
             }
-            IDrawing.setPositionAndWidth(btnAddNode, 280, y + 2, 50);
-            IDrawing.setPositionAndWidth(btnRemoveNode, 335, y + 2, 50);
-            IDrawing.setPositionAndWidth(btnClear, 390, y + 2, 50);
-            UtilitiesClient.setWidgetY(angleSlider, y + 24 + 2);
+            y += 2;
+            // drawText(matrices, Minecraft.getInstance().font, nodes.size() + "", 30, y + 6, 0xFFFFFF);
+            IDrawing.setPositionAndWidth(btnAddNode, 280, y, 50);
+            IDrawing.setPositionAndWidth(btnRemoveNode, 335, y, 50);
+            IDrawing.setPositionAndWidth(btnClear, 390, y, 50);
             btnAddNode.render(matrices, mouseX, mouseY, delta);
             btnRemoveNode.render(matrices, mouseX, mouseY, delta);
             btnClear.render(matrices, mouseX, mouseY, delta);
-            if (now != null) angleSlider.render(matrices, mouseX, mouseY, delta);
-            drawText(matrices, Minecraft.getInstance().font, nodes.size() + "", 20, y + 24, 0xFFFFFF);
+            y += 24;
+
+            IDrawing.setPositionAndWidth(btnChangeMode, 280, y, 50);
+            UtilitiesClient.setWidgetY(angleSlider, y);
+            UtilitiesClient.setWidgetY(angleInput, y);
+            if (now != null) {
+                if (!ClientConfig.useEditBoxSetRailRolling) {
+                    angleSlider.render(matrices, mouseX, mouseY, delta);
+                    angleSlider.visible = true;
+                    angleInput.visible = false;
+                } else {
+                    angleInput.render(matrices, mouseX, mouseY, delta);
+                    angleInput.visible = true;
+                    angleSlider.visible = false;
+                } 
+                btnChangeMode.visible = true;
+                btnChangeMode.render(matrices, mouseX, mouseY, delta);
+            } else {
+                angleSlider.visible = false;
+                angleInput.visible = false;
+                btnChangeMode.visible = false;
+            }
         }
 
         #if MC_VERSION >= "12000"
@@ -734,20 +820,25 @@ public class BrushEditRailScreen {
             }
 
             public void setValue(int x) {
+                double old = value;
                 if (x <= START) x = START;
                 else if (x >= START + WIDTH) x = START + WIDTH;
                 else value = (x - START) / (double) WIDTH;
+                if (old == value) return;
                 update();
             }
 
             public void setValue(double value) {
+                double old = this.value;
                 if (value < 0) value = 0;
                 else if (value > 1) value = 1;
+                if (old == value) return;
                 this.value = value;
                 update();
             }
 
             public void setAngle(float angle) {
+                if (this.angle == angle) return;
                 this.angle = angle;
                 update();
             }
@@ -785,12 +876,7 @@ public class BrushEditRailScreen {
 
             @Override
             public boolean mouseDragged(double sx, double sy, int t, double dx, double dy) {
-                if (isActive() && dragged) {
-                    setValue((int) (sx + dx));
-                    dragged = true;
-                    return true;
-                }
-                if (isMouseOver(sx, sy)) {
+                if ((isActive() && dragged) || isMouseOver(sx, sy)) {
                     setValue((int) (sx + dx));
                     dragged = true;
                     return true;
