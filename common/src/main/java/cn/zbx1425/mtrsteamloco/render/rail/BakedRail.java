@@ -43,8 +43,9 @@ public class BakedRail {
             final double num = Math.floor(length / interval);
             final double ins = (length - num * interval) / (num + 1);
             Vec3 last = rail.getPosition(ins / 2);
-            for (double i = ins / 2; i < length - ins / 2; i = i + ins + interval) {
-                Vec3 mid = rail.getPosition(i + interval / 2);
+            for (double i = ins / 2; i < length - interval; i = i + ins + interval) {
+                double midV = i + interval / 2;
+                Vec3 mid = rail.getPosition(midV);
                 Vec3 next = rail.getPosition(i + ins + interval);
                 float roll = RailExtraSupplier.getRollAngle(rail, midV);
                 coveredChunks
