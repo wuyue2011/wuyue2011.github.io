@@ -44,8 +44,7 @@ public class BakedRail {
             final double ins = (length - num * interval) / (num + 1);
             Vec3 last = rail.getPosition(ins / 2);
             for (double i = ins / 2; i < length - ins / 2; i = i + ins + interval) {
-                double midV = i + interval / 2;
-                Vec3 mid = rail.getPosition(midV);
+                Vec3 mid = rail.getPosition(i + interval / 2);
                 Vec3 next = rail.getPosition(i + ins + interval);
                 float roll = RailExtraSupplier.getRollAngle(rail, midV);
                 coveredChunks
@@ -79,13 +78,19 @@ public class BakedRail {
         Matrix4f matrix4f = new Matrix4f();
         matrix4f.translate((float) pos.x, (float) pos.y, (float) pos.z);
 
+        if (reverse) {
+            Vec3 temp = last;
+            last = next;
+            next = temp;
+        }
+
         final float yaw = (float) Mth.atan2(next.x - last.x, next.z - last.z);
         final float pitch = (float) Mth.atan2(next.y - last.y, (float) Math.sqrt((next.x - last.x) * (next.x - last.x) + (next.z - last.z) * (next.z - last.z)));
 
-        matrix4f.rotateY((reverse ? (float) Math.PI : 0f) + yaw);
-        matrix4f.rotateX(reverse ? pitch : -pitch);
+        matrix4f.rotateY(yaw);
+        matrix4f.rotateX(pitch);
         matrix4f.translate(0, yOffset, 0);
-        matrix4f.rotateZ(roll);
+        matrix4f.rotateZ(reverse? -roll : roll);
 
         return matrix4f;
     }
