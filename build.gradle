@@ -85,7 +85,7 @@ task setupLibrary() {
 
 	copy {
 		outputs.upToDateWhen { false }
-		from(zipTree("./checkouts/files.zip")) { eachFile { file -> file.relativePath = new RelativePath(true, file.relativePath.segments.drop(1) as String[]) } }
+		from(zipTree("../checkouts/files.zip")) { eachFile { file -> file.relativePath = new RelativePath(true, file.relativePath.segments.drop(1) as String[]) } }
 		into "common/src/main/java/cn/zbx1425/mtrsteamloco/mappings"
 		filter(ReplaceTokens, tokens: ["package": "cn.zbx1425.mtrsteamloco.mappings; import mtr.mappings.*"])
 	}
