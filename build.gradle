@@ -62,19 +62,19 @@ task setupLibrary() {
 		download {
 			src "${baseURL}${rootProject.mtr_version}/MTR-common-${minecraft_version}-${rootProject.mtr_version}-dev.jar"
 			dest "checkouts/mtr-common.jar"
-			overwrite false
+			overwrite true
 		}
 
 		download {
 			src "${baseURL}${rootProject.mtr_version}/MTR-fabric-${minecraft_version}-${rootProject.mtr_version}-dev-shadow.jar"
 			dest "checkouts/mtr-fabric.jar"
-			overwrite false
+			overwrite true
 		}
 
 		download {
 			src "${baseURL}${rootProject.mtr_version}/MTR-forge-${minecraft_version}-${rootProject.mtr_version}-dev-shadow.jar"
 			dest "checkouts/mtr-forge.jar"
-			overwrite false
+			overwrite true
 		}
 	}
 

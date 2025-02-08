@@ -88,7 +88,7 @@ public class BakedRail {
         final float pitch = (float) Mth.atan2(next.y - last.y, (float) Math.sqrt((next.x - last.x) * (next.x - last.x) + (next.z - last.z) * (next.z - last.z)));
 
         matrix4f.rotateY(yaw);
-        matrix4f.rotateX(pitch);
+        matrix4f.rotateX(-pitch);
         matrix4f.translate(0, yOffset, 0);
         matrix4f.rotateZ(reverse? -roll : roll);
 
