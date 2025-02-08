@@ -855,7 +855,7 @@ public class BrushEditRailScreen {
                 return now == this;
             }
 
-#if MC_VERSION >= "11900"
+#if MC_VERSION >= "11904"
             boolean isFocused = false;
             
             @Override
