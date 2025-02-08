@@ -36,7 +36,6 @@ jobs:
         with:
           name: MTR-ANTE-${{ steps.vars.outputs.sha_short }}+${{ matrix.minecraft }}
           path: build/*.jar
-          compression-level: 0
   upload:
     needs: build
     runs-on: ubuntu-latest
@@ -45,6 +44,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: artifacts
+      - name: Get commit SHA
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
       - name: Capture release artifacts collectively
         uses: actions/upload-artifact@v4
-        path: artifacts/*.jar
+        with:
+          name: MTR-ANTE-${{ steps.vars.outputs.sha_short }}
+          path: artifacts/*.jar
