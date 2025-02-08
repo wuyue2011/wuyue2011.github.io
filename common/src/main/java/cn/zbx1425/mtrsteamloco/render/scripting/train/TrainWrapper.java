@@ -62,10 +62,10 @@ public class TrainWrapper {
         Arrays.setAll(lastCarRotation, ignored -> new Vector3f(0, 0, 0));
         this.train = train;
         supplier = (TrainExtraSupplier) train;
-        this.reset();
+        this.reset(false);
     }
 
-    public void reset() {
+    public void reset(boolean b) {
         if (trainPlatformsValidPath == null || !trainPlatformsValidPath.equals(train.path)) {
             if (!train.getRouteIds().isEmpty()) {
                 trainPlatforms = getTrainPlatforms();
@@ -74,7 +74,7 @@ public class TrainWrapper {
                 trainPlatforms = new PlatformLookupMap();
             }
         }
-        isInDetailDistance = false;
+        isInDetailDistance = b;
     }
 
     private PlatformLookupMap getTrainPlatforms() {

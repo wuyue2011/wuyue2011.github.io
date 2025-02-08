@@ -63,23 +63,31 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
         if (isTranslucentBatch) return;
 
         final BlockPos posAverage = applyAverageTransform(train.getViewOffset(), x, y, z);
-        Vector3f carPos = new Vector3f((float)x, (float)y, (float)z);
+
+        final boolean hasPitch = pitch < 0 ? train.transportMode.hasPitchAscending : train.transportMode.hasPitchDescending;
+        Matrix4f worldPose = new Matrix4f(matrices.last().pose()).copy();
+        matrices.translate(x, y, z);
+        PoseStackUtil.rotY(matrices, (float) Math.PI + yaw);
+        PoseStackUtil.rotX(matrices, hasPitch ? pitch : 0);
+
+        float roll = TrainExtraSupplier.getRollAngleAt(train, carIndex);
+        matrices.translate(0D, 1D, 0D);
+        PoseStackUtil.rotZ(matrices, -roll);
+        matrices.translate(0D, -1D, 0D);
+
+        Matrix4f carPose = new Matrix4f();
         Vec3 offset = train.vehicleRidingClient.getVehicleOffset();
         if (offset != null) {
-            carPos.add((float)offset.x, (float)offset.y, (float)offset.z);
+            carPose.translate((float) offset.x, (float) offset.y, (float) offset.z);
         }
-        final boolean hasPitch = pitch < 0 ? train.transportMode.hasPitchAscending : train.transportMode.hasPitchDescending;
-        Matrix4f worldPose = new Matrix4f();
-        worldPose.translate(carPos.x(), carPos.y(), carPos.z());
-        worldPose.rotateY((float) Math.PI + yaw);
-        worldPose.rotateX(hasPitch ? pitch : 0);
+        carPose.mul(new Matrix4f(matrices.last().pose()));
+
+        trainScripting.trainExtra.reset(posAverage != null && posAverage.distSqr(camera.getBlockPosition()) <= RenderTrains.DETAIL_RADIUS_SQUARED);
         trainScripting.trainExtra.doorLeftOpen[carIndex] = doorLeftOpen;
         trainScripting.trainExtra.doorRightOpen[carIndex] = doorRightOpen;
-        trainScripting.trainExtra.lastWorldPose[carIndex] = worldPose;
-        trainScripting.trainExtra.lastCarPosition[carIndex] = carPos.copy();
-        trainScripting.trainExtra.lastCarRotation[carIndex] = new Vector3f(hasPitch ? pitch : 0, (float) Math.PI + yaw, 0);
-        trainScripting.trainExtra.isInDetailDistance |= posAverage != null
-                && posAverage.distSqr(camera.getBlockPosition()) <= RenderTrains.DETAIL_RADIUS_SQUARED;
+        trainScripting.trainExtra.lastWorldPose[carIndex] = carPose.copy();
+        trainScripting.trainExtra.lastCarPosition[carIndex] = carPose.getTranslationPart();
+        trainScripting.trainExtra.lastCarRotation[carIndex] = carPose.getEulerAnglesXYZ();
         trainScripting.trainExtra.shouldRender = shouldRender;
 
         if (posAverage == null) {
@@ -92,21 +100,14 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
         }
 
 
-        worldPose = new Matrix4f(matrices.last().pose()).copy();
-        matrices.translate(x, y, z);
-        PoseStackUtil.rotY(matrices, (float) Math.PI + yaw);
-        PoseStackUtil.rotX(matrices, hasPitch ? pitch : 0);
 
-        float roll = TrainExtraSupplier.getRollAngleAt(train, carIndex);
-        matrices.translate(0D, -1D, 0D);
-        PoseStackUtil.rotZ(matrices, -roll);
-        matrices.translate(0D, 1D, 0D);
 
         final int light = LightTexture.pack(world.getBrightness(LightLayer.BLOCK, posAverage), world.getBrightness(LightLayer.SKY, posAverage));
-        Matrix4f drawPose = new Matrix4f(matrices.last().pose());
+        
         if (shouldRender) {
+            carPose = new Matrix4f(matrices.last().pose()).copy();
             synchronized (trainScripting) {
-                trainScripting.commitCar(carIndex, MainClient.drawScheduler, drawPose, worldPose, light);
+                trainScripting.commitCar(carIndex, MainClient.drawScheduler, carPose, worldPose, light);
             }
         }
         matrices.popPose();
