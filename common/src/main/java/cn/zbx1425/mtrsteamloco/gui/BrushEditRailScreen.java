@@ -703,7 +703,7 @@ public class BrushEditRailScreen {
             }
         }
 
-        #if MC_VERSION >= "12000"
+#if MC_VERSION >= "12000"
         private static int drawText(GuiGraphics guiGraphics, Font font, String text, int x, int y, int color) {
             FormattedText formattedText = FormattedText.of(text);
             List<FormattedCharSequence> lines = font.split(formattedText, Minecraft.getInstance().getWindow().getGuiScaledWidth() - 40);
@@ -803,7 +803,7 @@ public class BrushEditRailScreen {
             }
 
 #if MC_VERSION >= "12000"
-            public void render(GuiGraphics guiGraphics, int x, int y, int width, int height, int mouseX, int mouseY, boolean isHovered, float delta) {
+            public void render(GuiGraphics matrices, int x, int y, int width, int height, int mouseX, int mouseY, boolean isHovered, float delta) {
 #else 
             public void render(PoseStack matrices, int x, int y, int width, int height, int mouseX, int mouseY, boolean isHovered, float delta) {
 #endif  
@@ -854,6 +854,20 @@ public class BrushEditRailScreen {
             public boolean isActive() {
                 return now == this;
             }
+
+#if MC_VERSION >= "11900"
+            boolean isFocused = false;
+            
+            @Override
+            public boolean isFocused() {
+                return isFocused;
+            }
+
+            @Override
+            public void setFocused(boolean b) {
+                isFocused = b;
+            }
+#endif
 
             @Override
             public boolean isMouseOver(double mouseX, double mouseY) {
