@@ -703,6 +703,19 @@ public class BrushEditRailScreen {
             }
         }
 
+        protected FormattedCharSequence[] wrapLinesToScreen(Component[] lines) {
+            return wrapLines(lines, screen.width);
+        }
+    
+        protected FormattedCharSequence[] wrapLines(Component[] lines, int width) {
+            final Font font = Minecraft.getInstance().font;
+            
+            return Arrays.stream(lines)
+                    .map(line -> font.split(line, width))
+                    .flatMap(List::stream)
+                    .toArray(FormattedCharSequence[]::new);
+        }
+
 #if MC_VERSION >= "12000"
         private static int drawText(GuiGraphics guiGraphics, Font font, String text, int x, int y, int color) {
             FormattedText formattedText = FormattedText.of(text);
