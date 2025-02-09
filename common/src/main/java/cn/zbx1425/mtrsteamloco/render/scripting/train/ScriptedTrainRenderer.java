@@ -105,7 +105,8 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
         final int light = LightTexture.pack(world.getBrightness(LightLayer.BLOCK, posAverage), world.getBrightness(LightLayer.SKY, posAverage));
         
         if (shouldRender) {
-            carPose = new Matrix4f(matrices.last().pose()).copy();
+            // carPose = new Matrix4f(matrices.last().pose()).copy();
+            carPose.rotateZ(2 * roll);
             synchronized (trainScripting) {
                 trainScripting.commitCar(carIndex, MainClient.drawScheduler, carPose, worldPose, light);
             }

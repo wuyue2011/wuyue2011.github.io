@@ -208,7 +208,7 @@ public abstract class TrainClientMixin extends Train implements IGui{
             Matrices pre = new Matrices();
             pre.translate(prevCarX - offset.x, prevCarY - offset.y, prevCarZ - offset.z);
             pre.rotateY(prevCarYaw);
-            pre.rotateX(prevCarPitch);
+            pre.rotateX(- prevCarPitch);
             pre.translate(0, -1, 0);
             pre.rotateZ(- preRoll);
             pre.translate(0, 1, 0);
@@ -216,7 +216,7 @@ public abstract class TrainClientMixin extends Train implements IGui{
             Matrices thi = new Matrices();
             thi.translate(newX, newY, newZ);
             thi.rotateY(carYaw);
-            thi.rotateX(carPitch);
+            thi.rotateX(- carPitch);
             thi.translate(0, -1, 0);
             thi.rotateZ(- roll);
             thi.translate(0, 1, 0);

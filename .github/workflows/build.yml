@@ -36,7 +36,7 @@ jobs:
         with:
           name: MTR-ANTE-${{ steps.vars.outputs.sha_short }}+${{ matrix.minecraft }}
           path: build/*.jar
-  upload-:
+  upload-collectively:
     needs: build
     runs-on: ubuntu-latest
     steps:
