@@ -19,6 +19,8 @@
     + [列车渲染样例](js-example-train.md)
   - [装饰物件相关](js-eyecandy.md)
     + [装饰物件渲染样例](js-example-eyecandy.md)
+  - [轨道相关](js-rail.md)
+    + [轨道渲染案例](js-example-rail.md)
   - [动态贴图](js-dynamic-texture.md)
     + [显示屏工具类](js-display-helper.md)
   - [高阶技巧](js-advanced.md)

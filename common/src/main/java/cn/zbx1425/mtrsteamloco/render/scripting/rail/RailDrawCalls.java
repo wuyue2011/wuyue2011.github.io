@@ -16,14 +16,7 @@ import net.minecraft.world.phys.AABB;
 
 public interface RailDrawCalls {
     public static interface RailDrawCall {
-        public void commit(DrawScheduler drawScheduler, Matrix4f world);
-        public float getDistanceFrom(Vector3f src);
-        public boolean isVisible(Frustum frustum);
-        default public void commit(DrawScheduler drawScheduler, Matrix4f world, Frustum frustum, Vector3f cameraPos, int maxRailDistance) {
-            if (getDistanceFrom(cameraPos) <= maxRailDistance && isVisible(frustum)) {
-                commit(drawScheduler, world);
-            }
-        }
+        void commit(DrawScheduler drawScheduler, Matrix4f world, Frustum frustum, Vector3f cameraPos, int maxRailDistance);
     }
 
     public static class SimpleRailDrawCall implements RailDrawCall {
@@ -32,7 +25,6 @@ public interface RailDrawCalls {
         private final DynamicModelHolder holder;
         private final Vector3f local;
         private final BlockPos pos;
-        private final AABB boundingBox;
 
         public SimpleRailDrawCall(ModelCluster model, Matrix4f matrix) {
             this.matrix = matrix.copy();
@@ -40,7 +32,6 @@ public interface RailDrawCalls {
             this.holder = null;
             local = matrix.getTranslationPart();
             pos = local.toBlockPos();
-            boundingBox = new AABB(local.x() - 0.5, local.y() - 0.5, local.z() - 0.5, local.x() + 0.5, local.y() + 0.5, local.z() + 0.5);
         }
 
         public SimpleRailDrawCall(DynamicModelHolder holder, Matrix4f matrix) {
@@ -49,25 +40,24 @@ public interface RailDrawCalls {
             this.holder = holder;
             local = matrix.getTranslationPart();
             pos = local.toBlockPos();
-            boundingBox = new AABB(local.x() - 0.5, local.y() - 0.5, local.z() - 0.5, local.x() + 0.5, local.y() + 0.5, local.z() + 0.5);
         }
 
         @Override
-        public void commit(DrawScheduler drawScheduler, Matrix4f world) {
+        public void commit(DrawScheduler drawScheduler, Matrix4f world, Frustum frustum, Vector3f cameraPos, int maxRailDistance) {
+            if (getDistanceFrom(cameraPos) <= maxRailDistance) {
+                commit(drawScheduler, world);
+            }
+        }
+
+        private void commit(DrawScheduler drawScheduler, Matrix4f world) {
             Matrix4f mat = world.copy();
             mat.mul(matrix);
             int light = LevelRenderer.getLightColor(Minecraft.getInstance().level, pos);
             drawScheduler.enqueue(model == null? holder.getUploadedModel() : model, mat, light);
         }
 
-        @Override
-        public float getDistanceFrom(Vector3f src) {
+        private float getDistanceFrom(Vector3f src) {
             return src.distance(local);
-        }
-
-        @Override
-        public boolean isVisible(Frustum frustum) {
-            return frustum.isVisible(boundingBox);
         }
     }
 }

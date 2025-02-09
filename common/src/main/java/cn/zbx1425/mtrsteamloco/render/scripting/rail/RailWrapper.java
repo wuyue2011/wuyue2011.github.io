@@ -57,11 +57,11 @@ public class RailWrapper{
         return new Vector3f(rail.getPosition(value));
     }
 
-    public void render(Rail.RenderRail callback, float offsetRadius1, float offsetRadius2) {
-        rail.render(callback, offsetRadius1, offsetRadius2);
-    }
-
     public float getRollAngle(double value) {
         return RailExtraSupplier.getRollAngle(rail, value);
+    }
+
+    public boolean getRenderReversed() {
+        return supplier.getRenderReversed();
     }
 }

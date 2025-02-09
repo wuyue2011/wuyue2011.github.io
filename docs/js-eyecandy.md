@@ -35,7 +35,7 @@ NTE 支持通过 JavaScript 控制装饰物件的渲染。但只能选择完全�
 
 ## 您要定义的函数
 
-您的脚本中应包含以下函数，NTE 会按需调用它们：
+您的脚本中应包含以下函数，(A)NTE 会按需调用它们：
 
 ```javascript
 function create(ctx, state, entity) { ... }

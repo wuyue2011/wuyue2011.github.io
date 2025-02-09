@@ -33,6 +33,7 @@ import mtr.block.BlockPlatform;
 import mtr.block.BlockPSDAPGBase;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.client.renderer.LevelRenderer;
 
 
 import java.util.HashMap;
@@ -230,6 +231,10 @@ public class MinecraftClientUtil {
 
     public static int packLightTexture(int p_109886_, int  p_109887_) {
        return p_109886_ << 4 | p_109887_ << 20;
+    }
+
+    public static int getLightColor(Vector3f pos) {
+        return LevelRenderer.getLightColor(getLevel(), pos.toBlockPos());
     }
 
     public static void setScreen(Screen screen) {

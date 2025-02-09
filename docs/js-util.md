@@ -198,6 +198,10 @@ MTR 的客户端数据，可以用来读取换乘线路等。参见 MTR 源码 C
 
   获取某个位置周围的节点的坐标。
 
+- `static int MinecraftClient.getLightColor(pos: Vector3f)`
+  
+  获取某个位置的亮度颜色。
+
 — `static MinecraftClient.getCameraPos(): Vector3f`
 
   获取相机的位置。

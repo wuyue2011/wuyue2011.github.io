@@ -71,6 +71,7 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
         PoseStackUtil.rotX(matrices, hasPitch ? pitch : 0);
 
         float roll = TrainExtraSupplier.getRollAngleAt(train, carIndex);
+        matrices.pushPose();
         matrices.translate(0D, 1D, 0D);
         PoseStackUtil.rotZ(matrices, -roll);
         matrices.translate(0D, -1D, 0D);
@@ -80,7 +81,12 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
         if (offset != null) {
             carPose.translate((float) offset.x, (float) offset.y, (float) offset.z);
         }
-        carPose.mul(new Matrix4f(matrices.last().pose()));
+        carPose.translate((float) x, (float) y, (float) z);
+        carPose.rotateY(yaw);
+        carPose.rotateX(hasPitch ? pitch : 0);
+        carPose.translate(0, -1, 0);
+        carPose.rotateZ(roll);
+        carPose.translate(0, 1, 0);
 
         trainScripting.trainExtra.reset(posAverage != null && posAverage.distSqr(camera.getBlockPosition()) <= RenderTrains.DETAIL_RADIUS_SQUARED);
         trainScripting.trainExtra.doorLeftOpen[carIndex] = doorLeftOpen;
@@ -104,9 +110,12 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
 
         final int light = LightTexture.pack(world.getBrightness(LightLayer.BLOCK, posAverage), world.getBrightness(LightLayer.SKY, posAverage));
         
+        matrices.popPose();
         if (shouldRender) {
-            // carPose = new Matrix4f(matrices.last().pose()).copy();
-            carPose.rotateZ(2 * roll);
+            carPose = new Matrix4f(matrices.last().pose()).copy();
+            carPose.translate(0, -1, 0);
+            carPose.rotateZ(roll);
+            carPose.translate(0, 1, 0);
             synchronized (trainScripting) {
                 trainScripting.commitCar(carIndex, MainClient.drawScheduler, carPose, worldPose, light);
             }
