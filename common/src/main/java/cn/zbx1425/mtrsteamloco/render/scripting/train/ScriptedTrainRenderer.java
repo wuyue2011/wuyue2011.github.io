@@ -66,6 +66,7 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
 
         final boolean hasPitch = pitch < 0 ? train.transportMode.hasPitchAscending : train.transportMode.hasPitchDescending;
         Matrix4f worldPose = new Matrix4f(matrices.last().pose()).copy();
+		matrices.pushPose();
         matrices.translate(x, y, z);
         PoseStackUtil.rotY(matrices, (float) Math.PI + yaw);
         PoseStackUtil.rotX(matrices, hasPitch ? pitch : 0);

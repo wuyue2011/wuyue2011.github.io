@@ -36,6 +36,7 @@ jobs:
         with:
           name: MTR-ANTE-${{ steps.vars.outputs.sha_short }}+${{ matrix.minecraft }}
           path: build/*.jar
+          compression-level: 9
   upload-collectively:
     needs: build
     runs-on: ubuntu-latest
@@ -57,3 +58,4 @@ jobs:
         with:
           name: MTR-ANTE-${{ steps.vars.outputs.sha_short }}
           path: artifacts/*.jar
+          compression-level: 9
