@@ -158,8 +158,9 @@ public class RenderTrainDK3 extends TrainRendererBase {
         PoseStackUtil.rotX(matrices, hasPitch ? pitch : 0);
 
         float roll = TrainExtraSupplier.getRollAngleAt(train, carIndex);
+        
         matrices.translate(0D, 1D, 0D);
-        PoseStackUtil.rotZ(matrices, -roll);
+        PoseStackUtil.rotZ(matrices, train.isReversed() ? roll : -roll);
         matrices.translate(0D, -1D, 0D);
 
         final int light = LightTexture.pack(world.getBrightness(LightLayer.BLOCK, posAverage), world.getBrightness(LightLayer.SKY, posAverage));

@@ -31,8 +31,9 @@ public abstract class JonModelTrainRendererMixin extends TrainRendererBase{
     @Inject(method = "renderCar", at = @At(value = "INVOKE", target = "Lmtr/mappings/UtilitiesClient;rotateX(Lcom/mojang/blaze3d/vertex/PoseStack;F)V", ordinal = 0, shift = At.Shift.AFTER), remap = true)
     private void injectRenderCar(int carIndex, double x, double y, double z, float yaw, float pitch, boolean doorLeftOpen, boolean doorRightOpen, CallbackInfo ci) {
         float roll = TrainExtraSupplier.getRollAngleAt(train, carIndex);
+        boolean isReversed = train.isReversed();
         matrices.translate(0D, 1D, 0D);
-        PoseStackUtil.rotZ(matrices, -roll);
+        PoseStackUtil.rotZ(matrices, isReversed ? roll : -roll);
         matrices.translate(0D, -1D, 0D);
     }
 

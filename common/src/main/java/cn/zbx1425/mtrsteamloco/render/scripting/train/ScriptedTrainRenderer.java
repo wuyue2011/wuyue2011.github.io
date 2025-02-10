@@ -68,6 +68,7 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
         Matrix4f worldPose = new Matrix4f(matrices.last().pose()).copy();
 
         float roll = TrainExtraSupplier.getRollAngleAt(train, carIndex);
+        boolean isReversed = train.isReversed();
 
         Matrix4f carPose = new Matrix4f();
         // Vec3 offset = train.vehicleRidingClient.getVehicleOffset();
@@ -78,7 +79,7 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
         carPose.rotateY((float) Math.PI + yaw);
         carPose.rotateX(hasPitch ? pitch : 0);
         carPose.translate(0, -1, 0);
-        carPose.rotateZ(roll);
+        carPose.rotateZ(isReversed? -roll : roll);
         carPose.translate(0, 1, 0);
 
         trainScripting.trainExtra.reset(posAverage != null && posAverage.distSqr(camera.getBlockPosition()) <= RenderTrains.DETAIL_RADIUS_SQUARED);
