@@ -66,24 +66,16 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
 
         final boolean hasPitch = pitch < 0 ? train.transportMode.hasPitchAscending : train.transportMode.hasPitchDescending;
         Matrix4f worldPose = new Matrix4f(matrices.last().pose()).copy();
-		matrices.pushPose();
-        matrices.translate(x, y, z);
-        PoseStackUtil.rotY(matrices, (float) Math.PI + yaw);
-        PoseStackUtil.rotX(matrices, hasPitch ? pitch : 0);
 
         float roll = TrainExtraSupplier.getRollAngleAt(train, carIndex);
-        matrices.pushPose();
-        matrices.translate(0D, 1D, 0D);
-        PoseStackUtil.rotZ(matrices, -roll);
-        matrices.translate(0D, -1D, 0D);
 
         Matrix4f carPose = new Matrix4f();
-        Vec3 offset = train.vehicleRidingClient.getVehicleOffset();
-        if (offset != null) {
-            carPose.translate((float) offset.x, (float) offset.y, (float) offset.z);
-        }
+        // Vec3 offset = train.vehicleRidingClient.getVehicleOffset();
+        // if (offset != null) {
+        //     carPose.translate((float) offset.x, (float) offset.y, (float) offset.z);
+        // }
         carPose.translate((float) x, (float) y, (float) z);
-        carPose.rotateY(yaw);
+        carPose.rotateY((float) Math.PI + yaw);
         carPose.rotateX(hasPitch ? pitch : 0);
         carPose.translate(0, -1, 0);
         carPose.rotateZ(roll);
@@ -111,16 +103,14 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
 
         final int light = LightTexture.pack(world.getBrightness(LightLayer.BLOCK, posAverage), world.getBrightness(LightLayer.SKY, posAverage));
         
-        matrices.popPose();
         if (shouldRender) {
-            carPose = new Matrix4f(matrices.last().pose()).copy();
-            carPose.translate(0, -1, 0);
-            carPose.rotateZ(roll);
-            carPose.translate(0, 1, 0);
+            Matrix4f basePose = worldPose.copy();
+            basePose.mul(carPose);
             synchronized (trainScripting) {
-                trainScripting.commitCar(carIndex, MainClient.drawScheduler, carPose, worldPose, light);
+                trainScripting.commitCar(carIndex, MainClient.drawScheduler, basePose, worldPose, light);
             }
         }
+
         matrices.popPose();
 
         if (carIndex == train.trainCars - 1) {
