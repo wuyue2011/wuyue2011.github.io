@@ -25,6 +25,8 @@ import cn.zbx1425.mtrsteamloco.data.ShapeSerializer;
 import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
 import net.minecraft.network.chat.Component;
 import cn.zbx1425.mtrsteamloco.render.scripting.rail.RailDrawCalls.*;
+import com.google.gson.JsonObject;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +53,10 @@ public class ScriptHolder {
     public String contextTypeName;
     private Map<ResourceLocation, String> scripts;
 
-    public void load(String name, String contextTypeName, ResourceManager resourceManager, Map<ResourceLocation, String> scripts) throws Exception {
+    private JsonObject config;
+    private String key;
+
+    public void load(String name, String contextTypeName, ResourceManager resourceManager, Map<ResourceLocation, String> scripts, JsonObject config, String key) throws Exception {
         this.name = name;
         this.contextTypeName = contextTypeName;
         this.scripts = scripts;
@@ -61,11 +66,13 @@ public class ScriptHolder {
         this.useFunctions.clear();
         this.failTime = 0;
         this.failException = null;
+        this.config = config.deepCopy();
+        this.key = key;
 
         Context rhinoCtx = Context.enter();
         rhinoCtx.setLanguageVersion(Context.VERSION_ES6);
         try {
-            scope = createImporter(rhinoCtx);
+            scope = createImporter(rhinoCtx, config, key);
 
             // Run scripts
             ScriptResourceUtil.activeContext = rhinoCtx;
@@ -90,7 +97,7 @@ public class ScriptHolder {
         }
     }
 
-    private static ImporterTopLevel createImporter(Context rhinoCtx) throws Exception {
+    private static ImporterTopLevel createImporter(Context rhinoCtx, JsonObject config, String key) throws Exception {
         ImporterTopLevel scope = new ImporterTopLevel(rhinoCtx);
 
         // Populate Scope with global functions
@@ -147,6 +154,14 @@ public class ScriptHolder {
         
         scope.put("Optional", scope, new NativeJavaClass(scope, Optional.class));
 
+        JsonObject copy = config.deepCopy();
+        if (!copy.has(key)) copy.addProperty("key", key);
+        String jsonStr = new GsonBuilder().setPrettyPrinting().create().toJson(copy);
+        scope.put("config", scope, jsonStr);
+        String code = "config = JSON.parse(config);";
+        rhinoCtx.evaluateString(scope, code, "parse config", 1, null);
+        // scope.put("config", scope, result);
+
         try {
             String[] classesToLoad = {
                     "util.AddParticleHelper",
@@ -173,7 +188,7 @@ public class ScriptHolder {
     }
 
     public void reload(ResourceManager resourceManager) throws Exception {
-        load(name, contextTypeName, resourceManager, scripts);
+        load(name, contextTypeName, resourceManager, scripts, config, key);
     }
 
     private void acquireFunction(String functionName, List<Function> target) {

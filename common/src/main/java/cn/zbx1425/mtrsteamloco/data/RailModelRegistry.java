@@ -136,7 +136,7 @@ public class RailModelRegistry {
                 ResourceLocation scriptLocation = new ResourceLocation(scriptFiles.get(i).getAsString());
                 scripts.put(scriptLocation, ResourceUtil.readResource(resourceManager, scriptLocation));
             }
-            script.load("Rail " + key, "Rail", resourceManager, scripts);
+            script.load("Rail " + key, "Rail", resourceManager, scripts, obj, key);
         }
 
         return new RailModelProperties(Text.translatable(obj.get("name").getAsString()), rawModel, repeatInterval, yOffset, script);

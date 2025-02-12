@@ -66,7 +66,6 @@ public class ClientProxy {
                 ScriptDebugOverlay.render(event.getMatrixStack());
             }
 #endif
-            Main.LOGGER.info("onOverlayRender");
         }
 
         @SubscribeEvent

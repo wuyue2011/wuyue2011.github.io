@@ -136,7 +136,7 @@ public class EyeCandyRegistry {
                 ResourceLocation scriptLocation = new ResourceLocation(scriptFiles.get(i).getAsString());
                 scripts.put(scriptLocation, ResourceUtil.readResource(resourceManager, scriptLocation));
             }
-            script.load("EyeCandy " + key, "Block", resourceManager, scripts);
+            script.load("EyeCandy " + key, "Block", resourceManager, scripts, obj, key);
         }
         String shape = obj.has("shape")? obj.get("shape").getAsString() : "0, 0, 0, 16, 16, 16";
         String collisionShape = obj.has("collisionShape") ? obj.get("collisionShape").getAsString() : "0, 0, 0, 0, 0, 0";
