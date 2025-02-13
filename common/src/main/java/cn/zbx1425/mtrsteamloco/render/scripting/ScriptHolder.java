@@ -66,7 +66,7 @@ public class ScriptHolder {
         this.useFunctions.clear();
         this.failTime = 0;
         this.failException = null;
-        this.config = config.deepCopy();
+        this.config = config;
         this.key = key;
 
         Context rhinoCtx = Context.enter();
@@ -154,7 +154,7 @@ public class ScriptHolder {
         
         scope.put("Optional", scope, new NativeJavaClass(scope, Optional.class));
 
-        JsonObject copy = config.deepCopy();
+        JsonObject copy = config;
         if (!copy.has(key)) copy.addProperty("key", key);
         String jsonStr = new GsonBuilder().setPrettyPrinting().create().toJson(copy);
         scope.put("config", scope, jsonStr);
