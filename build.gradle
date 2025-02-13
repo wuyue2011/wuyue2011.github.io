@@ -50,44 +50,50 @@ configure(subprojects.findAll {it.name != 'rhino'}) {
 }
 
 task setupLibrary() {
-	String minecraftMappingsBaseURL1 = "https://github.com/zbx1425/Minecraft-Mappings/archive/refs/heads/"
-	String minecraftMappingsBaseURL2 = "https://ghp.ci/https://github.com/zbx1425/Minecraft-Mappings/archive/refs/heads/"
-	String url1 = "${minecraftMappingsBaseURL1}${is_1_19_3 ? minecraft_version : "1." + minecraft_main_version}.zip"
-	String url2 = "${minecraftMappingsBaseURL2}${is_1_19_3 ? minecraft_version : "1." + minecraft_main_version}.zip"
+	// String minecraftMappingsBaseURL1 = "https://github.com/zbx1425/Minecraft-Mappings/archive/refs/heads/"
+	// String minecraftMappingsBaseURL2 = "https://ghp.ci/https://github.com/zbx1425/Minecraft-Mappings/archive/refs/heads/"
+	// String url1 = "${minecraftMappingsBaseURL1}${is_1_19_3 ? minecraft_version : "1." + minecraft_main_version}.zip"
+	// String url2 = "${minecraftMappingsBaseURL2}${is_1_19_3 ? minecraft_version : "1." + minecraft_main_version}.zip"
 
-	doLast {
+	// doLast {
 
-		String baseURL = is_1_20 ? "https://storage.zbx1425.cn/mtr-artifacts/libs/" : "https://www.minecrafttransitrailway.com/libs/"
+	// 	String baseURL = is_1_20 ? "https://storage.zbx1425.cn/mtr-artifacts/libs/" : "https://www.minecrafttransitrailway.com/libs/"
 
-		download {
-			src "${baseURL}${rootProject.mtr_version}/MTR-common-${minecraft_version}-${rootProject.mtr_version}-dev.jar"
-			dest "checkouts/mtr-common.jar"
-			overwrite true
-		}
+	// 	download {
+	// 		src "${baseURL}${rootProject.mtr_version}/MTR-common-${minecraft_version}-${rootProject.mtr_version}-dev.jar"
+	// 		dest "checkouts/mtr-common.jar"
+	// 		overwrite true
+	// 	}
 
-		download {
-			src "${baseURL}${rootProject.mtr_version}/MTR-fabric-${minecraft_version}-${rootProject.mtr_version}-dev-shadow.jar"
-			dest "checkouts/mtr-fabric.jar"
-			overwrite true
-		}
+	// 	download {
+	// 		src "${baseURL}${rootProject.mtr_version}/MTR-fabric-${minecraft_version}-${rootProject.mtr_version}-dev-shadow.jar"
+	// 		dest "checkouts/mtr-fabric.jar"
+	// 		overwrite true
+	// 	}
 
-		download {
-			src "${baseURL}${rootProject.mtr_version}/MTR-forge-${minecraft_version}-${rootProject.mtr_version}-dev-shadow.jar"
-			dest "checkouts/mtr-forge.jar"
-			overwrite true
-		}
+	// 	download {
+	// 		src "${baseURL}${rootProject.mtr_version}/MTR-forge-${minecraft_version}-${rootProject.mtr_version}-dev-shadow.jar"
+	// 		dest "checkouts/mtr-forge.jar"
+	// 		overwrite true
+	// 	}
 
-		download {
-			src url1
-			dest "checkouts/files.zip"
-			overwrite true
-		}
-	}
+	// 	download {
+	// 		src url1
+	// 		dest "checkouts/files.zip"
+	// 		overwrite true
+	// 	}
+	// }
 
-	download {
-		src url1
-		dest "checkouts/files.zip"
-		overwrite false
+	// download {
+	// 	src url1
+	// 	dest "checkouts/files.zip"
+	// 	overwrite false
+	// }
+
+	copy {
+		outputs.upToDateWhen { false }
+		from "lib/${minecraft_version}/"
+		into "checkouts/"
 	}
 
 	copy {
