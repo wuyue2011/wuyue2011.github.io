@@ -38,6 +38,7 @@
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_values.2": "Максимальный радиус продольной кривой, который может быть установлен на этой орбите:%s m",
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_values.3": "Максимальный уклон при текущем радиусе:%s‰",
     "gui.mtrsteamloco.brush_edit_rail.roll_angle": "Поворот:% S°",
+    "gui.mtrsteamloco.brush_edit_rail.enable_roll_angle": "Применить прокрутку",
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_set_max": "Максимум (по умолчанию)",
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_set_none": "Отменить кривую",
     "gui.mtrsteamloco.brush_edit_rail.present": "Текущая модель:%s",

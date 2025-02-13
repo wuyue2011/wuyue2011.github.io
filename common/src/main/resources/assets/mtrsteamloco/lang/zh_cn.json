@@ -38,6 +38,7 @@
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_values.2": "此轨道可设置的最大纵曲线半径: %s m",
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_values.3": "当前半径设定下的最大坡度: %s‰",
     "gui.mtrsteamloco.brush_edit_rail.roll_angle": "滚转: %s °",
+    "gui.mtrsteamloco.brush_edit_rail.enable_roll_angle": "应用滚转",
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_set_max": "最大(默认)",
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_set_none": "取消曲线",
     "gui.mtrsteamloco.brush_edit_rail.present": "当前模型: %s",

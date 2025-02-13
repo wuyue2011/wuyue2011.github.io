@@ -63,12 +63,14 @@ import cn.zbx1425.mtrsteamloco.ClientConfig;
 import net.minecraft.client.gui.components.EditBox;
 import me.shedaniel.clothconfig2.api.Tooltip;
 import me.shedaniel.math.Point;
+import cn.zbx1425.mtrsteamloco.network.util.DoubleFloatMapSerializer;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.HashSet;
 import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -139,7 +141,7 @@ public class BrushEditRailScreen {
                                     compoundTag.remove("ModelKey");
                                 }
                             });
-                        Minecraft.getInstance().setScreen(BrushEditRailScreen.createScreen(parent));
+                        Minecraft.getInstance().setScreen(BrushEditRailScreen.createScreen(pickedRail, pickedPosStart, pickedPosEnd, parent));
                     }
                     return Optional.empty();
                 })
@@ -186,7 +188,7 @@ public class BrushEditRailScreen {
                                 compoundTag.remove("VerticalCurveRadius");
                             }
                         });
-                        Minecraft.getInstance().setScreen(BrushEditRailScreen.createScreen(parent));
+                        Minecraft.getInstance().setScreen(BrushEditRailScreen.createScreen(pickedRail, pickedPosStart, pickedPosEnd, parent));
                     }
                     return Optional.empty();
                 })
@@ -195,11 +197,32 @@ public class BrushEditRailScreen {
             if (enableVertCurveRadius) {
                 common.addEntry(new VertCurveRadiusListEntry(vertCurveRadius, this));
             }
-            common.addEntry(new RollAnglesListEntry());
+
+            boolean enableRollAngle = brushTag != null && brushTag.contains("RollAngleMap");
+
+            common.addEntry(
+                entryBuilder.startBooleanToggle(
+                    Text.translatable("gui.mtrsteamloco.brush_edit_rail.enable_roll_angle"),
+                    enableRollAngle
+                ).setTooltipSupplier(checked -> {
+                    if (checked != enableRollAngle) {
+                        if (!checked) {
+                            updateBrushTag(compoundTag -> {
+                                compoundTag.remove("RollAngleMap");
+                            });
+                        } else {
+                            new RollAnglesListEntry().update();
+                        }
+                        Minecraft.getInstance().setScreen(BrushEditRailScreen.createScreen(pickedRail, pickedPosStart, pickedPosEnd, parent));
+                    }
+                    return Optional.empty();
+                }).build()
+            );
+            if (enableRollAngle) common.addEntry(new RollAnglesListEntry());
 
             Map<String, String> customConfigs = supplier.getCustomConfigs();
             Map<String, ConfigResponder> responders = supplier.getCustomResponders();
-            List<AbstractConfigListEntry> entries = ConfigResponder.getEntrysFromMaps(customConfigs, responders, entryBuilder, () -> BrushEditRailScreen.createScreen(parent));
+            List<AbstractConfigListEntry> entries = ConfigResponder.getEntrysFromMaps(customConfigs, responders, entryBuilder, () -> BrushEditRailScreen.createScreen(pickedRail, pickedPosStart, pickedPosEnd, parent));
             for (AbstractConfigListEntry entry : entries) {
                 common.addEntry(entry);
             }
@@ -263,6 +286,17 @@ public class BrushEditRailScreen {
         if (railBrushProp.contains("VerticalCurveRadius") &&
                 railBrushProp.getFloat("VerticalCurveRadius") != pickedExtra.getVerticalCurveRadius()) {
             pickedExtra.setVerticalCurveRadius(railBrushProp.getFloat("VerticalCurveRadius"));
+            propertyUpdated = true;
+        }
+        if (railBrushProp.contains("RollAngleMap")) {
+            Map<Double, Float> raw = DoubleFloatMapSerializer.deserialize(railBrushProp.getString("RollAngleMap"));
+            Map<Double, Float> rollAngleMap = new HashMap<>();
+            Set<Map.Entry<Double, Float>> entries = new HashSet<>(raw.entrySet());
+            double length = pickedRail.getLength();
+            for(Map.Entry<Double, Float> entry : entries) {
+                rollAngleMap.put(entry.getKey() * length, entry.getValue());
+            }
+            pickedExtra.setRollAngleMap(rollAngleMap);
             propertyUpdated = true;
         }
         if (isBatchApply && !propertyUpdated) {
@@ -336,7 +370,7 @@ public class BrushEditRailScreen {
 
         @Override
         protected List<Pair<String, String>> getRegistryEntries() {
-            return RailModelRegistry.elements.entrySet().stream()
+            return new HashSet<>(RailModelRegistry.elements.entrySet()).stream()
                     .filter(e -> !e.getValue().name.getString().isEmpty())
                     .map(e -> new Pair<>(e.getKey(), e.getValue().name.getString()))
                     .toList();
@@ -502,6 +536,7 @@ public class BrushEditRailScreen {
             Text.translatable("⇄"),
             sender -> {
                 ClientConfig.useEditBoxSetRailRolling = !ClientConfig.useEditBoxSetRailRolling;
+                ClientConfig.save();
                 focusNode(now);
             }
         );
@@ -518,7 +553,7 @@ public class BrushEditRailScreen {
         public RollAnglesListEntry() {
             super(Text.literal(""), null, false);
             Map<Double, Float> rollAngles = supplier.getRollAngleMap();
-            Set<Map.Entry<Double, Float>> entries = rollAngles.entrySet();
+            Set<Map.Entry<Double, Float>> entries = new HashSet<>(rollAngles.entrySet());
             for (Map.Entry<Double, Float> entry : entries) {
                 addNode(new Node(entry.getKey(), entry.getValue()));
             }
@@ -551,6 +586,16 @@ public class BrushEditRailScreen {
             }
             supplier.setRollAngleMap(res);
             PacketUpdateRail.sendUpdateC2S(pickedRail, pickedPosStart, pickedPosEnd);
+
+            updateBrushTag(compoundTag -> {
+                Map<Double, Float> res1 = new HashMap<>();
+                Set<Map.Entry<Double, Float>> entries = new HashSet<>(res.entrySet());
+                double length = pickedRail.getLength();
+                for (Map.Entry<Double, Float> entry : entries) {
+                    res1.put(entry.getKey() / length, entry.getValue());
+                }
+                compoundTag.putString("RollAngleMap", DoubleFloatMapSerializer.serializeToString(res1));
+            });
         }
 
         public void focusNode(Node node) {

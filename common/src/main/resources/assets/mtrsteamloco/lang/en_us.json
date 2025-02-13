@@ -38,6 +38,7 @@
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_values.2": "The maximum longitudinal curve radius that can be set for this track:%s m",
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_values.3": "Maximum slope under current radius setting:%s‰",
     "gui.mtrsteamloco.brush_edit_rail.roll_angle": "Rolling:%s °",
+    "gui.mtrsteamloco.brush_edit_rail.enable_roll_angle": "Application Roll",
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_set_max": "Maximum (default)",
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_set_none": "Cancel Curve",
     "gui.mtrsteamloco.brush_edit_rail.present": "Current model:%s",

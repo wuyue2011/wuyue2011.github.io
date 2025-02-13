@@ -38,6 +38,7 @@
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_values.2": "이 트랙에서 설정할 수 있는 최대 누진 반지름:%s m",
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_values.3": "현재 반지름 설정의 최대 경사:%s‰",
     "gui.mtrsteamloco.brush_edit_rail.roll_angle": "스크롤:%s °",
+    "gui.mtrsteamloco.brush_edit_rail.enable_roll_angle": "롤링 적용",
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_set_max": "최대 (기본값)",
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_set_none": "커브 취소",
     "gui.mtrsteamloco.brush_edit_rail.present": "현재 모델:%s",

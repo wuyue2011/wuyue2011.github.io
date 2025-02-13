@@ -38,6 +38,7 @@
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_values.2": "Radio máximo de curva longitudinal que se puede establecer en esta pista::... s m",
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_values.3": "Pendiente máxima establecida por el radio actual:%s‰",
     "gui.mtrsteamloco.brush_edit_rail.roll_angle": "Rodando: S °",
+    "gui.mtrsteamloco.brush_edit_rail.enable_roll_angle": "La aplicación gira",
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_set_max": "Máximo (predeterminado)",
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_set_none": "Cancelar la curva",
     "gui.mtrsteamloco.brush_edit_rail.present": "Modelo actual: s",

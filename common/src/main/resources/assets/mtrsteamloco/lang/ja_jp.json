@@ -38,6 +38,7 @@
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_values.2": "このレールで設定できる最大縦線半径：%s m",
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_values.3": "現在の半径設定での最大勾配：%s‰",
     "gui.mtrsteamloco.brush_edit_rail.roll_angle": "ロール：%s °",
+    "gui.mtrsteamloco.brush_edit_rail.enable_roll_angle": "ロールの適用",
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_set_max": "最大（デフォルト）",
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_set_none": "カーブのキャンセル",
     "gui.mtrsteamloco.brush_edit_rail.present": "現在のモデル:%s",

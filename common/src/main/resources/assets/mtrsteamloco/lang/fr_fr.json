@@ -38,6 +38,7 @@
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_values.2": "Rayon de courbure longitudinale maximal pouvant être réglé pour cette piste:%s m",
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_values.3": "Pente maximale au réglage actuel du rayon:%s‰",
     "gui.mtrsteamloco.brush_edit_rail.roll_angle": "Roll:% S°",
+    "gui.mtrsteamloco.brush_edit_rail.enable_roll_angle": "Appliquer le roll",
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_set_max": "Max (par défaut)",
     "gui.mtrsteamloco.brush_edit_rail.vertical_curve_radius_set_none": "Annuler la courbe",
     "gui.mtrsteamloco.brush_edit_rail.present": "Modèle actuel:%s",
