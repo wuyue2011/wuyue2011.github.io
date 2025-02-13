@@ -223,3 +223,7 @@ tasks.register('dummyForgixOutput', DummyArchiveTask) {
 	archiveVersion = rootProject.mod_version + "+" + minecraft_version
 	archiveExtension = "jar"
 }
+
+tasks.withType(JavaCompile) {
+    outputs.cacheIf { true }
+}
