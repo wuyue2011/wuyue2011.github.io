@@ -267,7 +267,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             rotateX = compoundTag.contains("rotateX") ? compoundTag.getFloat("rotateX") : 0;
             rotateY = compoundTag.contains("rotateY") ? compoundTag.getFloat("rotateY") : 0;
             rotateZ = compoundTag.contains("rotateZ") ? compoundTag.getFloat("rotateZ") : 0;
-            asPlatform = compoundTag.contains("asPlatform") ? compoundTag.getBoolean("asPlatform") : true;
+            asPlatform = compoundTag.contains("asPlatform") ? compoundTag.getBoolean("asPlatform") : false;
             // doorValue = compoundTag.contains("doorValue") ? compoundTag.getFloat("doorValue") : 0;
             // doorTarget = compoundTag.contains("doorTarget") ? compoundTag.getBoolean("doorTarget") : false;
             shape = compoundTag.contains("shape") ? compoundTag.getString("shape") : "0, 0, 0, 16, 16, 16";
