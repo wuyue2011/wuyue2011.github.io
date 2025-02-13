@@ -271,7 +271,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             // doorValue = compoundTag.contains("doorValue") ? compoundTag.getFloat("doorValue") : 0;
             // doorTarget = compoundTag.contains("doorTarget") ? compoundTag.getBoolean("doorTarget") : false;
             shape = compoundTag.contains("shape") ? compoundTag.getString("shape") : "0, 0, 0, 16, 16, 16";
-            collisionShape = compoundTag.contains("collisionShape") ? compoundTag.getString("collisionShape") : "0, 0, 0, 16, 16, 16";
+            collisionShape = compoundTag.contains("collisionShape") ? compoundTag.getString("collisionShape") : "0, 0, 0, 0, 0, 0";
             fixedMatrix = compoundTag.contains("fixedMatrix") ? compoundTag.getBoolean("fixedMatrix") : false;
             lightLevel = compoundTag.contains("lightLevel") ? compoundTag.getInt("lightLevel") : 0;
             isTicketBarrier = compoundTag.contains("isTicketBarrier") ? compoundTag.getBoolean("isTicketBarrier") : false;

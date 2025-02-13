@@ -115,7 +115,21 @@ public class GraphicsTexture implements Closeable {
             target.put((byte) ((pixel >> 24) & 0xFF));  // A
         }
 
-        dynamicTexture.upload();
+        if (!RenderSystem.isOnRenderThread()) {
+            RenderSystem.recordRenderCall(() -> {
+                try {
+                    dynamicTexture.upload();
+                } catch (Exception e) {
+                    Main.LOGGER.error("Failed to upload texture", e);
+                }
+            });
+        } else {
+            try {
+                dynamicTexture.upload();
+            } catch (Exception e) {
+                Main.LOGGER.error("Failed to upload texture", e);
+            }
+        }
     }
 
     public boolean isClosed() {
