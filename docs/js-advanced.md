@@ -24,7 +24,7 @@ function create(ctx, state, entity) {
         // 这些方法仅在render中使用时正确的，在异步线程中调用会导致线程安全问题
         // 若不需要更改绘制内容，可省略.put
         ctx.drawCalls.put(123, new ClusterDrawCall(model, new Matrix4f()));
-    }}, 0, 1000 / 24, TimeUnit.MILLISECONDS));
+    }}), 0, 1000 / 24, TimeUnit.MILLISECONDS);
 }
 
 function dispose(ctx, state, entity) {
