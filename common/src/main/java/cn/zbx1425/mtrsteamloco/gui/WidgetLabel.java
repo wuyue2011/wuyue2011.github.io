@@ -100,4 +100,8 @@ public class WidgetLabel extends AbstractWidget {
         return y;
     }
 #endif
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
 }

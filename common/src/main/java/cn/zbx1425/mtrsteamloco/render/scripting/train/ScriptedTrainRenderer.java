@@ -18,6 +18,7 @@ import net.minecraft.world.phys.Vec3;
 import cn.zbx1425.mtrsteamloco.data.RailExtraSupplier;
 import cn.zbx1425.mtrsteamloco.data.TrainExtraSupplier;
 import mtr.data.Rail;
+import cn.zbx1425.mtrsteamloco.render.scripting.train.TrainWrapper;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -82,13 +83,15 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
         carPose.rotateZ(isReversed? -roll : roll);
         carPose.translate(0, 1, 0);
 
-        trainScripting.trainExtra.reset(posAverage != null && posAverage.distSqr(camera.getBlockPosition()) <= RenderTrains.DETAIL_RADIUS_SQUARED);
-        trainScripting.trainExtra.doorLeftOpen[carIndex] = doorLeftOpen;
-        trainScripting.trainExtra.doorRightOpen[carIndex] = doorRightOpen;
-        trainScripting.trainExtra.lastWorldPose[carIndex] = carPose.copy();
-        trainScripting.trainExtra.lastCarPosition[carIndex] = carPose.getTranslationPart();
-        trainScripting.trainExtra.lastCarRotation[carIndex] = carPose.getEulerAnglesXYZ();
-        trainScripting.trainExtra.shouldRender = shouldRender;
+        TrainWrapper trainExtra = trainScripting.trainExtra;
+        trainExtra.reset();
+        trainExtra.doorLeftOpen[carIndex] = doorLeftOpen;
+        trainExtra.doorRightOpen[carIndex] = doorRightOpen;
+        trainExtra.lastWorldPose[carIndex] = carPose.copy();
+        trainExtra.lastCarPosition[carIndex] = carPose.getTranslationPart();
+        trainExtra.lastCarRotation[carIndex] = carPose.getEulerAnglesXYZ();
+        trainExtra.shouldRender = shouldRender;
+        trainExtra.isInDetailDistance = (posAverage != null && posAverage.distSqr(camera.getBlockPosition()) <= RenderTrains.DETAIL_RADIUS_SQUARED);
 
         if (posAverage == null) {
             if (carIndex == train.trainCars - 1) {

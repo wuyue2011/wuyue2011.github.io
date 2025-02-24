@@ -3,6 +3,7 @@ package cn.zbx1425.mtrsteamloco.network;
 import cn.zbx1425.mtrsteamloco.Main;
 import cn.zbx1425.mtrsteamloco.gui.BrushEditRailScreen;
 import cn.zbx1425.mtrsteamloco.gui.EyeCandyScreen;
+import cn.zbx1425.mtrsteamloco.gui.CompoundCreatorScreen;
 import io.netty.buffer.Unpooled;
 import mtr.Registry;
 import mtr.mappings.UtilitiesClient;
@@ -39,6 +40,9 @@ public class PacketScreen {
                         break;
                     case "brush_edit_rail":
                         minecraftClient.setScreen(BrushEditRailScreen.createScreen(null));
+                        break;
+                    case "compound_creator":
+                        CompoundCreatorScreen.setScreen(null);
                         break;
                 }
             });

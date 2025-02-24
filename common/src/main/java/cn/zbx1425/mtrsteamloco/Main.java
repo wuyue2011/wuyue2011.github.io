@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import cn.zbx1425.mtrsteamloco.item.CompoundCreator;
 
 import java.net.URISyntaxException;
 import java.time.ZoneId;
@@ -57,6 +58,7 @@ public class Main {
 			));
 
 	public static final RegistryObject<ItemWithCreativeTabBase> BRIDGE_CREATOR_1 = new RegistryObject<>(() -> new ItemBridgeCreator(1));
+	public static final RegistryObject<ItemWithCreativeTabBase> COMPOUND_CREATOR = new RegistryObject<>(() -> new CompoundCreator());
 
 	public static final SoundEvent SOUND_EVENT_BELL = RegistryUtilities.createSoundEvent(new ResourceLocation("mtrsteamloco:bell"));
 
@@ -70,6 +72,7 @@ public class Main {
 			registries.registerBlockAndItem("eye_candy", BLOCK_EYE_CANDY, CreativeModeTabs.STATION_BUILDING_BLOCKS);
 			registries.registerBlockEntityType("eye_candy", BLOCK_ENTITY_TYPE_EYE_CANDY);
 			registries.registerItem("bridge_creator_1", BRIDGE_CREATOR_1);
+			registries.registerItem("compound_creator", COMPOUND_CREATOR);
 			registries.registerSoundEvent("bell", SOUND_EVENT_BELL);
 			PARTICLE_STEAM_SMOKE = registries.createParticleType(true);
 			registries.registerParticleType("steam_smoke", PARTICLE_STEAM_SMOKE);
