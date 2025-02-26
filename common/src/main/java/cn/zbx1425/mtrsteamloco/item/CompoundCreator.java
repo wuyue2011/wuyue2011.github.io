@@ -203,13 +203,13 @@ public class CompoundCreator extends ItemNodeModifierBase {
             Vec3 last = rail.getPosition(starts[0]);
             while (System.currentTimeMillis() - startTime < 2) {
                 if (index >= starts.length) {
-                    showProgressMessage(1);
+                    showProgressMessage(100);
                     return true;
                 }
                 if (distance >= starts[index] + length) {
                     index++;
                     if (index >= starts.length) {
-                        showProgressMessage(1);
+                        showProgressMessage(100);
                         return true;
                     }
                     distance = starts[index];
@@ -218,7 +218,7 @@ public class CompoundCreator extends ItemNodeModifierBase {
                 }
                 distance += INCREMENT;
                 if (distance >= length) {
-                    showProgressMessage(1);
+                    showProgressMessage(100);
                     return true;
                 }
                 Vec3 next = rail.getPosition(distance);

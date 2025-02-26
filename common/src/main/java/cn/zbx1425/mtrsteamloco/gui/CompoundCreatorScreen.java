@@ -12,6 +12,9 @@ import me.shedaniel.clothconfig2.api.ScissorsHandler;
 import mtr.screen.WidgetBetterTextField;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.world.item.CreativeModeTab;
+#if MC_VERSION >= "12000"
+import net.minecraft.world.item.CreativeModeTabs;
+#endif
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.NonNullList;
 import net.minecraft.util.FormattedCharSequence;
@@ -37,6 +40,8 @@ import net.minecraft.client.renderer.GameRenderer;
 import static cn.zbx1425.mtrsteamloco.item.CompoundCreator.*;
 import mtr.client.IDrawing;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.block.state.StateDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +51,7 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.Iterator;
+import java.util.Collection;
 
 public class CompoundCreatorScreen extends Screen {
     public static void setScreen(Screen parent) {
@@ -153,13 +159,20 @@ public class CompoundCreatorScreen extends Screen {
     @Override
 #if MC_VERSION >= "12000"
     public void render(GuiGraphics matrices, int mouseX, int mouseY, float partialTick) {
+        renderDirtBackground(matrices);
 #else
     public void render(PoseStack matrices, int mouseX, int mouseY, float partialTick) {
+        renderDirtBackground(0);
 #endif
         super.render(matrices, mouseX, mouseY, partialTick);
-        renderDirtBackground(0);
         fill(matrices, 0, 38, width, height - 38, 0x90000000);
-        Gui.drawCenteredString(matrices, minecraft.font, "我是标题", width / 2, 18, 0xFFFFFFFF);
+        
+        String title = "我是标题";
+#if MC_VERSION >= "12000"
+        matrices.drawCenteredString(minecraft.font, title, width / 2, 18, 0xFFFFFFFF);
+#else
+        Gui.drawCenteredString(matrices, minecraft.font, title, width / 2, 18, 0xFFFFFFFF);
+#endif
         IDrawing.setPositionAndWidth(btnAdd, width - 50, 60, 40);
         IDrawing.setPositionAndWidth(btnRemove, width - 50, 90, 40);
         IDrawing.setPositionAndWidth(btnClear, width - 50, 120, 40);
@@ -360,6 +373,16 @@ public class CompoundCreatorScreen extends Screen {
             selectedEntry = this;
         }
 
+        private boolean isFocused = false;
+        
+        public boolean isFocused() {
+            return isFocused;
+        }
+
+        public void setFocused(boolean focused) {
+            isFocused = focused;
+        }
+
         public void moveDown() {
             int index = entries.indexOf(this);
             if (index < entries.size() - 1) {
@@ -544,10 +567,11 @@ public class CompoundCreatorScreen extends Screen {
         @Override
     #if MC_VERSION >= "12000"
         public void render(GuiGraphics matrices, int mouseX, int mouseY, float partialTick) {
+            renderDirtBackground(matrices);
     #else
         public void render(PoseStack matrices, int mouseX, int mouseY, float partialTick) {
-    #endif
             renderDirtBackground(0);
+    #endif
 
             super.render(matrices, mouseX, mouseY, partialTick);
             
@@ -579,7 +603,7 @@ public class CompoundCreatorScreen extends Screen {
 
     #if MC_VERSION >= "12000"
         private void renderBlockState(GuiGraphics matrices, int x, int y, float partialTick, BlockState state) {
-
+            matrices.renderFakeItem(new ItemStack(state.getBlock()), x, y);
         }
     #else
         private void renderBlockState(PoseStack matrices, int x, int y, float partialTick, BlockState state) {
@@ -641,6 +665,22 @@ public class CompoundCreatorScreen extends Screen {
                 }
                 if (isMouseOver(mouseX, mouseY)) {
                     drawText(matrices, minecraft.font, (state == null ? "Empty" : state.getBlock().getName().getString()), 0, height - 10, 0xffffffff);
+                    if (state != null) {
+                        Block block = state.getBlock();
+                        StateDefinition<Block, BlockState> statedefinition = block.getStateDefinition();
+                        Collection<Property<?>> collection = statedefinition.getProperties();
+                        StringBuilder sb = new StringBuilder();
+                        sb.append("/");
+                        for (Property<?> property : collection) {
+                            sb.append(property.getName());
+                            sb.append(": ");
+                            sb.append(state.getValue(property).toString());
+                            sb.append("/");
+                        }
+                        String s = sb.toString();
+                        Main.LOGGER.info(s);
+                        drawText(matrices, minecraft.font, s, 0, height - 20, 0xffffffff);
+                    }
                 }
             }
 
@@ -662,6 +702,16 @@ public class CompoundCreatorScreen extends Screen {
                 }
                 return false;
             }
+
+            private boolean isFocused = false;
+
+            public boolean isFocused() {
+                return isFocused;
+            }
+
+            public void setFocused(boolean focused) {
+                isFocused = focused;
+            }
         }
 
         public class Inventory implements GuiEventListener {
@@ -679,10 +729,18 @@ public class CompoundCreatorScreen extends Screen {
                         now.state = square.state;
                     }, square -> square.state == now.state));
                 }*/
+        #if MC_VERSION >= "12000"
+                for (CreativeModeTab tab : CreativeModeTabs.tabs()) {
+                    for (ItemStack stack : tab.getDisplayItems()) {
+                        items.add(stack);
+                    }
+                }
+        #else
                 for (CreativeModeTab tab : CreativeModeTab.TABS) {
                     if (tab == CreativeModeTab.TAB_HOTBAR) continue;
                     tab.fillItemList(items);
                 }
+        #endif
                 blocksList.add(new Square(0, 0, Blocks.AIR.defaultBlockState(), square -> {
                         now.state = square.state;
                     }, square -> square.state == now.state));
@@ -733,6 +791,16 @@ public class CompoundCreatorScreen extends Screen {
                     return true;
                 }
                 return false;
+            }
+
+            private boolean isFocused = false;
+
+            public boolean isFocused() {
+                return isFocused;
+            }
+
+            public void setFocused(boolean focused) {
+                isFocused = focused;
             }
 
             @Override
