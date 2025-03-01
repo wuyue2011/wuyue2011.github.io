@@ -612,7 +612,7 @@ public class CompoundCreatorScreen extends Screen {
             int a = task.width / 2;
             int in = 3;
             int ay = 42;
-            drawCenteredString(matrices, minecraft.font, "0", (int) midX, y, 0xFFFFFFFF);
+            drawCenteredString(matrices, minecraft.font, "0", (int) midX, ay, 0xFFFFFFFF);
             if (a < 1) ;
             else if (a < in) {
                 drawCenteredString(matrices, minecraft.font, "+" + a, (int) midX + a * Square.length, ay, 0xFFFFFFFF);
