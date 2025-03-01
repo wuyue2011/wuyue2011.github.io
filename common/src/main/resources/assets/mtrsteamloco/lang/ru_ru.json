@@ -5,6 +5,7 @@
     "block.mtrsteamloco.feedback_box": "Почтовый ящик",
     "block.mtrsteamloco.eye_candy": "Декоративные предметы",
     "item.mtrsteamloco.bridge_creator_1": "Создатель мостов",
+    "item.mtrsteamloco.compound_creator": "Композитный конструктор",
     "train.mtrsteamloco.d51": "Паровозы типа D51",
     "train.mtrsteamloco.dk3": "DK3 (Покрытие второй линии Пекинского метро)",
     "train.mtrsteamloco.dk3_mini": "DK3 (Покраска второй линии Пекинского метро, мини)",
@@ -69,6 +70,16 @@
     "gui.mtrsteamloco.config.client.custom_config.engaged": "Использованные настройки",
     "gui.mtrsteamloco.config.client.custom_config.untapped": "Неиспользованные настройки",
     "gui.mtrsteamloco.mtr_version_low": "Обновите MTR: Для ANTE%s требуется MTR%s и более поздних версий, в то время как установленная версия%s ниже.",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.title": "Настройка задач",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.start_pos": "Начальная точка",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.length": "Длина",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.interval": "Интервал",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.increment": "Увеличение",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.use_yaw": "Использовать угол рыскания",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.use_pitch": "Использовать угол тангажа",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.use_roll": "Использовать угол поворота",
     "key.mtrsteamloco.train_screen": "Экран поезда",
-    "category.mtrsteamloco.keybinding": "Привязка клавиш ANTE"
+    "category.mtrsteamloco.keybinding": "Привязка клавиш ANTE",
+    "gui.mtr.percentage_complete_slice": "Задачи разреза (%s%%)",
+    "gui.mtr.rail_action_bridge": "Создание задачи среза%s (длина блока%s)"
 }

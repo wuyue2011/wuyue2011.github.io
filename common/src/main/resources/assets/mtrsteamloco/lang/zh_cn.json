@@ -5,7 +5,7 @@
     "block.mtrsteamloco.feedback_box": "留言箱",
     "block.mtrsteamloco.eye_candy": "装饰物件",
     "item.mtrsteamloco.bridge_creator_1": "桥梁创建器",
-    "item.mtrsteamloco.compound_creator": "复合创建器", 
+    "item.mtrsteamloco.compound_creator": "复合创建器",
     "train.mtrsteamloco.d51": "日本国铁 D51 型蒸汽机车",
     "train.mtrsteamloco.dk3": "DK3 (北京地铁二号线涂装)",
     "train.mtrsteamloco.dk3_mini": "DK3 (北京地铁二号线涂装, 迷你)",
@@ -70,7 +70,16 @@
     "gui.mtrsteamloco.config.client.custom_config.engaged": "已使用的自定义配置",
     "gui.mtrsteamloco.config.client.custom_config.untapped": "未使用的自定义配置",
     "gui.mtrsteamloco.mtr_version_low": "请更新 MTR: ANTE %s 需要 MTR %s 及以上版本, 而现安装的 %s 版本较低。",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.title": "任务配置",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.start_pos": "起点",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.length": "长度",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.interval": "间隔",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.increment": "增量",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.use_yaw": "使用偏航角",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.use_pitch": "使用俯仰角",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.use_roll": "使用滚转角",
     "key.mtrsteamloco.train_screen": "列车屏幕",
     "category.mtrsteamloco.keybinding": "ANTE 按键绑定",
-    "gui.mtr.percentage_complete_slice": "切片任务 (%s%%)"
+    "gui.mtr.percentage_complete_slice": "切片任务 (%s%%)",
+    "gui.mtr.rail_action_slice": "由 %s 创建切片任务 (%s 方块长)"
 }

@@ -40,14 +40,18 @@ import net.minecraft.client.gui.components.EditBox;
 import static cn.zbx1425.mtrsteamloco.item.CompoundCreator.*;
 
 #if MC_VERSION >= "12000"
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.CreativeModeTabs;
 #else
-import net.minecraft.core.Registry;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
+#endif
+
+#if MC_VERSION >= "11903"
+import net.minecraft.core.registries.BuiltInRegistries;
+#else
+import net.minecraft.core.Registry;
 #endif
 
 import java.util.ArrayList;
@@ -77,7 +81,6 @@ public class CompoundCreatorScreen extends Screen {
     private Screen parent;
     private List<Entry> entries = new ArrayList<>();
     private Entry selectedEntry = null;
-    // private final WidgetLabel title = new WidgetLabel(0, 0, 20, Text.translatable("gui.mtrsteamloco.compound_creator.title"), () -> {});
     private int scroll = 0; 
     private Rectangle scissor = null;
     private boolean draggingSlider = false;
@@ -169,11 +172,10 @@ public class CompoundCreatorScreen extends Screen {
     @Override
 #if MC_VERSION >= "12000"
     public void render(GuiGraphics matrices, int mouseX, int mouseY, float partialTick) {
-        renderDirtBackground(matrices);
 #else
     public void render(PoseStack matrices, int mouseX, int mouseY, float partialTick) {
-        renderDirtBackground(0);
 #endif
+        renderDirtBackground(this, matrices);
         super.render(matrices, mouseX, mouseY, partialTick);
         fill(matrices, 0, 38, width, height - 38, 0x90000000);
         
@@ -311,6 +313,10 @@ public class CompoundCreatorScreen extends Screen {
     private static void drawCenteredString(GuiGraphics guiGraphics, Font font, String text, int x, int y, int color) {
         guiGraphics.drawCenteredString(font, text, x, y, color);
     }
+
+    public static void renderDirtBackground(Screen screen, GuiGraphics guiGraphics) {
+        screen.renderDirtBackground(guiGraphics);
+    }
 #else
     private static void drawText(PoseStack matrices, Font font, FormattedCharSequence text, int x, int y, int color) {
         font.drawShadow(matrices, text, x, y, color);
@@ -320,6 +326,16 @@ public class CompoundCreatorScreen extends Screen {
         RenderSystem.setShaderTexture(0, texture);
         GuiComponent.blit(matrices, x, y, width, height, 0, 0, 1, 1, 1, 1);
     }
+
+#if MC_VERSION >= "11904"
+    public static void renderDirtBackground(Screen screen, PoseStack matrices) {
+        screen.renderDirtBackground(matrices);
+    }
+#else 
+    public static void renderDirtBackground(Screen screen, PoseStack matrices) {
+        screen.renderDirtBackground(0);
+    }
+#endif
 #endif
 
     @Override
@@ -569,11 +585,10 @@ public class CompoundCreatorScreen extends Screen {
         @Override
     #if MC_VERSION >= "12000"
         public void render(GuiGraphics matrices, int mouseX, int mouseY, float partialTick) {
-            renderDirtBackground(matrices);
     #else
         public void render(PoseStack matrices, int mouseX, int mouseY, float partialTick) {
-            renderDirtBackground(0);
     #endif
+            CompoundCreatorScreen.renderDirtBackground(this, matrices);
             super.render(matrices, mouseX, mouseY, partialTick);
             setTY(ty);
             setTX(tx);
@@ -586,36 +601,42 @@ public class CompoundCreatorScreen extends Screen {
             float midY = this.ty + scissor.y + scissor.height / 2.0F;
             int x = (int) (midX - task.width / 2.0F * Square.length);
             int y = (int) (midY - task.height / 2.0F * Square.length);
+
+            fill(matrices, full.x - 1, full.y - 1, full.x + full.width + 1, full.y + full.height + 1, full.contains(mouseX, mouseY) ? 0xfff0eacc : 0xff0c0d0b);
             fill(matrices, full.x, full.y, full.x + full.width, full.y + full.height, 0xff424242);
-            fill(matrices, scissor.x - 1, scissor.y - 1, scissor.x + scissor.width + 1, scissor.y + scissor.height + 1, 0xff8f5d5d);
+
+            fill(matrices, scissor.x - 1, scissor.y - 1, scissor.x + scissor.width + 1, scissor.y + scissor.height + 1, scissor.contains(mouseX, mouseY) ? 0xffd1b2b2 : 0xff403636);
+            fill(matrices, scissor.x, scissor.y, scissor.x + scissor.width, scissor.y + scissor.height, 0xff8f5d5d);
             
             ScissorsHandler.INSTANCE.scissor(new Rectangle(scissor.x, full.y, scissor.width, 12));
             int a = task.width / 2;
             int in = 3;
-            drawCenteredString(matrices, minecraft.font, "0", (int) midX, 40, 0xFFFFFFFF);
+            int ay = 42;
+            drawCenteredString(matrices, minecraft.font, "0", (int) midX, y, 0xFFFFFFFF);
             if (a < 1) ;
             else if (a < in) {
-                drawCenteredString(matrices, minecraft.font, "+" + a, (int) midX + a * Square.length, 40, 0xFFFFFFFF);
-                drawCenteredString(matrices, minecraft.font, "-" + a, (int) midX - a * Square.length, 40, 0xFFFFFFFF);
+                drawCenteredString(matrices, minecraft.font, "+" + a, (int) midX + a * Square.length, ay, 0xFFFFFFFF);
+                drawCenteredString(matrices, minecraft.font, "-" + a, (int) midX - a * Square.length, ay, 0xFFFFFFFF);
             } else {
                 for (int i = in; i <= a; i += in) {
-                    drawCenteredString(matrices, minecraft.font, "+" + i, (int) midX + i * Square.length, 40, 0xFFFFFFFF);
-                    drawCenteredString(matrices, minecraft.font, "-" + i, (int) midX - i * Square.length, 40, 0xFFFFFFFF);
+                    drawCenteredString(matrices, minecraft.font, "+" + i, (int) midX + i * Square.length, ay, 0xFFFFFFFF);
+                    drawCenteredString(matrices, minecraft.font, "-" + i, (int) midX - i * Square.length, ay, 0xFFFFFFFF);
                 }
             }
             ScissorsHandler.INSTANCE.clearScissors();
 
             ScissorsHandler.INSTANCE.scissor(new Rectangle(full.x, scissor.y, 22, scissor.height));
             int b = task.height / 2;
-            drawCenteredString(matrices, minecraft.font, "0", 50, (int) midY - 5, 0xFFFFFFFF);
+            int ax = 50;
+            drawCenteredString(matrices, minecraft.font, "0", ax, (int) midY - 5, 0xFFFFFFFF);
             if (b < 1) ;
             else if (b < in) {
-                drawCenteredString(matrices, minecraft.font, "+" + b, (int) 50, (int) midY - 5 + b * Square.length, 0xFFFFFFFF);
-                drawCenteredString(matrices, minecraft.font, "-" + b, (int) 50, (int) midY - 5 - b * Square.length, 0xFFFFFFFF);
+                drawCenteredString(matrices, minecraft.font, "+" + b, ax, (int) midY - 5 + b * Square.length, 0xFFFFFFFF);
+                drawCenteredString(matrices, minecraft.font, "-" + b, ax, (int) midY - 5 - b * Square.length, 0xFFFFFFFF);
             } else {
                 for (int i= in; i <= b; i += in) {
-                    drawCenteredString(matrices, minecraft.font, "-" + i, (int) 50, (int) midY - 5 + i * Square.length, 0xFFFFFFFF);
-                    drawCenteredString(matrices, minecraft.font, "+" + i, (int) 50, (int) midY - 5 - i * Square.length, 0xFFFFFFFF);
+                    drawCenteredString(matrices, minecraft.font, "-" + i, ax, (int) midY - 5 + i * Square.length, 0xFFFFFFFF);
+                    drawCenteredString(matrices, minecraft.font, "+" + i, ax, (int) midY - 5 - i * Square.length, 0xFFFFFFFF);
                 }
             }
             ScissorsHandler.INSTANCE.clearScissors();
@@ -625,13 +646,13 @@ public class CompoundCreatorScreen extends Screen {
                 canvas.get(i).render(matrices, mouseX, mouseY, x + i % task.width * Square.length, y + i / task.width * Square.length, partialTick);
             }
             int py = (int) midY - 18 / 2 - 1;
-            fill(matrices, x , py , x + task.width * Square.length, py + 2, 0xffff0000);
+            fill(matrices, x , py , x + task.width * Square.length, py + 2, 0x7FFF0000);
             py += 18;
-            fill(matrices, x , py , x + task.width * Square.length, py + 2, 0xffff0000);
+            fill(matrices, x , py , x + task.width * Square.length, py + 2, 0x7FFF0000);
             int px = (int) midX - 18 / 2 - 1;
-            fill(matrices, px, y , px + 2, y + task.height * Square.length, 0xff00ff00);
+            fill(matrices, px, y , px + 2, y + task.height * Square.length, 0x7F00FF00);
             px += 18;
-            fill(matrices, px, y , px + 2, y + task.height * Square.length, 0xff00ff00);
+            fill(matrices, px, y , px + 2, y + task.height * Square.length, 0x7F00FF00);
             ScissorsHandler.INSTANCE.clearScissors();
 
             now.render(matrices, mouseX, mouseY, 191, 11, partialTick);
@@ -647,7 +668,7 @@ public class CompoundCreatorScreen extends Screen {
         private void setConfigScreen() {
             ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(this)
-                .setTitle(Text.translatable("我是标题"))
+                .setTitle(Text.translatable("gui.mtrsteamloco.compound_creator.task_screen.config.title"))
                 .setDoesConfirmSave(false)
                 .transparentBackground();
             ConfigEntryBuilder entryBuilder = builder.entryBuilder();
@@ -664,7 +685,7 @@ public class CompoundCreatorScreen extends Screen {
 
             common.addEntry(entryBuilder
                 .startDoubleField(
-                    Text.translatable("起始位置"),
+                    Text.translatable("gui.mtrsteamloco.compound_creator.task_screen.config.start_pos"),
                     task.start
                 ).setDefaultValue(0)
                 .setSaveConsumer(d -> {
@@ -680,7 +701,7 @@ public class CompoundCreatorScreen extends Screen {
 
             common.addEntry(entryBuilder
                 .startDoubleField(
-                    Text.translatable("长度"),
+                    Text.translatable("gui.mtrsteamloco.compound_creator.task_screen.config.length"),
                     task.length == null ? -1 : task.length
                 ).setDefaultValue(-1)
                 .setSaveConsumer(d -> {
@@ -695,7 +716,7 @@ public class CompoundCreatorScreen extends Screen {
 
             common.addEntry(entryBuilder
                 .startDoubleField(
-                    Text.translatable("间距"),
+                    Text.translatable("gui.mtrsteamloco.compound_creator.task_screen.config.interval"),
                     task.interval == null ? -1 : task.interval
                 ).setDefaultValue(-1)
                 .setSaveConsumer(d -> {
@@ -709,7 +730,7 @@ public class CompoundCreatorScreen extends Screen {
 
             common.addEntry(entryBuilder
                 .startDoubleField(
-                    Text.translatable("增量"),
+                    Text.translatable("gui.mtrsteamloco.compound_creator.task_screen.config.increment"),
                     task.increment
                 ).setDefaultValue(0.1)
                 .setSaveConsumer(d -> {
@@ -721,7 +742,7 @@ public class CompoundCreatorScreen extends Screen {
 
             common.addEntry(entryBuilder
                 .startBooleanToggle(
-                    Text.translatable("使用偏航"),
+                    Text.translatable("gui.mtrsteamloco.compound_creator.task_screen.config.use_yaw"),
                     task.useYaw
                 ).setDefaultValue(true)
                 .setSaveConsumer(b -> {
@@ -732,7 +753,7 @@ public class CompoundCreatorScreen extends Screen {
 
             common.addEntry(entryBuilder
                 .startBooleanToggle(
-                    Text.translatable("使用俯仰"),
+                    Text.translatable("gui.mtrsteamloco.compound_creator.task_screen.config.use_pitch"),
                     task.usePitch
                 ).setDefaultValue(true)
                 .setSaveConsumer(b -> {
@@ -743,7 +764,7 @@ public class CompoundCreatorScreen extends Screen {
 
             common.addEntry(entryBuilder
                 .startBooleanToggle(
-                    Text.translatable("使用滚转"),
+                    Text.translatable("gui.mtrsteamloco.compound_creator.task_screen.config.use_roll"),
                     task.useRoll
                 ).setDefaultValue(false)
                 .setSaveConsumer(b -> {
@@ -835,14 +856,22 @@ public class CompoundCreatorScreen extends Screen {
                     RenderSystem.applyModelViewMatrix();
                 }
 
+            #if MC_VERSION >= "11904"
+                itemRenderer.renderAndDecorateItem(matrices, minecraft.getInstance().player, stack, x, y, 0);
+            #else
                 itemRenderer.renderAndDecorateItem(minecraft.getInstance().player, stack, x, y, 0);
+            #endif
                 RenderSystem.setShader(GameRenderer::getPositionColorShader);
                 if (f > 0.0F) {
                     posestack.popPose();
                     RenderSystem.applyModelViewMatrix();
                 }
 
+            #if MC_VERSION >= "11904"
+                itemRenderer.renderGuiItemDecorations(matrices, minecraft.font, stack, x, y);
+            #else
                 itemRenderer.renderGuiItemDecorations(minecraft.font, stack, x, y);
+            #endif
             }
         }
     #endif
@@ -882,7 +911,7 @@ public class CompoundCreatorScreen extends Screen {
                 x = tx;
                 y = ty;
                 if (!isVisible()) return;
-                fill(matrices, x, y, x + length, y + length, 0xffb0b0b0);
+                fill(matrices, x, y, x + length, y + length, isMouseOver(mouseX, mouseY) ? 0xfffafff2 : 0xff9b9e96);
                 if (state != null) {
                     renderBlockState(matrices, x + 1, y + 1, partialTick, state);
                     fill(matrices, x + 1, y + 1, x + length - 1, y + length - 1, highlight.apply(this) ? 0xffacec92 : 0xff113d00);
@@ -990,11 +1019,10 @@ public class CompoundCreatorScreen extends Screen {
             @Override
         #if MC_VERSION >= "12000"
             public void render(GuiGraphics matrices, int mouseX, int mouseY, float partialTick) {
-                renderDirtBackground(matrices);
         #else
             public void render(PoseStack matrices, int mouseX, int mouseY, float partialTick) {
-                renderDirtBackground(0);
         #endif
+                CompoundCreatorScreen.renderDirtBackground(this, matrices);
                 int y = 60;
                 int x = 30;
                 for (Button button : buttons) {
@@ -1007,7 +1035,7 @@ public class CompoundCreatorScreen extends Screen {
             }
 
             private void cycleState(Button btn, Property<?> property) {
-                present.state = cycleState(present.state, property, true);
+                present.state = cycleState(present.state, property, false);
                 btn.setMessage(Text.literal(property.getName() + ":" + present.state.getValue(property)));
             } 
 
@@ -1096,6 +1124,7 @@ public class CompoundCreatorScreen extends Screen {
             public void render(PoseStack matrices, int mouseX, int mouseY, float partialTick) {
         #endif
                 fill(matrices, scissor.x, 0, scissor.x + scissor.width, height, 0xff212121);
+                fill(matrices, scissor.x, 0, scissor.x + 1, height, mouseX >= scissor.x ? 0xfff2f7eb : 0xffafb3aa);
                 IDrawing.setPositionAndWidth(searchField, TaskScreen.this.width - width + 3, 1, width - 3);
                 searchField.render(matrices, mouseX, mouseY, partialTick);
                 scissor = new Rectangle(TaskScreen.this.width - width, 18, width, TaskScreen.this.height - 18);

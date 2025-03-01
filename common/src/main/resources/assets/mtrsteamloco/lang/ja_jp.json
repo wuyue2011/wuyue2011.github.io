@@ -5,6 +5,7 @@
     "block.mtrsteamloco.feedback_box": "伝言箱",
     "block.mtrsteamloco.eye_candy": "装飾品",
     "item.mtrsteamloco.bridge_creator_1": "橋梁作成装置",
+    "item.mtrsteamloco.compound_creator": "複合作成器",
     "train.mtrsteamloco.d51": "日本国鉄D 51型蒸気機関車",
     "train.mtrsteamloco.dk3": "DK 3（北京地下鉄2号線塗装）",
     "train.mtrsteamloco.dk3_mini": "DK 3（北京地下鉄2号線塗装、ミニ）",
@@ -69,6 +70,16 @@
     "gui.mtrsteamloco.config.client.custom_config.engaged": "使用されているカスタム構成",
     "gui.mtrsteamloco.config.client.custom_config.untapped": "未使用のカスタム構成",
     "gui.mtrsteamloco.mtr_version_low": "MTRを更新してください:ANTE%sにはMTR%s以上のバージョンが必要ですが、現在インストールされている%sバージョンは低いです。",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.title": "タスク構成",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.start_pos": "開始点",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.length": "長さ",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.interval": "間隔",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.increment": "ぞうぶん",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.use_yaw": "ヨー角度の使用",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.use_pitch": "ピッチ角の使用",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.use_roll": "ロール角度の使用",
     "key.mtrsteamloco.train_screen": "列車のスクリーン",
-    "category.mtrsteamloco.keybinding": "ANTEキー・バインド"
+    "category.mtrsteamloco.keybinding": "ANTEキー・バインド",
+    "gui.mtr.percentage_complete_slice": "スライスタスク(%s%%)",
+    "gui.mtr.rail_action_bridge": "スライスタスクを%sから作成(%sブロック長)"
 }

@@ -5,6 +5,7 @@
     "block.mtrsteamloco.feedback_box": "Boîte de message",
     "block.mtrsteamloco.eye_candy": "Objets décoratifs",
     "item.mtrsteamloco.bridge_creator_1": "Créateur de ponts",
+    "item.mtrsteamloco.compound_creator": "Créateur Composite",
     "train.mtrsteamloco.d51": "Locomotive à vapeur Japanese National Iron type d51",
     "train.mtrsteamloco.dk3": "Dk3 (peinture de la ligne 2 du métro de Pékin)",
     "train.mtrsteamloco.dk3_mini": "Dk3 (peinture de la ligne 2 du métro de Pékin, mini)",
@@ -69,6 +70,16 @@
     "gui.mtrsteamloco.config.client.custom_config.engaged": "Configuration personnalisée déjà utilisée",
     "gui.mtrsteamloco.config.client.custom_config.untapped": "Configuration personnalisée non utilisée",
     "gui.mtrsteamloco.mtr_version_low": "Veuillez mettre à jour MTR: Ante%s nécessite MTR%s et supérieur, alors que la version%s installée est inférieure.",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.title": "Configuration des tâches",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.start_pos": "Point de départ",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.length": "Longueur",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.interval": "Intervalle",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.increment": "Incrémentation",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.use_yaw": "Utiliser l'angle de lacet",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.use_pitch": "Utiliser l'angle de tangage",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.use_roll": "Utiliser l'angle de roulis",
     "key.mtrsteamloco.train_screen": "L'écran du train",
-    "category.mtrsteamloco.keybinding": "Ante liaison par clé"
+    "category.mtrsteamloco.keybinding": "Ante liaison par clé",
+    "gui.mtr.percentage_complete_slice": "Tâches de découpage (%s%)",
+    "gui.mtr.rail_action_bridge": "Création d'une tâche de tranche par%s (%s Square long)"
 }

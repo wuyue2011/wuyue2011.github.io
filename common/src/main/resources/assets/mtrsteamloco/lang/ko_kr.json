@@ -5,6 +5,7 @@
     "block.mtrsteamloco.feedback_box": "메모함",
     "block.mtrsteamloco.eye_candy": "장식물",
     "item.mtrsteamloco.bridge_creator_1": "교량 생성기",
+    "item.mtrsteamloco.compound_creator": "복합 생성기",
     "train.mtrsteamloco.d51": "일본 국철 D51형 증기 기관차",
     "train.mtrsteamloco.dk3": "DK3(베이징 지하철 2호선 도장)",
     "train.mtrsteamloco.dk3_mini": "DK3(베이징 지하철 2호선 도장, 미니)",
@@ -69,6 +70,16 @@
     "gui.mtrsteamloco.config.client.custom_config.engaged": "사용된 사용자 정의 구성",
     "gui.mtrsteamloco.config.client.custom_config.untapped": "사용되지 않는 사용자 정의 구성",
     "gui.mtrsteamloco.mtr_version_low": "MTR을 업데이트하십시오.ANTE%s은(는) MTR%s 이상이 필요하지만 현재 설치된%s 버전은 낮습니다.",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.title": "작업 구성",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.start_pos": "시작점",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.length": "길이",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.interval": "간격",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.increment": "증분",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.use_yaw": "편항각 사용",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.use_pitch": "푸시업 각도 사용",
+    "gui.mtrsteamloco.compound_creator.task_screen.config.use_roll": "롤백 각도 사용",
     "key.mtrsteamloco.train_screen": "열차 스크린",
-    "category.mtrsteamloco.keybinding": "ANTE 키 바인딩"
+    "category.mtrsteamloco.keybinding": "ANTE 키 바인딩",
+    "gui.mtr.percentage_complete_slice": "슬라이스 작업 (%s%%)",
+    "gui.mtr.rail_action_bridge": "%s에서 슬라이스 작업 생성(%s 상자 길이)"
 }
