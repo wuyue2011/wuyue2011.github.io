@@ -168,6 +168,17 @@ public abstract class TrainMixin implements TrainExtraSupplier{
 
 	protected boolean doorTarget;
 
+	private static Class<?> IBlockPlatformClass = Void.class;
+
+	static {
+		try {
+			IBlockPlatformClass = Class.forName("team.dovecotmc.metropolis.block.interfaces.IBlockPlatform");
+			Main.LOGGER.info("Loaded metropolis IBlockPlatformClass");
+		} catch (ClassNotFoundException e) {
+			Main.LOGGER.error("Failed to load metropolis IBlockPlatformClass");
+		}
+	}
+
     @Inject(method = "scanDoors", at = @At("HEAD"), cancellable = true)
     private void onScanDoors(Level world, double trainX, double trainY, double trainZ, float checkYaw, float pitch, double halfSpacing, int dwellTicks, CallbackInfoReturnable<Boolean> ci) {
         if (skipScanBlocks(world, trainX, trainY, trainZ)) {
@@ -186,7 +197,7 @@ public abstract class TrainMixin implements TrainExtraSupplier{
 					final BlockPos checkPos = RailwayData.newBlockPos(trainX + offsetVec.x * checkX + traverseVec.x * checkZ, trainY + checkY, trainZ + offsetVec.z * checkX + traverseVec.z * checkZ);
 					final Block block = world.getBlockState(checkPos).getBlock();
 
-					if (block instanceof BlockPlatform || block instanceof BlockPSDAPGBase) {
+					if (block instanceof BlockPlatform || block instanceof BlockPSDAPGBase || IBlockPlatformClass.isInstance(block)) {
 						openDoors(world, block, checkPos, dwellTicks);
 						hasPlatform = true;
 					}else if (block instanceof BlockEyeCandy) {
@@ -229,5 +240,8 @@ public abstract class TrainMixin implements TrainExtraSupplier{
 		} else {
 			return false;
 		}
+	}
+
+	private static interface Void {
 	}
 }

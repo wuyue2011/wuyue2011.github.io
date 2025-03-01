@@ -5,6 +5,7 @@ import mtr.mappings.UtilitiesClient;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.Util;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.Button;
@@ -12,9 +13,6 @@ import me.shedaniel.clothconfig2.api.ScissorsHandler;
 import mtr.screen.WidgetBetterTextField;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.world.item.CreativeModeTab;
-#if MC_VERSION >= "12000"
-import net.minecraft.world.item.CreativeModeTabs;
-#endif
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.NonNullList;
 import net.minecraft.util.FormattedCharSequence;
@@ -30,18 +28,27 @@ import me.shedaniel.math.Rectangle;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.util.Mth;
-#if MC_VERSION >= "12000"
-import net.minecraft.client.gui.GuiGraphics;
-#else
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.renderer.GameRenderer;
-#endif
-import static cn.zbx1425.mtrsteamloco.item.CompoundCreator.*;
 import mtr.client.IDrawing;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.block.state.StateDefinition;
+import me.shedaniel.clothconfig2.api.ConfigBuilder;
+import me.shedaniel.clothconfig2.api.ConfigCategory;
+import net.minecraft.network.chat.Component;
+import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
+import net.minecraft.client.gui.components.EditBox;
+import static cn.zbx1425.mtrsteamloco.item.CompoundCreator.*;
+
+#if MC_VERSION >= "12000"
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.world.item.CreativeModeTabs;
+#else
+import net.minecraft.core.Registry;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.renderer.GameRenderer;
+#endif
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +59,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.Iterator;
 import java.util.Collection;
+import java.util.Optional;
+import java.util.Map;
+import java.util.HashMap;
 
 public class CompoundCreatorScreen extends Screen {
     public static void setScreen(Screen parent) {
@@ -142,7 +152,7 @@ public class CompoundCreatorScreen extends Screen {
     }
 
     private void addEntry() {
-        Entry entry = new Entry(new SliceTask(0, entries.size() + "", 11, 11, 0, 1, null, new Integer[11 * 11]));
+        Entry entry = new Entry(new SliceTask(0, entries.size() + "", 11, 11, 0, null, null, 0.1D, new Integer[11 * 11], true, true, false));
         entries.add(entry);
         selectedEntry = entry;
         update();
@@ -167,12 +177,7 @@ public class CompoundCreatorScreen extends Screen {
         super.render(matrices, mouseX, mouseY, partialTick);
         fill(matrices, 0, 38, width, height - 38, 0x90000000);
         
-        String title = "我是标题";
-#if MC_VERSION >= "12000"
-        matrices.drawCenteredString(minecraft.font, title, width / 2, 18, 0xFFFFFFFF);
-#else
-        Gui.drawCenteredString(matrices, minecraft.font, title, width / 2, 18, 0xFFFFFFFF);
-#endif
+        drawCenteredString(matrices, minecraft.font, "我是标题", width / 2, 18, 0xFFFFFFFF);
         IDrawing.setPositionAndWidth(btnAdd, width - 50, 60, 40);
         IDrawing.setPositionAndWidth(btnRemove, width - 50, 90, 40);
         IDrawing.setPositionAndWidth(btnClear, width - 50, 120, 40);
@@ -221,7 +226,7 @@ public class CompoundCreatorScreen extends Screen {
     public boolean mouseScrolled(double x, double y, double amount) {
         if (!canScoll()) return super.mouseScrolled(x, y, amount);
         if (scissor.x <= x && x <= scissor.x + scissor.width && scissor.y <= y && y <= scissor.y + scissor.height) {
-            checkAndScroll(scroll + 100 * (int) amount);
+            checkAndScroll(scroll + 10 * (int) amount);
             return true;
         }
         return super.mouseScrolled(x, y, amount);
@@ -291,14 +296,8 @@ public class CompoundCreatorScreen extends Screen {
     }
 
 #if MC_VERSION >= "12000"
-    private static int drawText(GuiGraphics guiGraphics, Font font, String text, int x, int y, int color) {
-        FormattedText formattedText = FormattedText.of(text);
-        List<FormattedCharSequence> lines = font.split(formattedText, Minecraft.getInstance().getWindow().getGuiScaledWidth() - 40);
-        for (FormattedCharSequence line : lines) {
-            guiGraphics.drawString(font, line, x, y, color);
-            y += Mth.ceil(font.lineHeight * 1.1f);
-        }
-        return y;
+    private static void drawText(GuiGraphics guiGraphics, Font font, FormattedCharSequence text, int x, int y, int color) {
+        guiGraphics.drawString(font, text, x, y, color);
     }
 
     private static void blit(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, int width, int height) {
@@ -308,15 +307,13 @@ public class CompoundCreatorScreen extends Screen {
     private static void fill(GuiGraphics guiGraphics, int x, int y, int width, int height, int color) {
         guiGraphics.fill(x, y, width, height, color);
     }
+
+    private static void drawCenteredString(GuiGraphics guiGraphics, Font font, String text, int x, int y, int color) {
+        guiGraphics.drawCenteredString(font, text, x, y, color);
+    }
 #else
-    private static int drawText(PoseStack matrices, Font font, String text, int x, int y, int color) {
-        FormattedText formattedText = FormattedText.of(text);
-        List<FormattedCharSequence> lines = font.split(formattedText, Minecraft.getInstance().getWindow().getGuiScaledWidth() - 40);
-        for (FormattedCharSequence line : lines) {
-            font.drawShadow(matrices, line, x, y, color);
-            y += Mth.ceil(font.lineHeight * 1.1f);
-        }
-        return y;
+    private static void drawText(PoseStack matrices, Font font, FormattedCharSequence text, int x, int y, int color) {
+        font.drawShadow(matrices, text, x, y, color);
     }
 
     private static void blit(PoseStack matrices, ResourceLocation texture, int x, int y, int width, int height) {
@@ -465,17 +462,29 @@ public class CompoundCreatorScreen extends Screen {
 
     public class TaskScreen extends Screen {
         public SliceTask task;
-        private int tx = 0;
-        private int ty = 0;
+        protected int tx = 0;
+        protected int ty = 0;
         private Button btnReturn = UtilitiesClient.newButton(Text.literal("X"), btn -> onClose());
         private Rectangle scissor = new Rectangle(0, 0, 0, 0);
         private List<Square> canvas = new ArrayList<>();
         private Inventory inventory = new Inventory();
 
         private WidgetBetterTextField nameField = new WidgetBetterTextField("", 256);
-        private WidgetBetterTextField widthField = new WidgetBetterTextField("", 256);
-        private WidgetBetterTextField heightField = new WidgetBetterTextField("", 256);
-        private Square now = new Square(0, 0, null, square -> square.state = null, square -> true);
+        private Button btnAddWidth = UtilitiesClient.newButton(Text.literal("+"), btn -> setWidthAndHeight(task.width + 2, task.height));
+        private Button btnSubWidth = UtilitiesClient.newButton(Text.literal("-"), btn -> setWidthAndHeight(task.width - 2, task.height));
+        private Button btnAddHeight = UtilitiesClient.newButton(Text.literal("+"), btn -> setWidthAndHeight(task.width, task.height + 2));
+        private Button btnSubHeight = UtilitiesClient.newButton(Text.literal("-"), btn -> setWidthAndHeight(task.width, task.height - 2));
+        private Button btnSubTX = UtilitiesClient.newButton(Text.literal("◁"), btn -> setTX(tx + 4 * Square.length));
+        private Button btnAddTX = UtilitiesClient.newButton(Text.literal("▷"), btn -> setTX(tx - 4 * Square.length));
+        private Button btnSubTY = UtilitiesClient.newButton(Text.literal("▲"), btn -> setTY(ty + 4 * Square.length));
+        private Button btnAddTY = UtilitiesClient.newButton(Text.literal("▼"), btn -> setTY(ty - 4 * Square.length));
+        private Button btnCenter = UtilitiesClient.newButton(Text.literal("▣"), btn -> {tx = 0; ty = 0;});
+
+        private Button btnEnterConfig = UtilitiesClient.newButton(Text.literal("配置"), btn -> setConfigScreen());
+
+        private Square mouseOver = null;
+
+        private Square now = new Square(0, 0, null, square -> square.state = null, square -> true, square -> true);
 
         public TaskScreen(SliceTask task) {
             super(Text.translatable(""));
@@ -484,7 +493,9 @@ public class CompoundCreatorScreen extends Screen {
         }
 
         private void setWidthAndHeight(int width, int height) {
-            if (width != task.width || height != task.height) ;
+            if (width < 1 || height < 1) return;
+            if (width % 2 != 1 || height % 2 != 1) return;
+            if (width != task.width || height != task.height);
             else return;
             task.width = width;
             task.height = height;
@@ -509,8 +520,14 @@ public class CompoundCreatorScreen extends Screen {
                     square.state = now.state;
                     updateTask();
                 };
-                if (task.blockIds[i] == null) canvas.add(new Square(i / task.width, i % task.width, null, consumer, square -> true));
-                else canvas.add(new Square(i / task.width, i % task.width, Block.stateById(task.blockIds[i]), consumer, square -> true));
+
+                Function<Square, Boolean> visible = sq -> {
+                    int l = Square.length;
+                    Rectangle s = scissor;
+                    return sq.x + l >= s.x && sq.x <= s.x + s.width && sq.y + l >= s.y && sq.y <= s.y + s.height;
+                };
+                if (task.blockIds[i] == null) canvas.add(new Square(0, 0, null, consumer, square -> true, visible));
+                else canvas.add(new Square(0, 0, Block.stateById(task.blockIds[i]), consumer, square -> true, visible));
             }
             this.canvas = canvas;
         }
@@ -519,39 +536,24 @@ public class CompoundCreatorScreen extends Screen {
         protected void init() {
             nameField.setValue(task.name);
             nameField.moveCursorToStart();
-            widthField.setValue(Integer.toString(task.width));
-            heightField.setValue(Integer.toString(task.height));
-            widthField.moveCursorToStart();
-            heightField.moveCursorToStart();
 
             nameField.setResponder(str -> {
                 task.name = str;
                 updateTask();   
             });
-            widthField.setResponder(str -> {
-                try {
-                    setWidthAndHeight(Integer.parseInt(str), task.height);
-                    widthField.setTextColor(0x00ff00);
-                } catch (NumberFormatException e) {
-                    widthField.setTextColor(0xff0000);
-                }
-            });
-            heightField.setResponder(str -> {
-                try {
-                    setWidthAndHeight(task.width, Integer.parseInt(str));
-                    heightField.setTextColor(0x00ff00);
-                } catch (NumberFormatException e) {
-                    heightField.setTextColor(0xff0000);
-                }
-            });
-            IDrawing.setPositionAndWidth(btnReturn, 10, 10, 20);
-            IDrawing.setPositionAndWidth(nameField, 40, 10, 30);
-            IDrawing.setPositionAndWidth(widthField, 80, 10, 30);
-            IDrawing.setPositionAndWidth(heightField, 120, 10, 30);
+            updateWidgetPosition();
             addRenderableWidget(btnReturn);
             addRenderableWidget(nameField);
-            addRenderableWidget(widthField);
-            addRenderableWidget(heightField);
+            addRenderableWidget(btnAddWidth);
+            addRenderableWidget(btnSubWidth);
+            addRenderableWidget(btnAddHeight);
+            addRenderableWidget(btnSubHeight);
+            addRenderableWidget(btnSubTX);
+            addRenderableWidget(btnAddTX);
+            addRenderableWidget(btnSubTY);
+            addRenderableWidget(btnAddTY);
+            addRenderableWidget(btnCenter);
+            addRenderableWidget(btnEnterConfig);
         }
 
         @Override
@@ -572,24 +574,237 @@ public class CompoundCreatorScreen extends Screen {
         public void render(PoseStack matrices, int mouseX, int mouseY, float partialTick) {
             renderDirtBackground(0);
     #endif
-
             super.render(matrices, mouseX, mouseY, partialTick);
-            
-            scissor = new Rectangle(30, 30, width - 30 - Inventory.width, height - 30 - 30);
-            IDrawing.setPositionAndWidth(btnReturn, 10, 10, 20);
-            IDrawing.setPositionAndWidth(btnReturn, 10, 10, 20);
-            IDrawing.setPositionAndWidth(nameField, 40, 10, 30);
-            IDrawing.setPositionAndWidth(widthField, 80, 10, 20);
-            IDrawing.setPositionAndWidth(heightField, 110, 10, 20);
+            setTY(ty);
+            setTX(tx);
+            mouseOver = null;
+            updateWidgetPosition();
+            Rectangle full = new Rectangle(40, 40, width - 40 - 10 - Inventory.width, height - 40 - 40);
+            scissor = new Rectangle(60 + 2, 50 + 2, width - 60 - 10 - Inventory.width - 2 - 2, height - 50 - 40 - 2 - 2);
 
-            int x = this.tx + 40;
-            int y = this.ty + 40;
+            float midX = this.tx + scissor.x + scissor.width / 2.0F;
+            float midY = this.ty + scissor.y + scissor.height / 2.0F;
+            int x = (int) (midX - task.width / 2.0F * Square.length);
+            int y = (int) (midY - task.height / 2.0F * Square.length);
+            fill(matrices, full.x, full.y, full.x + full.width, full.y + full.height, 0xff424242);
+            fill(matrices, scissor.x - 1, scissor.y - 1, scissor.x + scissor.width + 1, scissor.y + scissor.height + 1, 0xff8f5d5d);
+            
+            ScissorsHandler.INSTANCE.scissor(new Rectangle(scissor.x, full.y, scissor.width, 12));
+            int a = task.width / 2;
+            int in = 3;
+            drawCenteredString(matrices, minecraft.font, "0", (int) midX, 40, 0xFFFFFFFF);
+            if (a < 1) ;
+            else if (a < in) {
+                drawCenteredString(matrices, minecraft.font, "+" + a, (int) midX + a * Square.length, 40, 0xFFFFFFFF);
+                drawCenteredString(matrices, minecraft.font, "-" + a, (int) midX - a * Square.length, 40, 0xFFFFFFFF);
+            } else {
+                for (int i = in; i <= a; i += in) {
+                    drawCenteredString(matrices, minecraft.font, "+" + i, (int) midX + i * Square.length, 40, 0xFFFFFFFF);
+                    drawCenteredString(matrices, minecraft.font, "-" + i, (int) midX - i * Square.length, 40, 0xFFFFFFFF);
+                }
+            }
+            ScissorsHandler.INSTANCE.clearScissors();
+
+            ScissorsHandler.INSTANCE.scissor(new Rectangle(full.x, scissor.y, 22, scissor.height));
+            int b = task.height / 2;
+            drawCenteredString(matrices, minecraft.font, "0", 50, (int) midY - 5, 0xFFFFFFFF);
+            if (b < 1) ;
+            else if (b < in) {
+                drawCenteredString(matrices, minecraft.font, "+" + b, (int) 50, (int) midY - 5 + b * Square.length, 0xFFFFFFFF);
+                drawCenteredString(matrices, minecraft.font, "-" + b, (int) 50, (int) midY - 5 - b * Square.length, 0xFFFFFFFF);
+            } else {
+                for (int i= in; i <= b; i += in) {
+                    drawCenteredString(matrices, minecraft.font, "-" + i, (int) 50, (int) midY - 5 + i * Square.length, 0xFFFFFFFF);
+                    drawCenteredString(matrices, minecraft.font, "+" + i, (int) 50, (int) midY - 5 - i * Square.length, 0xFFFFFFFF);
+                }
+            }
+            ScissorsHandler.INSTANCE.clearScissors();
+
+            ScissorsHandler.INSTANCE.scissor(scissor);
             for (int i = 0; i < canvas.size(); i++) {
                 canvas.get(i).render(matrices, mouseX, mouseY, x + i % task.width * Square.length, y + i / task.width * Square.length, partialTick);
             }
-            now.render(matrices, mouseX, mouseY, 141, 11, partialTick);
+            int py = (int) midY - 18 / 2 - 1;
+            fill(matrices, x , py , x + task.width * Square.length, py + 2, 0xffff0000);
+            py += 18;
+            fill(matrices, x , py , x + task.width * Square.length, py + 2, 0xffff0000);
+            int px = (int) midX - 18 / 2 - 1;
+            fill(matrices, px, y , px + 2, y + task.height * Square.length, 0xff00ff00);
+            px += 18;
+            fill(matrices, px, y , px + 2, y + task.height * Square.length, 0xff00ff00);
+            ScissorsHandler.INSTANCE.clearScissors();
+
+            now.render(matrices, mouseX, mouseY, 191, 11, partialTick);
 
             inventory.render(matrices, mouseX, mouseY, partialTick);
+            
+            if (mouseOver != null) {
+                mouseOver.renderTooltip(matrices, mouseX, mouseY, partialTick);
+            }
+            // drawCenteredString(matrices, minecraft.font, task.width + "x" + task.height, (200 + width - Inventory.width) / 2, 11, 0xFFFFFFFF);
+        }
+
+        private void setConfigScreen() {
+            ConfigBuilder builder = ConfigBuilder.create()
+                .setParentScreen(this)
+                .setTitle(Text.translatable("我是标题"))
+                .setDoesConfirmSave(false)
+                .transparentBackground();
+            ConfigEntryBuilder entryBuilder = builder.entryBuilder();
+            ConfigCategory common = builder.getOrCreateCategory(
+                    Text.translatable("gui.mtrsteamloco.config.client.category.common")
+            );
+
+            Function<Double, Optional<Component>> positive = d -> {
+                if (d <= 0) {
+                    return Optional.of(Text.translatable("gui.mtrsteamloco.error.invalid_value"));
+                }
+                return Optional.empty();
+            };
+
+            common.addEntry(entryBuilder
+                .startDoubleField(
+                    Text.translatable("起始位置"),
+                    task.start
+                ).setDefaultValue(0)
+                .setSaveConsumer(d -> {
+                    if (d <= 0) {
+                        task.interval = null;
+                    } else {
+                        task.interval = d;
+                    }
+                })
+                .setMin(0)
+                .build()
+            );
+
+            common.addEntry(entryBuilder
+                .startDoubleField(
+                    Text.translatable("长度"),
+                    task.length == null ? -1 : task.length
+                ).setDefaultValue(-1)
+                .setSaveConsumer(d -> {
+                    if (d <= 0) {
+                        task.length = null;
+                    } else {
+                        task.length = d;
+                    }
+                })
+                .build()
+            );
+
+            common.addEntry(entryBuilder
+                .startDoubleField(
+                    Text.translatable("间距"),
+                    task.interval == null ? -1 : task.interval
+                ).setDefaultValue(-1)
+                .setSaveConsumer(d -> {
+                    if (d <= 0) {
+                        task.interval = null;
+                    } else {
+                        task.interval = d;
+                    }
+                }).build()
+            );
+
+            common.addEntry(entryBuilder
+                .startDoubleField(
+                    Text.translatable("增量"),
+                    task.increment
+                ).setDefaultValue(0.1)
+                .setSaveConsumer(d -> {
+                    task.increment = d;
+                })
+                .setErrorSupplier(positive)
+                .build()
+            );
+
+            common.addEntry(entryBuilder
+                .startBooleanToggle(
+                    Text.translatable("使用偏航"),
+                    task.useYaw
+                ).setDefaultValue(true)
+                .setSaveConsumer(b -> {
+                    task.useYaw = b;
+                })
+                .build()
+            );
+
+            common.addEntry(entryBuilder
+                .startBooleanToggle(
+                    Text.translatable("使用俯仰"),
+                    task.usePitch
+                ).setDefaultValue(true)
+                .setSaveConsumer(b -> {
+                    task.usePitch = b;
+                })
+                .build()
+            );
+
+            common.addEntry(entryBuilder
+                .startBooleanToggle(
+                    Text.translatable("使用滚转"),
+                    task.useRoll
+                ).setDefaultValue(false)
+                .setSaveConsumer(b -> {
+                    task.useRoll = b;
+                })
+                .build()
+            );
+
+            builder.setSavingRunnable(() -> {
+                updateTask();
+            });
+
+            minecraft.setScreen(builder.build());
+        }
+
+        private void updateWidgetPosition() {
+            IDrawing.setPositionAndWidth(btnReturn, 10, 10, 20);
+            IDrawing.setPositionAndWidth(nameField, 40, 10, 90);
+            IDrawing.setPositionAndWidth(btnEnterConfig, 140, 10, 40);
+
+            IDrawing.setPositionAndWidth(btnAddWidth, 40, height - 30, 20);
+            IDrawing.setPositionAndWidth(btnSubWidth, 70, height - 30, 20);
+            IDrawing.setPositionAndWidth(btnSubTX, 100, height - 30, 20);
+            IDrawing.setPositionAndWidth(btnAddTX, 130, height - 30, 20);
+
+            IDrawing.setPositionAndWidth(btnAddHeight, 10, 40, 20);
+            IDrawing.setPositionAndWidth(btnSubHeight, 10, 70, 20);
+            IDrawing.setPositionAndWidth(btnSubTY, 10, 100, 20);
+            IDrawing.setPositionAndWidth(btnAddTY, 10, 130, 20);
+
+            IDrawing.setPositionAndWidth(btnCenter, 10, height - 30, 20);
+        }
+
+        private void setTX(int tx) {
+            int w = task.width * Square.length;
+            boolean canMove = w > scissor.width;
+            if (!canMove) {
+                this.tx = 0;
+                return;
+            }
+            int full = w - scissor.width;
+            int min = -full / 2;
+            int max = full / 2;
+            if (tx < min) tx = min;
+            else if (tx > max) tx = max;
+            this.tx = tx;
+        }
+
+        private void setTY(int ty) {
+            int h = task.height * Square.length;
+            boolean canMove = h > scissor.height;
+            if (!canMove) {
+                this.ty = 0;
+                return;
+            }
+            int full = h - scissor.height;
+            int min = -full / 2;
+            int max = full / 2;
+            if (ty < min) ty = min;
+            else if (ty > max) ty = max;
+            this.ty = ty;
         }
 
         @Override
@@ -639,13 +854,24 @@ public class CompoundCreatorScreen extends Screen {
             public BlockState state;
             public Consumer<Square> consumer;
             public Function<Square, Boolean> highlight = square -> false;
+            public Function<Square, Boolean> visible = square -> true;
 
-            public Square(int x, int y, BlockState state, Consumer<Square> consumer, Function<Square, Boolean> highlight) {
+            public Square(Square other) {
+                this.x = other.x;
+                this.y = other.y;
+                this.state = other.state;
+                this.consumer = other.consumer;
+                this.highlight = other.highlight;
+                this.visible = other.visible;
+            }
+
+            public Square(int x, int y, BlockState state, Consumer<Square> consumer, Function<Square, Boolean> highlight, Function<Square, Boolean> visible) {
                 this.x = x;
                 this.y = y;
                 this.state = state;
                 this.consumer = consumer;
                 if (highlight != null) this.highlight = highlight;
+                if (visible != null) this.visible = visible;
             }
 
         #if MC_VERSION >= "12000"
@@ -655,7 +881,7 @@ public class CompoundCreatorScreen extends Screen {
         #endif
                 x = tx;
                 y = ty;
-                if (!visible()) return;
+                if (!isVisible()) return;
                 fill(matrices, x, y, x + length, y + length, 0xffb0b0b0);
                 if (state != null) {
                     renderBlockState(matrices, x + 1, y + 1, partialTick, state);
@@ -664,43 +890,66 @@ public class CompoundCreatorScreen extends Screen {
                     fill(matrices, x + 1, y + 1, x + length - 1, y + length - 1, highlight.apply(this) ? 0xff808080 : 0xff404040);
                 }
                 if (isMouseOver(mouseX, mouseY)) {
-                    drawText(matrices, minecraft.font, (state == null ? "Empty" : state.getBlock().getName().getString()), 0, height - 10, 0xffffffff);
-                    if (state != null) {
-                        Block block = state.getBlock();
-                        StateDefinition<Block, BlockState> statedefinition = block.getStateDefinition();
-                        Collection<Property<?>> collection = statedefinition.getProperties();
-                        StringBuilder sb = new StringBuilder();
+                    mouseOver = this;
+                }
+            }
+
+        #if MC_VERSION >= "12000"
+            public void renderTooltip(GuiGraphics matrices, int mouseX, int mouseY, float partialTick) {
+        #else
+            public void renderTooltip(PoseStack matrices, int mouseX, int mouseY, float partialTick) {
+        #endif
+                String str = "";
+                if (state != null) {
+                    Block block = state.getBlock();
+                    StateDefinition<Block, BlockState> statedefinition = block.getStateDefinition();
+                    Collection<Property<?>> collection = statedefinition.getProperties();
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("/");
+                    for (Property<?> property : collection) {
+                        sb.append(property.getName());
+                        sb.append(": ");
+                        sb.append(state.getValue(property).toString());
                         sb.append("/");
-                        for (Property<?> property : collection) {
-                            sb.append(property.getName());
-                            sb.append(": ");
-                            sb.append(state.getValue(property).toString());
-                            sb.append("/");
-                        }
-                        String s = sb.toString();
-                        Main.LOGGER.info(s);
-                        drawText(matrices, minecraft.font, s, 0, height - 20, 0xffffffff);
                     }
+                    str = block.getName().getString() + '\n' + block.getDescriptionId() + '\n' + sb.toString();
+                } else {
+                    str = "Empty";
+                }
+                FormattedText formattedText = FormattedText.of(str);
+                List<FormattedCharSequence> lines = minecraft.font.split(formattedText, width - Inventory.width - 10);
+                int h = (int) (minecraft.font.lineHeight * 1.1F);
+                int y = height - lines.size() * h;
+                for (FormattedCharSequence line : lines) {
+                    drawText(matrices, minecraft.font, line, 0, y, 0xFFFFFFFF);
+                    y += h;
                 }
             }
 
             public boolean isMouseOver(double mouseX, double mouseY) {
+                if (!isVisible()) return false;
                 if (x <= mouseX && mouseX <= x + length && y <= mouseY && mouseY <= y + length) {
                     return true;
                 }
                 return false;
             }
 
-            private boolean visible() {
-                return x >= -length && x <= TaskScreen.this.width && y >= -length && y <= TaskScreen.this.height;
+            private boolean isVisible() {
+                return x >= -length && x <= TaskScreen.this.width && y >= -length && y <= TaskScreen.this.height && visible.apply(this);
             }
 
             public boolean mouseClicked(double mouseX, double mouseY, int i) {
-                if (isMouseOver(mouseX, mouseY)) {
+                if (!isMouseOver(mouseX, mouseY)) return false;
+                if (i == 0) {
                     consumer.accept(this);
-                    return true;
+                } else if (i == 1) {
+                    if (state != null) {
+                        minecraft.setScreen(new PropertyScreen(this));
+                    }
+                } else if (i == 2) {
+                    now.state = this.state;
                 }
-                return false;
+                return true;
             }
 
             private boolean isFocused = false;
@@ -714,12 +963,77 @@ public class CompoundCreatorScreen extends Screen {
             }
         }
 
+        public class PropertyScreen extends Screen {
+            private Square present;
+            private List<Button> buttons = new ArrayList<>();
+            private Button btnClose = UtilitiesClient.newButton(Text.literal("X"), btn -> onClose());
+
+            public PropertyScreen(Square square) {
+                super(Text.literal(""));
+                present = new Square(square);
+                Block block = present.state.getBlock();
+                StateDefinition<Block, BlockState> statedefinition = block.getStateDefinition();
+                Collection<Property<?>> collection = statedefinition.getProperties();
+                for (Property<?> property : collection) {
+                    buttons.add(UtilitiesClient.newButton(Text.literal(property.getName() + ":" + present.state.getValue(property)), btn -> cycleState(btn, property)));
+                }
+            }
+
+            @Override
+            protected void init() {
+                for (Button button : buttons) {
+                    addRenderableWidget(button);
+                }
+                addRenderableWidget(btnClose);
+            }
+
+            @Override
+        #if MC_VERSION >= "12000"
+            public void render(GuiGraphics matrices, int mouseX, int mouseY, float partialTick) {
+                renderDirtBackground(matrices);
+        #else
+            public void render(PoseStack matrices, int mouseX, int mouseY, float partialTick) {
+                renderDirtBackground(0);
+        #endif
+                int y = 60;
+                int x = 30;
+                for (Button button : buttons) {
+                    IDrawing.setPositionAndWidth(button, x, y, width - 60);
+                    y += 22;
+                }
+                IDrawing.setPositionAndWidth(btnClose, 20, 20, 20);
+                drawCenteredString(matrices, minecraft.font, present.state.getBlock().getName().getString(), width / 2, 20, 0xffffffff);
+                super.render(matrices, mouseX, mouseY, partialTick);
+            }
+
+            private void cycleState(Button btn, Property<?> property) {
+                present.state = cycleState(present.state, property, true);
+                btn.setMessage(Text.literal(property.getName() + ":" + present.state.getValue(property)));
+            } 
+
+            private static <T extends Comparable<T>> BlockState cycleState(BlockState p_40970_, Property<T> p_40971_, boolean p_40972_) {
+                return p_40970_.setValue(p_40971_, getRelative(p_40971_.getPossibleValues(), p_40970_.getValue(p_40971_), p_40972_));
+            }
+
+            private static <T> T getRelative(Iterable<T> p_40974_, T p_40975_, boolean p_40976_) {
+                return (T)(p_40976_ ? Util.findPreviousInIterable(p_40974_, p_40975_) : Util.findNextInIterable(p_40974_, p_40975_));
+            }
+
+            @Override
+            public void onClose() {
+                TaskScreen.this.now = present;
+                minecraft.setScreen(TaskScreen.this);
+            }
+        }
+
         public class Inventory implements GuiEventListener {
             public static final int width = 100;
             public static final int col = 5;
             private int scroll = 0;
             private List<Square> blocksList = new ArrayList<>();
+            private List<Square> searchedList = new ArrayList<>();
             private boolean draggingSlider = false;
+            private EditBox searchField = new EditBox(Minecraft.getInstance().font, 11, 45, width, 15, Text.literal(""));
             private Rectangle scissor = new Rectangle(19, 19, 8, 10);
 
             public Inventory() {
@@ -729,46 +1043,69 @@ public class CompoundCreatorScreen extends Screen {
                         now.state = square.state;
                     }, square -> square.state == now.state));
                 }*/
-        #if MC_VERSION >= "12000"
-                for (CreativeModeTab tab : CreativeModeTabs.tabs()) {
-                    for (ItemStack stack : tab.getDisplayItems()) {
-                        items.add(stack);
-                    }
-                }
+        #if MC_VERSION >= "11903"
+                for (Block block : BuiltInRegistries.BLOCK) {
         #else
-                for (CreativeModeTab tab : CreativeModeTab.TABS) {
-                    if (tab == CreativeModeTab.TAB_HOTBAR) continue;
-                    tab.fillItemList(items);
-                }
+                for (Block block : Registry.BLOCK) {
         #endif
-                blocksList.add(new Square(0, 0, Blocks.AIR.defaultBlockState(), square -> {
+                    markSquare(new Square(0, 0, block.defaultBlockState(), square -> {
                         now.state = square.state;
-                    }, square -> square.state == now.state));
-                for (ItemStack stack : items) {
-                    Item item = stack.getItem();
-                    if (item instanceof BlockItem) {
-                        BlockState state = ((BlockItem) item).getBlock().defaultBlockState();
-                        blocksList.add(new Square(0, 0, state, square -> {
-                            now.state = square.state;
-                        }, square -> square.state == now.state));
-                    }
-                }
+                    }, square -> square.state == now.state, square -> true));
+                } 
+                /* markSquare(new Square(0, 0, Blocks.AIR.defaultBlockState(), square -> {
+                        now.state = square.state;
+                    }, square -> square.state == now.state, square -> true)); */
+                searchedList = new ArrayList<>(blocksList);
+
+                searchField.moveCursorToStart();
+                searchField.setResponder(this::search);
             }
 
-            int ka = 0;
-            int kb = 0;
+            private void markSquare(Square square) {
+                blocksList.add(square);
+            }
+
+            public void search(String str) {
+                if (str.isEmpty()) {
+                    searchedList = new ArrayList<>(blocksList);
+                    return;
+                }
+                if (str.startsWith("#")) {
+                    str = str.substring(1);
+                    List<Square> list = new ArrayList<>();
+                    for (Square square : blocksList) {
+                        if (square.state.getBlock().getDescriptionId().contains(str)) {
+                            list.add(square);
+                        }
+                    }
+                    searchedList = list;
+                } else {
+                    List<Square> list = new ArrayList<>();
+                    for (Square square : blocksList) {
+                        if (square.state.getBlock().getName().getString().contains(str)) {
+                            list.add(square);
+                        }
+                    }
+                    searchedList = list;
+                }
+            }
 
         #if MC_VERSION >= "12000"
             public void render(GuiGraphics matrices, int mouseX, int mouseY, float partialTick) {
         #else
             public void render(PoseStack matrices, int mouseX, int mouseY, float partialTick) {
         #endif
-                scissor = new Rectangle(TaskScreen.this.width - width, 0, width, TaskScreen.this.height);
+                fill(matrices, scissor.x, 0, scissor.x + scissor.width, height, 0xff212121);
+                IDrawing.setPositionAndWidth(searchField, TaskScreen.this.width - width + 3, 1, width - 3);
+                searchField.render(matrices, mouseX, mouseY, partialTick);
+                scissor = new Rectangle(TaskScreen.this.width - width, 18, width, TaskScreen.this.height - 18);
                 checkAndScroll(scroll);
-                int x = TaskScreen.this.width - width;
-                for (int i = 0; i < blocksList.size(); i++) {
-                    blocksList.get(i).render(matrices, mouseX, mouseY, x + i % col * Square.length, scroll + i / col * Square.length, partialTick);
+                int x = scissor.x + 3;
+                ScissorsHandler.INSTANCE.scissor(scissor);
+                for (int i = 0; i < searchedList.size(); i++) {
+                    searchedList.get(i).render(matrices, mouseX, mouseY, x + i % col * Square.length, scissor.y + scroll + i / col * Square.length, partialTick);
                 }
+                ScissorsHandler.INSTANCE.clearScissors();
                 if (canScoll()) {
                     int[] pas = getSliderPositionAndSize();
                     fill(matrices, pas[0], pas[1], pas[0] + pas[2], pas[1] + pas[3], 0xffb0b0b0);
@@ -778,7 +1115,8 @@ public class CompoundCreatorScreen extends Screen {
             public List<? extends GuiEventListener> children() {
                 List<GuiEventListener> result = new ArrayList<>();
                 result.add(this);
-                result.addAll(blocksList);
+                result.add(searchField);
+                result.addAll(searchedList);
                 return result;
             }
 
@@ -817,7 +1155,7 @@ public class CompoundCreatorScreen extends Screen {
             public boolean mouseScrolled(double x, double y, double amount) {
                 if (!canScoll()) return false;
                 if (isMouseOver(x, y)) {
-                    checkAndScroll(scroll + 2 * (int) amount);
+                    checkAndScroll(scroll + 20 * (int) amount);
                     return true;
                 }
                 return false;
@@ -859,7 +1197,7 @@ public class CompoundCreatorScreen extends Screen {
             }
 
             private int ah() {
-                return (blocksList.size() / col) * Square.length;
+                return (searchedList.size() / col) * Square.length;
             }
 
             private void setScroll(int mouseY) {

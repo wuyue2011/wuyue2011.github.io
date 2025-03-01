@@ -12,4 +12,5 @@ public interface RailActionsModuleExtraSupplier {
     List<Rail.RailActions> getRailActions();
     Map<BlockPos, Map<BlockPos, Rail>> getRails();
     Level getWorld();
+    void sendUpdateS2C();
 }

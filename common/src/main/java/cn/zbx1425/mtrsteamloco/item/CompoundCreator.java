@@ -72,6 +72,7 @@ public class CompoundCreator extends ItemNodeModifierBase {
                 for (int i = 0; i < size; i++) {
                     acc.getRailActions().add(new SliceAction(acc.getWorld(), player, acc.getRails().get(posStart).get(posEnd), tasks.get(i)));
                 }
+                acc.sendUpdateS2C();
             } else {
                 player.displayClientMessage(Text.translatable("gui.mtr.rail_not_found_action"), true);
             }
@@ -86,9 +87,13 @@ public class CompoundCreator extends ItemNodeModifierBase {
         public int width;
         public int height;
         public double start;
-        public double length;
+        public Double length;
         public Double interval;
+        public double increment;
         public Integer[] blockIds;
+        public boolean useYaw;
+        public boolean usePitch;
+        public boolean useRoll;
 
         public static final String TAG_ORDER = "order";
         public static final String TAG_NAME = "name";
@@ -97,9 +102,13 @@ public class CompoundCreator extends ItemNodeModifierBase {
         public static final String TAG_START = "start";
         public static final String TAG_WIDTH = "width";
         public static final String TAG_INTERVAL = "interval";
+        public static final String TAG_INCREMENT = "increment";
         public static final String TAG_BLOCK_IDS = "block_ids";
+        public static final String TAG_USE_YAW = "use_yaw";
+        public static final String TAG_USE_PITCH = "use_pitch";
+        public static final String TAG_USE_ROLL = "use_roll";
 
-        public SliceTask(int order, String name, int width, int height, double start, double length, Double interval, Integer[] blockIds) {
+        public SliceTask(int order, String name, int width, int height, double start, Double length, Double interval, double increment, Integer[] blockIds, boolean useYaw, boolean usePitch, boolean useRoll) {
             this.order = order;
             this.name = name;
             this.width = width;
@@ -107,7 +116,11 @@ public class CompoundCreator extends ItemNodeModifierBase {
             this.start = start;
             this.length = length;
             this.interval = interval;
+            this.increment = increment;
             this.blockIds = blockIds;
+            this.useYaw = useYaw;
+            this.usePitch = usePitch;
+            this.useRoll = useRoll;
         }
 
         public SliceTask(CompoundTag compoundTag) {
@@ -116,13 +129,21 @@ public class CompoundCreator extends ItemNodeModifierBase {
             this.width = compoundTag.getInt(TAG_WIDTH);
             this.height = compoundTag.getInt(TAG_HEIGHT);
             this.start = compoundTag.getDouble(TAG_START);
-            this.length = compoundTag.getDouble(TAG_LENGTH);
+            if (compoundTag.contains(TAG_LENGTH)) {
+                this.length = compoundTag.getDouble(TAG_LENGTH);
+            } else {
+                this.length = null;
+            }
+            this.increment = compoundTag.getDouble(TAG_INCREMENT);
             if (compoundTag.contains(TAG_INTERVAL)) {
                 this.interval = compoundTag.getDouble(TAG_INTERVAL);
             } else {
                 this.interval = null;
             }
             this.blockIds = IntegerArraySerializer.deserialize(compoundTag.getString(TAG_BLOCK_IDS));
+            this.useYaw = compoundTag.getBoolean(TAG_USE_YAW);
+            this.usePitch = compoundTag.getBoolean(TAG_USE_PITCH);
+            this.useRoll = compoundTag.getBoolean(TAG_USE_ROLL);
         }
 
         public CompoundTag toCompoundTag() {
@@ -132,11 +153,17 @@ public class CompoundCreator extends ItemNodeModifierBase {
             compoundTag.putInt(TAG_WIDTH, width);
             compoundTag.putInt(TAG_HEIGHT, height);
             compoundTag.putDouble(TAG_START, start);
-            compoundTag.putDouble(TAG_LENGTH, length);
+            if (length != null) {
+                compoundTag.putDouble(TAG_LENGTH, length);
+            }
+            compoundTag.putDouble(TAG_INCREMENT, increment);
             if (interval!= null) {
                 compoundTag.putDouble(TAG_INTERVAL, interval);
             }
             compoundTag.putString(TAG_BLOCK_IDS, IntegerArraySerializer.serialize(blockIds));
+            compoundTag.putBoolean(TAG_USE_YAW, useYaw);
+            compoundTag.putBoolean(TAG_USE_PITCH, usePitch);
+            compoundTag.putBoolean(TAG_USE_ROLL, useRoll);
             return compoundTag;
         }
 
@@ -149,7 +176,11 @@ public class CompoundCreator extends ItemNodeModifierBase {
                 this.start = sliceTask.start;
                 this.length = sliceTask.length;
                 this.interval = sliceTask.interval;
+                this.increment = sliceTask.increment;
                 this.blockIds = sliceTask.blockIds;
+                this.useYaw = sliceTask.useYaw;
+                this.usePitch = sliceTask.usePitch;
+                this.useRoll = sliceTask.useRoll;
             }
         }
     }
@@ -168,7 +199,7 @@ public class CompoundCreator extends ItemNodeModifierBase {
 		private final double length;
 		private final Set<BlockPos> blacklistedPos = new HashSet<>();
 
-        private static final double INCREMENT = 0.1;
+        private final double INCREMENT;
 
         public SliceAction(Level world, Player player, Rail rail, SliceTask task) {
             super(world, player, null, rail, 0, 0, null);
@@ -179,15 +210,15 @@ public class CompoundCreator extends ItemNodeModifierBase {
             this.task = task;
             index = 0;
             length = rail.getLength();
-            distance = 0;
             width = task.width;
             height = task.height;
+            INCREMENT = task.increment;
 
-            if (task.interval == null) {
+            if (task.interval == null || task.length == null) {
                 starts = new double[]{task.start};
             } else {
-                double temp = task.start * length;
-                double count = task.length * length + task.interval;
+                double temp = task.start;
+                double count = task.length + task.interval;
                 List<Double> list = new ArrayList<>();
                 while (temp + count < length) {
                     list.add(temp);
@@ -195,6 +226,7 @@ public class CompoundCreator extends ItemNodeModifierBase {
                 }
                 starts = list.stream().mapToDouble(Double::doubleValue).toArray();
             }
+            distance = starts[0];
         }
 
         @Override
@@ -206,7 +238,8 @@ public class CompoundCreator extends ItemNodeModifierBase {
                     showProgressMessage(100);
                     return true;
                 }
-                if (distance >= starts[index] + length) {
+                
+                if (distance >= starts[index] + (task.length == null ? length : task.length)) {
                     index++;
                     if (index >= starts.length) {
                         showProgressMessage(100);
@@ -224,15 +257,20 @@ public class CompoundCreator extends ItemNodeModifierBase {
                 Vec3 next = rail.getPosition(distance);
                 // Vec3 center = new Vec3((last.x + next.x) / 2, (last.y + next.y) / 2, (last.z + next.z) / 2);
 
-                final float yaw = (float) Mth.atan2(next.x - last.x, next.z - last.z);
-                final float pitch = (float) Mth.atan2(next.y - last.y, (float) Math.sqrt((next.x - last.x) * (next.x - last.x) + (next.z - last.z) * (next.z - last.z)));
-                final float roll = RailExtraSupplier.getRollAngle(rail, distance - INCREMENT / 2);
-
                 Matrix4f mat = new Matrix4f();
                 mat.translate((float) last.x, (float) last.y, (float) last.z);
-                mat.rotateY(yaw);
-                mat.rotateX(pitch);
-                mat.rotateZ(roll);
+                if (task.useYaw) {
+                    final float yaw = (float) Mth.atan2(next.x - last.x, next.z - last.z);
+                    mat.rotateY(yaw);
+                }
+                if (task.usePitch) {
+                    final float pitch = (float) Mth.atan2(next.y - last.y, (float) Math.sqrt((next.x - last.x) * (next.x - last.x) + (next.z - last.z) * (next.z - last.z)));
+                    mat.rotateX(pitch);
+                }
+                if (task.useRoll) {
+                    final float roll = RailExtraSupplier.getRollAngle(rail, distance - INCREMENT / 2);
+                    mat.rotateZ(roll);
+                }
 
                 mat.translate(-width / 2.0F + 0.5F, height / 2.0F - 0.5F, 0);
 

@@ -54,3 +54,7 @@ _mc_1.18.2/
 # MTR data
 
 _Minecraft-Transit-Railway-3.x.x
+
+# logs
+
+*.log

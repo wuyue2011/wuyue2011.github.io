@@ -28,7 +28,7 @@ public class TrainScriptContext extends AbstractScriptContext {
 
     public TrainClient train;
     public TrainWrapper trainExtra;
-    // protected TrainWrapper trainExtraWriting;
+    protected TrainWrapper trainExtraWriting;
 
     public TrainDrawCalls scriptResult;
     private TrainDrawCalls scriptResultWriting;
@@ -39,7 +39,7 @@ public class TrainScriptContext extends AbstractScriptContext {
         scriptResultWriting = new TrainDrawCalls(train.trainCars);
         this.train = train;
         trainExtra = new TrainWrapper(train);
-        // trainExtraWriting = new TrainWrapper(train);
+        trainExtraWriting = new TrainWrapper(train);
         drawCalls = new Map[train.trainCars];
         for (int i = 0; i < train.trainCars; i++) {
             drawCalls[i] = new HashMap<>();
@@ -74,14 +74,14 @@ public class TrainScriptContext extends AbstractScriptContext {
         return !train.isRemoved && ClientData.TRAINS.contains(train);
     }
 
-    // public void extraFinished() {
-    //     synchronized (this) {
-    //         TrainWrapper temp = trainExtraWriting;
-    //         trainExtraWriting = trainExtra;
-    //         trainExtra = temp;
-    //         trainExtraWriting.reset();
-    //     }
-    // }
+    public void extraFinished() {
+        synchronized (this) {
+            TrainWrapper temp = trainExtraWriting;
+            trainExtraWriting = trainExtra;
+            trainExtra = temp;
+            trainExtraWriting.reset();
+        }
+    }
 
     public void drawCarModel(ModelCluster model, int carIndex, Matrices poseStack) {
         scriptResultWriting.addCarModel(carIndex, model, poseStack == null ? Matrix4f.IDENTITY : poseStack.last().copy());

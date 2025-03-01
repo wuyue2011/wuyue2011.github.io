@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import mtr.data.Rail;
 import mtr.data.RailwayData;
 import cn.zbx1425.mtrsteamloco.data.RailActionsModuleExtraSupplier;
+import mtr.packet.PacketTrainDataGuiServer;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -39,5 +40,10 @@ public class RailwayDataRailActionsModuleMixin extends RailwayDataModuleBase imp
     @Override
     public Level getWorld() {
         return world;
+    }
+
+    @Override
+    public void sendUpdateS2C() {
+        PacketTrainDataGuiServer.updateRailActionsS2C(world, railActions);
     }
 }

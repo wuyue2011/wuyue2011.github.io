@@ -83,8 +83,7 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
         carPose.rotateZ(isReversed? -roll : roll);
         carPose.translate(0, 1, 0);
 
-        TrainWrapper trainExtra = trainScripting.trainExtra;
-        trainExtra.reset();
+        TrainWrapper trainExtra = trainScripting.trainExtraWriting;
         trainExtra.doorLeftOpen[carIndex] = doorLeftOpen;
         trainExtra.doorRightOpen[carIndex] = doorRightOpen;
         trainExtra.lastWorldPose[carIndex] = carPose.copy();
@@ -96,7 +95,7 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
         if (posAverage == null) {
             if (carIndex == train.trainCars - 1) {
                 // So it's outside visible range, but still need to call render function
-                // trainScripting.extraFinished();
+                trainScripting.extraFinished();
                 typeScripting.tryCallRenderFunctionAsync(trainScripting);
             }
             return;
@@ -118,7 +117,7 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
         matrices.popPose();
 
         if (carIndex == train.trainCars - 1) {
-            // trainScripting.extraFinished();
+            trainScripting.extraFinished();
             typeScripting.tryCallRenderFunctionAsync(trainScripting);
         }
     }
