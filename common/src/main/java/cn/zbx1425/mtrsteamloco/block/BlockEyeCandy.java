@@ -226,7 +226,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public EyeCandyScriptContext scriptContext = null;
 
-        public boolean asPlatform = true;
+        public boolean asPlatform = false;
         public float doorValue = 0;
         public boolean doorTarget = false;
 

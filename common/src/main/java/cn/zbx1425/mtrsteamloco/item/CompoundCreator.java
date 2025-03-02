@@ -28,6 +28,10 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import cn.zbx1425.mtrsteamloco.network.util.IntegerArraySerializer;
 import cn.zbx1425.mtrsteamloco.network.PacketScreen;
 import mtr.data.RailAngle;
+import cn.zbx1425.mtrsteamloco.Main;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionHand;
 
 import java.util.*;
 
@@ -38,17 +42,25 @@ public class CompoundCreator extends ItemNodeModifierBase {
         super(true, false, false, true);
     }
 
+    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (!world.isClientSide) {
+            PacketScreen.sendScreenBlockS2C((ServerPlayer) player, "compound_creator", BlockPos.ZERO);
+        }
+        return InteractionResultHolder.success(stack);
+    }
+
     @Override
     public InteractionResult useOn(UseOnContext ctx) {
         if (clickCondition(ctx)) {
-            return super.useOn(ctx);
+            super.useOn(ctx);
         } else {
             Player player = ctx.getPlayer();
             if (player instanceof ServerPlayer serverPlayer) {
                 PacketScreen.sendScreenBlockS2C(serverPlayer, "compound_creator", BlockPos.ZERO);
             }
-            return InteractionResult.SUCCESS;
         }
+        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -109,6 +121,21 @@ public class CompoundCreator extends ItemNodeModifierBase {
         public static final String TAG_USE_YAW = "use_yaw";
         public static final String TAG_USE_PITCH = "use_pitch";
         public static final String TAG_USE_ROLL = "use_roll";
+
+        public SliceTask(SliceTask other) {
+            this.order = other.order;
+            this.name = other.name;
+            this.width = other.width;
+            this.height = other.height;
+            this.start = other.start;
+            this.length = other.length;
+            this.interval = other.interval;
+            this.increment = other.increment;
+            this.blockIds = other.blockIds;
+            this.useYaw = other.useYaw;
+            this.usePitch = other.usePitch;
+            this.useRoll = other.useRoll;
+        }
 
         public SliceTask(int order, String name, int width, int height, double start, Double length, Double interval, double increment, Integer[] blockIds, boolean useYaw, boolean usePitch, boolean useRoll) {
             this.order = order;

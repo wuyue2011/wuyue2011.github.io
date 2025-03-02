@@ -12,11 +12,14 @@ import net.minecraft.client.gui.components.Button;
 import me.shedaniel.clothconfig2.api.ScissorsHandler;
 import mtr.screen.WidgetBetterTextField;
 import net.minecraft.network.chat.FormattedText;
+import cn.zbx1425.sowcer.math.PoseStackUtil;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.BannerBlock;
 import net.minecraft.core.NonNullList;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.Minecraft;
@@ -47,15 +50,15 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.Direction;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.GameRenderer;
 import static cn.zbx1425.mtrsteamloco.item.CompoundCreator.*;
 
 #if MC_VERSION >= "12000"
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.CreativeModeTabs;
 #else
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.renderer.GameRenderer;
 #endif
 
 #if MC_VERSION >= "11903"
@@ -97,7 +100,8 @@ public class CompoundCreatorScreen extends Screen {
 
     private Button btnAdd = UtilitiesClient.newButton(20, Text.literal("+"), button -> addEntry());
     private Button btnRemove = UtilitiesClient.newButton(20, Text.literal("-"), button -> removeEntry());
-    private Button btnClear = UtilitiesClient.newButton(20, Text.literal("Clear"), button -> clearEntries());
+    private Button btnCopy = UtilitiesClient.newButton(20, Text.translatable("gui.mtrsteamloco.compound_creator.copy"), button -> copyEntry());
+    private Button btnClear = UtilitiesClient.newButton(20, Text.literal("gui.mtrsteamloco.compound_creator.clear"), button -> clearEntries());
     private Button btnClose = UtilitiesClient.newButton(20, Text.literal("X"), button -> onClose());
 
     CompoundCreatorScreen(Screen parent) {
@@ -179,6 +183,14 @@ public class CompoundCreatorScreen extends Screen {
         update();
     }
 
+    private void copyEntry() {
+        if (selectedEntry == null) return;
+        Entry entry = new Entry(new SliceTask(selectedEntry.task));
+        entries.add(entry);
+        selectedEntry = entry;
+        update();
+    }
+
     @Override
 #if MC_VERSION >= "12000"
     public void render(GuiGraphics matrices, int mouseX, int mouseY, float partialTick) {
@@ -189,13 +201,15 @@ public class CompoundCreatorScreen extends Screen {
         super.render(matrices, mouseX, mouseY, partialTick);
         fill(matrices, 0, 38, width, height - 38, 0x90000000);
         
-        drawCenteredString(matrices, minecraft.font, "我是标题", width / 2, 18, 0xFFFFFFFF);
+        drawCenteredString(matrices, minecraft.font, Text.translatable("gui.mtrsteamloco.compound_creator.title").getString() , width / 2, 18, 0xFFFFFFFF);
         IDrawing.setPositionAndWidth(btnAdd, width - 50, 60, 40);
         IDrawing.setPositionAndWidth(btnRemove, width - 50, 90, 40);
-        IDrawing.setPositionAndWidth(btnClear, width - 50, 120, 40);
+        IDrawing.setPositionAndWidth(btnCopy, width - 50, 120, 40);
+        IDrawing.setPositionAndWidth(btnClear, width - 50, 150, 40);
         IDrawing.setPositionAndWidth(btnClose, 10, 10, 20);
         btnAdd.render(matrices, mouseX, mouseY, partialTick);
         btnRemove.render(matrices, mouseX, mouseY, partialTick);
+        btnCopy.render(matrices, mouseX, mouseY, partialTick);
         btnClear.render(matrices, mouseX, mouseY, partialTick);
         btnClose.render(matrices, mouseX, mouseY, partialTick);
         scissor = new Rectangle(0, 40, width, height - 80);
@@ -302,6 +316,7 @@ public class CompoundCreatorScreen extends Screen {
         // result.add(title);
         result.add(btnAdd);
         result.add(btnRemove);
+        result.add(btnCopy);
         result.add(btnClear);
         result.add(btnClose);
         return result;
@@ -523,9 +538,27 @@ public class CompoundCreatorScreen extends Screen {
             if (width % 2 != 1 || height % 2 != 1) return;
             if (width != task.width || height != task.height);
             else return;
+
+            Integer[] blockIds = new Integer[width * height];
+            int thiMidX = width / 2;
+            int thiMidY = height / 2;
+            int oldMidX = task.width / 2;
+            int oldMidY = task.height / 2;
+            
+            for (int i = -thiMidY; i <= thiMidY; i++) {
+                int thiy = thiMidY + i;
+                int oldy = oldMidY + i;
+                if (oldy < 0 || oldy >= task.height) continue;
+                for (int j = -thiMidX; j <= thiMidX; j++) {
+                    int thix = thiMidX + j;
+                    int oldx = oldMidX + j;
+                    if (oldx < 0 || oldx >= task.width) continue;
+                    blockIds[thiy * width + thix] = task.blockIds[oldy * task.width + oldx];
+                }
+            }
             task.width = width;
             task.height = height;
-            task.blockIds = new Integer[width * height];
+            task.blockIds = blockIds;
             update();
             reload();
         }
@@ -678,7 +711,7 @@ public class CompoundCreatorScreen extends Screen {
         private void setConfigScreen() {
             ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(this)
-                .setTitle(Text.translatable("gui.mtrsteamloco.compound_creator.task_screen.config.title"))
+                .setTitle(Text.translatable("gui.mtrsteamloco.compound_creator.task.config.title"))
                 .setDoesConfirmSave(false)
                 .transparentBackground();
             ConfigEntryBuilder entryBuilder = builder.entryBuilder();
@@ -695,7 +728,7 @@ public class CompoundCreatorScreen extends Screen {
 
             common.addEntry(entryBuilder
                 .startDoubleField(
-                    Text.translatable("gui.mtrsteamloco.compound_creator.task_screen.config.start_pos"),
+                    Text.translatable("gui.mtrsteamloco.compound_creator.task.config.start_pos"),
                     task.start
                 ).setDefaultValue(0)
                 .setSaveConsumer(d -> {
@@ -711,7 +744,7 @@ public class CompoundCreatorScreen extends Screen {
 
             common.addEntry(entryBuilder
                 .startDoubleField(
-                    Text.translatable("gui.mtrsteamloco.compound_creator.task_screen.config.length"),
+                    Text.translatable("gui.mtrsteamloco.compound_creator.task.config.length"),
                     task.length == null ? -1 : task.length
                 ).setDefaultValue(-1)
                 .setSaveConsumer(d -> {
@@ -726,7 +759,7 @@ public class CompoundCreatorScreen extends Screen {
 
             common.addEntry(entryBuilder
                 .startDoubleField(
-                    Text.translatable("gui.mtrsteamloco.compound_creator.task_screen.config.interval"),
+                    Text.translatable("gui.mtrsteamloco.compound_creator.task.config.interval"),
                     task.interval == null ? -1 : task.interval
                 ).setDefaultValue(-1)
                 .setSaveConsumer(d -> {
@@ -740,7 +773,7 @@ public class CompoundCreatorScreen extends Screen {
 
             common.addEntry(entryBuilder
                 .startDoubleField(
-                    Text.translatable("gui.mtrsteamloco.compound_creator.task_screen.config.increment"),
+                    Text.translatable("gui.mtrsteamloco.compound_creator.task.config.increment"),
                     task.increment
                 ).setDefaultValue(0.1)
                 .setSaveConsumer(d -> {
@@ -752,7 +785,7 @@ public class CompoundCreatorScreen extends Screen {
 
             common.addEntry(entryBuilder
                 .startBooleanToggle(
-                    Text.translatable("gui.mtrsteamloco.compound_creator.task_screen.config.use_yaw"),
+                    Text.translatable("gui.mtrsteamloco.compound_creator.task.config.use_yaw"),
                     task.useYaw
                 ).setDefaultValue(true)
                 .setSaveConsumer(b -> {
@@ -763,7 +796,7 @@ public class CompoundCreatorScreen extends Screen {
 
             common.addEntry(entryBuilder
                 .startBooleanToggle(
-                    Text.translatable("gui.mtrsteamloco.compound_creator.task_screen.config.use_pitch"),
+                    Text.translatable("gui.mtrsteamloco.compound_creator.task.config.use_pitch"),
                     task.usePitch
                 ).setDefaultValue(true)
                 .setSaveConsumer(b -> {
@@ -774,7 +807,7 @@ public class CompoundCreatorScreen extends Screen {
 
             common.addEntry(entryBuilder
                 .startBooleanToggle(
-                    Text.translatable("gui.mtrsteamloco.compound_creator.task_screen.config.use_roll"),
+                    Text.translatable("gui.mtrsteamloco.compound_creator.task.config.use_roll"),
                     task.useRoll
                 ).setDefaultValue(false)
                 .setSaveConsumer(b -> {
@@ -849,17 +882,19 @@ public class CompoundCreatorScreen extends Screen {
 
     #if MC_VERSION >= "12000"
         private void renderBlockState(GuiGraphics matrices, int x, int y, float partialTick, BlockState state) {
-            matrices.renderFakeItem(new ItemStack(state.getBlock()), x, y);
+            renderBlockState(matrices.pose(), x, y, partialTick, state);
         }
-    #else
+    #endif
         private void renderBlockState(PoseStack poseStack, int x, int y, float partialTick, BlockState state) {
             BlockRenderDispatcher blockRenderer = minecraft.getBlockRenderer();
             BakedModel model = blockRenderer.getBlockModel(state);
             
             poseStack.pushPose();
             poseStack.translate(x, y + 16 , 0);
-            poseStack.scale(16F, -16F, 16F);
-            
+            poseStack.scale(15.5F, -15.5F, 15.5F);
+            float v = (float) (3 * Math.PI / 180F);
+            PoseStackUtil.rotX(poseStack, v);
+
             MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
             RenderSystem.enableDepthTest();
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -872,11 +907,11 @@ public class CompoundCreatorScreen extends Screen {
                 LightTexture.FULL_BRIGHT,
                 OverlayTexture.NO_OVERLAY
             );
+
             
             buffer.endBatch();
             poseStack.popPose();
         }
-    #endif
 
         public class Square implements GuiEventListener {
             public static int length = 18;
@@ -1053,7 +1088,7 @@ public class CompoundCreatorScreen extends Screen {
 
             @Override
             public void onClose() {
-                TaskScreen.this.now = present;
+                TaskScreen.this.now = new Square(present);
                 minecraft.setScreen(TaskScreen.this);
             }
         }
