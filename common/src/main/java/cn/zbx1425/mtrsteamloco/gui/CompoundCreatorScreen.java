@@ -15,10 +15,18 @@ import net.minecraft.network.chat.FormattedText;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.NonNullList;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
+import com.mojang.blaze3d.vertex.Tesselator;
 import mtr.mappings.Text;
 import net.minecraft.world.level.block.state.BlockState;
 import cn.zbx1425.mtrsteamloco.network.PacketUpdateHoldingItem;
@@ -37,6 +45,8 @@ import me.shedaniel.clothconfig2.api.ConfigCategory;
 import net.minecraft.network.chat.Component;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.core.Direction;
 import static cn.zbx1425.mtrsteamloco.item.CompoundCreator.*;
 
 #if MC_VERSION >= "12000"
@@ -500,7 +510,7 @@ public class CompoundCreatorScreen extends Screen {
 
         private Square mouseOver = null;
 
-        private Square now = new Square(0, 0, null, square -> square.state = null, square -> true, square -> true);
+        private Square now = new Square(0, 0, null, square -> square.state = null, square -> true, square -> true, false);
 
         public TaskScreen(SliceTask task) {
             super(Text.translatable(""));
@@ -542,8 +552,8 @@ public class CompoundCreatorScreen extends Screen {
                     Rectangle s = scissor;
                     return sq.x + l >= s.x && sq.x <= s.x + s.width && sq.y + l >= s.y && sq.y <= s.y + s.height;
                 };
-                if (task.blockIds[i] == null) canvas.add(new Square(0, 0, null, consumer, square -> true, visible));
-                else canvas.add(new Square(0, 0, Block.stateById(task.blockIds[i]), consumer, square -> true, visible));
+                if (task.blockIds[i] == null) canvas.add(new Square(0, 0, null, consumer, square -> true, visible, false));
+                else canvas.add(new Square(0, 0, Block.stateById(task.blockIds[i]), consumer, square -> true, visible, false));
             }
             this.canvas = canvas;
         }
@@ -842,37 +852,29 @@ public class CompoundCreatorScreen extends Screen {
             matrices.renderFakeItem(new ItemStack(state.getBlock()), x, y);
         }
     #else
-        private void renderBlockState(PoseStack matrices, int x, int y, float partialTick, BlockState state) {
-            ItemStack stack = state.getBlock().asItem().getDefaultInstance();
-            if (!stack.isEmpty()) {
-                PoseStack posestack = RenderSystem.getModelViewStack();
-                float f = (float)stack.getPopTime() - partialTick;
-                if (f > 0.0F) {
-                    float f1 = 1.0F + f / 5.0F;
-                    posestack.pushPose();
-                    posestack.translate((double)(x + 8), (double)(y + 12), 0.0D);
-                    posestack.scale(1.0F / f1, (f1 + 1.0F) / 2.0F, 1.0F);
-                    posestack.translate((double)(-(x + 8)), (double)(-(y + 12)), 0.0D);
-                    RenderSystem.applyModelViewMatrix();
-                }
-
-            #if MC_VERSION >= "11904"
-                itemRenderer.renderAndDecorateItem(matrices, minecraft.getInstance().player, stack, x, y, 0);
-            #else
-                itemRenderer.renderAndDecorateItem(minecraft.getInstance().player, stack, x, y, 0);
-            #endif
-                RenderSystem.setShader(GameRenderer::getPositionColorShader);
-                if (f > 0.0F) {
-                    posestack.popPose();
-                    RenderSystem.applyModelViewMatrix();
-                }
-
-            #if MC_VERSION >= "11904"
-                itemRenderer.renderGuiItemDecorations(matrices, minecraft.font, stack, x, y);
-            #else
-                itemRenderer.renderGuiItemDecorations(minecraft.font, stack, x, y);
-            #endif
-            }
+        private void renderBlockState(PoseStack poseStack, int x, int y, float partialTick, BlockState state) {
+            BlockRenderDispatcher blockRenderer = minecraft.getBlockRenderer();
+            BakedModel model = blockRenderer.getBlockModel(state);
+            
+            poseStack.pushPose();
+            poseStack.translate(x, y + 16 , 0);
+            poseStack.scale(16F, -16F, 16F);
+            
+            MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+            RenderSystem.enableDepthTest();
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
+            
+            blockRenderer.renderSingleBlock(
+                state,
+                poseStack,
+                buffer,
+                LightTexture.FULL_BRIGHT,
+                OverlayTexture.NO_OVERLAY
+            );
+            
+            buffer.endBatch();
+            poseStack.popPose();
         }
     #endif
 
@@ -884,6 +886,7 @@ public class CompoundCreatorScreen extends Screen {
             public Consumer<Square> consumer;
             public Function<Square, Boolean> highlight = square -> false;
             public Function<Square, Boolean> visible = square -> true;
+            public boolean fixed = false;
 
             public Square(Square other) {
                 this.x = other.x;
@@ -892,15 +895,17 @@ public class CompoundCreatorScreen extends Screen {
                 this.consumer = other.consumer;
                 this.highlight = other.highlight;
                 this.visible = other.visible;
+                this.fixed = other.fixed;
             }
 
-            public Square(int x, int y, BlockState state, Consumer<Square> consumer, Function<Square, Boolean> highlight, Function<Square, Boolean> visible) {
+            public Square(int x, int y, BlockState state, Consumer<Square> consumer, Function<Square, Boolean> highlight, Function<Square, Boolean> visible, boolean fixed) {
                 this.x = x;
                 this.y = y;
                 this.state = state;
                 this.consumer = consumer;
                 if (highlight != null) this.highlight = highlight;
                 if (visible != null) this.visible = visible;
+                this.fixed = fixed;
             }
 
         #if MC_VERSION >= "12000"
@@ -912,11 +917,10 @@ public class CompoundCreatorScreen extends Screen {
                 y = ty;
                 if (!isVisible()) return;
                 fill(matrices, x, y, x + length, y + length, isMouseOver(mouseX, mouseY) ? 0xfffafff2 : 0xff9b9e96);
+                fill(matrices, x + 1, y + 1, x + length - 1, y + length - 1, 0xff919191);
                 if (state != null) {
                     renderBlockState(matrices, x + 1, y + 1, partialTick, state);
-                    fill(matrices, x + 1, y + 1, x + length - 1, y + length - 1, highlight.apply(this) ? 0xffacec92 : 0xff113d00);
-                } else {
-                    fill(matrices, x + 1, y + 1, x + length - 1, y + length - 1, highlight.apply(this) ? 0xff808080 : 0xff404040);
+                    fill(matrices, x + 1, y + 1, x + length - 1, y + length - 1, highlight.apply(this) ? 0x2ff5f5f5 : 0x1fdda9df);
                 }
                 if (isMouseOver(mouseX, mouseY)) {
                     mouseOver = this;
@@ -973,7 +977,7 @@ public class CompoundCreatorScreen extends Screen {
                     consumer.accept(this);
                 } else if (i == 1) {
                     if (state != null) {
-                        minecraft.setScreen(new PropertyScreen(this));
+                        minecraft.setScreen(new PropertyScreen(this, fixed));
                     }
                 } else if (i == 2) {
                     now.state = this.state;
@@ -997,9 +1001,9 @@ public class CompoundCreatorScreen extends Screen {
             private List<Button> buttons = new ArrayList<>();
             private Button btnClose = UtilitiesClient.newButton(Text.literal("X"), btn -> onClose());
 
-            public PropertyScreen(Square square) {
+            public PropertyScreen(Square square, boolean fixed) {
                 super(Text.literal(""));
-                present = new Square(square);
+                present = fixed ? new Square(square) : square;
                 Block block = present.state.getBlock();
                 StateDefinition<Block, BlockState> statedefinition = block.getStateDefinition();
                 Collection<Property<?>> collection = statedefinition.getProperties();
@@ -1066,11 +1070,6 @@ public class CompoundCreatorScreen extends Screen {
 
             public Inventory() {
                 NonNullList<ItemStack> items = NonNullList.create();
-                /* for (BlockState state : Block.BLOCK_STATE_REGISTRY) {
-                    blocksList.add(new Square(0, 0, state, square -> {
-                        now.state = square.state;
-                    }, square -> square.state == now.state));
-                }*/
         #if MC_VERSION >= "11903"
                 for (Block block : BuiltInRegistries.BLOCK) {
         #else
@@ -1078,11 +1077,8 @@ public class CompoundCreatorScreen extends Screen {
         #endif
                     markSquare(new Square(0, 0, block.defaultBlockState(), square -> {
                         now.state = square.state;
-                    }, square -> square.state == now.state, square -> true));
-                } 
-                /* markSquare(new Square(0, 0, Blocks.AIR.defaultBlockState(), square -> {
-                        now.state = square.state;
-                    }, square -> square.state == now.state, square -> true)); */
+                    }, square -> square.state == now.state, square -> true, true));
+                }
                 searchedList = new ArrayList<>(blocksList);
 
                 searchField.moveCursorToStart();

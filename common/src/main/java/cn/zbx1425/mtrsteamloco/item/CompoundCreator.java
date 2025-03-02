@@ -23,6 +23,8 @@ import net.minecraft.core.BlockPos;
 import cn.zbx1425.mtrsteamloco.data.RailActionsModuleExtraSupplier;
 import net.minecraft.world.level.block.state.BlockState;
 import cn.zbx1425.mtrsteamloco.data.RailExtraSupplier;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import cn.zbx1425.mtrsteamloco.network.util.IntegerArraySerializer;
 import cn.zbx1425.mtrsteamloco.network.PacketScreen;
 import mtr.data.RailAngle;
@@ -282,7 +284,18 @@ public class CompoundCreator extends ItemNodeModifierBase {
                         Vector3f pos = mat.getTranslationPart();
                         BlockPos blockPos = new BlockPos((int) Math.floor(pos.x()), (int) Math.floor(pos.y()), (int) Math.floor(pos.z()));
                         if (blockId != null && !blacklistedPos.contains(blockPos) && canPlace(world,blockPos)) {
-                            world.setBlockAndUpdate(blockPos, Block.stateById(blockId));
+                            BlockState state = Block.stateById(blockId);
+                            if (state.hasProperty(BlockStateProperties.FACING)) {
+                                Direction dir = rotateDirection(state.getValue(BlockStateProperties.FACING), mat);
+                                state = state.setValue(BlockStateProperties.FACING, dir);
+                            } else if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+                                Direction dir = rotateDirection(state.getValue(BlockStateProperties.HORIZONTAL_FACING), mat);
+                                state = state.setValue(BlockStateProperties.HORIZONTAL_FACING, dir);
+                            } else if (state.hasProperty(BlockStateProperties.FACING_HOPPER)) {
+                                Direction dir = rotateDirection(state.getValue(BlockStateProperties.FACING_HOPPER), mat);
+                                state = state.setValue(BlockStateProperties.FACING_HOPPER, dir);
+                            }
+                            world.setBlockAndUpdate(blockPos, state);
                         }
                         blacklistedPos.add(blockPos);
                         mat.translate(1.0F, 0, 0);
@@ -294,6 +307,12 @@ public class CompoundCreator extends ItemNodeModifierBase {
 
             showProgressMessage(RailwayData.round(100 * distance / length, 1));
             return false;
+        }
+
+        private Direction rotateDirection(Direction dir, Matrix4f mat) {
+            if (dir == Direction.UP || Direction.DOWN == dir) return dir;
+            double d = dir.toYRot() + mat.getEulerAnglesYXZ().y() / Math.PI * 180;
+            return Direction.fromYRot(d);
         }
 
         private void showProgressMessage(float percentage) {
