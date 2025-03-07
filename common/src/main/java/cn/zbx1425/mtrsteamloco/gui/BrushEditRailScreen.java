@@ -219,6 +219,22 @@ public class BrushEditRailScreen {
             );
             if (enableRollAngle) common.addEntry(new RollAnglesListEntry());
 
+            Function<Integer, Optional<Component[]>> f = v -> Optional.of(new Component[]{Text.translatable("gui.mtrsteamloco.brush_edit_rail.opening_direction_tooltip")});
+
+            common.addEntry(
+                entryBuilder.startIntSlider(
+                    Text.translatable("开门方向"),
+                    supplier.getOpeningDirection(),
+                    0, 3
+                )
+                .setTooltipSupplier(f)
+                .setDefaultValue(0)
+                .setSaveConsumer(value -> {
+                    supplier.setOpeningDirection(value);
+                    PacketUpdateRail.sendUpdateC2S(pickedRail, pickedPosStart, pickedPosEnd);
+                }).build()
+            );
+
             Map<String, String> customConfigs = supplier.getCustomConfigs();
             Map<String, ConfigResponder> responders = supplier.getCustomResponders();
             List<AbstractConfigListEntry> entries = ConfigResponder.getEntrysFromMaps(customConfigs, responders, entryBuilder, () -> BrushEditRailScreen.createScreen(pickedRail, pickedPosStart, pickedPosEnd, parent));

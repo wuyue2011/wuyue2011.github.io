@@ -36,6 +36,14 @@ public interface RailExtraSupplier {
 
     void setCustomResponders(Map<String, ConfigResponder> customResponders);
 
+    void setOpeningDirection(int direction);
+
+    void setOpeningDirectionRaw(int direction);
+
+    int getOpeningDirection();
+
+    int getOpeningDirectionRaw();
+
     static float getVTheta(Rail rail, double verticalCurveRadius) {
         double H = Math.abs(((RailExtraSupplier) rail).getHeight());
         double L = rail.getLength();

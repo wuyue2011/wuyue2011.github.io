@@ -39,6 +39,7 @@ public abstract class RailMixin implements RailExtraSupplier {
     private Map<String, String> customConfigs = new HashMap<>();
     private Map<String, ConfigResponder> customResponders = new HashMap<>();
     private Map<Double, Float> rollAngleMap = new HashMap<>();
+    private int openingDirection = 0;// 0 不开 1 左 2 右 3 双向
 
     @Override
     public String getModelKey() {
@@ -105,6 +106,34 @@ public abstract class RailMixin implements RailExtraSupplier {
         this.customResponders = customResponders;
     }
 
+    public void setOpeningDirectionRaw(int direction) {
+        this.openingDirection = direction;
+    }
+
+    @Override
+    public void setOpeningDirection(int direction) {
+        if (getRenderReversed()) {
+            if (direction == 1) direction = 2;
+            else if (direction == 2) direction = 1;
+        }
+        this.openingDirection = direction;
+    }
+
+    @Override
+    public int getOpeningDirection() {
+        int direction = openingDirection;
+        if (getRenderReversed()) {
+            if (direction == 1) direction = 2;
+            else if (direction == 2) direction = 1;
+        }
+        return direction;
+    }
+
+    @Override
+    public int getOpeningDirectionRaw() {
+        return openingDirection;
+    }
+
     @Inject(method = "<init>(Ljava/util/Map;)V", at = @At("TAIL"), remap = false)
     private void fromMessagePack(Map<String, Value> map, CallbackInfo ci) {
         MessagePackHelper messagePackHelper = new MessagePackHelper(map);
@@ -121,6 +150,7 @@ public abstract class RailMixin implements RailExtraSupplier {
         } catch (Exception e) {
             rollAngleMap = new HashMap<>();
         }
+        openingDirection = messagePackHelper.getInt("opening_direction", 0);
     }
 
     @Inject(method = "toMessagePack", at = @At("TAIL"), remap = false)
@@ -142,11 +172,12 @@ public abstract class RailMixin implements RailExtraSupplier {
 			res2 = "";
 		}
         messagePacker.packString("roll_angle_map").packString(res2);
+        messagePacker.packString("opening_direction").packInt(openingDirection);
     }
 
     @Inject(method = "messagePackLength", at = @At("TAIL"), cancellable = true, remap = false)
     private void messagePackLength(CallbackInfoReturnable<Integer> cir) {
-        cir.setReturnValue(cir.getReturnValue() + 5);
+        cir.setReturnValue(cir.getReturnValue() + 6);
     }
 
     private final int NTE_PACKET_EXTRA_MAGIC = 0x25141425;
@@ -172,6 +203,7 @@ public abstract class RailMixin implements RailExtraSupplier {
         } catch (Exception e) {
             rollAngleMap = new HashMap<>();
         }
+        openingDirection = packet.readInt();
     }
 
     @Inject(method = "writePacket", at = @At("TAIL"))
@@ -195,6 +227,7 @@ public abstract class RailMixin implements RailExtraSupplier {
             res2 = "";
         }
         packet.writeUtf(res2);
+        packet.writeInt(openingDirection);
     }
 
     @Redirect(method = "renderSegment", remap = false, at = @At(value = "INVOKE", target = "Ljava/lang/Math;round(D)J"))

@@ -4,6 +4,6 @@ import java.util.List;
 
 public class JsFriendlyJavaUtils {
     public static <T> T[] asJavaArray(List<T> list) {
-        return (T[]) list.toArray();
+        return list.toArray(new T[0]);
     }
 }

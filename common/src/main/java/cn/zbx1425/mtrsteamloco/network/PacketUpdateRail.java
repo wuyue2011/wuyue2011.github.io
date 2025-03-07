@@ -66,6 +66,8 @@ public class PacketUpdateRail {
             extraBackward.setCustomConfigs(extraTarget.getCustomConfigs());
             extraForward.setRollAngleMap(extraTarget.getRollAngleMap());
             extraBackward.setRollAngleMap(extraTarget.getRollAngleMap());
+            extraForward.setOpeningDirectionRaw(extraTarget.getOpeningDirectionRaw());
+            extraBackward.setOpeningDirectionRaw(extraTarget.getOpeningDirectionRaw());
 
             final FriendlyByteBuf outboundPacket = new FriendlyByteBuf(Unpooled.buffer());
             outboundPacket.writeUtf(railForward.transportMode.toString());
