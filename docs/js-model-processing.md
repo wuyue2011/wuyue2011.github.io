@@ -278,17 +278,21 @@ VertAttrState 可以从 MaterialProp 获得。材质颜色在此处设定，其�
 
 首先使用 ` new DynamicModelHolder() ` 关键字创建一个新的 DynamicModelHolder 实例
 
-- ` DynamicModelHolder.uploadLater(rawModel: RawModel): void ` 
+- `DynamicModelHolder.uploadLater(rawModel: RawModel): void ` 
 
     将 rawModel 添加到上传队列中，稍后（在接下来某一帧时主线程上）会将它上传为 ModelCluster，成为新的 uploadedModel。
 
+- `DynamicModelHolder.uploadNow(rawModel: RawModel): void`
 
-- ` DynamicModelHolder.getUploadedModel(): ModelCluster | null`
+    立即上传一个 RawModel 为 ModelCluster，成为新的 uploadedModel。
+    必须在初始化或渲染线程中调用。
+
+- `DynamicModelHolder.getUploadedModel(): ModelCluster | null`
 
     获取已上传的 ModellCluster。如果未进行过上传操作，或 `uploadLater` 刚刚调用操作还没实际进行，会返回 `null`。
 
 
-- ` DynamicModelHolder.close(): void`
+- `DynamicModelHolder.close(): void`
 
     关闭 DynamicModelHolder 实例，释放资源。同时 `uploadedModel` 也将不再可用。
 

@@ -5,20 +5,27 @@ import cn.zbx1425.sowcerext.model.ModelCluster;
 import cn.zbx1425.sowcerext.model.RawModel;
 import cn.zbx1425.sowcerext.reuse.ModelManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.pipeline.RenderCall;
 
 public class DynamicModelHolder {
 
-    private ModelCluster uploadedModel;
-
+    private ModelCluster uploadedModel = null;
+    
+    private RenderCall uploadCall = null;
     public void uploadLater(RawModel rawModel) {
         RawModel finalRawModel = rawModel.copyForMaterialChanges();
         finalRawModel.sourceLocation = null;
+        uploadCall = () -> upload(rawModel);
         RenderSystem.recordRenderCall(() -> {
-            upload(finalRawModel);
+            if (uploadCall != null) {
+                uploadCall.execute();
+                uploadCall = null;
+            }
         });
     }
 
     public void uploadNow(RawModel rawModel) {
+        uploadCall = null;
         RawModel finalRawModel = rawModel.copyForMaterialChanges();
         finalRawModel.sourceLocation = null;
         upload(rawModel);
