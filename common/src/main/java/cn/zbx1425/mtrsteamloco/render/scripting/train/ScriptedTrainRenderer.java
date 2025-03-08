@@ -83,12 +83,14 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
         carPose.rotateZ(isReversed? -roll : roll);
         carPose.translate(0, 1, 0);
 
+        Matrix4f copy = carPose.copy();
+
         TrainWrapper trainExtra = trainScripting.trainExtraWriting;
         trainExtra.doorLeftOpen[carIndex] = doorLeftOpen;
         trainExtra.doorRightOpen[carIndex] = doorRightOpen;
-        trainExtra.lastWorldPose[carIndex] = carPose.copy();
-        trainExtra.lastCarPosition[carIndex] = carPose.getTranslationPart();
-        trainExtra.lastCarRotation[carIndex] = carPose.getEulerAnglesXYZ();
+        trainExtra.lastWorldPose[carIndex] = copy.copy();
+        trainExtra.lastCarPosition[carIndex] = copy.getTranslationPart();
+        trainExtra.lastCarRotation[carIndex] = copy.getEulerAnglesXYZ();
         trainExtra.shouldRender = shouldRender;
         trainExtra.isInDetailDistance = (posAverage != null && posAverage.distSqr(camera.getBlockPosition()) <= RenderTrains.DETAIL_RADIUS_SQUARED);
 

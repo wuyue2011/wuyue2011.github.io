@@ -7,7 +7,7 @@ dependencies {
 
 architectury {
 	injectInjectables = false
-	common()
+	common("fabric", "forge")
 }
 
 loom {

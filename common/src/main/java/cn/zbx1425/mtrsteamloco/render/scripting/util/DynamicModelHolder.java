@@ -14,13 +14,24 @@ public class DynamicModelHolder {
         RawModel finalRawModel = rawModel.copyForMaterialChanges();
         finalRawModel.sourceLocation = null;
         RenderSystem.recordRenderCall(() -> {
-            boolean needProtection = !GlStateTracker.isStateProtected;
-            if (needProtection) GlStateTracker.capture();
-            ModelCluster lastUploadedModel = uploadedModel;
-            uploadedModel = new ModelCluster(finalRawModel, ModelManager.DEFAULT_MAPPING);
-            if (lastUploadedModel != null) lastUploadedModel.close();
-            if (needProtection) GlStateTracker.restore();
+            upload(finalRawModel);
         });
+    }
+
+    public void uploadNow(RawModel rawModel) {
+        RawModel finalRawModel = rawModel.copyForMaterialChanges();
+        finalRawModel.sourceLocation = null;
+        upload(rawModel);
+    }
+
+    private void upload(RawModel finalRawModel) {
+        assert RenderSystem.isOnRenderThreadOrInit() == true;
+        boolean needProtection = !GlStateTracker.isStateProtected;
+        if (needProtection) GlStateTracker.capture();
+        ModelCluster lastUploadedModel = uploadedModel;
+        uploadedModel = new ModelCluster(finalRawModel, ModelManager.DEFAULT_MAPPING);
+        if (lastUploadedModel != null) lastUploadedModel.close();
+        if (needProtection) GlStateTracker.restore();
     }
 
     public ModelCluster getUploadedModel() {

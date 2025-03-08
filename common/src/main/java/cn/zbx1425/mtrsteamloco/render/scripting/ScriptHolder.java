@@ -106,7 +106,7 @@ public class ScriptHolder {
         scope.put("print", scope, new NativeJavaMethod(
                 ScriptResourceUtil.class.getMethod("print", Object[].class), "print"));
         scope.put("asJavaArray", scope, new NativeJavaMethod(
-                JsFriendlyJavaUtils.class.getMethod("asJavaArray", List.class), "asJavaArray"));
+                JsFriendlyJavaUtils.class.getMethod("asJavaArray", List.class, Class.class), "asJavaArray"));
 
         scope.put("ModelManager", scope, Context.toObject(MainClient.modelManager, scope));
         scope.put("Resources", scope, new NativeJavaClass(scope, ScriptResourceUtil.class));
