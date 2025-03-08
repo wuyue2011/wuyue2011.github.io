@@ -24,6 +24,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import mtr.block.BlockNode;
 import net.minecraft.core.Direction;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.pipeline.RenderCall;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.util.Mth;
@@ -75,6 +77,14 @@ public class MinecraftClientUtil {
     
     public static void execute(Runnable runnable) {
         Minecraft.getInstance().execute(runnable);
+    }
+
+    public static void recordRenderCall(RenderCall renderCall) {
+        RenderSystem.recordRenderCall(renderCall);
+    }
+
+    public static boolean isOnRenderThreadOrInit() {
+        return RenderSystem.isOnRenderThreadOrInit();
     }
 
     public static void levelEvent(int p_109534_, Vector3f p_109535_, int p_109536_) {

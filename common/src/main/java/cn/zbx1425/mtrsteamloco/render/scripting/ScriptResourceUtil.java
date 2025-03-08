@@ -114,6 +114,10 @@ public class ScriptResourceUtil {
         return Utilities.getInputStream(resources.get(0));
     }
 
+    public static boolean hasResource(ResourceLocation identifier) {
+        return UtilitiesClient.hasResource(identifier);
+    }
+
     public static String readString(ResourceLocation identifier) {
         try {
             return ResourceUtil.readResource(manager(), identifier);

@@ -101,7 +101,7 @@ public class CompoundCreatorScreen extends Screen {
     private Button btnAdd = UtilitiesClient.newButton(20, Text.literal("+"), button -> addEntry());
     private Button btnRemove = UtilitiesClient.newButton(20, Text.literal("-"), button -> removeEntry());
     private Button btnCopy = UtilitiesClient.newButton(20, Text.translatable("gui.mtrsteamloco.compound_creator.copy"), button -> copyEntry());
-    private Button btnClear = UtilitiesClient.newButton(20, Text.literal("gui.mtrsteamloco.compound_creator.clear"), button -> clearEntries());
+    private Button btnClear = UtilitiesClient.newButton(20, Text.translatable("gui.mtrsteamloco.compound_creator.clear"), button -> clearEntries());
     private Button btnClose = UtilitiesClient.newButton(20, Text.literal("X"), button -> onClose());
 
     CompoundCreatorScreen(Screen parent) {
@@ -887,7 +887,6 @@ public class CompoundCreatorScreen extends Screen {
     #endif
         private void renderBlockState(PoseStack poseStack, int x, int y, float partialTick, BlockState state) {
             BlockRenderDispatcher blockRenderer = minecraft.getBlockRenderer();
-            BakedModel model = blockRenderer.getBlockModel(state);
             
             poseStack.pushPose();
             poseStack.translate(x, y + 16 , 0);
@@ -1088,7 +1087,7 @@ public class CompoundCreatorScreen extends Screen {
 
             @Override
             public void onClose() {
-                TaskScreen.this.now = new Square(present);
+                TaskScreen.this.now.state = present.state;
                 minecraft.setScreen(TaskScreen.this);
             }
         }

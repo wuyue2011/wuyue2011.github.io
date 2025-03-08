@@ -168,7 +168,7 @@ public interface IScreen {
             super.render(matrices, mouseX, mouseY, delta);
 
             try {
-                if (texture != null && !texture.isClosed()) {
+                if (texture != null) {
 #if MC_VERSION >= "12000"
                     matrices.blit(texture.identifier, 0, 0, width, height, 0, 0, 1, 1, 1, 1);
 #else

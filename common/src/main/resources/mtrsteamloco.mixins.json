@@ -25,7 +25,8 @@
     "TrainClientAccessor",
     "TrainClientMixin",
     "TrainClientRegistryMixin",
-    "GLFWMixin"
+    "GLFWMixin",
+    "DynamicImageAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
