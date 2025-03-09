@@ -52,6 +52,14 @@ public interface IScreen {
     }
 #endif
 
+    public static int getGuiScaledHeight() {
+        return Minecraft.getInstance().getWindow().getGuiScaledHeight();
+    }
+
+    public static int getGuiScaledWidth() {
+        return Minecraft.getInstance().getWindow().getGuiScaledWidth();
+    }
+
     public static class WithTextrue extends Screen {
         public GraphicsTexture texture;
         public Scriptable state = new NativeObject();

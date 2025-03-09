@@ -25,6 +25,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vendor.cn.zbx1425.mtrsteamloco.org.mozilla.javascript.Context;
+import cn.zbx1425.mtrsteamloco.CustomResources;
 import vendor.cn.zbx1425.mtrsteamloco.org.mozilla.javascript.Scriptable;
 
 import javax.imageio.ImageIO;
@@ -252,6 +253,10 @@ public class ScriptResourceUtil {
 
     public static int getNTEProtoVersion() {
         return BuildConfig.MOD_PROTOCOL_VERSION;
+    }
+
+    public static void resetComponents() {
+        CustomResources.resetComponents();
     }
 
 }

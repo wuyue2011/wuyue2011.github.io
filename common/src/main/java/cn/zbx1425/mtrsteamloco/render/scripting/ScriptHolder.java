@@ -4,9 +4,11 @@ import cn.zbx1425.mtrsteamloco.Main;
 import cn.zbx1425.mtrsteamloco.MainClient;
 import cn.zbx1425.mtrsteamloco.render.scripting.util.*;
 import cn.zbx1425.sowcer.math.Matrices;
+import mtr.mappings.UtilitiesClient;
 import cn.zbx1425.sowcer.math.Matrix4f;
 import cn.zbx1425.sowcer.math.Vector3f;
 import cn.zbx1425.sowcerext.model.RawMesh;
+import mtr.client.IDrawing;
 import cn.zbx1425.sowcerext.model.RawModel;
 import cn.zbx1425.sowcerext.model.ModelCluster;
 import cn.zbx1425.sowcerext.model.integration.RawMeshBuilder;
@@ -26,6 +28,7 @@ import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
 import net.minecraft.network.chat.Component;
 import cn.zbx1425.mtrsteamloco.render.scripting.rail.RailDrawCalls.*;
 import com.google.gson.JsonObject;
+import cn.zbx1425.mtrsteamloco.CustomResources;
 import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
@@ -149,6 +152,8 @@ public class ScriptHolder {
         
         scope.put("MTRClientData", scope, new NativeJavaClass(scope, ClientData.class));
         scope.put("IBlock", scope, new NativeJavaClass(scope, IBlock.class));
+        scope.put("UtilitiesClient", scope, new NativeJavaClass(scope, UtilitiesClient.class));
+        scope.put("IDrawing", scope, new NativeJavaClass(scope, IDrawing.class));
         
         scope.put("Component", scope, new NativeJavaClass(scope, Component.class));
         
