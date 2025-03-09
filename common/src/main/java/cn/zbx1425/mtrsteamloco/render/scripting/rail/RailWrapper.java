@@ -64,4 +64,16 @@ public class RailWrapper{
     public boolean getRenderReversed() {
         return supplier.getRenderReversed();
     }
+
+    public Rail mtrRail() {
+        return rail;
+    }
+
+    public int getOpeningDirection() {
+        return supplier.getOpeningDirection();
+    }
+
+    public void setOpeningDirection(int openingDirection) {
+        supplier.setOpeningDirection(openingDirection);
+    }
 }

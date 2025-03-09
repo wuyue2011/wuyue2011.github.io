@@ -60,7 +60,7 @@ public interface ConfigResponder {
         }
         @Override
         public List<AbstractConfigListEntry> getListEntries(Map<String, String> map, ConfigEntryBuilder builder,Supplier<Screen> screenSupplier) {
-            TextFieldBuilder textFieldbuilder = builder.startTextField(name, transformer.apply(map.getOrDefault(key,defaultValue))).setSaveConsumer((str) -> {saveConsumer.accept(str); map.put(key, str);}).setDefaultValue(defaultValue).setErrorSupplier(errorSupplier).setTooltipSupplier(tooltipSupplier);
+            TextFieldBuilder textFieldbuilder = builder.startTextField(name, transformer.apply(map.getOrDefault(key,defaultValue))).setSaveConsumer((str) -> {map.put(key, str); saveConsumer.accept(str);}).setDefaultValue(defaultValue).setErrorSupplier(errorSupplier).setTooltipSupplier(tooltipSupplier);
             if (requireRestart) {
                 textFieldbuilder.requireRestart();
             }
