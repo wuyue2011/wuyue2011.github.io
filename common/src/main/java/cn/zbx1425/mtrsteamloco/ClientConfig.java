@@ -145,6 +145,10 @@ public class ClientConfig {
         return customConfigs.get(key);
     }
 
+    public static Map<String, String> getCustomConfigs() {
+        return customConfigs;
+    }
+
     public static List<AbstractConfigListEntry> getCustomConfigEntrys(ConfigEntryBuilder builder, Supplier<Screen> screenSupplier) {
         Set<String> keys = customConfigs.keySet();
         List<String> usedKeys = new ArrayList<>();
