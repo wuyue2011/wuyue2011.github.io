@@ -16,9 +16,12 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.util.UUID;
+import java.util.concurrent.*;
 
 @SuppressWarnings("unused")
 public class GraphicsTexture implements Closeable {
+
+    private static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
 
     private final DynamicTexture dynamicTexture;
     public final ResourceLocation identifier;
@@ -138,15 +141,29 @@ public class GraphicsTexture implements Closeable {
 
     @Override
     public void close() {
+        close(10000);
+    }
+
+    public void close(int delay) {
         if (isClosed) {
             Main.LOGGER.info("GraphicsTexture already closed");
-        } else {
-            Minecraft.getInstance().execute(() -> {
-                Minecraft.getInstance().getTextureManager().release(identifier);
-            });
-            graphics.dispose();
-            dynamicTexture.close();
-            isClosed = true;
+            return;
         }
+        isClosed = true;
+        graphics.dispose();
+        executor.schedule(() -> {
+            if (isClosed) {
+                Main.LOGGER.info("GraphicsTexture already closed");
+            } else {
+                Minecraft.getInstance().execute(() -> {
+                    try {
+                        Minecraft.getInstance().getTextureManager().release(identifier);
+                        dynamicTexture.close();
+                    } catch (Exception e) {
+                        Main.LOGGER.error("Failed to close GraphicsTexture", e);
+                    }
+                });
+            }
+        }, delay, TimeUnit.MILLISECONDS);
     }
 }
