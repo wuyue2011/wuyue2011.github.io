@@ -162,10 +162,9 @@ public class ScriptHolder {
         JsonObject copy = config;
         if (!copy.has(key)) copy.addProperty("key", key);
         String jsonStr = new GsonBuilder().setPrettyPrinting().create().toJson(copy);
-        scope.put("config", scope, jsonStr);
-        String code = "config = JSON.parse(config);";
-        rhinoCtx.evaluateString(scope, code, "parse config", 1, null);
-        // scope.put("config", scope, result);
+        scope.put("CONFIG_INFO", scope, jsonStr);
+        String code = "CONFIG_INFO = JSON.parse(CONFIG_INFO);";
+        rhinoCtx.evaluateString(scope, code, "parse CONFIG_INFO", 1, null);
 
         try {
             String[] classesToLoad = {

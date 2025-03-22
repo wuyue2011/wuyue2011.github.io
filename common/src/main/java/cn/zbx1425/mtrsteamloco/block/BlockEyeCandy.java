@@ -333,6 +333,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             customResponders.clear();
             isTicketBarrier = properties.isTicketBarrier;
             isEntrance = properties.isEntrance;
+            asPlatform = properties.asPlatform;
             if (properties.script != null) {
                 scriptContext = new EyeCandyScriptContext(this);
             }

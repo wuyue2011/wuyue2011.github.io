@@ -115,10 +115,10 @@ public interface ConfigResponder {
             entries.add(builder.startTextDescription(Text.translatable("gui.mtrsteamloco.custom_config.editable")).build());
             entries.addAll(hasResponders);
         }
-        if (!noResponders.isEmpty()) {
+        /* if (!noResponders.isEmpty()) {
             entries.add(builder.startTextDescription(Text.translatable("gui.mtrsteamloco.custom_config.uneditable")).build());
             entries.addAll(noResponders);
-        }
+        }*/
         return entries;
     }
 }
