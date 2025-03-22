@@ -78,7 +78,6 @@ jobs:
         id: get_tag
         run: |
           TAG=$(git describe --tags --abbrev=0)
-          echo "Latest tag: $TAG"
           echo "TAG=$TAG" >> $GITHUB_ENV
       - name: Release
         uses: softprops/action-gh-release@v2
