@@ -79,12 +79,7 @@ jobs:
         run: |
           TAG=$(git describe --tags --abbrev=0)
           echo "Latest tag: $TAG"
-          echo "::set-output name=tag::$TAG"
-      - name: Get tag message
-        run: |
-          TAG=${{ steps.get_tag.outputs.tag }}
-          MESSAGE=$(git tag -l -n1 $TAG)
-          echo "Tag message: $MESSAGE"
+          echo "TAG=$TAG" >> $GITHUB_ENV
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
@@ -92,4 +87,4 @@ jobs:
           body: 一些更新
           draft: false
           prerelease: false
-          tag_name: ${{ steps.get_tag.outputs.tag }}
+          tag_name: ${{ env.TAG }}
