@@ -137,7 +137,21 @@ public class EyeCandyScreen {
                     Text.literal("RX: " + Math.toDegrees(blockEntity.rotateX) + "°, RY: " + Math.toDegrees(blockEntity.rotateY) + "°, RZ: " + Math.toDegrees(blockEntity.rotateZ) + "°")
             ).build());
         } else {
-            if (ClientConfig.enableSlider) {
+            boolean enableSlider = ClientConfig.enableSlider;
+            common.addEntry(entryBuilder
+                    .startBooleanToggle(
+                            Text.translatable("gui.mtrsteamloco.config.client.slider"),
+                            enableSlider
+                    ).setErrorSupplier(checked -> {
+                        if (enableSlider != checked) {
+                            ClientConfig.enableSlider = checked;
+                            ClientConfig.save();
+                            Minecraft.getInstance().setScreen(createScreen(blockPos, parent));
+                        }
+                        return Optional.empty();
+                    }).setDefaultValue(true).build()
+            );
+            if (enableSlider) {
                 addTranslation0(common, entryBuilder, 0, update, blockEntity);
                 addTranslation0(common, entryBuilder, 1, update, blockEntity);
                 addTranslation0(common, entryBuilder, 2, update, blockEntity);
@@ -247,8 +261,8 @@ public class EyeCandyScreen {
                 Text.literal(str),
                 sv + "cm"
             ).setSaveConsumer(str1 -> {
-                float value = parseMovement(str1).orElse(blockEntity.translateX);
-                if (value != blockEntity.translateX) {
+                float value = parseMovement(str1).orElse(getValue(type, blockEntity));
+                if (value != getValue(type, blockEntity)) {
                     final float v = value;
                     update.add(be -> save(type, v, be));
                 }
@@ -264,10 +278,10 @@ public class EyeCandyScreen {
                 Text.literal(str),
                 Math.toDegrees(rv) + "°"
             ).setSaveConsumer(str1 -> {
-                Float value = parseRotation(str1).orElse(blockEntity.rotateX);
-                if (value != blockEntity.rotateX) {
+                Float value = parseRotation(str1).orElse(getValue(type, blockEntity));
+                if (value != getValue(type, blockEntity)) {
                     final float v = value;
-                    update.add(be -> save(type + 3, v, be));
+                    update.add(be -> save(type, v, be));
                 }
             }).setDefaultValue(Math.toDegrees(rv) + "°")
             .setErrorSupplier(verifyRotation)

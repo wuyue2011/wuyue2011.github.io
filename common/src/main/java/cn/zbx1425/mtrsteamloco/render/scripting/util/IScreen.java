@@ -40,6 +40,10 @@ public interface IScreen {
         public static ButtonListEntry newButtonListEntry(Component name, Button button, ButtonListEntry.Processor processor, Supplier<Optional<Component[]>> tooltipSupplier, boolean requiresRestart) {
             return new ButtonListEntry(name, button, processor, tooltipSupplier, requiresRestart);
         }
+
+        public static ButtonCycleListEntry newButtonCycleListEntry(Component fieldName, int index, List<String> list, Component resetButtonKey, Supplier<Integer> defaultValue, Consumer<Integer> saveConsumer, Supplier<Optional<Component[]>> tooltipSupplier, boolean requiresRestart) {
+            return new ButtonCycleListEntry(fieldName, index, list, resetButtonKey, defaultValue, saveConsumer, tooltipSupplier, requiresRestart);
+        }
     }
 
 #if MC_VERSION >= "11903"

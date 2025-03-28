@@ -3,13 +3,15 @@ package cn.zbx1425.mtrsteamloco.data;
 import mtr.mappings.Text;
 import net.minecraft.network.chat.Component;
 import me.shedaniel.clothconfig2.impl.builders.StringFieldBuilder;
-import me.shedaniel.clothconfig2.gui.entries.StringListEntry;
+import me.shedaniel.clothconfig2.gui.entries.*;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.impl.builders.TextDescriptionBuilder;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.client.gui.screens.Screen;
 import me.shedaniel.clothconfig2.impl.builders.TextFieldBuilder;
+import cn.zbx1425.mtrsteamloco.gui.entries.ButtonCycleListEntry;
+import cn.zbx1425.mtrsteamloco.Main;
 
 import java.util.*;
 import java.util.function.Function;
@@ -93,6 +95,168 @@ public interface ConfigResponder {
         public TextField setRequireRestart(boolean requireRestart) {
             this.requireRestart = requireRestart;
             return this;
+        }
+    }
+
+    public static class CycleToggle implements ConfigResponder {
+        public List<String> values;
+        public int defaultValue;
+        public String key;
+        public Component name;
+        public Function<Integer, Optional<Component[]>> tooltipSupplier = str -> Optional.empty();
+        public Consumer<Integer> saveConsumer = ind -> {};
+        public boolean requireRestart = false;
+        
+        public CycleToggle(String key, Component name, int defaultValue, List<String> values) {
+            this.key = key;
+            setName(name);
+            setDefaultValue(defaultValue);
+            setValues(values);
+        }
+
+        public CycleToggle(String key, Component name, int defaultValue, List<String> values, Function<Integer, Optional<Component[]>> tooltipSupplier, Consumer<Integer> saveConsumer, boolean requireRestart) {
+            this.key = key;
+            setName(name);
+            setDefaultValue(defaultValue);
+            setValues(values);
+            setTooltipSupplier(tooltipSupplier);
+            setSaveConsumer(saveConsumer);
+            setRequireRestart(requireRestart);
+        }
+
+        @Override
+        public void init(Map<String, String> map) {
+            if (!map.containsKey(key)) {
+                map.put(key, values.get(0));
+            }
+        }
+
+        @Override
+        public String key() {
+            return key;
+        }
+
+        public CycleToggle setDefaultValue(int defaultValue) {
+            this.defaultValue = defaultValue;
+            return this;
+        }
+
+        public CycleToggle setName(Component name) {
+            this.name = name;
+            return this;
+        }
+
+        public CycleToggle setSaveConsumer(Consumer<Integer> saveConsumer) {
+            this.saveConsumer = saveConsumer;
+            return this;
+        }
+
+        public CycleToggle setTooltipSupplier(Function<Integer, Optional<Component[]>> tooltipSupplier) {
+            this.tooltipSupplier = tooltipSupplier;
+            return this;
+        }
+
+        public CycleToggle setRequireRestart(boolean requireRestart) {
+            this.requireRestart = requireRestart;
+            return this;
+        }
+
+        public CycleToggle setValues(List<String> values) {
+            this.values = values;
+            return this;
+        }
+
+        @Override
+        public List<AbstractConfigListEntry> getListEntries(Map<String, String> map, ConfigEntryBuilder builder, Supplier<Screen> screenSupplier) {
+            int now = defaultValue;
+            try {
+                now = Integer.parseInt(map.get(key));
+            } catch (Exception e) {
+                Main.LOGGER.error("Error while parsing cycle value for " + key + " : " + e.getMessage());
+            }
+            ButtonCycleListEntry entry =  new ButtonCycleListEntry(name, now, values, builder.getResetButtonKey(), () -> defaultValue, ind -> {
+                    map.put(key, ind + "");
+                    saveConsumer.accept(ind);
+                }, null, requireRestart);
+            entry.setTooltipSupplier(() -> tooltipSupplier.apply(entry.getValue()));
+            return Collections.singletonList(entry);
+        }
+    }
+
+    public static class BooleanToggle implements ConfigResponder {
+        public String key;
+        public Component name;
+        public boolean defaultValue;
+        public Function<Boolean, Optional<Component[]>> tooltipSupplier = str -> Optional.empty();
+        public Consumer<Boolean> saveConsumer = bool -> {};
+        public boolean requireRestart = false;
+        
+        public BooleanToggle(String key, Component name, boolean defaultValue) {
+            this.key = key;
+            setName(name);
+            setDefaultValue(defaultValue);
+        }
+
+
+        public BooleanToggle(String key, Component name, boolean defaultValue, Function<Boolean, Optional<Component[]>> tooltipSupplier, Consumer<Boolean> saveConsumer, boolean requireRestart) {
+            this.key = key;
+            setName(name);
+            setDefaultValue(defaultValue);
+            setTooltipSupplier(tooltipSupplier);
+            setSaveConsumer(saveConsumer);
+            setRequireRestart(requireRestart);
+        }
+
+        public BooleanToggle setDefaultValue(boolean defaultValue) {
+            this.defaultValue = defaultValue;
+            return this;
+        }
+
+        public BooleanToggle setName(Component name) {
+            this.name = name;
+            return this;
+        }
+
+        public BooleanToggle setSaveConsumer(Consumer<Boolean> saveConsumer) {
+            this.saveConsumer = saveConsumer;
+            return this;
+        }
+
+        public BooleanToggle setTooltipSupplier(Function<Boolean, Optional<Component[]>> tooltipSupplier) {
+            this.tooltipSupplier = tooltipSupplier;
+            return this;
+        }
+
+        public BooleanToggle setRequireRestart(boolean requireRestart) {
+            this.requireRestart = requireRestart;
+            return this;
+        }
+
+        @Override
+        public void init(Map<String, String> map) {
+            if (!map.containsKey(key)) {
+                map.put(key, defaultValue + "");
+            }
+        }
+
+        @Override
+        public String key() {
+            return key;
+        }
+
+        @Override
+        public List<AbstractConfigListEntry> getListEntries(Map<String, String> map, ConfigEntryBuilder builder, Supplier<Screen> screenSupplier) {
+            boolean now = defaultValue;
+            try {
+                now = Boolean.parseBoolean(map.get(key));
+            } catch (Exception e) {
+                Main.LOGGER.error("Error while parsing boolean value for " + key + " : " + e.getMessage());
+            }
+            BooleanListEntry entry = builder.startBooleanToggle(name, now).setDefaultValue(defaultValue).setSaveConsumer((bool) -> {map.put(key, bool + ""); saveConsumer.accept(bool);}).setTooltipSupplier(tooltipSupplier).build();
+            if (requireRestart) {
+                entry.setRequiresRestart(true);
+            }
+            return Collections.singletonList(entry);
         }
     }
     

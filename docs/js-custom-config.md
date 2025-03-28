@@ -19,7 +19,7 @@ ANTE 使用 `ConfigResponder` 接口来表示配置的响应器，存储配置�
 
 ### TextField
 
-`ConfigResponder` 提供了一个基础的实现: `TextField`
+`ConfigResponder` 提供了一个基础的实现: `TextField` (文本输入框)
 
 
 - `new TextField(key: String, name: Component, defaultValue: String)`
@@ -32,7 +32,7 @@ ANTE 使用 `ConfigResponder` 接口来表示配置的响应器，存储配置�
 
 | 属性 | 方法 | 说明 |
 | ------------- | ------------- | ------------- |
-| `final TextField.key: String` | 无 | 配置项的标识。无法修改 |
+| `TextField.key: String` | 无 | 配置项的标识。 |
 | `TextField.name: Component` | `TextField.setName(name: Component): TextField` | 配置项的名称 |
 | `TextField.defaultValue: String` | `TextField.setDefaultValue(defaultValue: String): TextField` | 配置项的默认值 |
 | `TextField.transformer: Function<String, String>` | `TextField.setTransformer(transformer: Function<String, String>): TextField` | 配置项的转换器 |
@@ -47,6 +47,59 @@ ANTE 使用 `ConfigResponder` 接口来表示配置的响应器，存储配置�
 
 最后，本类支持链式调用。
 
+### CycleToggle
+
+`ConfigResponder` 提供了一个基础的实现: `CycleToggle` (循环选择器)
+
+
+- `new CycleToggle(key: String, name: Component, defaultValue: int, values: List<String>)`
+
+- `new CycleToggle(key: String, name: Component, defaultValue: int, values: List<String>, tooltipSupplier: Function<Integer, Optional<Component[]>>, saveConsumer: Consumer<Integer>, requireRestart: boolean)`
+
+    创建一个配置响应器。
+
+包含以下属性以及对应方法：
+| 属性 | 方法 | 说明 |
+| ------------- | ------------- | ------------- |
+| `CycleToggle.key: String` | 无 | 配置项的标识。 |
+| `CycleToggle.name: Component` | `CycleToggle.setName(name: Component): CycleToggle` | 配置项的名称 |
+| `CycleToggle.defaultValue: int` | `CycleToggle.setDefaultValue(defaultValue: int): CycleToggle` | 配置项的默认值 |
+| `CycleToggle.values: List<String>` | `CycleToggle.setValues(values: List<String>): CycleToggle` | 配置项的可选值 |
+| `CycleToggle.tooltipSupplier: Function<Integer, Optional<Component[]>>` | `CycleToggle.setTooltipSupplier(tooltipSupplier: Function<Integer, Optional<List<Component>>>): CycleToggle` | 配置项的提示信息 |
+| `CycleToggle.saveConsumer: Consumer<Integer>` | `CycleToggle.setSaveConsumer(saveConsumer: Consumer<Integer>): CycleToggle` | 配置项的保存函数 |
+| `CycleToggle.requireRestart: boolean` | `CycleToggle.setRequireRestart(requireRestart: boolean): CycleToggle` | 配置项是否需要重启游戏 |
+
+上文中的 [Optional](https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html) 是 Java 8 引入的类，用来表示一个值可能为空，防止空指针异常。ANTE 已将此添加到了 JavaScript 环境中，您可以直接使用。
+
+`tooltipSupplier` 变量的返回值应该是 `Optional<Component[]>` 类型，您需要用 `asJavaArray([...])` 方法将JS的数组转换为Java的数组。
+
+最后，本类支持链式调用。
+
+### BooleanToggle
+
+`ConfigResponder` 提供了一个基础的实现: `BooleanToggle` (布尔选择器)
+
+- `new BooleanToggle(key: String, name: Component, defaultValue: boolean)`
+
+- `new BooleanToggle(key: String, name: Component, defaultValue: boolean, tooltipSupplier: Function<Boolean, Optional<Component[]>>, saveConsumer: Consumer<Boolean>, requireRestart: boolean)`
+  
+    创建一个配置响应器。
+
+包含以下属性以及对应方法：
+| 属性 | 方法 | 说明 |
+| ------------- | ------------- | ------------- |
+| `BooleanToggle.key: String` | 无 | 配置项的标识。 |
+| `BooleanToggle.name: Component` | `BooleanToggle.setName(name: Component): BooleanToggle` | 配置项的名称 |
+| `BooleanToggle.defaultValue: boolean` | `BooleanToggle.setDefaultValue(defaultValue: boolean): BooleanToggle` | 配置项的默认值 |
+| `BooleanToggle.tooltipSupplier: Function<Boolean, Optional<Component[]>>` | `BooleanToggle.setTooltipSupplier(tooltipSupplier: Function<Boolean, Optional<List<Component>>>): BooleanToggle` | 配置项的提示信息 |
+| `BooleanToggle.saveConsumer: Consumer<Boolean>` | `BooleanToggle.setSaveConsumer(saveConsumer: Consumer<Boolean>): BooleanToggle` | 配置项的保存函数 |
+| `BooleanToggle.requireRestart: boolean` | `BooleanToggle.setRequireRestart(requireRestart: boolean): BooleanToggle` | 配置项是否需要重启游戏 |
+
+上文中的 [Optional](https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html) 是 Java 8 引入的类，用来表示一个值可能为空，防止空指针异常。ANTE 已将此添加到了 JavaScript 环境中，您可以直接使用。
+
+`tooltipSupplier` 变量的返回值应该是 `Optional<Component[]>` 类型，您需要用 `asJavaArray([...])` 方法将JS的数组转换为Java的数组。
+
+最后，本类支持链式调用。
 
 
 ## ClientConfig
