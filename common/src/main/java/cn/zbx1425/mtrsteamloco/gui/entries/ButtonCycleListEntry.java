@@ -73,61 +73,38 @@ public class ButtonCycleListEntry extends TooltipListEntry<Integer> implements C
         return defaultValue == null ? Optional.empty() : Optional.ofNullable(defaultValue.get());
     }
     
-    @Override
 #if MC_VERSION >= "12000"
+    @Override
     public void render(GuiGraphics graphics, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta) {
-#else 
+#else
+    @Override
     public void render(PoseStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta) {
 #endif
-#if MC_VERSION >= "11903"
-        super.render(graphics, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
-        Window window = Minecraft.getInstance().getWindow();
-        this.resetButton.active = isEditable() && getDefaultValue().isPresent() && defaultValue.get() != this.index.get();
-        this.resetButton.setY(y);
-        this.buttonWidget.active = isEditable();
-        this.buttonWidget.setY(y);
-        this.buttonWidget.setMessage(Text.translatable(list.get(this.index.get())));
-        Component displayedFieldName = getDisplayedFieldName();
-        if (Minecraft.getInstance().font.isBidirectional()) {
-            graphics.drawString(Minecraft.getInstance().font, displayedFieldName.getVisualOrderText(), window.getGuiScaledWidth() - x - Minecraft.getInstance().font.width(displayedFieldName), y + 6, 16777215);
-            this.resetButton.setX(x);
-            this.buttonWidget.setX(x + resetButton.getWidth() + 2);
-        } else {
-            graphics.drawString(Minecraft.getInstance().font, displayedFieldName.getVisualOrderText(), x, y + 6, getPreferredTextColor());
-            this.resetButton.setX(x + entryWidth - resetButton.getWidth());
-            this.buttonWidget.setX(x + entryWidth - 150);
-        }
-        this.buttonWidget.setWidth(150 - resetButton.getWidth() - 2);
-        resetButton.render(graphics, mouseX, mouseY, delta);
-        buttonWidget.render(graphics, mouseX, mouseY, delta);
-    }
-#else
         super.render(matrices, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
         Window window = Minecraft.getInstance().getWindow();
         this.resetButton.active = isEditable() && getDefaultValue().isPresent() && defaultValue.get() != this.index.get();
-        this.resetButton.y = y;
+        UtilitiesClient.setWidgetY(resetButton, y);
         this.buttonWidget.active = isEditable();
-        this.buttonWidget.y = y;
+        UtilitiesClient.setWidgetY(buttonWidget, y);
         this.buttonWidget.setMessage(Text.translatable(list.get(this.index.get())));
         Component displayedFieldName = getDisplayedFieldName();
         if (Minecraft.getInstance().font.isBidirectional()) {
             Minecraft.getInstance().font.drawShadow(matrices, displayedFieldName.getVisualOrderText(), window.getGuiScaledWidth() - x - Minecraft.getInstance().font.width(displayedFieldName), y + 6, 16777215);
-            this.resetButton.x = x;
-            this.buttonWidget.x = x + resetButton.getWidth() + 2;
+            UtilitiesClient.setWidgetX(resetButton, x);
+            UtilitiesClient.setWidgetX(buttonWidget, x + resetButton.getWidth() + 2);
         } else {
             Minecraft.getInstance().font.drawShadow(matrices, displayedFieldName.getVisualOrderText(), x, y + 6, getPreferredTextColor());
-            this.resetButton.x = x + entryWidth - resetButton.getWidth();
-            this.buttonWidget.x = x + entryWidth - 150;
+            UtilitiesClient.setWidgetX(resetButton, x + entryWidth - resetButton.getWidth());
+            UtilitiesClient.setWidgetX(buttonWidget, x + entryWidth - 150);
         }
         this.buttonWidget.setWidth(150 - resetButton.getWidth() - 2);
         resetButton.render(matrices, mouseX, mouseY, delta);
         buttonWidget.render(matrices, mouseX, mouseY, delta);
     }
-#endif
     
     @Override
     public void save() {
-        saveCallback.accept(index.get());    
+        saveCallback.accept(index.get());
     }
 
     @Override

@@ -176,6 +176,7 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
     }
 
     public void callRenderFunction() {
+        trainScripting.trainExtra.reset();
         typeScripting.tryCallRenderFunctionAsync(trainScripting);
     }
 }
