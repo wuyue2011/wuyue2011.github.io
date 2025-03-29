@@ -73,9 +73,12 @@ public class ButtonCycleListEntry extends TooltipListEntry<Integer> implements C
         return defaultValue == null ? Optional.empty() : Optional.ofNullable(defaultValue.get());
     }
     
-#if MC_VERSION >= "12000"
     @Override
+#if MC_VERSION >= "12000"
     public void render(GuiGraphics graphics, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta) {
+#else 
+    public void render(PoseStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta) {
+#if MC_VERSION >= "11903"
         super.render(graphics, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
         Window window = Minecraft.getInstance().getWindow();
         this.resetButton.active = isEditable() && getDefaultValue().isPresent() && defaultValue.get() != this.index.get();
@@ -98,8 +101,6 @@ public class ButtonCycleListEntry extends TooltipListEntry<Integer> implements C
         buttonWidget.render(graphics, mouseX, mouseY, delta);
     }
 #else
-    @Override
-    public void render(PoseStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta) {
         super.render(matrices, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
         Window window = Minecraft.getInstance().getWindow();
         this.resetButton.active = isEditable() && getDefaultValue().isPresent() && defaultValue.get() != this.index.get();
@@ -123,6 +124,11 @@ public class ButtonCycleListEntry extends TooltipListEntry<Integer> implements C
     }
 #endif
     
+    @Override
+    public void save() {
+        saveCallback.accept(index.get());    
+    }
+
     @Override
     public List<? extends GuiEventListener> children() {
         return widgets;
