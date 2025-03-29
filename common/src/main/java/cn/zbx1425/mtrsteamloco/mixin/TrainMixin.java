@@ -1,20 +1,18 @@
 package cn.zbx1425.mtrsteamloco.mixin;
 
 import cn.zbx1425.mtrsteamloco.Main;
-import mtr.data.TrainServer;
-import mtr.data.Train;
-import mtr.data.RailwayData;
-import mtr.data.MessagePackHelper;
 import mtr.block.BlockPSDAPGBase;
 import mtr.block.BlockPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import cn.zbx1425.mtrsteamloco.block.BlockEyeCandy;
 import net.minecraft.world.phys.Vec3;
+import mtr.render.TrainRendererBase;
 import net.minecraft.util.Mth;
 import mtr.path.PathData;
 import cn.zbx1425.sowcer.math.Vector3f;
@@ -27,7 +25,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.nbt.CompoundTag;
 import cn.zbx1425.mtrsteamloco.Main;
 import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
-import mtr.data.Rail;
+import mtr.data.*;
+import cn.zbx1425.mtrsteamloco.render.scripting.train.ScriptedTrainRenderer;
 
 import java.util.List;
 import java.util.Set;
@@ -243,5 +242,20 @@ public abstract class TrainMixin implements TrainExtraSupplier{
 	}
 
 	private static interface Void {
+	}
+
+	@Inject(method = "simulateTrain", at = @At("HEAD"))
+	private void onSimulateTrain(Level world, float ticksElapsed, Depot depot, CallbackInfo ci) {
+		if (world == null) return;
+		if (path.isEmpty()) return;
+		if (Minecraft.getInstance().player == null) return;
+
+		if ((Object) this instanceof TrainClient) {
+			TrainClient train = (TrainClient) (Object) this;
+			TrainRendererBase renderer = train.trainRenderer;
+			if (renderer instanceof ScriptedTrainRenderer) {
+				((ScriptedTrainRenderer) renderer).callRenderFunction();
+			}
+		}
 	}
 }

@@ -72,11 +72,12 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
         boolean isReversed = train.isReversed();
 
         Matrix4f carPose = new Matrix4f();
-        // Vec3 offset = train.vehicleRidingClient.getVehicleOffset();
-        // if (offset != null) {
-        //     carPose.translate((float) offset.x, (float) offset.y, (float) offset.z);
-        // }
+
         carPose.translate((float) x, (float) y, (float) z);
+        Vec3 offset = train.vehicleRidingClient.getVehicleOffset();
+        if (offset != null) {
+            carPose.translate((float) offset.x, (float) offset.y, (float) offset.z);
+        }
         carPose.rotateY((float) Math.PI + yaw);
         carPose.rotateX(hasPitch ? pitch : 0);
         carPose.translate(0, -1, 0);
@@ -85,7 +86,7 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
 
         Matrix4f copy = carPose.copy();
 
-        TrainWrapper trainExtra = trainScripting.trainExtraWriting;
+        TrainWrapper trainExtra = trainScripting.trainExtra;
         trainExtra.doorLeftOpen[carIndex] = doorLeftOpen;
         trainExtra.doorRightOpen[carIndex] = doorRightOpen;
         trainExtra.lastWorldPose[carIndex] = copy.copy();
@@ -94,6 +95,7 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
         trainExtra.shouldRender = shouldRender;
         trainExtra.isInDetailDistance = (posAverage != null && posAverage.distSqr(camera.getBlockPosition()) <= RenderTrains.DETAIL_RADIUS_SQUARED);
 
+        /*
         if (posAverage == null) {
             if (carIndex == train.trainCars - 1) {
                 // So it's outside visible range, but still need to call render function
@@ -102,6 +104,7 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
             }
             return;
         }
+        */
 
 
 
@@ -110,7 +113,12 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
         
         if (shouldRender) {
             Matrix4f basePose = worldPose.copy();
-            basePose.mul(carPose);
+            basePose.translate((float) x, (float) y, (float) z);
+            basePose.rotateY((float) Math.PI + yaw);
+            basePose.rotateX(hasPitch ? pitch : 0);
+            basePose.translate(0, -1, 0);
+            basePose.rotateZ(isReversed? -roll : roll);
+            basePose.translate(0, 1, 0);
             synchronized (trainScripting) {
                 trainScripting.commitCar(carIndex, MainClient.drawScheduler, basePose, worldPose, light);
             }
@@ -118,10 +126,12 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
 
         matrices.popPose();
 
+        /*
         if (carIndex == train.trainCars - 1) {
             trainScripting.extraFinished();
             typeScripting.tryCallRenderFunctionAsync(trainScripting);
         }
+        */
     }
 
     @Override
@@ -165,4 +175,7 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
         }
     }
 
+    public void callRenderFunction() {
+        typeScripting.tryCallRenderFunctionAsync(trainScripting);
+    }
 }
