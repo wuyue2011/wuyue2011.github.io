@@ -24,7 +24,7 @@ jobs:
       - name: Make gradle wrapper executable
         run: chmod +x ./gradlew
       - name: Setup Gradle
-        uses: gradle/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v4
       - name: Setup ${{ matrix.minecraft }}
         run: ./gradlew setupLibrary -PbuildVersion="${{ matrix.minecraft }}"
       - name: Build ${{ matrix.minecraft }}
