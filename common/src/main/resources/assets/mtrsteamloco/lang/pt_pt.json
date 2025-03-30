@@ -47,6 +47,7 @@
     "gui.mtrsteamloco.brush_edit_rail.roll_setting": "Configuração do rolo",
     "gui.mtrsteamloco.brush_edit_rail.roll_setting.pos": "Você está aqui",
     "gui.mtrsteamloco.brush_edit_rail.opening_direction_tooltip": "0: Não abra a porta 1: Abra a porta esquerda 2: Abra a porta direita",
+    "gui.mtrsteamloco.brush_edit_rail.enable_rail_type": "Tipo de faixa de aplicação",
     "gui.mtrsteamloco.brush_edit_rail.rail_type": "Tipo de faixa",
     "gui.mtrsteamloco.brush_edit_rail.rail_type_error": "Tipo de órbita inexistente",
     "gui.mtrsteamloco.error.title": "Ocorreu um erro durante o processo de carregamento de recursos ANTE",

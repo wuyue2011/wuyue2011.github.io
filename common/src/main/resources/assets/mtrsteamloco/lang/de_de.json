@@ -47,6 +47,7 @@
     "gui.mtrsteamloco.brush_edit_rail.roll_setting": "Rolleneinstellung",
     "gui.mtrsteamloco.brush_edit_rail.roll_setting.pos": "Du bist hier",
     "gui.mtrsteamloco.brush_edit_rail.opening_direction_tooltip": "0: Öffnen Sie die Tür nicht 1: Öffnen Sie die linke Tür 2: Öffnen Sie die rechte Tür",
+    "gui.mtrsteamloco.brush_edit_rail.enable_rail_type": "Typ der Anwendungsspur",
     "gui.mtrsteamloco.brush_edit_rail.rail_type": "Gleistyp",
     "gui.mtrsteamloco.brush_edit_rail.rail_type_error": "Nicht vorhandener Orbittyp",
     "gui.mtrsteamloco.error.title": "Fehler beim Laden von ANTE-Ressourcen ist aufgetreten",

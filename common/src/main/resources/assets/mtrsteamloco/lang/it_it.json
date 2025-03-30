@@ -47,6 +47,7 @@
     "gui.mtrsteamloco.brush_edit_rail.roll_setting": "Impostazione del rullo",
     "gui.mtrsteamloco.brush_edit_rail.roll_setting.pos": "Sei qui",
     "gui.mtrsteamloco.brush_edit_rail.opening_direction_tooltip": "0: Non aprire la porta 1: Aprire la porta sinistra 2: Aprire la porta destra",
+    "gui.mtrsteamloco.brush_edit_rail.enable_rail_type": "Tipo di traccia dell'applicazione",
     "gui.mtrsteamloco.brush_edit_rail.rail_type": "Tipo di binario",
     "gui.mtrsteamloco.brush_edit_rail.rail_type_error": "Tipo di orbita inesistente",
     "gui.mtrsteamloco.error.title": "Errore verificatosi durante il processo di caricamento delle risorse ANTE",

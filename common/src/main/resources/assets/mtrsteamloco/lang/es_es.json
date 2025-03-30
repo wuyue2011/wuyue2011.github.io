@@ -47,6 +47,7 @@
     "gui.mtrsteamloco.brush_edit_rail.roll_setting": "Configuración de rodadura",
     "gui.mtrsteamloco.brush_edit_rail.roll_setting.pos": "Usted está aquí.",
     "gui.mtrsteamloco.brush_edit_rail.opening_direction_tooltip": "0: no abre la puerta 1: abre la puerta izquierda 2: abre la puerta derecha",
+    "gui.mtrsteamloco.brush_edit_rail.enable_rail_type": "Tipo de pista de aplicación",
     "gui.mtrsteamloco.brush_edit_rail.rail_type": "Tipo de órbita",
     "gui.mtrsteamloco.brush_edit_rail.rail_type_error": "Tipo de órbita inexistente",
     "gui.mtrsteamloco.error.title": "Se produjo un error durante la carga de recursos ante",

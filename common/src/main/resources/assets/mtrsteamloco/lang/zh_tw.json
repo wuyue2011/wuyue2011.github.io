@@ -47,6 +47,7 @@
     "gui.mtrsteamloco.brush_edit_rail.roll_setting": "滾轉設定",
     "gui.mtrsteamloco.brush_edit_rail.roll_setting.pos": "您在此",
     "gui.mtrsteamloco.brush_edit_rail.opening_direction_tooltip": "0:不開門1:開左門2:開右門",
+    "gui.mtrsteamloco.brush_edit_rail.enable_rail_type": "應用軌道類型",
     "gui.mtrsteamloco.brush_edit_rail.rail_type": "軌道類型",
     "gui.mtrsteamloco.brush_edit_rail.rail_type_error": "不存在的軌道類型",
     "gui.mtrsteamloco.error.title": "ANTE資源加載過程中出現錯誤",

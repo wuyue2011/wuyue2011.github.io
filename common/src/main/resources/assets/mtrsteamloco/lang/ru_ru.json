@@ -47,6 +47,7 @@
     "gui.mtrsteamloco.brush_edit_rail.roll_setting": "Параметры прокрутки",
     "gui.mtrsteamloco.brush_edit_rail.roll_setting.pos": "Вы здесь",
     "gui.mtrsteamloco.brush_edit_rail.opening_direction_tooltip": "0: Не открывай дверь 1: открывай левую дверь 2: открывай правую",
+    "gui.mtrsteamloco.brush_edit_rail.enable_rail_type": "Применить тип орбиты",
     "gui.mtrsteamloco.brush_edit_rail.rail_type": "Тип орбиты",
     "gui.mtrsteamloco.brush_edit_rail.rail_type_error": "Тип несуществующей орбиты",
     "gui.mtrsteamloco.error.title": "Ошибка при загрузке ресурса ANTE",

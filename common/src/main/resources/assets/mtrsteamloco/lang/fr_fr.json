@@ -47,6 +47,7 @@
     "gui.mtrsteamloco.brush_edit_rail.roll_setting": "Paramètres Roll",
     "gui.mtrsteamloco.brush_edit_rail.roll_setting.pos": "Vous êtes ici",
     "gui.mtrsteamloco.brush_edit_rail.opening_direction_tooltip": "0: ne pas ouvrir la porte 1: ouvrir la porte gauche 2: ouvrir la porte droite",
+    "gui.mtrsteamloco.brush_edit_rail.enable_rail_type": "Type de piste d'application",
     "gui.mtrsteamloco.brush_edit_rail.rail_type": "Type de piste",
     "gui.mtrsteamloco.brush_edit_rail.rail_type_error": "Types de pistes qui n'existent pas",
     "gui.mtrsteamloco.error.title": "Erreur lors du chargement de la ressource ante",

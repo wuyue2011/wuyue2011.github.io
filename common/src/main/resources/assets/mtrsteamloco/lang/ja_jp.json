@@ -47,6 +47,7 @@
     "gui.mtrsteamloco.brush_edit_rail.roll_setting": "ロール設定",
     "gui.mtrsteamloco.brush_edit_rail.roll_setting.pos": "ここに",
     "gui.mtrsteamloco.brush_edit_rail.opening_direction_tooltip": "0：ドアを開けない1：左ドアを開ける2：右ドアを開ける",
+    "gui.mtrsteamloco.brush_edit_rail.enable_rail_type": "レールタイプの適用",
     "gui.mtrsteamloco.brush_edit_rail.rail_type": "レールタイプ",
     "gui.mtrsteamloco.brush_edit_rail.rail_type_error": "発生しないレールタイプ",
     "gui.mtrsteamloco.error.title": "ANTEリソースロード中にエラーが発生しました",

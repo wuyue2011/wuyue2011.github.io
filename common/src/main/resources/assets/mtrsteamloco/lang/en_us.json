@@ -47,6 +47,7 @@
     "gui.mtrsteamloco.brush_edit_rail.roll_setting": "Roll setting",
     "gui.mtrsteamloco.brush_edit_rail.roll_setting.pos": "You Are Here",
     "gui.mtrsteamloco.brush_edit_rail.opening_direction_tooltip": "0: Do not open the door 1: Open the left door 2: Open the right door",
+    "gui.mtrsteamloco.brush_edit_rail.enable_rail_type": "Application track type",
     "gui.mtrsteamloco.brush_edit_rail.rail_type": "Track type",
     "gui.mtrsteamloco.brush_edit_rail.rail_type_error": "Non-existent orbit type",
     "gui.mtrsteamloco.error.title": "Error occurred during ANTE resource loading process",
