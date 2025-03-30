@@ -1,6 +1,10 @@
 package cn.zbx1425.mtrsteamloco.mixin;
 
+#if MC_VERSION >= "12000"
+import net.minecraft.world.level.material.MapColor;
+#else
 import net.minecraft.world.level.material.MaterialColor;
+#endif
 import mtr.data.RailType;
 
 import java.util.ArrayList;
@@ -19,8 +23,24 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class RailTypeMixin {
     @Shadow(remap = false) @Final private static RailType[] $VALUES;
 
+#if MC_VERSION >= "12000"
     @Invoker(value = "<init>")
-    private static RailType create(String name, int ordinal, int speedLimit, MaterialColor MaterialColor, boolean hasSavedRail, boolean canAccelerate, boolean hasSignal, RailType.RailSlopeStyle railSlopeStyle) {
+    private static RailType create(String name, int ordinal, int speedLimit, MapColor mapColor, boolean hasSavedRail, boolean canAccelerate, boolean hasSignal, RailType.RailSlopeStyle railSlopeStyle) {
+        throw new IllegalStateException();
+    }
+
+    static {
+        List<RailType> railTypes = new ArrayList<>();
+        railTypes.addAll(Arrays.asList($VALUES));
+        for (int i = 1; i <= 600; i++) railTypes.add(create("A" + i, railTypes.size(), i, MapColor.COLOR_GREEN, false, true, true, RailType.RailSlopeStyle.CURVE));
+
+        for (int i = 1000; i <= 10000; i+= 500) railTypes.add(create("A" + i, railTypes.size(), i, MapColor.COLOR_GREEN, false, true, true, RailType.RailSlopeStyle.CURVE));
+
+        $VALUES = railTypes.toArray(new RailType[0]);
+    }
+#else
+    @Invoker(value = "<init>")
+    private static RailType create(String name, int ordinal, int speedLimit, MaterialColor materialColor, boolean hasSavedRail, boolean canAccelerate, boolean hasSignal, RailType.RailSlopeStyle railSlopeStyle) {
         throw new IllegalStateException();
     }
 
@@ -33,4 +53,5 @@ public abstract class RailTypeMixin {
 
         $VALUES = railTypes.toArray(new RailType[0]);
     }
+#endif
 }
