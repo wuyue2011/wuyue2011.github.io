@@ -154,6 +154,8 @@ configure(allprojects.findAll {it.name != 'rhino'}) {
 
 	tasks.withType(JavaCompile) {
 		options.encoding = "UTF-8"
+    	options.incremental = true;
+		
 
 		if (minecraft_main_version == 16) {
 			def targetVersion = 8
