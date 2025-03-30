@@ -228,4 +228,5 @@ tasks.register('dummyForgixOutput', DummyArchiveTask) {
 
 tasks.withType(JavaCompile) {
     outputs.cacheIf { true }
+    options.incremental = true;
 }

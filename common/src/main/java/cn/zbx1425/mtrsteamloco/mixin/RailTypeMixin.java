@@ -32,7 +32,7 @@ public abstract class RailTypeMixin {
     static {
         List<RailType> railTypes = new ArrayList<>();
         railTypes.addAll(Arrays.asList($VALUES));
-        for (int i = 1; i <= 600; i++) railTypes.add(create("P" + i, railTypes.size(), i, MapColor.COLOR_GREEN, false, true, true, RailType.RailSlopeStyle.CURVE));
+        for (int i = -1; i <= 600; i++) railTypes.add(create("P" + i, railTypes.size(), i, MapColor.COLOR_GREEN, false, true, true, RailType.RailSlopeStyle.CURVE));
 
         for (int i = 1000; i <= 10000; i+= 500) railTypes.add(create("P" + i, railTypes.size(), i, MapColor.COLOR_GREEN, false, true, true, RailType.RailSlopeStyle.CURVE));
 
@@ -47,7 +47,7 @@ public abstract class RailTypeMixin {
     static {
         List<RailType> railTypes = new ArrayList<>();
         railTypes.addAll(Arrays.asList($VALUES));
-        for (int i = 1; i <= 600; i++) railTypes.add(create("P" + i, railTypes.size(), i, MaterialColor.COLOR_GREEN, false, true, true, RailType.RailSlopeStyle.CURVE));
+        for (int i = -1; i <= 600; i++) railTypes.add(create("P" + i, railTypes.size(), i, MaterialColor.COLOR_GREEN, false, true, true, RailType.RailSlopeStyle.CURVE));
 
         for (int i = 1000; i <= 10000; i+= 500) railTypes.add(create("P" + i, railTypes.size(), i, MaterialColor.COLOR_GREEN, false, true, true, RailType.RailSlopeStyle.CURVE));
 
