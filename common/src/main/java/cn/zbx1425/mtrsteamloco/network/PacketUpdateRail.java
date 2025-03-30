@@ -43,7 +43,8 @@ public class PacketUpdateRail {
 #endif
         BlockPos posStart = packet.readBlockPos();
         BlockPos posEnd = packet.readBlockPos();
-        RailExtraSupplier extraTarget = (RailExtraSupplier)(new Rail(packet));
+        Rail target = new Rail(packet);
+        RailExtraSupplier extraTarget = (RailExtraSupplier)(target);
         server.execute(() -> {
             ServerLevel level = server.getLevel(levelKey);
             if (level == null) return;
@@ -68,6 +69,8 @@ public class PacketUpdateRail {
             extraBackward.setRollAngleMap(extraTarget.getRollAngleMap());
             extraForward.setOpeningDirectionRaw(extraTarget.getOpeningDirectionRaw());
             extraBackward.setOpeningDirectionRaw(extraTarget.getOpeningDirectionRaw());
+            extraForward.setRailType(target.railType);
+            extraBackward.setRailType(target.railType);
 
             final FriendlyByteBuf outboundPacket = new FriendlyByteBuf(Unpooled.buffer());
             outboundPacket.writeUtf(railForward.transportMode.toString());

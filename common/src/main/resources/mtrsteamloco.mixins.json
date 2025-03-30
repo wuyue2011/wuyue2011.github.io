@@ -40,7 +40,9 @@
     "TrainMixin",
     "SidingAccessor",
     "SidingMixin",
-    "RailwayDataRailActionsModuleMixin"
+    "RailwayDataRailActionsModuleMixin",
+    "RailTypeMixin",
+    "SidingScreenMixin"
   ],
   "server": [
     

@@ -95,7 +95,13 @@ public class CompoundCreator extends ItemNodeModifierBase {
         }
 	}
 
-    public static class SliceTask {
+    public static class Task {
+        public static final String TAG_TYPE = "type";
+    }
+
+    public static class SliceTask extends Task {
+        public static final String TYPE = "Slice";
+
         public int order;
         public String name;
         public int width;
@@ -177,6 +183,7 @@ public class CompoundCreator extends ItemNodeModifierBase {
 
         public CompoundTag toCompoundTag() {
             CompoundTag compoundTag = new CompoundTag();
+            compoundTag.putString(TAG_TYPE, TYPE);
             compoundTag.putInt(TAG_ORDER, order);
             compoundTag.putString(TAG_NAME, name);
             compoundTag.putInt(TAG_WIDTH, width);
@@ -211,6 +218,34 @@ public class CompoundCreator extends ItemNodeModifierBase {
                 this.usePitch = sliceTask.usePitch;
                 this.useRoll = sliceTask.useRoll;
             }
+        }
+    }
+
+    public static class ConnectTask extends Task {
+        public static final String TYPE = "Connect";
+
+        public String name;
+        public Rail rail;
+
+        public static final String TAG_NAME = "name";
+        public static final String TAG_RAIL = "rail";
+
+        public ConnectTask(String name, Rail rail) {
+            this.name = name;
+            // this.rail = rail;
+        }
+
+        public ConnectTask(CompoundTag compoundTag) {
+            this.name = compoundTag.getString(TAG_NAME);
+            // this.rail = new Rail(compoundTag.getCompound(TAG_RAIL));
+        }
+
+        public CompoundTag toCompoundTag() {
+            CompoundTag compoundTag = new CompoundTag();
+            compoundTag.putString(TAG_TYPE, TYPE);
+            compoundTag.putString(TAG_NAME, name);
+            // compoundTag.put(TAG_RAIL, rail.toCompoundTag());
+            return compoundTag;
         }
     }
 
@@ -301,6 +336,12 @@ public class CompoundCreator extends ItemNodeModifierBase {
                     mat.rotateZ(roll);
                 }
 
+                if (last.distanceToSqr(next) < 0.001) {
+                    last = next;
+                    continue;
+                }
+                last = next;
+
                 mat.translate(-width / 2.0F + 0.5F, height / 2.0F - 0.5F, 0);
 
                 for (int i = 0; i < height; i++) {
@@ -329,7 +370,6 @@ public class CompoundCreator extends ItemNodeModifierBase {
                     }
                     mat.translate(width * -1.0F, -1.0F, 0);
                 }
-                last = next;
             }
 
             showProgressMessage(RailwayData.round(100 * distance / length, 1));

@@ -1,6 +1,7 @@
 package cn.zbx1425.mtrsteamloco.data;
 
 import mtr.data.Rail;
+import mtr.data.RailType;
 import net.minecraft.util.Mth;
 
 import java.util.Map;
@@ -43,6 +44,8 @@ public interface RailExtraSupplier {
     int getOpeningDirection();
 
     int getOpeningDirectionRaw();
+
+    void setRailType(RailType railType);
 
     static float getVTheta(Rail rail, double verticalCurveRadius) {
         double H = Math.abs(((RailExtraSupplier) rail).getHeight());

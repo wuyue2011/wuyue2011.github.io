@@ -27,6 +27,7 @@ import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.Util;
+import mtr.data.RailType;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.Minecraft;
 #if MC_VERSION >= "12000"
@@ -118,7 +119,6 @@ public class BrushEditRailScreen {
             );
 
             CompoundTag brushTag = getBrushTag();
-            boolean enableModelKey = brushTag != null && brushTag.contains("ModelKey");
             String modelKey = supplier.getModelKey();
 
             common.addEntry(
@@ -126,6 +126,48 @@ public class BrushEditRailScreen {
                     Text.translatable("gui.mtrsteamloco.brush_edit_rail.brush_hint")
                 ).build());
 
+            boolean enableRailType = brushTag != null && brushTag.contains("RailType");
+            common.addEntry(
+                entryBuilder.startBooleanToggle(
+                    Text.translatable("gui.mtrsteamloco.brush_edit_rail.enable_rail_type"),
+                    enableRailType
+                ).setTooltipSupplier(checked -> {
+                    if (checked != enableRailType) {
+                        updateBrushTag(
+                            compoundTag -> {
+                                if (checked) {
+                                    compoundTag.putString("RailType", pickedRail.railType.toString());
+                                } else {
+                                    compoundTag.remove("RailType");
+                                }
+                            }
+                        );
+                        Minecraft.getInstance().setScreen(BrushEditRailScreen.createScreen(pickedRail, pickedPosStart, pickedPosEnd, parent));
+                    }
+                    return Optional.empty();
+                }).build()
+            );
+            if (enableRailType) {
+                common.addEntry(
+                    entryBuilder.startTextField(
+                        Text.translatable("gui.mtrsteamloco.brush_edit_rail.rail_type"),
+                        brushTag.getString("RailType")
+                    ).setErrorSupplier(str -> {
+                        try {
+                            RailType type = RailType.valueOf(str);
+                            if (type != null && type != RailType.NONE) return Optional.empty();
+                        } catch (Exception e) {}
+                        return Optional.of(Text.translatable("gui.mtrsteamloco.brush_edit_rail.rail_type_error"));
+                    }
+                    ).setSaveConsumer(str -> {
+                        updateBrushTag(compoundTag -> {
+                            compoundTag.putString("RailType", str);
+                        });
+                    }).build()
+                );
+            }
+
+            boolean enableModelKey = brushTag != null && brushTag.contains("ModelKey");
             common.addEntry(
                 entryBuilder.startBooleanToggle(
                     Text.translatable("gui.mtrsteamloco.brush_edit_rail.enable_model_key"),
@@ -313,6 +355,9 @@ public class BrushEditRailScreen {
             }
             pickedExtra.setRollAngleMap(rollAngleMap);
             propertyUpdated = true;
+        }
+        if (railBrushProp.contains("RailType")) {
+            pickedExtra.setRailType(RailType.valueOf(railBrushProp.getString("RailType")));
         }
         if (isBatchApply && !propertyUpdated) {
             // Right-click again to reverse the direction

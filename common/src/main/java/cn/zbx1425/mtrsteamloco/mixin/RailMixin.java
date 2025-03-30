@@ -18,6 +18,7 @@ import org.msgpack.core.MessagePacker;
 import org.msgpack.value.Value;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -133,6 +134,14 @@ public abstract class RailMixin implements RailExtraSupplier {
     public int getOpeningDirectionRaw() {
         return openingDirection;
     }
+
+    @Shadow(remap = false) @Final @Mutable private RailType railType;
+
+    @Override
+    public void setRailType(RailType railType) {
+        this.railType = railType;
+    }
+
 
     @Inject(method = "<init>(Ljava/util/Map;)V", at = @At("TAIL"), remap = false)
     private void fromMessagePack(Map<String, Value> map, CallbackInfo ci) {

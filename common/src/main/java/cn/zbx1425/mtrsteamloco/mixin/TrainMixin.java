@@ -258,4 +258,12 @@ public abstract class TrainMixin implements TrainExtraSupplier{
 			}
 		}
 	}
+
+	@Inject(method = "convertMaxManualSpeed", at = @At("HEAD"), cancellable = true, remap = false)
+	private static void convertMaxManualSpeed(int maxManualSpeed, CallbackInfoReturnable<RailType> ci) {
+		maxManualSpeed = Math.min(maxManualSpeed, RailType.values().length - 1);
+		ci.setReturnValue(RailType.values()[maxManualSpeed]);
+		ci.cancel();
+		return;
+	}
 }
