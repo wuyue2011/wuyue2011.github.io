@@ -6,6 +6,7 @@ import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.gui.GuiGraphics;
 #else
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiComponent;
 #endif
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -22,7 +23,6 @@ import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import mtr.mappings.UtilitiesClient;
 import net.minecraft.client.gui.Font;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.client.gui.GuiComponent;
 
 import java.util.List;
 import java.util.Optional;

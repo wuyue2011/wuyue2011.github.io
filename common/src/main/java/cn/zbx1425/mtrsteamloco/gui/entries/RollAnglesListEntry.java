@@ -32,6 +32,8 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.Minecraft;
 #if MC_VERSION >= "12000"
 import net.minecraft.client.gui.GuiGraphics;
+#else
+import net.minecraft.client.gui.GuiComponent;
 #endif
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
@@ -41,12 +43,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.Window;
-#if MC_VERSION >= "12000"
-import net.minecraft.client.gui.GuiGraphics;
-#else
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.GuiComponent;
-#endif
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -232,7 +229,7 @@ public class RollAnglesListEntry extends TooltipListEntry<String> implements Con
     }
     @Override
 #if MC_VERSION >= "12000"
-    public void render(GuiGraphics matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, booleanisHovered, float delta) {
+    public void render(GuiGraphics matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta) {
 #else
     public void render(PoseStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta) {
 #endif
