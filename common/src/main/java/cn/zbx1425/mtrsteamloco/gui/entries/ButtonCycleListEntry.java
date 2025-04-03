@@ -22,6 +22,7 @@ import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import mtr.mappings.UtilitiesClient;
 import net.minecraft.client.gui.Font;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.client.gui.GuiComponent;
 
 import java.util.List;
 import java.util.Optional;
@@ -106,8 +107,12 @@ public class ButtonCycleListEntry extends TooltipListEntry<Integer> implements C
     }
     
 #if MC_VERSION >= "12000"
-    private void drawString(GuiGraphics matrices, Font font, FormattedCharSequence text, int x, int y, int color) {
+    public static void drawString(GuiGraphics matrices, Font font, FormattedCharSequence text, int x, int y, int color) {
         matrices.drawString(font, text, x, y, color);
+    }
+#else
+    public static void drawString(PoseStack matrices, Font font, FormattedCharSequence text, int x, int y, int color) {
+        GuiComponent.drawString(matrices, font, text, x, y, color);
     }
 #endif
 

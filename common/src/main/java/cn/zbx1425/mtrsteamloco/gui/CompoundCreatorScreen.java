@@ -8,8 +8,11 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.Util;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screens.Screen;
+import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import net.minecraft.client.gui.components.Button;
+import com.mojang.datafixers.util.Pair;
 import me.shedaniel.clothconfig2.api.ScissorsHandler;
+import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import mtr.screen.WidgetBetterTextField;
 import net.minecraft.network.chat.FormattedText;
 import cn.zbx1425.sowcer.math.PoseStackUtil;
@@ -39,6 +42,7 @@ import me.shedaniel.math.Rectangle;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.util.Mth;
+import cn.zbx1425.mtrsteamloco.data.*;
 import mtr.client.IDrawing;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -48,10 +52,13 @@ import me.shedaniel.clothconfig2.api.ConfigCategory;
 import net.minecraft.network.chat.Component;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.client.gui.components.EditBox;
+import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.Direction;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.GameRenderer;
+import mtr.data.*;
+import cn.zbx1425.mtrsteamloco.gui.entries.*;
 import static cn.zbx1425.mtrsteamloco.item.CompoundCreator.*;
 
 #if MC_VERSION >= "12000"
@@ -72,6 +79,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Comparator;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.Iterator;
@@ -98,7 +106,7 @@ public class CompoundCreatorScreen extends Screen {
     private Rectangle scissor = null;
     private boolean draggingSlider = false;
 
-    private Button btnAdd = UtilitiesClient.newButton(20, Text.literal("+"), button -> addEntry());
+    private Button btnAdd = UtilitiesClient.newButton(20, Text.literal("+"), button -> minecraft.setScreen(new TaskSelectScreen()));
     private Button btnRemove = UtilitiesClient.newButton(20, Text.literal("-"), button -> removeEntry());
     private Button btnCopy = UtilitiesClient.newButton(20, Text.translatable("gui.mtrsteamloco.compound_creator.copy"), button -> copyEntry());
     private Button btnClear = UtilitiesClient.newButton(20, Text.translatable("gui.mtrsteamloco.compound_creator.clear"), button -> clearEntries());
@@ -110,17 +118,25 @@ public class CompoundCreatorScreen extends Screen {
     }
 
     public boolean load() {
-        List<SliceTask> tasks = new ArrayList<>();
+        List<Task> tasks = new ArrayList<>();
         if (getTag() == null) return false;
         CompoundTag tag = getTag();
         if (!tag.contains(TAG_TASKS)) return true;
         CompoundTag tasksTag = tag.getCompound(TAG_TASKS).copy();
         for (String key : tasksTag.getAllKeys()) {
-            tasks.add(new SliceTask(tasksTag.getCompound(key)));
+            CompoundTag task = tasksTag.getCompound(key);
+            String type = task.getString(Task.TAG_TYPE);
+            if (type.equals(SliceTask.TYPE)) {
+                tasks.add(new SliceTask(task));
+            } else if (type.equals(RailModifierTask.TYPE)) {
+                tasks.add(new RailModifierTask(task));
+            } else {
+                Main.LOGGER.error("Unknown task type: " + type);
+            }
         }
-        tasks.sort(Comparator.comparingInt(sliceTask -> sliceTask.order));
+        tasks.sort(Comparator.comparingInt(task -> task.order));
         List<Entry> entries = new ArrayList<>();
-        for (SliceTask task : tasks) {
+        for (Task task : tasks) {
             entries.add(new Entry(task));
         }
         this.entries = entries;
@@ -168,8 +184,8 @@ public class CompoundCreatorScreen extends Screen {
         update();
     }
 
-    private void addEntry() {
-        Entry entry = new Entry(new SliceTask(0, entries.size() + "", 11, 11, 0, null, null, 0.1D, new Integer[11 * 11], true, true, false));
+    private void addEntry(Task task) {
+        Entry entry = new Entry(task);
         entries.add(entry);
         selectedEntry = entry;
         update();
@@ -185,7 +201,15 @@ public class CompoundCreatorScreen extends Screen {
 
     private void copyEntry() {
         if (selectedEntry == null) return;
-        Entry entry = new Entry(new SliceTask(selectedEntry.task));
+        Entry entry = null;
+        if (selectedEntry.task instanceof SliceTask) {
+            entry = new Entry(new SliceTask((SliceTask) selectedEntry.task));
+        } else if (selectedEntry.task instanceof RailModifierTask) {
+            entry = new Entry(new RailModifierTask((RailModifierTask) selectedEntry.task));
+        } else {
+            Main.LOGGER.error("Unknown task type: " + selectedEntry.task.getClass());
+            return;
+        }
         entries.add(entry);
         selectedEntry = entry;
         update();
@@ -370,7 +394,7 @@ public class CompoundCreatorScreen extends Screen {
     }
 
     public class Entry implements GuiEventListener{
-        public SliceTask task;
+        public Task task;
         private int y;
         private static int x = 20;
         private static int height = 20;
@@ -380,7 +404,7 @@ public class CompoundCreatorScreen extends Screen {
         private Button down = UtilitiesClient.newButton(Text.literal("▼"), btn -> moveDown());
         private List<GuiEventListener> children = Arrays.asList(nameField, enter, up, down, this);
 
-        public Entry(SliceTask task) {
+        public Entry(Task task) {
             this.task = task;
             nameField.setResponder(this::updateName);
             nameField.setValue(task.name);
@@ -392,7 +416,13 @@ public class CompoundCreatorScreen extends Screen {
         }
 
         public void enter() {
-            minecraft.setScreen(new TaskScreen(task));
+            if (task instanceof SliceTask) {
+                minecraft.setScreen(new SliceTaskScreen((SliceTask) task));    
+            } else if (task instanceof RailModifierTask) {
+                setRailModifierScreen((RailModifierTask) task);
+            } else {
+                Main.LOGGER.error("Unknown task type: " + task.getClass().getName());
+            }
         }
 
         public void updateName(String name) {
@@ -501,7 +531,237 @@ public class CompoundCreatorScreen extends Screen {
         }
     }
 
-    public class TaskScreen extends Screen {
+    public class TaskSelectScreen extends Screen {
+        private Button btnReturn = UtilitiesClient.newButton(Text.literal("X"), btn -> onClose());
+        private Button btnNewRailModifier = UtilitiesClient.newButton(Text.translatable("gui.mtrsteamloco.compound_creator.rail_modifier"), btn -> {
+            RailModifierTask task = new RailModifierTask();
+            addEntry(task);
+            minecraft.setScreen(CompoundCreatorScreen.this);
+        });
+        private Button btnNewSliceTask = UtilitiesClient.newButton(Text.translatable("gui.mtrsteamloco.compound_creator.slice_task"), btn -> {
+            SliceTask task = new SliceTask();
+            addEntry(task);
+            minecraft.setScreen(CompoundCreatorScreen.this);
+        });
+
+        public TaskSelectScreen() {
+            super(Text.literal("Select Task"));
+        }
+
+        public void init() {
+            IDrawing.setPositionAndWidth(btnReturn, 10, 10, 20);
+            IDrawing.setPositionAndWidth(btnNewRailModifier, 20, 50, width - 40);
+            IDrawing.setPositionAndWidth(btnNewSliceTask, 20, 80, width - 40);
+            addRenderableWidget(btnReturn);
+            addRenderableWidget(btnNewRailModifier);
+            addRenderableWidget(btnNewSliceTask);
+        }
+
+    #if MC_VERSION >= "12000"
+        public void render(GuiGraphics matrices, int mouseX, int mouseY, float partialTick) {
+    #else 
+        public void render(PoseStack matrices, int mouseX, int mouseY, float partialTick) {
+    #endif
+            IDrawing.setPositionAndWidth(btnReturn, 10, 10, 20);
+            IDrawing.setPositionAndWidth(btnNewRailModifier, 20, 50, width - 40);
+            IDrawing.setPositionAndWidth(btnNewSliceTask, 20, 80, width - 40);
+            CompoundCreatorScreen.renderDirtBackground(this, matrices);
+            super.render(matrices, mouseX, mouseY, partialTick);
+        }
+
+        public void onClose() {
+            minecraft.setScreen(CompoundCreatorScreen.this);
+        }
+    }
+
+    public Screen newRailModifierScreen(RailModifierTask task0) {
+        RailModifierTask task = new RailModifierTask(task0);
+        ConfigBuilder builder = ConfigBuilder.create()
+                .setParentScreen(this)
+                .setTitle(Text.translatable("轨道修改器"))
+                .setDoesConfirmSave(false)
+                .transparentBackground()
+                .setSavingRunnable(() -> {
+                    task0.copyFrom(task);
+                    this.update();
+                });
+        ConfigEntryBuilder entryBuilder = builder.entryBuilder();
+        ConfigCategory common = builder.getOrCreateCategory(
+                Text.translatable("gui.mtrsteamloco.config.client.category.common")
+        );
+
+        Rail rail = task.rail;
+        RailExtraSupplier extra = (RailExtraSupplier) rail;
+
+        String modelKey = extra.getModelKey();
+        RailModelProperties properties = RailModelRegistry.elements.get(modelKey);
+        Button btnEnterSelect = UtilitiesClient.newButton(Text.translatable("gui.mtrsteamloco.brush_edit_rail.present", (properties != null ? (properties.name.getString()) : (modelKey + " (???)"))), btn -> {
+            Minecraft.getInstance().setScreen(new SelectScreen(task, () -> {
+                task0.copyFrom(task);
+                setRailModifierScreen(task0);
+            }));
+        });
+        btnEnterSelect.setWidth(300);
+        common.addEntry(new ButtonListEntry(
+            Text.literal(""),
+            btnEnterSelect,
+            (e, b, a1, a2, a3, a4, a5, a6, a7, a8, a9) -> {
+                Window window = Minecraft.getInstance().getWindow();
+                UtilitiesClient.setWidgetX(b, window.getGuiScaledWidth() / 2 - 150);
+            }
+        ));
+
+        common.addEntry(
+            entryBuilder.startTextField(
+                Text.translatable("gui.mtrsteamloco.brush_edit_rail.rail_type"),
+                rail.railType.name()
+            ).setErrorSupplier(str -> {
+                try {
+                    RailType type = RailType.valueOf(str);
+                    if (type != null && type != RailType.NONE) return Optional.empty();
+                } catch (Exception e) {}
+                return Optional.of(Text.translatable("gui.mtrsteamloco.brush_edit_rail.rail_type_error"));
+            }
+            ).setSaveConsumer(str -> {
+                extra.setRailType(RailType.valueOf(str));
+            }).build()
+        );
+
+        common.addEntry(
+            entryBuilder.startBooleanToggle(
+                Text.translatable("gui.mtrsteamloco.compound_creator.isOneWay"),
+                task.isOneWay
+            ).setSaveConsumer(
+                isOneWay -> {
+                    task.isOneWay = isOneWay;
+                }
+            ).setDefaultValue(false).build()
+        );
+
+        common.addEntry(
+            entryBuilder.startBooleanToggle(
+                Text.translatable("gui.mtrsteamloco.compound_creator.isReversed"),
+                task.isReversed
+            ).setSaveConsumer(
+                isReversed -> {
+                    task.isReversed = isReversed;
+                }
+            ).setDefaultValue(false).build()
+        );
+
+        common.addEntry(new RollAnglesListEntry(rail, false, res -> this.update()));
+
+        common.addEntry(
+            entryBuilder.startIntSlider(
+                Text.translatable("开门方向"),
+                extra.getOpeningDirection(),
+                0, 3
+            )
+            .setTooltipSupplier(v -> Optional.of(new Component[]{Text.translatable("gui.mtrsteamloco.brush_edit_rail.opening_direction_tooltip")}))
+            .setDefaultValue(0)
+            .setSaveConsumer(value -> {
+                extra.setOpeningDirection(value);
+            }).build()
+        );
+
+        Map<String, String> customConfigs = extra.getCustomConfigs();
+        Map<String, ConfigResponder> responders = extra.getCustomResponders();
+        List<AbstractConfigListEntry> entries = ConfigResponder.getEntrysFromMaps(customConfigs, responders, entryBuilder, () -> newRailModifierScreen(task));
+        for (AbstractConfigListEntry entry : entries) {
+            common.addEntry(entry);
+        }
+
+        Screen screen = builder.build();
+        return screen;
+    }
+
+    public void setRailModifierScreen(RailModifierTask task) {
+        Minecraft.getInstance().setScreen(newRailModifierScreen(task));
+    }
+
+    private class SelectScreen extends SelectListScreen {
+
+        private static final String INSTRUCTION_LINK = "https://aphrodite281.github.io/mtr-ante/#/railmodel";
+        private final WidgetLabel lblInstruction = new WidgetLabel(0, 0, 0, Text.translatable("gui.mtrsteamloco.eye_candy.tip_resource_pack"), () -> {
+            this.minecraft.setScreen(new ConfirmLinkScreen(bl -> {
+                if (bl) {
+                    Util.getPlatform().openUri(INSTRUCTION_LINK);
+                }
+                this.minecraft.setScreen(this);
+            }, INSTRUCTION_LINK, true));
+        });
+        private Rail rail;
+        private RailModifierTask task;
+        private RailExtraSupplier extra;
+        private Runnable returnParent;
+
+        public SelectScreen(RailModifierTask task, Runnable returnParent) {
+            super(Text.literal("Select rail arguments"));
+            this.task = task;
+            this.rail = task.rail;
+            this.extra = (RailExtraSupplier) rail;
+            this.returnParent = returnParent;
+        }
+
+        @Override
+        protected void init() {
+            super.init();
+
+            loadPage();
+        }
+
+        @Override
+        protected void loadPage() {
+            clearWidgets();
+
+            
+            String modelKey = extra.getModelKey();
+            scrollList.visible = true;
+            loadSelectPage(key -> !key.equals(modelKey));
+            lblInstruction.alignR = true;
+            IDrawing.setPositionAndWidth(lblInstruction, width / 2 + SQUARE_SIZE, height - SQUARE_SIZE - TEXT_HEIGHT, 0);
+            lblInstruction.setWidth(width / 2 - SQUARE_SIZE * 2);
+            addRenderableWidget(lblInstruction);
+        }
+
+        @Override
+        protected void onBtnClick(String btnKey) {
+            extra.setModelKey(btnKey);
+            task.tryCallRailScript();
+        }
+
+        @Override
+        protected List<Pair<String, String>> getRegistryEntries() {
+            return new HashSet<>(RailModelRegistry.elements.entrySet()).stream()
+                    .filter(e -> !e.getValue().name.getString().isEmpty())
+                    .map(e -> new Pair<>(e.getKey(), e.getValue().name.getString()))
+                    .toList();
+        }
+
+        @Override
+    #if MC_VERSION >= "12000"
+        public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    #else
+        public void render(PoseStack guiGraphics, int mouseX, int mouseY, float partialTick) {
+    #endif
+            this.renderBackground(guiGraphics);
+            super.render(guiGraphics, mouseX, mouseY, partialTick);
+
+            renderSelectPage(guiGraphics);
+        }
+
+        @Override
+        public void onClose() {
+            returnParent.run();
+        }
+
+        @Override
+        public boolean isPauseScreen() {
+            return true;
+        }
+    }
+
+    public class SliceTaskScreen extends Screen {
         public SliceTask task;
         protected int tx = 0;
         protected int ty = 0;
@@ -525,68 +785,44 @@ public class CompoundCreatorScreen extends Screen {
 
         private Square mouseOver = null;
 
-        private Square now = new Square(0, 0, null, square -> square.state = null, square -> true, square -> true, false);
+        private Square now = new Square(0, 0, null, square -> square.state = null, square -> true, square -> true, false, true);
 
-        public TaskScreen(SliceTask task) {
+        public SliceTaskScreen(SliceTask task) {
             super(Text.translatable(""));
             this.task = task;
             reload();
         }
 
         private void setWidthAndHeight(int width, int height) {
-            if (width < 1 || height < 1) return;
-            if (width % 2 != 1 || height % 2 != 1) return;
-            if (width != task.width || height != task.height);
-            else return;
-
-            Integer[] blockIds = new Integer[width * height];
-            int thiMidX = width / 2;
-            int thiMidY = height / 2;
-            int oldMidX = task.width / 2;
-            int oldMidY = task.height / 2;
-            
-            for (int i = -thiMidY; i <= thiMidY; i++) {
-                int thiy = thiMidY + i;
-                int oldy = oldMidY + i;
-                if (oldy < 0 || oldy >= task.height) continue;
-                for (int j = -thiMidX; j <= thiMidX; j++) {
-                    int thix = thiMidX + j;
-                    int oldx = oldMidX + j;
-                    if (oldx < 0 || oldx >= task.width) continue;
-                    blockIds[thiy * width + thix] = task.blockIds[oldy * task.width + oldx];
-                }
-            }
-            task.width = width;
-            task.height = height;
-            task.blockIds = blockIds;
+            if (!task.setWidthAndHeight(width, height)) return;
             update();
             reload();
         }
 
         private void updateTask() {
-            task.blockIds = new Integer[canvas.size()];
             for (int i = 0; i < canvas.size(); i++) {
-                task.blockIds[i] = canvas.get(i).state == null? null : Block.getId(canvas.get(i).state);
+                Lump lump = task.lumps.get(i);
+                Square sq = canvas.get(i);
+                lump.blockState = sq.state;
+                lump.replacement = sq.replacement;
             }
             update();
         }
 
         private void reload() {
             List<Square> canvas = new ArrayList<>();
-            for (int i = 0; i < task.blockIds.length; i++) {
-                int p = i;
-                Consumer<Square> consumer = square -> {
-                    square.state = now.state;
-                    updateTask();
-                };
-
-                Function<Square, Boolean> visible = sq -> {
-                    int l = Square.length;
-                    Rectangle s = scissor;
-                    return sq.x + l >= s.x && sq.x <= s.x + s.width && sq.y + l >= s.y && sq.y <= s.y + s.height;
-                };
-                if (task.blockIds[i] == null) canvas.add(new Square(0, 0, null, consumer, square -> true, visible, false));
-                else canvas.add(new Square(0, 0, Block.stateById(task.blockIds[i]), consumer, square -> true, visible, false));
+            Consumer<Square> consumer = square -> {
+                square.state = now.state;
+                square.replacement = now.replacement;
+                updateTask();
+            };
+            Function<Square, Boolean> visible = sq -> {
+                int l = Square.length;
+                Rectangle s = scissor;
+                return sq.x + l >= s.x && sq.x <= s.x + s.width && sq.y + l >= s.y && sq.y <= s.y + s.height;
+            };
+            for (Lump lump : task.lumps) {
+                canvas.add(new Square(0, 0, lump.blockState, consumer, square -> true, visible, false, lump.replacement));
             }
             this.canvas = canvas;
         }
@@ -921,6 +1157,11 @@ public class CompoundCreatorScreen extends Screen {
             public Function<Square, Boolean> highlight = square -> false;
             public Function<Square, Boolean> visible = square -> true;
             public boolean fixed = false;
+            public boolean replacement = false;
+
+            public static ResourceLocation PURPLE_CIRCLE = new ResourceLocation("mtrsteamloco:textures/gui/compound_creator/purple_circle.png");
+            public static ResourceLocation BLUE_CIRCLE = new ResourceLocation("mtrsteamloco:textures/gui/compound_creator/blue_circle.png");
+            public static ResourceLocation MID_CIRCLE = new ResourceLocation("mtrsteamloco:textures/gui/compound_creator/mid_circle.png");
 
             public Square(Square other) {
                 this.x = other.x;
@@ -930,9 +1171,10 @@ public class CompoundCreatorScreen extends Screen {
                 this.highlight = other.highlight;
                 this.visible = other.visible;
                 this.fixed = other.fixed;
+                this.replacement = other.replacement;
             }
 
-            public Square(int x, int y, BlockState state, Consumer<Square> consumer, Function<Square, Boolean> highlight, Function<Square, Boolean> visible, boolean fixed) {
+            public Square(int x, int y, BlockState state, Consumer<Square> consumer, Function<Square, Boolean> highlight, Function<Square, Boolean> visible, boolean fixed, boolean replacement) {
                 this.x = x;
                 this.y = y;
                 this.state = state;
@@ -940,6 +1182,7 @@ public class CompoundCreatorScreen extends Screen {
                 if (highlight != null) this.highlight = highlight;
                 if (visible != null) this.visible = visible;
                 this.fixed = fixed;
+                this.replacement = replacement;
             }
 
         #if MC_VERSION >= "12000"
@@ -955,6 +1198,8 @@ public class CompoundCreatorScreen extends Screen {
                 if (state != null) {
                     renderBlockState(matrices, x + 1, y + 1, partialTick, state);
                     fill(matrices, x + 1, y + 1, x + length - 1, y + length - 1, highlight.apply(this) ? 0x2ff5f5f5 : 0x1fdda9df);
+                    CompoundCreatorScreen.this.blit(matrices, replacement ? PURPLE_CIRCLE : BLUE_CIRCLE, x + 1, y + 1, 16, 16);
+                    if (fixed) CompoundCreatorScreen.this.blit(matrices, MID_CIRCLE, x + 1, y + 1, 16, 16);
                 }
                 if (isMouseOver(mouseX, mouseY)) {
                     mouseOver = this;
@@ -979,7 +1224,7 @@ public class CompoundCreatorScreen extends Screen {
                         sb.append(state.getValue(property).toString());
                         sb.append("/");
                     }
-                    str = block.getName().getString() + '\n' + block.getDescriptionId() + '\n' + sb.toString();
+                    str = "Replacement:" + replacement + '\n' + block.getName().getString() + '\n' + block.getDescriptionId() + '\n' + sb.toString();
                 } else {
                     str = "Empty";
                 }
@@ -1002,7 +1247,7 @@ public class CompoundCreatorScreen extends Screen {
             }
 
             private boolean isVisible() {
-                return x >= -length && x <= TaskScreen.this.width && y >= -length && y <= TaskScreen.this.height && visible.apply(this);
+                return x >= -length && x <= SliceTaskScreen.this.width && y >= -length && y <= SliceTaskScreen.this.height && visible.apply(this);
             }
 
             public boolean mouseClicked(double mouseX, double mouseY, int i) {
@@ -1011,10 +1256,11 @@ public class CompoundCreatorScreen extends Screen {
                     consumer.accept(this);
                 } else if (i == 1) {
                     if (state != null) {
-                        minecraft.setScreen(new PropertyScreen(this, fixed));
+                        minecraft.setScreen(newPropertyScreen(this, fixed));
                     }
                 } else if (i == 2) {
                     now.state = this.state;
+                    now.replacement = this.replacement;
                 }
                 return true;
             }
@@ -1030,66 +1276,58 @@ public class CompoundCreatorScreen extends Screen {
             }
         }
 
-        public class PropertyScreen extends Screen {
-            private Square present;
-            private List<Button> buttons = new ArrayList<>();
-            private Button btnClose = UtilitiesClient.newButton(Text.literal("X"), btn -> onClose());
 
-            public PropertyScreen(Square square, boolean fixed) {
-                super(Text.literal(""));
-                present = fixed ? new Square(square) : square;
-                Block block = present.state.getBlock();
-                StateDefinition<Block, BlockState> statedefinition = block.getStateDefinition();
-                Collection<Property<?>> collection = statedefinition.getProperties();
-                for (Property<?> property : collection) {
-                    buttons.add(UtilitiesClient.newButton(Text.literal(property.getName() + ":" + present.state.getValue(property)), btn -> cycleState(btn, property)));
-                }
+    public Screen newPropertyScreen(Square square, boolean fixed) {
+            Square present = fixed ? new Square(square) : square;
+            Block block = present.state.getBlock();
+            StateDefinition<Block, BlockState> statedefinition = block.getStateDefinition();
+            Collection<Property<?>> collection = statedefinition.getProperties();
+
+            ConfigBuilder builder = ConfigBuilder.create()
+                .setParentScreen(SliceTaskScreen.this)
+                .setTitle(block.getName())
+                .setDoesConfirmSave(false)
+                .setTransparentBackground(false)
+                .setSavingRunnable(() -> {
+                    now.state = present.state;
+                    now.replacement = present.replacement;
+                });
+            ConfigEntryBuilder entryBuilder = builder.entryBuilder();
+            ConfigCategory common = builder.getOrCreateCategory(
+                    Text.translatable("gui.mtrsteamloco.config.client.category.common")
+            );
+
+            common.addEntry(
+                entryBuilder.startBooleanToggle(
+                    Text.translatable("gui.mtrstakeloco.compound_creator.replacement"),
+                    present.replacement
+                ).setDefaultValue(true)
+                .setSaveConsumer(b -> {
+                    present.replacement = b;
+                }).build()
+            );
+
+            for (Property<?> property : collection) {
+                common.addEntry(newButtonCycleListEntry(present, property, entryBuilder));
             }
 
-            @Override
-            protected void init() {
-                for (Button button : buttons) {
-                    addRenderableWidget(button);
-                }
-                addRenderableWidget(btnClose);
-            }
+            return builder.build();
+        }
 
-            @Override
-        #if MC_VERSION >= "12000"
-            public void render(GuiGraphics matrices, int mouseX, int mouseY, float partialTick) {
-        #else
-            public void render(PoseStack matrices, int mouseX, int mouseY, float partialTick) {
-        #endif
-                CompoundCreatorScreen.renderDirtBackground(this, matrices);
-                int y = 60;
-                int x = 30;
-                for (Button button : buttons) {
-                    IDrawing.setPositionAndWidth(button, x, y, width - 60);
-                    y += 22;
-                }
-                IDrawing.setPositionAndWidth(btnClose, 20, 20, 20);
-                drawCenteredString(matrices, minecraft.font, present.state.getBlock().getName().getString(), width / 2, 20, 0xffffffff);
-                super.render(matrices, mouseX, mouseY, partialTick);
+        private <T extends Comparable<T>> ButtonCycleListEntry newButtonCycleListEntry(Square square, Property<T> property, ConfigEntryBuilder entryBuilder) {
+            BlockState state = square.state;
+            BlockState def = state.getBlock().defaultBlockState();
+            List<String> values = new ArrayList<>();
+            for (T value : property.getPossibleValues()) {
+                values.add(property.getName(value));
             }
-
-            private void cycleState(Button btn, Property<?> property) {
-                present.state = cycleState(present.state, property, false);
-                btn.setMessage(Text.literal(property.getName() + ":" + present.state.getValue(property)));
-            } 
-
-            private static <T extends Comparable<T>> BlockState cycleState(BlockState p_40970_, Property<T> p_40971_, boolean p_40972_) {
-                return p_40970_.setValue(p_40971_, getRelative(p_40971_.getPossibleValues(), p_40970_.getValue(p_40971_), p_40972_));
-            }
-
-            private static <T> T getRelative(Iterable<T> p_40974_, T p_40975_, boolean p_40976_) {
-                return (T)(p_40976_ ? Util.findPreviousInIterable(p_40974_, p_40975_) : Util.findNextInIterable(p_40974_, p_40975_));
-            }
-
-            @Override
-            public void onClose() {
-                TaskScreen.this.now.state = present.state;
-                minecraft.setScreen(TaskScreen.this);
-            }
+            String current = property.getName(property.value(state).value());
+            int index = values.indexOf(current);
+            String defaultName = property.getName(property.value(def).value());
+            int defIndex = values.indexOf(defaultName);
+            return new ButtonCycleListEntry(Text.literal(property.getName()), index, values, entryBuilder.getResetButtonKey(), () -> defIndex, ind -> {
+                square.state = square.state.setValue(property, property.getValue(values.get(ind)).get());
+            }, null, false);
         }
 
         public class Inventory implements GuiEventListener {
@@ -1111,7 +1349,7 @@ public class CompoundCreatorScreen extends Screen {
         #endif
                     markSquare(new Square(0, 0, block.defaultBlockState(), square -> {
                         now.state = square.state;
-                    }, square -> square.state == now.state, square -> true, true));
+                    }, square -> square.state == now.state, square -> true, true, true));
                 }
                 searchedList = new ArrayList<>(blocksList);
 
@@ -1155,9 +1393,9 @@ public class CompoundCreatorScreen extends Screen {
         #endif
                 fill(matrices, scissor.x, 0, scissor.x + scissor.width, height, 0xff212121);
                 fill(matrices, scissor.x, 0, scissor.x + 1, height, mouseX >= scissor.x ? 0xfff2f7eb : 0xffafb3aa);
-                IDrawing.setPositionAndWidth(searchField, TaskScreen.this.width - width + 3, 1, width - 3);
+                IDrawing.setPositionAndWidth(searchField, SliceTaskScreen.this.width - width + 3, 1, width - 3);
                 searchField.render(matrices, mouseX, mouseY, partialTick);
-                scissor = new Rectangle(TaskScreen.this.width - width, 18, width, TaskScreen.this.height - 18);
+                scissor = new Rectangle(SliceTaskScreen.this.width - width, 18, width, SliceTaskScreen.this.height - 18);
                 checkAndScroll(scroll);
                 int x = scissor.x + 3;
                 ScissorsHandler.INSTANCE.scissor(scissor);
@@ -1245,9 +1483,9 @@ public class CompoundCreatorScreen extends Screen {
                 int h = (int) (th / ah * th);
                 int py = scissor.y + (int) (-1F * scroll / ah * th);
                 if (h > 5) {
-                    return new int[]{TaskScreen.this.width - 5, py, 5, h};
+                    return new int[]{SliceTaskScreen.this.width - 5, py, 5, h};
                 } else {
-                    return new int[]{TaskScreen.this.width - 5, py, 5, 5};
+                    return new int[]{SliceTaskScreen.this.width - 5, py, 5, 5};
                 }
             }
 

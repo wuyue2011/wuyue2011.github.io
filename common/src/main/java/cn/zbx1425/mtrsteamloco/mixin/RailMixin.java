@@ -142,6 +142,25 @@ public abstract class RailMixin implements RailExtraSupplier {
         this.railType = railType;
     }
 
+    @Override
+    public void partialCopyFrom(Rail other) {
+        RailExtraSupplier oth = (RailExtraSupplier) other;
+        setModelKey(oth.getModelKey());
+        // setRenderReversed(oth.getRenderReversed());
+        setVerticalCurveRadius(oth.getVerticalCurveRadius());
+        setCustomConfigs(oth.getCustomConfigs());
+        double length0 = other.getLength();
+        double length1 = ((Rail) (Object) this).getLength();
+        double k = length1 / length0;
+        Map<Double, Float> src = new HashMap<>(oth.getRollAngleMap());
+        Map<Double, Float> dst = new HashMap<>();
+        for (Map.Entry<Double, Float> entry : src.entrySet()) {
+            dst.put(entry.getKey() * k, entry.getValue());
+        }
+        setRollAngleMap(dst);
+        setOpeningDirection(oth.getOpeningDirection());
+    }
+
 
     @Inject(method = "<init>(Ljava/util/Map;)V", at = @At("TAIL"), remap = false)
     private void fromMessagePack(Map<String, Value> map, CallbackInfo ci) {

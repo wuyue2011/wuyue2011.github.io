@@ -1,11 +1,16 @@
 package cn.zbx1425.mtrsteamloco.mixin;
 
+import cn.zbx1425.mtrsteamloco.Main;
+import mtr.screen.SidingScreen;
+import mtr.data.RailType;
+import mtr.data.Train;
+
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import mtr.screen.SidingScreen;
-import mtr.data.RailType;
 
 @Mixin(SidingScreen.class)
 public abstract class SidingScreenMixin {

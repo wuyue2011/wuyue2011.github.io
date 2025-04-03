@@ -64,6 +64,7 @@ import net.minecraft.client.gui.components.EditBox;
 import me.shedaniel.clothconfig2.api.Tooltip;
 import me.shedaniel.math.Point;
 import cn.zbx1425.mtrsteamloco.network.util.DoubleFloatMapSerializer;
+import cn.zbx1425.mtrsteamloco.gui.entries.*;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -252,14 +253,22 @@ public class BrushEditRailScreen {
                                 compoundTag.remove("RollAngleMap");
                             });
                         } else {
-                            new RollAnglesListEntry().update();
+                            updateBrushTag(compoundTag -> {
+                                compoundTag.putString("RollAngleMap", DoubleFloatMapSerializer.serializeToString(new HashMap<>()));
+                            });
                         }
                         Minecraft.getInstance().setScreen(BrushEditRailScreen.createScreen(pickedRail, pickedPosStart, pickedPosEnd, parent));
                     }
                     return Optional.empty();
                 }).build()
             );
-            if (enableRollAngle) common.addEntry(new RollAnglesListEntry());
+            Vector3f p1 = new Vector3f(pickedRail.getPosition(0));
+            Vector3f p2 = new Vector3f(pickedRail.getPosition(pickedRail.getLength()));
+            Vector3f start = new Vector3f(pickedPosStart);
+            float d1 = p1.distance(start);
+            float d2 = p2.distance(start);
+            boolean flag = d1 < d2;
+            if (enableRollAngle) common.addEntry(new RollAnglesListEntry(pickedRail, flag, this::updateRailAngle));
 
             Function<Integer, Optional<Component[]>> f = v -> Optional.of(new Component[]{Text.translatable("gui.mtrsteamloco.brush_edit_rail.opening_direction_tooltip")});
 
@@ -285,6 +294,19 @@ public class BrushEditRailScreen {
             }
             screen = builder.build();
         }
+    }
+
+    public void updateRailAngle(Map<Double, Float> res) {
+        PacketUpdateRail.sendUpdateC2S(pickedRail, pickedPosStart, pickedPosEnd);
+        updateBrushTag(compoundTag -> {
+            Map<Double, Float> res1 = new HashMap<>();
+            Set<Map.Entry<Double, Float>> entries = new HashSet<>(res.entrySet());
+            double length = pickedRail.getLength();
+            for (Map.Entry<Double, Float> entry : entries) {
+                res1.put(entry.getKey() / length, entry.getValue());
+            }
+            compoundTag.putString("RollAngleMap", DoubleFloatMapSerializer.serializeToString(res1));
+        });
     }
 
     public void updateRadius(float newRadius, boolean send) {
@@ -568,474 +590,6 @@ public class BrushEditRailScreen {
         @Override
         public void save() {
             
-        }
-    }
-
-    @Environment(EnvType.CLIENT)
-    private class RollAnglesListEntry extends TooltipListEntry<String> implements ContainerEventHandler {
-        private final List<Node> nodes = new ArrayList<>();
-        private Node now = null;
-        private final Slider angleSlider = new Slider(50, 0, 200, 20, -180D, 0D, 180D, 
-            value -> Text.translatable("gui.mtrsteamloco.brush_edit_rail.roll_angle", value * 360D - 180D), 
-            value -> {
-                if (now != null) now.setAngle((float) Math.toRadians(value * 360D - 180D));
-            });
-        private final EditBox angleInput = new EditBox(Minecraft.getInstance().font, 50, 0, 200, 20, Text.literal(""));
-        
-        Button btnAddNode = UtilitiesClient.newButton(
-            Text.translatable("+"),
-            sender -> addNode(new Node(0, 0)));
-        Button btnRemoveNode = UtilitiesClient.newButton(
-            Text.translatable("-"),
-            sender -> removeNode(now));
-        Button btnClear = UtilitiesClient.newButton(
-            Text.translatable("gui.mtrsteamloco.brush_edit_rail.clear"),
-            sender -> removeAllNodes()
-        );
-        Button btnChangeMode = UtilitiesClient.newButton(
-            Text.translatable("⇄"),
-            sender -> {
-                ClientConfig.useEditBoxSetRailRolling = !ClientConfig.useEditBoxSetRailRolling;
-                ClientConfig.save();
-                focusNode(now);
-            }
-        );
-
-        private final List<AbstractWidget> widgets = Lists.newArrayList(btnAddNode, btnRemoveNode, btnClear);
-
-        private static final ResourceLocation WHITE = new ResourceLocation("minecraft", "textures/block/white_concrete_powder.png");
-        private static final ResourceLocation POS = new ResourceLocation(Main.MOD_ID, "textures/gui/rail/ante.png");
-        private static final int START = 50;
-        private static final int WIDTH = 200;
-
-        private final boolean flag;
-
-        public RollAnglesListEntry() {
-            super(Text.literal(""), null, false);
-            Map<Double, Float> rollAngles = supplier.getRollAngleMap();
-            Set<Map.Entry<Double, Float>> entries = new HashSet<>(rollAngles.entrySet());
-            for (Map.Entry<Double, Float> entry : entries) {
-                addNode(new Node(entry.getKey(), entry.getValue()));
-            }
-            Vector3f p1 = new Vector3f(pickedRail.getPosition(0));
-            Vector3f p2 = new Vector3f(pickedRail.getPosition(pickedRail.getLength()));
-            Vector3f start = new Vector3f(pickedPosStart);
-            float d1 = p1.distance(start);
-            float d2 = p2.distance(start);
-            flag = d1 < d2;
-            angleInput.setResponder(str -> {
-                try {
-                    float angle = Float.parseFloat(str);
-                    if (now != null) now.setAngle((float) Math.toRadians(angle));
-                    angleInput.setTextColor(0x00FF00);
-                } catch (Exception ignored) {
-                    angleInput.setTextColor(0xFF0000);
-                }
-            });
-        }
-
-        public boolean mode() {
-            return ClientConfig.useEditBoxSetRailRolling;
-        }
-
-        public void update() {
-            Map<Double, Float> res = new HashMap<>();
-            List<Node> copy = new ArrayList<>(nodes);
-            for (Node node : copy) {
-                res.put(node.getValue(), node.getAngle());
-            }
-            supplier.setRollAngleMap(res);
-            PacketUpdateRail.sendUpdateC2S(pickedRail, pickedPosStart, pickedPosEnd);
-
-            updateBrushTag(compoundTag -> {
-                Map<Double, Float> res1 = new HashMap<>();
-                Set<Map.Entry<Double, Float>> entries = new HashSet<>(res.entrySet());
-                double length = pickedRail.getLength();
-                for (Map.Entry<Double, Float> entry : entries) {
-                    res1.put(entry.getKey() / length, entry.getValue());
-                }
-                compoundTag.putString("RollAngleMap", DoubleFloatMapSerializer.serializeToString(res1));
-            });
-        }
-
-        public void focusNode(Node node) {
-            now = node;
-            if (now != null) {
-                if (mode()) {
-                    angleInput.setValue(Math.toDegrees(node.getAngle()) + "");
-                    angleInput.setTextColor(0xFFFFFF);
-                } else angleSlider.setValue(1 / 360D * ((Math.toDegrees((double) node.getAngle())) + 180D), true);
-
-                for (int i = 0; i < nodes.size(); i++) {
-                    if (nodes.get(i) == node) {
-                        nodes.remove(i);
-                        nodes.add(0, node);
-                        break;
-                    }
-                }
-            }
-        }
-        
-        public void addNode(Node node) {
-            nodes.add(node);
-            focusNode(node);
-            update();
-        }
-
-        public void removeNode(Node node) {
-            if (node == null) return;
-            for (int i = 0; i < nodes.size(); i++) {
-                if (nodes.get(i) == node) {
-                    nodes.remove(i);
-                    if (now == node) {
-                        focusNode(nodes.isEmpty() ? null : nodes.get(0));
-                    }
-                    break;
-                }
-            }
-            update();
-        }
-
-        public void removeAllNodes() {
-            nodes.clear();
-            focusNode(null);
-            update();
-        }
-
-        @Override
-        public boolean isEdited() {
-            return false;
-        }
-
-        @Override
-        public String getValue() {
-            return "";
-        }
-
-        @Override
-        public Optional<String> getDefaultValue() {
-            return Optional.empty();
-        }
-
-        @Override
-        public void save() {
-            
-        }
-
-        @Override
-        public int getItemHeight() {
-            return 24 * 3;
-        }
-
-        @Override
-        public List<? extends GuiEventListener> children() {
-            List<GuiEventListener> res = new ArrayList<>(widgets);
-            if (now != null) {
-                if (ClientConfig.useEditBoxSetRailRolling) res.add(angleInput);
-                else res.add(angleSlider);
-                res.add(btnChangeMode);
-            }
-            res.addAll(nodes);
-            return res;
-        }
-        
-        @Override
-        public List<? extends NarratableEntry> narratables() {
-            List<NarratableEntry> res = new ArrayList<>(widgets);
-            if (now != null) {
-                if (ClientConfig.useEditBoxSetRailRolling) res.add(angleInput);
-                else res.add(angleSlider);
-                res.add(btnChangeMode);
-            }
-            return widgets;
-        }
-
-        @Override
-#if MC_VERSION >= "12000"
-        public void render(GuiGraphics matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta) {
-#else
-        public void render(PoseStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta) {
-#endif
-            super.render(matrices, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
-            drawText(matrices, Minecraft.getInstance().font, Text.translatable("gui.mtrsteamloco.brush_edit_rail.roll_setting").getString(), x, y + 6, 0xA8A8A8);
-            y += 22;
-
-            boolean reversed = ((RailExtraSupplier) pickedRail).getRenderReversed();
-            if (!reversed == flag) {
-                blit(matrices, POS, 25, y + 2, 20, 20);
-                if (25 <= mouseX && mouseX <= 45 && y + 2 <= mouseY && mouseY <= y + 22) {
-                    addTooltip(Tooltip.of(new Point(mouseX, mouseY), wrapLinesToScreen(new Component[] {Text.translatable("gui.mtrsteamloco.brush_edit_rail.roll_setting.pos")})));
-                }
-            } else {
-                blit(matrices, POS, 255, y + 2, 20, 20);
-                if (255 <= mouseX && mouseX <= 275 && y + 2 <= mouseY && mouseY <= y + 22) {
-                    addTooltip(Tooltip.of(new Point(mouseX, mouseY), wrapLinesToScreen(new Component[] {Text.translatable("gui.mtrsteamloco.brush_edit_rail.roll_setting.pos")})));
-                }
-            }
-            blit(matrices, WHITE, 50, y + 8,  200, 8);
-            for (int i = nodes.size() - 1; i >= 0; i--) {
-                Node node = nodes.get(i);
-                node.render(matrices, x, y, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
-            }
-            y += 2;
-            // drawText(matrices, Minecraft.getInstance().font, nodes.size() + "", 30, y + 6, 0xFFFFFF);
-            IDrawing.setPositionAndWidth(btnAddNode, 280, y, 50);
-            IDrawing.setPositionAndWidth(btnRemoveNode, 335, y, 50);
-            IDrawing.setPositionAndWidth(btnClear, 390, y, 50);
-            btnAddNode.render(matrices, mouseX, mouseY, delta);
-            btnRemoveNode.render(matrices, mouseX, mouseY, delta);
-            btnClear.render(matrices, mouseX, mouseY, delta);
-            y += 24;
-
-            IDrawing.setPositionAndWidth(btnChangeMode, 280, y, 50);
-            UtilitiesClient.setWidgetY(angleSlider, y);
-            UtilitiesClient.setWidgetY(angleInput, y);
-            if (now != null) {
-                if (!ClientConfig.useEditBoxSetRailRolling) {
-                    angleSlider.render(matrices, mouseX, mouseY, delta);
-                    angleSlider.visible = true;
-                    angleInput.visible = false;
-                } else {
-                    angleInput.render(matrices, mouseX, mouseY, delta);
-                    angleInput.visible = true;
-                    angleSlider.visible = false;
-                } 
-                btnChangeMode.visible = true;
-                btnChangeMode.render(matrices, mouseX, mouseY, delta);
-            } else {
-                angleSlider.visible = false;
-                angleInput.visible = false;
-                btnChangeMode.visible = false;
-            }
-        }
-
-        protected FormattedCharSequence[] wrapLinesToScreen(Component[] lines) {
-            return wrapLines(lines, screen.width);
-        }
-    
-        protected FormattedCharSequence[] wrapLines(Component[] lines, int width) {
-            final Font font = Minecraft.getInstance().font;
-            
-            return Arrays.stream(lines)
-                    .map(line -> font.split(line, width))
-                    .flatMap(List::stream)
-                    .toArray(FormattedCharSequence[]::new);
-        }
-
-#if MC_VERSION >= "12000"
-        private static int drawText(GuiGraphics guiGraphics, Font font, String text, int x, int y, int color) {
-            FormattedText formattedText = FormattedText.of(text);
-            List<FormattedCharSequence> lines = font.split(formattedText, Minecraft.getInstance().getWindow().getGuiScaledWidth() - 40);
-            for (FormattedCharSequence line : lines) {
-                guiGraphics.drawString(font, line, x, y, color);
-                y += Mth.ceil(font.lineHeight * 1.1f);
-            }
-            return y;
-        }
-        private static void blit(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, int width, int height) {
-            guiGraphics.blit(texture, x, y, width, height, 0, 0, 1, 1, 1, 1);
-        }
-
-        // private static void blit(GuiGraphics guiGraphics, int x1, int y1, int x2, int y2, int argb) {
-
-        // }
-#else
-        private static int drawText(PoseStack matrices, Font font, String text, int x, int y, int color) {
-            FormattedText formattedText = FormattedText.of(text);
-            List<FormattedCharSequence> lines = font.split(formattedText, Minecraft.getInstance().getWindow().getGuiScaledWidth() - 40);
-            for (FormattedCharSequence line : lines) {
-                font.drawShadow(matrices, line, x, y, color);
-                y += Mth.ceil(font.lineHeight * 1.1f);
-            }
-            return y;
-        }
-        private static void blit(PoseStack matrices, ResourceLocation texture, int x, int y, int width, int height) {
-            RenderSystem.setShaderTexture(0, texture);
-            GuiComponent.blit(matrices, x, y, width, height, 0, 0, 1, 1, 1, 1);
-        }
-
-        // private static void blit(PoseStack matrices, int x1, int y1, int x2, int y2, int argb) {
-        //     GuiComponent.fill(matrices, x1, y1, x2, y2, argb);
-        // }
-#endif
-
-        private class Slider extends AbstractSliderButton {
-            Function<Double, Component> textGetter;
-            Consumer<Double> valueSetter;
-
-            protected Slider(int x, int y, int w, int h, double min, double value, double max, Function<Double, Component> textGetter, Consumer<Double> valueSetter) {
-                super(x, y, w, h, Text.translatable(""), value);
-                this.textGetter = textGetter;
-                this.valueSetter = valueSetter;
-            }
-            
-            @Override
-            public void updateMessage() {
-                setMessage(textGetter.apply(value));
-            }
-            
-            @Override
-            protected void applyValue() {
-                valueSetter.accept(value);
-            }
-            
-            @Override
-            public boolean keyPressed(int int_1, int int_2, int int_3) {
-                if (!isEditable())
-                    return false;
-                return super.keyPressed(int_1, int_2, int_3);
-            }
-            
-            @Override
-            public boolean mouseDragged(double double_1, double double_2, int int_1, double double_3, double double_4) {
-                if (!isEditable())
-                    return false;
-                return super.mouseDragged(double_1, double_2, int_1, double_3, double_4);
-            }
-
-            public void setValue(double value, boolean air) {
-                double d0 = this.value;
-                this.value = Mth.clamp(value, 0.0D, 1.0D);
-                if (d0 != this.value) {
-                    this.applyValue();
-                }
-
-                this.updateMessage();
-            }
-        }
-
-        private class Node implements GuiEventListener{
-            private double value;
-            private float angle;
-            private int y;
-            private boolean dragged = false;
-
-            // private static final ResourceLocation P = new ResourceLocation(Main.MOD_ID, "textures/gui/rail/p.png");
-            private static final ResourceLocation P = new ResourceLocation(Main.MOD_ID, "textures/gui/rail/pi.png");
-            private static final ResourceLocation Y = new ResourceLocation(Main.MOD_ID, "textures/gui/rail/y.png");
-            private static final float NW = 6;
-            private static final float NH = 10;
-            
-            public Node(double value, float angle) {
-                this.value = value / pickedRail.getLength();
-                this.angle = angle;
-            }
-
-#if MC_VERSION >= "12000"
-            public void render(GuiGraphics matrices, int x, int y, int width, int height, int mouseX, int mouseY, boolean isHovered, float delta) {
-#else 
-            public void render(PoseStack matrices, int x, int y, int width, int height, int mouseX, int mouseY, boolean isHovered, float delta) {
-#endif  
-                this.y = y + 8 + 4;
-                if (isActive()) {
-                    blit(matrices, Y, getX() - (int) (NW / 2), this.y - (int) (NH / 2), (int) NW, (int) NH);
-                } else {
-                    blit(matrices, P, getX() - (int) (NW / 2), this.y - (int) (NH / 2), (int) NW, (int) NH);
-                }
-            }
-
-            public int getX() {
-                return (int) (START + value * WIDTH);
-            }
-
-            public void setValue(int x) {
-                double old = value;
-                if (x <= START) x = START;
-                else if (x >= START + WIDTH) x = START + WIDTH;
-                else value = (x - START) / (double) WIDTH;
-                if (old == value) return;
-                update();
-            }
-
-            public void setValue(double value) {
-                double old = this.value;
-                if (value < 0) value = 0;
-                else if (value > 1) value = 1;
-                if (old == value) return;
-                this.value = value;
-                update();
-            }
-
-            public void setAngle(float angle) {
-                if (this.angle == angle) return;
-                this.angle = angle;
-                update();
-            }
-
-            public double getValue() {
-                return value * pickedRail.getLength();
-            }
-
-            public float getAngle() {
-                return angle;
-            }
-
-            public boolean isActive() {
-                return now == this;
-            }
-
-#if MC_VERSION >= "11904"
-            boolean isFocused = false;
-            
-            @Override
-            public boolean isFocused() {
-                return isFocused;
-            }
-
-            @Override
-            public void setFocused(boolean b) {
-                isFocused = b;
-            }
-#endif
-
-            @Override
-            public boolean isMouseOver(double mouseX, double mouseY) {
-                int midX = getX();
-                float minX = midX - NW / 2;
-                float maxX = midX + NW / 2;
-                float minY = y - NH / 2;
-                float maxY = y + NH / 2;
-                return mouseX >= minX && mouseX <= maxX && mouseY >= minY && mouseY <= maxY;
-            }
-
-            @Override
-            public boolean mouseClicked(double mouseX, double mouseY, int in) {
-                if (isMouseOver(mouseX, mouseY)) {
-                    focusNode(this);
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public boolean mouseDragged(double sx, double sy, int t, double dx, double dy) {
-                if ((isActive() && dragged) || isMouseOver(sx, sy)) {
-                    setValue((int) (sx + dx));
-                    dragged = true;
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public boolean mouseReleased(double x, double y, int t) {
-                if (isActive() && dragged) {
-                    dragged = false;
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public boolean keyPressed(int p_93596_, int p_93597_, int p_93598_) {
-                boolean flag = p_93596_ == 263;
-                if (flag || p_93596_ == 262) {
-                    double f = flag ? -0.025 : 0.025;
-                    setValue(value + f);
-                }
-
-                return false;
-            }
         }
     }
 }

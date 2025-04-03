@@ -44,10 +44,10 @@ public class ScriptHolder {
     private static ExecutorService SCRIPT_THREAD = Executors.newSingleThreadExecutor();
 
     private Scriptable scope;
-    private final List<Function> createFunctions = new ArrayList<>();
-    private final List<Function> renderFunctions = new ArrayList<>();
-    private final List<Function> disposeFunctions = new ArrayList<>();
-    private final List<Function> useFunctions = new ArrayList<>();
+    public final List<Function> createFunctions = new ArrayList<>();
+    public final List<Function> renderFunctions = new ArrayList<>();
+    public final List<Function> disposeFunctions = new ArrayList<>();
+    public final List<Function> useFunctions = new ArrayList<>();
 
     public long failTime = 0;
     public Exception failException = null;
