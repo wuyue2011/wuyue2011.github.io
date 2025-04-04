@@ -127,6 +127,10 @@ jobs:
         with:
           path: artifacts
           merge-multiple: true
+      - name: Show structure of downloaded files
+        run: ls -R artifacts
+      - name: Show require file name
+        run: echo "artifacts/MTR-ANTE-${{ env.MOD_VERSION }}+${{ matrix.minecraft }}.jar"
       - name: Modrinth Publish
         uses: Kir-Antipov/mc-publish@v3.3
         with:
