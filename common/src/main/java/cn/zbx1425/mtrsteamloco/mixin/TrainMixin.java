@@ -5,7 +5,6 @@ import mtr.block.BlockPSDAPGBase;
 import mtr.block.BlockPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.network.FriendlyByteBuf;
@@ -250,7 +249,6 @@ public abstract class TrainMixin implements TrainExtraSupplier{
 	private void onSimulateTrain(Level world, float ticksElapsed, Depot depot, CallbackInfo ci) {
 		if (world == null) return;
 		if (path.isEmpty()) return;
-		if (Minecraft.getInstance().player == null) return;
 
 		if ((Object) this instanceof TrainClient) {
 			TrainClient train = (TrainClient) (Object) this;
