@@ -132,8 +132,8 @@ jobs:
           merge-multiple: true
       - name: Modrinth Publish
         uses: Kir-Antipov/mc-publish@v3.3
-        modrinth-id: ybOYitTg
         with:
+          modrinth-id: ybOYitTg
           modrinth-featured: true
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           files: artifacts/*.jar
