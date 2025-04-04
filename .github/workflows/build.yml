@@ -122,6 +122,7 @@ jobs:
         run: |
           MOD_VERSION=$(grep "mod_version=" gradle.properties | cut -d'=' -f2)
           echo "MOD_VERSION=$MOD_VERSION"
+          echo "MOD_VERSION=$MOD_VERSION" >> $GITHUB_ENV
       - name: Download release artifacts
         uses: actions/download-artifact@v4
         with:
