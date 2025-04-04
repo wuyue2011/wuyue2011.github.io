@@ -122,13 +122,9 @@ jobs:
         run: |
           MOD_VERSION=$(grep "mod_version=" gradle.properties | cut -d'=' -f2)
           echo "MOD_VERSION=$MOD_VERSION"
-      - name: Get commit SHA
-        id: vars
-        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
       - name: Download release artifacts
         uses: actions/download-artifact@v4
         with:
-          name: MTR-ANTE-${{ env.vars.outputs.sha_short }}+${{ matrix.minecraft }}
           path: artifacts
           merge-multiple: true
       - name: Modrinth Publish
@@ -137,7 +133,7 @@ jobs:
           modrinth-id: ybOYitTg
           modrinth-featured: true
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-          files: artifacts/*.jar
+          files: artifacts/MTR-ANTE-${{ env.MOD_VERSION }}+${{ matrix.minecraft }}.jar
           name: MTR-ANTE-${{ env.MOD_VERSION }}+${{ matrix.minecraft }}
           version: ${{ env.MOD_VERSION }}+${{ matrix.minecraft }}
           version-type: beta
