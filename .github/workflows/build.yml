@@ -149,3 +149,5 @@ jobs:
           retry-attempts: 2
           retry-delay: 10000
           fail-mode: fail
+          dependencies: |
+            MTR-3.2.2(required){modrinth:XKPAmI6u}

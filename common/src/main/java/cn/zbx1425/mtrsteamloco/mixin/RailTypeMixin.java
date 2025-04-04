@@ -1,7 +1,7 @@
 package cn.zbx1425.mtrsteamloco.mixin;
 
 #if MC_VERSION >= "12000"
-import net.minecraft.world.level.material.MapColor;
+import mtr.MaterialColor;
 #else
 import net.minecraft.world.level.material.MaterialColor;
 #endif
@@ -29,25 +29,6 @@ public abstract class RailTypeMixin {
     private static RailType[] $VALUES;
     private static final Map<String, RailType> MAP = new HashMap<>();
 
-#if MC_VERSION >= "12000"
-    @Invoker(value = "<init>")
-    private static RailType create(String name, int ordinal, int speedLimit, MapColor mapColor, boolean hasSavedRail, boolean canAccelerate, boolean hasSignal, RailType.RailSlopeStyle railSlopeStyle) {
-        throw new IllegalStateException();
-    }
-
-    static {
-        List<RailType> railTypes = new ArrayList<>();
-        railTypes.addAll(Arrays.asList($VALUES));
-        for (int i = -1; i <= 600; i++) railTypes.add(create("P" + i, railTypes.size(), i, MapColor.COLOR_GREEN, false, true, true, RailType.RailSlopeStyle.CURVE));
-
-        for (int i = 1000; i <= 10000; i+= 500) railTypes.add(create("P" + i, railTypes.size(), i, MapColor.COLOR_GREEN, false, true, true, RailType.RailSlopeStyle.CURVE));
-
-        $VALUES = railTypes.toArray(new RailType[0]);
-        for (RailType railType : $VALUES) {
-            MAP.put(railType.name(), railType);
-        }
-    }
-#else
     @Invoker(value = "<init>")
     private static RailType create(String name, int ordinal, int speedLimit, MaterialColor materialColor, boolean hasSavedRail, boolean canAccelerate, boolean hasSignal, RailType.RailSlopeStyle railSlopeStyle) {
         throw new IllegalStateException();
@@ -67,7 +48,6 @@ public abstract class RailTypeMixin {
             MAP.put(railType.name(), railType);
         }
     }
-#endif
 
     @Mutable
     @Inject(method = "valueOf", at = @At("HEAD"), cancellable = true, remap = false)
