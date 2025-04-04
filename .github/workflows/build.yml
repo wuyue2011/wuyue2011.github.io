@@ -3,8 +3,8 @@
 # certain platforms or Java versions, and provides a first line of defence
 # against bad commits.
 
-name: Build
-on: [ pull_request, push ]
+name: Build & Release
+on: [ pull_request, push , workflow_dispatch ]
 
 jobs:
   build:
@@ -21,10 +21,12 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 17
-      - name: Make gradle wrapper executable
-        run: chmod +x ./gradlew
+      # - name: Make gradle wrapper executable
+      #   run: chmod +x ./gradlew
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+        with:
+          version: 8.11
       - name: Setup ${{ matrix.minecraft }}
         run: ./gradlew setupLibrary -PbuildVersion="${{ matrix.minecraft }}"
       - name: Build ${{ matrix.minecraft }}
@@ -60,7 +62,7 @@ jobs:
           name: MTR-ANTE-${{ steps.vars.outputs.sha_short }}
           path: artifacts/*.jar
           compression-level: 9
-  release:
+  github-release:
     if: startsWith(github.event.head_commit.message, 'rel')
     runs-on: ubuntu-latest
     needs: build
@@ -102,3 +104,46 @@ jobs:
           draft: false
           prerelease: false
           tag_name: ${{ env.TAG }}
+  modrinth-publish:
+    if: startsWith(github.event.head_commit.message, 'rel')
+    strategy:
+      fail-fast: false
+      matrix:
+        minecraft: [ 1.17.1, 1.18.2, 1.19.2, 1.19.3, 1.19.4, 1.20.1 ]
+    runs-on: ubuntu-latest
+    environment: modrinth
+    needs: build
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Get latest tag
+        id: get_tag
+        run: |
+          TAG=$(git describe --tags --abbrev=0)
+          echo "Latest tag: $TAG"
+          echo "TAG=$TAG" >> $GITHUB_ENV
+      - name: Download release artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: MTR-ANTE-${{ env.TAG }}+${{ matrix.minecraft }}
+          path: artifacts
+          merge-multiple: true
+      - name: Modrinth Publish
+        uses: Kir-Antipov/mc-publish@v3.3
+        modrinth-id: ybOYitTg
+        with:
+          modrinth-featured: true
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          files: artifacts/*.jar
+          name: MTR-ANTE-${{ env.TAG }}+${{ matrix.minecraft }}
+          version: ${{ env.TAG }}+${{ matrix.minecraft }}
+          version-type: beta
+          loaders: |
+            fabric
+            forge
+          game-versions: ${{ matrix.minecraft }}
+          retry-attempts: 2
+          retry-delay: 10000
+          fail-mode: fail
