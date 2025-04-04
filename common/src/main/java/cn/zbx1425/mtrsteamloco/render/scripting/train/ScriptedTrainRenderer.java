@@ -106,7 +106,7 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
         }
         */
 
-
+        if (posAverage == null) return;
 
 
         final int light = LightTexture.pack(world.getBrightness(LightLayer.BLOCK, posAverage), world.getBrightness(LightLayer.SKY, posAverage));
