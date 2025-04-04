@@ -25,7 +25,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(RailType.class)
 public abstract class RailTypeMixin {
-    @Shadow(remap = false) @Final private static RailType[] $VALUES;
+    @Shadow(remap = false) @Final @Mutable
+    private static RailType[] $VALUES;
     private static final Map<String, RailType> MAP = new HashMap<>();
 
 #if MC_VERSION >= "12000"
@@ -59,7 +60,9 @@ public abstract class RailTypeMixin {
 
         for (int i = 1000; i <= 10000; i+= 500) railTypes.add(create("P" + i, railTypes.size(), i, MaterialColor.COLOR_GREEN, false, true, true, RailType.RailSlopeStyle.CURVE));
 
-        $VALUES = railTypes.toArray(new RailType[0]);
+        RailType[] values = railTypes.toArray(new RailType[0]);
+        $VALUES = values;
+
         for (RailType railType : $VALUES) {
             MAP.put(railType.name(), railType);
         }
