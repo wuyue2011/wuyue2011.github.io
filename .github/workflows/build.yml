@@ -120,7 +120,7 @@ jobs:
           fetch-depth: 0
       - name: Get Mod Version
         run: |
-          MOD_VERSION=$(grep "mod_version=" f:\mtr-ante\gradle.properties | cut -d'=' -f2)
+          MOD_VERSION=$(grep "mod_version=" gradle.properties | cut -d'=' -f2)
           echo "MOD_VERSION=$MOD_VERSION"
       - name: Get commit SHA
         id: vars
