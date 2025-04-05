@@ -76,12 +76,11 @@ jobs:
         with:
           path: artifacts
           merge-multiple: true
-      - name: Get latest tag
-        id: get_tag
+      - name: Get Mod Version
         run: |
-          TAG=$(git describe --tags --abbrev=0)
-          echo "Latest tag: $TAG"
-          echo "TAG=$TAG" >> $GITHUB_ENV
+          MOD_VERSION=$(grep "mod_version=" gradle.properties | cut -d'=' -f2)
+          echo "MOD_VERSION=$MOD_VERSION"
+          echo "MOD_VERSION=$MOD_VERSION" >> $GITHUB_ENV
       - name: Set current date
         run: echo "CUR_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
       - name: Get commit SHA
@@ -103,7 +102,7 @@ jobs:
             - [ANTE发行版](https://github.com/aphrodite281/mtr-ante/releases)
           draft: false
           prerelease: false
-          tag_name: ${{ env.TAG }}
+          tag_name: ${{ env.MOD_VERSION }}
   modrinth-publish:
     if: startsWith(github.event.head_commit.message, 'rel')
     strategy:
