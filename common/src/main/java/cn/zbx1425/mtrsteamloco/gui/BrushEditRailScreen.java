@@ -94,6 +94,14 @@ public class BrushEditRailScreen {
     private Screen parent;
 
     private BrushEditRailScreen(Rail pickedRail, BlockPos pickedPosStart, BlockPos pickedPosEnd, Screen parent) {
+        if (pickedRail.railType == RailType.NONE) {
+            pickedRail = null;
+            Map<BlockPos, Rail> mp0 = ClientData.RAILS.get(pickedPosEnd);
+            if (mp0 != null) pickedRail = mp0.get(pickedPosStart);
+            BlockPos temp = pickedPosStart;
+            pickedPosStart = pickedPosEnd;
+            pickedPosEnd = temp;
+        }
         this.pickedRail = pickedRail;
         this.supplier = (RailExtraSupplier) pickedRail;
         this.pickedPosStart = pickedPosStart;
@@ -103,12 +111,7 @@ public class BrushEditRailScreen {
     }
 
     private BrushEditRailScreen(Screen parent) {
-        pickedRail = RailPicker.pickedRail;
-        supplier = (RailExtraSupplier) pickedRail;
-        pickedPosStart = RailPicker.pickedPosStart;
-        pickedPosEnd = RailPicker.pickedPosEnd;
-        this.parent = parent;
-        init();
+        this(RailPicker.pickedRail, RailPicker.pickedPosStart, RailPicker.pickedPosEnd, parent);
     }
 
     private void init() {
@@ -367,6 +370,7 @@ public class BrushEditRailScreen {
             BlockPos temp = posStart;
             posStart = posEnd;
             posEnd = temp;
+            Main.LOGGER.info("Switched start and end positions");
         }
         RailExtraSupplier pickedExtra = (RailExtraSupplier) pickedRail;
         boolean propertyUpdated = false;
@@ -395,6 +399,8 @@ public class BrushEditRailScreen {
         }
         if (railBrushProp.contains("RailType")) {
             pickedExtra.setRailType(RailType.valueOf(railBrushProp.getString("RailType")));
+            Main.LOGGER.info("RailType updated to " + railBrushProp.getString("RailType"));
+            propertyUpdated = true;
         }
         if (isBatchApply && !propertyUpdated) {
             // Right-click again to reverse the direction

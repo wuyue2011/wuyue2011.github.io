@@ -47,6 +47,7 @@ public class PacketUpdateRail {
         BlockPos posStart = packet.readBlockPos();
         BlockPos posEnd = packet.readBlockPos();
         Rail target = new Rail(packet);
+        Main.LOGGER.info("Received update rail type:" + target.railType);
         RailExtraSupplier extraTarget = (RailExtraSupplier)(target);
         server.execute(() -> {
             ServerLevel level = server.getLevel(levelKey);
@@ -64,6 +65,7 @@ public class PacketUpdateRail {
             extraBackward.partialCopyFrom(target);
             extraForward.setRenderReversed(extraTarget.getRenderReversed());
             extraBackward.setRenderReversed(!extraTarget.getRenderReversed());
+            extraForward.setRailType(target.railType);
             if (railBackward.railType != RailType.NONE) extraBackward.setRailType(target.railType);
 
             final FriendlyByteBuf outboundPacket = new FriendlyByteBuf(Unpooled.buffer());
