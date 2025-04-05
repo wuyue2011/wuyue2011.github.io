@@ -14,6 +14,8 @@ import cn.zbx1425.mtrsteamloco.network.util.DoubleFloatMapSerializer;
 import mtr.data.RailType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
+import cn.zbx1425.mtrsteamloco.block.BlockDirectNode.BlockEntityDirectNode;
+
 import org.msgpack.core.MessagePacker;
 import org.msgpack.value.Value;
 import org.spongepowered.asm.mixin.Final;
@@ -161,6 +163,55 @@ public abstract class RailMixin implements RailExtraSupplier {
         setOpeningDirection(oth.getOpeningDirection());
     }
 
+    /*
+    @Shadow @Final @Mutable private double h1, k1, r1, tStart1, tEnd1;
+    @Shadow @Final @Mutable private double h2, k2, r2, tStart2, tEnd2;
+
+    @Override
+    public boolean straighten(Level level) {
+        if (level == null) return false;
+        if (level.isClientSide) return false;
+        Rail rail = (Rail) (Object) this;
+        BlockPos posStart = rail.getPosition(0);
+        BlockPos posEnd = rail.getPosition(rail.getLength());
+
+        BlockEntity beStart = level.getBlockEntity(posStart);
+        BlockEntity beEnd = level.getBlockEntity(posEnd);
+        if (beStart == null || beEnd != null) return false;
+        if (!beStart instanceof BlockEntityDirectNode || !beEnd instanceof BlockEntityDirectNode) return false;
+
+        BlockEntityDirectNode nodeStart = (BlockEntityDirectNode) beStart;
+        BlockEntityDirectNode nodeEnd = (BlockEntityDirectNode) beEnd;
+
+        if (nodeStart.isUsed() || nodeEnd.isUsed()) return false;
+        
+        double dx = posEnd.getX() - posStart.getX();
+        double dz = posEnd.getZ() - posStart.getZ();
+        double hypotenuse = Math.sqrt(dx * dx + dz * dz);
+        double sin = dz / hypotenuse;
+        double cos = dx / hypotenuse;
+        h1 = cos, k1 = sin;
+        if (Math.abs(h1) >= 0.5 && Math.abs(k1) >= 0.5) {
+			r1 = (h1 * zStart - k1 * xStart) / h1 / h1;
+			tStart1 = xStart / h1;
+			tEnd1 = xEnd / h1;
+		} else {
+			final double div = facingStart.add(facingStart).cos;
+			r1 = (h1 * zStart - k1 * xStart) / div;
+			tStart1 = (h1 * xStart - k1 * zStart) / div;
+			tEnd1 = (h1 * xEnd - k1 * zEnd) / div;
+		}
+        h2 = k2 = r2 = 0;
+        tStart2 = tEnd2 = 0;
+
+        double radian = Math.atan2(dz, dx);
+        float deg = (float) Math.toDegrees(radian);
+        if (deg < 0) deg += 360;
+
+        nodeStart.setAngle(deg);
+        nodeEnd.setAngle(deg);
+    }
+    */
 
     @Inject(method = "<init>(Ljava/util/Map;)V", at = @At("TAIL"), remap = false)
     private void fromMessagePack(Map<String, Value> map, CallbackInfo ci) {
@@ -329,5 +380,4 @@ public abstract class RailMixin implements RailExtraSupplier {
         hashBuilder.getBytes(0, dataBytes);
         hashCode = Arrays.hashCode(dataBytes);
     }
-
 }
