@@ -161,7 +161,7 @@ public class CompoundCreator extends ItemNodeModifierBase {
 			}
 
             RailType p1, p2;
-            if (isReversed) {
+            if (!isReversed) {
                 p2 = newRailType;
                 p1 = isOneWay ? RailType.NONE : newRailType;
             } else {

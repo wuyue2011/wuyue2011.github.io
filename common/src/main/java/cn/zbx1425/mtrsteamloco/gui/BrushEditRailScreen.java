@@ -6,10 +6,15 @@ import cn.zbx1425.mtrsteamloco.gui.entries.ButtonListEntry;
 import cn.zbx1425.mtrsteamloco.network.PacketUpdateHoldingItem;
 import cn.zbx1425.mtrsteamloco.network.PacketUpdateRail;
 import cn.zbx1425.mtrsteamloco.render.RailPicker;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import mtr.client.ClientData;
 import com.mojang.blaze3d.systems.RenderSystem;
+import io.netty.buffer.ByteBufUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.util.FormattedCharSequence;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.network.chat.FormattedText;
@@ -349,17 +354,27 @@ public class BrushEditRailScreen {
         return new BrushEditRailScreen(rail, posStart, posEnd, parent).getScreen();
     }
 
-    public static void applyBrushToPickedRail(CompoundTag railBrushProp, boolean isBatchApply) {
-        Rail pickedRail = RailPicker.pickedRail;
-        BlockPos pickedPosStart = RailPicker.pickedPosStart;
-        BlockPos pickedPosEnd = RailPicker.pickedPosEnd;
-        if (railBrushProp == null) return;
-        if (pickedRail == null) return;
+    public static void applyBrushToPickedRail(BlockPos posStart, BlockPos posEnd, Rail pickedRail, CompoundTag railBrushProp, boolean isBatchApply) {
+        if (railBrushProp == null ||  posStart == null || posEnd == null || pickedRail == null) return;
+        Rail anti = null;
+        if (pickedRail.railType == RailType.NONE) {
+            Map<BlockPos, Rail> r1 = ClientData.RAILS.get(posEnd);
+            if (r1 == null) return;
+            anti = pickedRail;
+            pickedRail = r1.get(posStart);
+            if (pickedRail == null) return;
+            if (pickedRail.railType == RailType.NONE) return;
+            BlockPos temp = posStart;
+            posStart = posEnd;
+            posEnd = temp;
+        }
         RailExtraSupplier pickedExtra = (RailExtraSupplier) pickedRail;
         boolean propertyUpdated = false;
         if (railBrushProp.contains("ModelKey") &&
                 !railBrushProp.getString("ModelKey").equals(pickedExtra.getModelKey())) {
-            pickedExtra.setModelKey(railBrushProp.getString("ModelKey"));
+            String modelKey = railBrushProp.getString("ModelKey");
+            pickedExtra.setModelKey(modelKey);
+            if (anti != null) ((RailExtraSupplier) anti).setModelKey(modelKey);
             propertyUpdated = true;
         }
         if (railBrushProp.contains("VerticalCurveRadius") &&
@@ -385,7 +400,16 @@ public class BrushEditRailScreen {
             // Right-click again to reverse the direction
             pickedExtra.setRenderReversed(!pickedExtra.getRenderReversed());
         }
-        PacketUpdateRail.sendUpdateC2S(pickedRail, pickedPosStart, pickedPosEnd);
+        PacketUpdateRail.sendUpdateC2S(pickedRail, posStart, posEnd);
+    }
+
+    public static void applyBrushToPickedRail(CompoundTag railBrushProp, boolean isBatchApply) {
+        Rail pickedRail = RailPicker.pickedRail;
+        BlockPos pickedPosStart = RailPicker.pickedPosStart;
+        BlockPos pickedPosEnd = RailPicker.pickedPosEnd;
+        if (railBrushProp == null) return;
+        if (pickedRail == null) return;
+        applyBrushToPickedRail(pickedPosStart, pickedPosEnd, pickedRail, railBrushProp, isBatchApply);
     }
 
     public static CompoundTag getBrushTag() {
@@ -445,9 +469,10 @@ public class BrushEditRailScreen {
 
         @Override
         protected void onBtnClick(String btnKey) {
-            BrushEditRailScreen.updateBrushTag(compoundTag -> compoundTag.putString("ModelKey", btnKey));
-            ((RailExtraSupplier) pickedRail).setModelKey(btnKey);
-            PacketUpdateRail.sendUpdateC2S(pickedRail, pickedPosStart, pickedPosEnd);
+            BrushEditRailScreen.updateBrushTag(compoundTag -> {
+                compoundTag.putString("ModelKey", btnKey);
+                applyBrushToPickedRail(pickedPosStart, pickedPosEnd, pickedRail, compoundTag, false);
+            });            
         }
 
         @Override
