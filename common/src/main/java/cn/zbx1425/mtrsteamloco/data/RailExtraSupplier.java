@@ -49,6 +49,8 @@ public interface RailExtraSupplier {
 
     void partialCopyFrom(Rail rail);
 
+    void straighten();
+
     static float getVTheta(Rail rail, double verticalCurveRadius) {
         double H = Math.abs(((RailExtraSupplier) rail).getHeight());
         double L = rail.getLength();
