@@ -1,13 +1,23 @@
 package cn.zbx1425.mtrsteamloco.block;
 
+import cn.zbx1425.mtrsteamloco.Main;
 import mtr.block.BlockNode;
+import net.minecraft.world.level.Level;
+import mtr.mappings.EntityBlockMapper;
 import mtr.mappings.BlockEntityClientSerializableMapper;
+import net.minecraft.nbt.CompoundTag;
 import mtr.mappings.BlockEntityMapper;
-import cn.zbx1425.mtrsteamloco.mixin.RailAngleMixin;
+import net.minecraft.world.level.block.state.BlockState;
+import mtr.data.RailAngle;
+import net.minecraft.core.BlockPos;
+import cn.zbx1425.mtrsteamloco.data.RailAngleExtra;
+import mtr.data.TransportMode;
+import net.minecraft.server.level.ServerLevel;
 
-public class BlockDirectNode extends BlockNode.BlockContinuousMovementNode {
-    public BlockDirectNode(boolean upper, boolean isStation) {
-        super(upper, isStation);
+public class BlockDirectNode extends BlockNode implements EntityBlockMapper {
+
+    public BlockDirectNode() {
+        super(TransportMode.TRAIN);
     }
 
     @Override
@@ -23,22 +33,27 @@ public class BlockDirectNode extends BlockNode.BlockContinuousMovementNode {
         public static final String KEY_LOCKED = "locked";
 
         public BlockEntityDirectNode(BlockPos pos, BlockState state) {
-            super(pos, state);
+            super(Main.BLOCK_ENTITY_TYPE_DIRECT_NODE.get(), pos, state);
         }
 
         public void bind(BlockEntityDirectNode other) {
-            if (railAngle == null) return;
+            if (railAngle != null) return;
             BlockPos thi = getBlockPos();
             BlockPos oth = other.getBlockPos();
             angle = (float) Math.toDegrees(Math.atan2(oth.getZ() - thi.getZ(), oth.getX() - thi.getX()));
-            angle = (angle + 360F) % 360F;
-            railAngle = RailAngleMixin.fromDegrees(angle);
+            railAngle = RailAngleExtra.fromDegrees(angle);
+            this.setChanged();
+            Level level = getLevel();
+            if (level != null) if (level instanceof ServerLevel sl) sl.getChunkSource().blockChanged(getBlockPos());
             other.bind(this);
         }
 
         public void unbind() {
             railAngle = null;
             angle = -114514F;
+            this.setChanged();
+            Level level = getLevel();
+            if (level != null) if (level instanceof ServerLevel sl) sl.getChunkSource().blockChanged(getBlockPos());
         }
 
         public RailAngle getRailAngle() {
@@ -51,19 +66,21 @@ public class BlockDirectNode extends BlockNode.BlockContinuousMovementNode {
         
         @Override
         public void readCompoundTag(CompoundTag compoundTag) {
-            angle = compoundTag.getFloat(KEY_ANGLE);
-            boolean locked = compoundTag.getBoolean(KEY_LOCKED);
+            angle = compoundTag.contains(KEY_ANGLE) ? compoundTag.getFloat(KEY_ANGLE) : -114514F;
+            boolean locked = compoundTag.contains(KEY_LOCKED) ? compoundTag.getBoolean(KEY_LOCKED) : false;
             if (locked) {
-                railAngle = RailAngleMixin.fromDegrees(angle);
+                railAngle = RailAngleExtra.fromDegrees(angle);
             } else {
                 railAngle = null;
             }
+            Main.LOGGER.info("read ----- angle: " + angle + ", locked: " + isLocked() + ", railAngle: " + railAngle);
         }
 
         @Override
         public void writeCompoundTag(CompoundTag compoundTag) {
             compoundTag.putFloat(KEY_ANGLE, angle);
             compoundTag.putBoolean(KEY_LOCKED, isLocked());
+            Main.LOGGER.info("write ----- angle: " + angle + ", locked: " + isLocked() + ", railAngle: " + railAngle);
         }
     }
 }

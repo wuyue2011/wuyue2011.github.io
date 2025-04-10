@@ -1,7 +1,6 @@
 package cn.zbx1425.mtrsteamloco;
 
-import cn.zbx1425.mtrsteamloco.block.BlockDepartureBell;
-import cn.zbx1425.mtrsteamloco.block.BlockEyeCandy;
+import cn.zbx1425.mtrsteamloco.block.*;
 import cn.zbx1425.mtrsteamloco.network.*;
 import com.google.gson.JsonParser;
 import mtr.CreativeModeTabs;
@@ -56,6 +55,14 @@ public class Main {
 					BlockEyeCandy.BlockEntityEyeCandy::new,
 					BLOCK_EYE_CANDY.get()
 			));
+	
+	public static final RegistryObject<Block> BLOCK_DIRECT_NODE = new RegistryObject<>(BlockDirectNode::new);
+	public static final RegistryObject<BlockEntityType<BlockDirectNode.BlockEntityDirectNode>>
+			BLOCK_ENTITY_TYPE_DIRECT_NODE = new RegistryObject<>(() ->
+			RegistryUtilities.getBlockEntityType(
+					BlockDirectNode.BlockEntityDirectNode::new,
+					BLOCK_DIRECT_NODE.get()
+			));
 
 	public static final RegistryObject<ItemWithCreativeTabBase> BRIDGE_CREATOR_1 = new RegistryObject<>(() -> new ItemBridgeCreator(1));
 	public static final RegistryObject<ItemWithCreativeTabBase> COMPOUND_CREATOR = new RegistryObject<>(() -> new CompoundCreator());
@@ -71,6 +78,8 @@ public class Main {
 			registries.registerBlockAndItem("departure_bell", BLOCK_DEPARTURE_BELL, CreativeModeTabs.RAILWAY_FACILITIES);
 			registries.registerBlockAndItem("eye_candy", BLOCK_EYE_CANDY, CreativeModeTabs.STATION_BUILDING_BLOCKS);
 			registries.registerBlockEntityType("eye_candy", BLOCK_ENTITY_TYPE_EYE_CANDY);
+			registries.registerBlockAndItem("direct_node", BLOCK_DIRECT_NODE, CreativeModeTabs.STATION_BUILDING_BLOCKS);
+			registries.registerBlockEntityType("direct_node", BLOCK_ENTITY_TYPE_DIRECT_NODE);
 			registries.registerItem("bridge_creator_1", BRIDGE_CREATOR_1);
 			registries.registerItem("compound_creator", COMPOUND_CREATOR);
 			registries.registerSoundEvent("bell", SOUND_EVENT_BELL);

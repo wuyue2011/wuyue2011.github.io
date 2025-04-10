@@ -42,7 +42,9 @@
     "SidingMixin",
     "RailwayDataRailActionsModuleMixin",
     "RailTypeMixin",
-    "SidingScreenMixin"
+    "SidingScreenMixin",
+    "RailAngleMixin",
+    "ItemNodeModifierBaseMixin"
   ],
   "server": [
     

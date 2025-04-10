@@ -4,6 +4,7 @@ import cn.zbx1425.mtrsteamloco.ClientConfig;
 import cn.zbx1425.mtrsteamloco.Main;
 import cn.zbx1425.mtrsteamloco.data.RailExtraSupplier;
 import cn.zbx1425.mtrsteamloco.data.RailModelRegistry;
+import net.minecraft.core.BlockPos;
 import cn.zbx1425.mtrsteamloco.render.rail.RailRenderDispatcher;
 import io.netty.buffer.Unpooled;
 import mtr.data.MessagePackHelper;
@@ -11,10 +12,14 @@ import mtr.data.Rail;
 import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
 import cn.zbx1425.mtrsteamloco.network.util.StringMapSerializer;
 import cn.zbx1425.mtrsteamloco.network.util.DoubleFloatMapSerializer;
+import net.minecraft.world.phys.Vec3;
 import mtr.data.RailType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
+import mtr.data.RailAngle;
+import mtr.data.TransportMode;
 import cn.zbx1425.mtrsteamloco.block.BlockDirectNode.BlockEntityDirectNode;
+import cn.zbx1425.mtrsteamloco.data.RailAngleExtra;
 
 import org.msgpack.core.MessagePacker;
 import org.msgpack.value.Value;
@@ -35,6 +40,31 @@ import java.util.HashMap;
 
 @Mixin(value = Rail.class, priority = 1425)
 public abstract class RailMixin implements RailExtraSupplier {
+
+    private static final double ACCEPT_THRESHOLD = 1E-4;
+    @Shadow(remap = false) @Final @Mutable private RailType railType;
+	@Shadow(remap = false) @Final @Mutable private TransportMode transportMode;
+	@Shadow(remap = false) @Final @Mutable private RailAngle facingStart;
+	@Shadow(remap = false) @Final @Mutable private RailAngle facingEnd;
+	@Shadow(remap = false) @Final @Mutable private double h1, k1, r1, tStart1, tEnd1;
+	@Shadow(remap = false) @Final @Mutable private double h2, k2, r2, tStart2, tEnd2;
+	@Shadow(remap = false) @Final @Mutable private int yStart, yEnd;
+	@Shadow(remap = false) @Final @Mutable private boolean reverseT1, isStraight1, reverseT2, isStraight2;
+    
+	private static double getTBounds(double x, double h, double z, double k, double r) {
+		return Mth.atan2(z - k, x - h) * r;
+	}
+
+	private static double getTBounds(double x, double h, double z, double k, double r, double tStart, boolean reverse) {
+		final double t = getTBounds(x, h, z, k, r);
+		if (t < tStart && !reverse) {
+			return t + 2 * Math.PI * r;
+		} else if (t > tStart && reverse) {
+			return t - 2 * Math.PI * r;
+		} else {
+			return t;
+		}
+	}
 
     private String modelKey = "";
     private boolean isSecondaryDir = false;
@@ -137,8 +167,6 @@ public abstract class RailMixin implements RailExtraSupplier {
         return openingDirection;
     }
 
-    @Shadow(remap = false) @Final @Mutable private RailType railType;
-
     @Override
     public void setRailType(RailType railType) {
         this.railType = railType;
@@ -163,55 +191,221 @@ public abstract class RailMixin implements RailExtraSupplier {
         setOpeningDirection(oth.getOpeningDirection());
     }
 
-    /*
-    @Shadow @Final @Mutable private double h1, k1, r1, tStart1, tEnd1;
-    @Shadow @Final @Mutable private double h2, k2, r2, tStart2, tEnd2;
+    @Inject(method = "<init>(Lnet/minecraft/core/BlockPos;Lmtr/data/RailAngle;Lnet/minecraft/core/BlockPos;Lmtr/data/RailAngle;Lmtr/data/RailType;Lmtr/data/TransportMode;)V", at = @At("HEAD"), cancellable = true)
+    private void onCreate(BlockPos posStart, RailAngle facingStart, BlockPos posEnd, RailAngle facingEnd, RailType railType, TransportMode transportMode, CallbackInfo ci) {
+        String info = "";
 
-    @Override
-    public boolean straighten(Level level) {
-        if (level == null) return false;
-        if (level.isClientSide) return false;
-        Rail rail = (Rail) (Object) this;
-        BlockPos posStart = rail.getPosition(0);
-        BlockPos posEnd = rail.getPosition(rail.getLength());
+        this.facingStart = facingStart;
+		this.facingEnd = facingEnd;
+		this.railType = railType;
+		this.transportMode = transportMode;
+		yStart = posStart.getY();
+		yEnd = posEnd.getY();
 
-        BlockEntity beStart = level.getBlockEntity(posStart);
-        BlockEntity beEnd = level.getBlockEntity(posEnd);
-        if (beStart == null || beEnd != null) return false;
-        if (!beStart instanceof BlockEntityDirectNode || !beEnd instanceof BlockEntityDirectNode) return false;
+		final int xStart = posStart.getX();
+		final int zStart = posStart.getZ();
+		final int xEnd = posEnd.getX();
+		final int zEnd = posEnd.getZ();
 
-        BlockEntityDirectNode nodeStart = (BlockEntityDirectNode) beStart;
-        BlockEntityDirectNode nodeEnd = (BlockEntityDirectNode) beEnd;
+		// Coordinate system translation and rotation
+		final Vec3 vecDifference = new Vec3(posEnd.getX() - posStart.getX(), 0, posEnd.getZ() - posStart.getZ());
+		final Vec3 vecDifferenceRotated = vecDifference.yRot((float) facingStart.angleRadians);
 
-        if (nodeStart.isUsed() || nodeEnd.isUsed()) return false;
-        
-        double dx = posEnd.getX() - posStart.getX();
-        double dz = posEnd.getZ() - posStart.getZ();
-        double hypotenuse = Math.sqrt(dx * dx + dz * dz);
-        double sin = dz / hypotenuse;
-        double cos = dx / hypotenuse;
-        h1 = cos, k1 = sin;
-        if (Math.abs(h1) >= 0.5 && Math.abs(k1) >= 0.5) {
-			r1 = (h1 * zStart - k1 * xStart) / h1 / h1;
-			tStart1 = xStart / h1;
-			tEnd1 = xEnd / h1;
-		} else {
-			final double div = facingStart.add(facingStart).cos;
-			r1 = (h1 * zStart - k1 * xStart) / div;
-			tStart1 = (h1 * xStart - k1 * zStart) / div;
-			tEnd1 = (h1 * xEnd - k1 * zEnd) / div;
+		// 首先我们检查 Delta Side > 0
+		// 1. 如果角度相同
+		// 1. a. 如果对齐 -> 使用一个线段
+		// 1. b. 如果不对齐 -> 使用两个圆，r = (dv^2 + dp^2) / (4dv)。
+		// 2. 如果角度是直角 -> r = min(dx, dz)，实际上可以使用方程 3.
+		// 3. 检查是否可以使用一个线段和一个圆
+		// 3. a. 如果可以 -> (线段在前) r2 = dv / (sin(diff) * tan(diff/2)) = dv / (1 - cos(diff))，
+		// 							对于情况 2，diff = 90 度，r = dv
+		//					-> (圆在前) r1 = (dp - dv / tan(diff)) / tan(diff/2)
+		// TODO 3. b. 如果不可以 -> r = 非常复杂的公式。在这种情况下，我们需要两个圆来连接。
+		
+		final double deltaForward = vecDifferenceRotated.z;
+		final double deltaSide = vecDifferenceRotated.x;
+		if (facingStart.isParallel(facingEnd)) { // 1
+            info += " 1 ";
+			if (Math.abs(deltaForward) < ACCEPT_THRESHOLD) { // 1. a.
+                info += " a ";
+				h1 = facingStart.cos;
+				k1 = facingStart.sin;
+				if (Math.abs(h1) >= 0.5 && Math.abs(k1) >= 0.5) {
+					r1 = (h1 * zStart - k1 * xStart) / h1 / h1;
+					tStart1 = xStart / h1;
+					tEnd1 = xEnd / h1;
+				} else {
+					final double div = facingStart.add(facingStart).cos;
+					r1 = (h1 * zStart - k1 * xStart) / div;
+					tStart1 = (h1 * xStart - k1 * zStart) / div;
+					tEnd1 = (h1 * xEnd - k1 * zEnd) / div;
+				}
+				h2 = k2 = r2 = 0;
+				reverseT1 = tStart1 > tEnd1;
+				reverseT2 = false;
+				isStraight1 = isStraight2 = true;
+				tStart2 = tEnd2 = 0;
+			} else { // 1. b
+                info += " b ";
+				if (Math.abs(deltaSide) > ACCEPT_THRESHOLD) {
+                    info += " 1 ";
+					final double radius = (deltaForward * deltaForward + deltaSide * deltaSide) / (4 * deltaForward);
+					r1 = r2 = Math.abs(radius);
+					h1 = xStart - radius * facingStart.sin;
+					k1 = zStart + radius * facingStart.cos;
+					h2 = xEnd - radius * facingEnd.sin;
+					k2 = zEnd + radius * facingEnd.cos;
+					reverseT1 = deltaForward < 0 != deltaSide < 0;
+					reverseT2 = !reverseT1;
+					tStart1 = getTBounds(xStart, h1, zStart, k1, r1);
+					tEnd1 = getTBounds(xStart + vecDifference.x / 2, h1, zStart + vecDifference.z / 2, k1, r1, tStart1, reverseT1);
+					tStart2 = getTBounds(xStart + vecDifference.x / 2, h2, zStart + vecDifference.z / 2, k2, r2);
+					tEnd2 = getTBounds(xEnd, h2, zEnd, k2, r2, tStart2, reverseT2);
+					isStraight1 = isStraight2 = false;
+				} else {
+                    info += " 2-illegal ";
+					// Banned node perpendicular to the rail nodes direction
+					h1 = k1 = h2 = k2 = r1 = r2 = 0;
+					tStart1 = tStart2 = tEnd1 = tEnd2 = 0;
+					reverseT1 = false;
+					reverseT2 = false;
+					isStraight1 = isStraight2 = true;
+				}
+			}
+		} else { // 3.
+            info += " 3 ";
+			// Check if it needs invert
+			final RailAngle newFacingStart = vecDifferenceRotated.x < -ACCEPT_THRESHOLD ? facingStart.getOpposite() : facingStart;
+			final RailAngle newFacingEnd = facingEnd.cos * vecDifference.x + facingEnd.sin * vecDifference.z < -ACCEPT_THRESHOLD ? facingEnd.getOpposite() : facingEnd;
+			final double angleForward = Math.atan2(deltaForward, deltaSide);
+			final RailAngle railAngleDifference = newFacingEnd.sub(newFacingStart);
+			final double angleDifference = railAngleDifference.angleRadians;
+
+			if (Math.signum(angleForward) == Math.signum(angleDifference)) {
+                info += " 1 ";
+
+				final double absAngleForward = Math.abs(angleForward);
+
+				if (absAngleForward - Math.abs(angleDifference / 2) < ACCEPT_THRESHOLD) { // Segment First
+                    info += " segment first ";
+					final double offsetSide = Math.abs(deltaForward / railAngleDifference.halfTan);
+					final double remainingSide = deltaSide - offsetSide;
+					final double deltaXEnd = xStart + remainingSide * newFacingStart.cos;
+					final double deltaZEnd = zStart + remainingSide * newFacingStart.sin;
+					h1 = newFacingStart.cos;
+					k1 = newFacingStart.sin;
+					if (Math.abs(h1) >= 0.5 && Math.abs(k1) >= 0.5) {
+						r1 = (h1 * zStart - k1 * xStart) / h1 / h1;
+						tStart1 = xStart / h1;
+						tEnd1 = deltaXEnd / h1;
+					} else {
+						final double div = newFacingStart.add(newFacingStart).cos;
+						r1 = (h1 * zStart - k1 * xStart) / div;
+						tStart1 = (h1 * xStart - k1 * zStart) / div;
+						tEnd1 = (h1 * deltaXEnd - k1 * deltaZEnd) / div;
+					}
+					isStraight1 = true;
+					reverseT1 = tStart1 > tEnd1;
+					final double radius = deltaForward / (1 - railAngleDifference.cos);
+					r2 = Math.abs(radius);
+					h2 = deltaXEnd - radius * newFacingStart.sin;
+					k2 = deltaZEnd + radius * newFacingStart.cos;
+					reverseT2 = (deltaForward < 0);
+					tStart2 = getTBounds(deltaXEnd, h2, deltaZEnd, k2, r2);
+					tEnd2 = getTBounds(xEnd, h2, zEnd, k2, r2, tStart2, reverseT2);
+					isStraight2 = false;
+				} else if (absAngleForward - Math.abs(angleDifference) < ACCEPT_THRESHOLD) { // Circle First
+                    info += " circle first ";
+					final double crossSide = deltaForward / railAngleDifference.tan;
+					final double remainingSide = (deltaSide - crossSide) * (1 + railAngleDifference.cos);
+					final double remainingForward = (deltaSide - crossSide) * (railAngleDifference.sin);
+					final double deltaXEnd = xStart + remainingSide * newFacingStart.cos - remainingForward * newFacingStart.sin;
+					final double deltaZEnd = zStart + remainingSide * newFacingStart.sin + remainingForward * newFacingStart.cos;
+					final double radius = (deltaSide - deltaForward / railAngleDifference.tan) / railAngleDifference.halfTan;
+					r1 = Math.abs(radius);
+					h1 = xStart - radius * newFacingStart.sin;
+					k1 = zStart + radius * newFacingStart.cos;
+					isStraight1 = false;
+					reverseT1 = (deltaForward < 0);
+					tStart1 = getTBounds(xStart, h1, zStart, k1, r1);
+					tEnd1 = getTBounds(deltaXEnd, h1, deltaZEnd, k1, r1, tStart1, reverseT1);
+					h2 = newFacingEnd.cos;
+					k2 = newFacingEnd.sin;
+					if (Math.abs(h2) >= 0.5 && Math.abs(k2) >= 0.5) {
+						r2 = (h2 * deltaZEnd - k2 * deltaXEnd) / h2 / h2;
+						tStart2 = deltaXEnd / h2;
+						tEnd2 = xEnd / h2;
+					} else {
+						final double div = newFacingEnd.add(newFacingEnd).cos;
+						r2 = (h2 * deltaZEnd - k2 * deltaXEnd) / div;
+						tStart2 = (h2 * deltaXEnd - k2 * deltaZEnd) / div;
+						tEnd2 = (h2 * xEnd - k2 * zEnd) / div;
+					}
+					isStraight2 = true;
+					reverseT2 = tStart2 > tEnd2;
+				} else { // Out of available range
+					// TODO complex one. Normally we don't need it.
+                    info += " out of range ";
+					h1 = k1 = h2 = k2 = r1 = r2 = 0;
+					tStart1 = tStart2 = tEnd1 = tEnd2 = 0;
+					reverseT1 = false;
+					reverseT2 = false;
+					isStraight1 = isStraight2 = true;
+				}
+			} else {
+                info += " illegal ";
+				// TODO 3. b. If not -> r = very complex one. Normally we don't need it.
+				h1 = k1 = h2 = k2 = r1 = r2 = 0;
+				tStart1 = tStart2 = tEnd1 = tEnd2 = 0;
+				reverseT1 = false;
+				reverseT2 = false;
+				isStraight1 = isStraight2 = true;
+			}
 		}
-        h2 = k2 = r2 = 0;
-        tStart2 = tEnd2 = 0;
 
-        double radian = Math.atan2(dz, dx);
-        float deg = (float) Math.toDegrees(radian);
-        if (deg < 0) deg += 360;
+        Main.LOGGER.info("***** Rail created: " + info);
 
-        nodeStart.setAngle(deg);
-        nodeEnd.setAngle(deg);
+        ci.cancel();
+        return;
     }
-    */
+
+    @Shadow(remap = false) public abstract double getLength();
+    @Shadow(remap = false) public abstract Vec3 getPosition(double distance);
+    @Shadow(remap = false) public abstract RailAngle getRailAngle(boolean getEnd);
+
+    @Inject(method = "getRailAngle", at = @At("HEAD"), cancellable = true, remap = false)
+    private void getRailAngle(boolean getEnd, CallbackInfoReturnable<RailAngle> cir) {
+        final double start;
+		final double end;
+		if (getEnd) {
+			start = getLength();
+			end = start - ACCEPT_THRESHOLD;
+		} else {
+			start = 0;
+			end = ACCEPT_THRESHOLD;
+		}
+		final Vec3 pos1 = getPosition(start);
+		final Vec3 pos2 = getPosition(end);
+		RailAngle result =  RailAngleExtra.fromDegrees((float) Math.toDegrees(Math.atan2(pos2.z - pos1.z, pos2.x - pos1.x)));
+        cir.setReturnValue(result);
+        cir.cancel();
+        return;
+    }
+
+    @Inject(method = "isValid", at = @At("HEAD"), cancellable = true, remap = false)
+    private void isValid(CallbackInfoReturnable<Boolean> cir) {
+        boolean b1 = (h1 != 0 || k1 != 0 || h2 != 0 || k2 != 0 || r1 != 0 || r2 != 0 || tStart1 != 0 || tStart2 != 0 || tEnd1 != 0 || tEnd2 != 0);
+        RailAngle f1 = getRailAngle(false);
+        RailAngle f2 = getRailAngle(true);
+        boolean b2 = false;
+        float f3 = f1.angleDegrees - facingStart.angleDegrees;
+        float f4 = f2.angleDegrees - facingEnd.angleDegrees;
+        if (Math.abs(f3) < 0.4 && Math.abs(f4) < 0.4) b2 = true;
+        Main.LOGGER.info("isValid: " + b1 + " " + b2 + " "+ f1 + " " + f2 + "*" + facingStart + " " + facingEnd + "**" + f3 + " " + f4);
+        cir.setReturnValue(b1 && b2);
+        cir.cancel();
+        return;
+    }
 
     @Inject(method = "<init>(Ljava/util/Map;)V", at = @At("TAIL"), remap = false)
     private void fromMessagePack(Map<String, Value> map, CallbackInfo ci) {
@@ -320,8 +514,6 @@ public abstract class RailMixin implements RailExtraSupplier {
             return Math.round(r / RailModelRegistry.getProperty(RailRenderDispatcher.getModelKeyForRender(instance)).repeatInterval);
         }
     }
-
-    @Shadow(remap = false) @Final private int yStart, yEnd;
 
     private float vTheta;
 

@@ -1,0 +1,138 @@
+package cn.zbx1425.mtrsteamloco.render.block;
+
+import cn.zbx1425.mtrsteamloco.MainClient;
+import cn.zbx1425.mtrsteamloco.block.BlockDirectNode.BlockEntityDirectNode;
+import cn.zbx1425.mtrsteamloco.data.EyeCandyProperties;
+import cn.zbx1425.mtrsteamloco.data.EyeCandyRegistry;
+import cn.zbx1425.mtrsteamloco.render.ShadersModHandler;
+import cn.zbx1425.mtrsteamloco.render.rail.RailRenderDispatcher;
+import cn.zbx1425.mtrsteamloco.render.scripting.ScriptContextManager;
+import cn.zbx1425.mtrsteamloco.render.scripting.eyecandy.EyeCandyScriptContext;
+import cn.zbx1425.sowcer.math.Matrix4f;
+import cn.zbx1425.sowcer.math.PoseStackUtil;
+import cn.zbx1425.sowcerext.model.ModelCluster;
+import cn.zbx1425.sowcerext.model.integration.BufferSourceProxy;
+import com.mojang.blaze3d.vertex.PoseStack;
+import mtr.RegistryObject;
+import mtr.block.IBlock;
+import mtr.client.ClientData;
+import mtr.data.TrainClient;
+import mtr.mappings.BlockEntityRendererMapper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import cn.zbx1425.mtrsteamloco.render.integration.MtrModelRegistryUtil;
+import net.minecraft.client.renderer.LevelRenderer;
+#if MC_VERSION >= "11904"
+import net.minecraft.world.item.ItemDisplayContext;
+#else
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+#endif
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
+import cn.zbx1425.mtrsteamloco.Main;
+import cn.zbx1425.sowcerext.reuse.ModelManager;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+
+public class BlockEntityDirectNodeRenderer extends BlockEntityRendererMapper<BlockEntityDirectNode> {
+
+    public BlockEntityDirectNodeRenderer(BlockEntityRenderDispatcher dispatcher) {
+        super(dispatcher);
+    }
+
+    private static HashSet<BlockEntityDirectNode> entitysToRender = new HashSet<>();
+    private static HashSet<BlockEntityDirectNode> entitysToRenderWritting = new HashSet<>();
+
+    @Override
+    public void render(BlockEntityDirectNode blockEntity, float f, @NotNull PoseStack matrices, @NotNull MultiBufferSource vertexConsumers, int light, int overlay) {
+        entitysToRenderWritting.add(blockEntity);
+    }
+
+    public static void exchange() {
+        entitysToRender = entitysToRenderWritting;
+        entitysToRenderWritting = new HashSet<>();
+    }
+
+    public static void commit(@NotNull PoseStack matrices, @NotNull MultiBufferSource vertexConsumers) {
+        Matrix4f worldPose = new Matrix4f(matrices.last().pose()).copy();
+        HashSet<BlockEntityDirectNode> temp = new HashSet<>(entitysToRender);
+        for (BlockEntityDirectNode blockEntity : temp) {
+            if (blockEntity == null) continue;
+            
+            final Level world = blockEntity.getLevel();
+            if (world == null) continue;
+
+            int light = LevelRenderer.getLightColor(world, blockEntity.getBlockPos());;
+
+            int lightToUse = blockEntity.fullLight ? LightTexture.pack(15, 15) : light;
+
+            Matrix4f basePose = worldPose.copy();
+
+            final BlockPos pos = blockEntity.getBlockPos();
+
+            RailAngle railAngle = blockEntity.getRailAngle();
+            if (railAngle == null) {
+
+            }
+
+            if (prop == null || RailRenderDispatcher.isHoldingBrush) {
+                matrices.pushPose();
+                matrices.translate(pos.getX(), pos.getY(), pos.getZ());
+                matrices.translate(0.5f, 0.5f, 0.5f);
+                PoseStackUtil.rotY(matrices, (float) ((System.currentTimeMillis() % 1000) * (Math.PI * 2 / 1000)));
+#if MC_VERSION >= "11904"
+                if (blockEntity.prefabId != null && prop == null) {
+                    Minecraft.getInstance().getItemRenderer().renderStatic(BARRIER_ITEM_STACK.get(), ItemDisplayContext.GROUND, lightToUse, 0, matrices, vertexConsumers, world, 0);
+                } else {
+                    Minecraft.getInstance().getItemRenderer().renderStatic(BRUSH_ITEM_STACK.get(), ItemDisplayContext.GROUND, lightToUse, 0, matrices, vertexConsumers, world, 0);
+                }
+#else
+                if (blockEntity.prefabId != null && prop == null) {
+                    Minecraft.getInstance().getItemRenderer().renderStatic(BARRIER_ITEM_STACK.get(), ItemTransforms.TransformType.GROUND, lightToUse, 0, matrices, vertexConsumers, 0);
+                } else {
+                    Minecraft.getInstance().getItemRenderer().renderStatic(BRUSH_ITEM_STACK.get(), ItemTransforms.TransformType.GROUND, lightToUse, 0, matrices, vertexConsumers, 0);
+                }
+#endif
+                matrices.popPose();
+
+            }
+            if (prop == null) continue;
+            
+            candyPose.translate(pos.getX(), pos.getY(), pos.getZ());
+            candyPose.translate(0.5f, 0f, 0.5f);
+            candyPose.translate(blockEntity.translateX, blockEntity.translateY, blockEntity.translateZ);
+            candyPose.rotateY(-(float)Math.toRadians(facing.toYRot()) + (float)(Math.PI));
+            candyPose.rotateX(blockEntity.rotateX);
+            candyPose.rotateY(blockEntity.rotateY);
+            candyPose.rotateZ(blockEntity.rotateZ);
+            if (prop.model != null) {
+                MainClient.drawScheduler.enqueue(prop.model, candyPose, lightToUse);
+            }
+            if (prop.script != null && blockEntity.scriptContext != null) {
+                synchronized (blockEntity.scriptContext) {
+                    blockEntity.scriptContext.commit(MainClient.drawScheduler, candyPose, worldPose, lightToUse);
+                }
+                prop.script.tryCallRenderFunctionAsync(blockEntity.scriptContext);
+            }
+        }
+    }
+
+    @Override
+    public boolean shouldRenderOffScreen(BlockEyeCandy.@NotNull BlockEntityEyeCandy blockEntity) {
+        return true;
+    }
+
+    @Override
+    public boolean shouldRender(BlockEyeCandy.@NotNull BlockEntityEyeCandy blockEntity, @NotNull Vec3 vec3) {
+        return true;
+    }
+}

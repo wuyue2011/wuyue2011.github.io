@@ -242,12 +242,11 @@ public class ScriptResourceUtil {
     }
 
     public static String getNTEVersion() {
-        String v = BuildConfig.MOD_VERSION.split("-")[0];
         return BuildConfig.MOD_VERSION;
     }
 
     public static int getNTEVersionInt() {
-        int[] components = Arrays.stream(BuildConfig.MOD_VERSION.split("-")[0].split("\\+", 2)[0].split("\\.", 3))
+        int[] components = Arrays.stream(BuildConfig.MOD_VERSION.split("\\-", 3)[0].split("\\+", 2)[0].split("\\.", 3))
                 .mapToInt(Integer::parseInt).toArray();
         return components[0] * 10000 + components[1] * 100 + components[2];
     }

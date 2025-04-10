@@ -7,6 +7,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import cn.zbx1425.mtrsteamloco.block.BlockEyeCandy;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.core.BlockPos;
+import cn.zbx1425.mtrsteamloco.render.scripting.train.ScriptedTrainRenderer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.client.Minecraft;
@@ -37,8 +38,10 @@ import java.util.UUID;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -271,6 +274,21 @@ public abstract class TrainClientMixin extends Train implements IGui{
 			}
 		}
     }
+
+	@Inject(method = "simulateTrain", at = @At("RETURN")) @Final @Mutable
+	private void onSimulateTrain(Level world, float ticksElapsed, SpeedCallback speedCallback, AnnouncementCallback announcementCallback, AnnouncementCallback lightRailAnnouncementCallback, CallbackInfo ci) {
+		if (world == null) return;
+		if (!world.isClientSide) return;
+		if (path.isEmpty()) return;
+
+		if ((Object) this instanceof TrainClient) {
+			TrainClient train = (TrainClient) (Object) this;
+			TrainRendererBase renderer = train.trainRenderer;
+			if (renderer instanceof ScriptedTrainRenderer) {
+				((ScriptedTrainRenderer) renderer).callRenderFunction();
+			}
+		}
+	}
 
     private static Vec3 now(Matrices matrices) {
         return matrices.last().getTranslationPart().toVec3();

@@ -113,7 +113,8 @@ public class CompoundCreator extends ItemNodeModifierBase {
                 } else if (task instanceof RailModifierTask) {
                     changed = true;
                     RailModifierTask task1 = (RailModifierTask) task;
-                    railModifier(world, stack, transportMode, stateStart, stateEnd, posStart, posEnd, facingStart, facingEnd, player, railwayData, task1.rail, task1.isOneWay, task1.isReversed);
+                    boolean result = railModifier(world, stack, transportMode, stateStart, stateEnd, posStart, posEnd, facingStart, facingEnd, player, railwayData, task1.rail, task1.isOneWay, task1.isReversed);
+                    Main.LOGGER.info("RailModifierTask result: " + result);
                 } else {
                     Main.LOGGER.error("Unknown task type: " + task.name);
                 }
@@ -125,13 +126,14 @@ public class CompoundCreator extends ItemNodeModifierBase {
 	}
 
     private static boolean railModifier(Level world, ItemStack stack, TransportMode transportMode, BlockState stateStart, BlockState stateEnd, BlockPos posStart, BlockPos posEnd, RailAngle facingStart, RailAngle facingEnd, Player player, RailwayData railwayData, Rail baseRail, boolean isOneWay, boolean isReversed) {
+
         RailType railType = baseRail.railType;
         if (railType.hasSavedRail && (railwayData.hasSavedRail(posStart) || railwayData.hasSavedRail(posEnd))) {
 			if (player != null) {
 				player.displayClientMessage(Text.translatable("gui.mtr.platform_or_siding_exists"), true);
 			}
 		} else {
-			final boolean isValidContinuousMovement;
+			boolean isValidContinuousMovement;
 			final RailType newRailType;
 			if (transportMode.continuousMovement) {
 				final Block blockStart = stateStart.getBlock();
@@ -173,6 +175,8 @@ public class CompoundCreator extends ItemNodeModifierBase {
 
 			final boolean goodRadius = rail1.goodRadius() && rail2.goodRadius();
 			final boolean isValid = rail1.isValid() && rail2.isValid();
+
+            Main.LOGGER.info("*****" + isValid + " " + isValidContinuousMovement + " " + goodRadius);
 
 			if (goodRadius && isValid && isValidContinuousMovement) {
                 RailExtraSupplier rail1Extra = (RailExtraSupplier) (Object) rail1;

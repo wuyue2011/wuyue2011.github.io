@@ -25,7 +25,6 @@ import net.minecraft.nbt.CompoundTag;
 import cn.zbx1425.mtrsteamloco.Main;
 import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
 import mtr.data.*;
-import cn.zbx1425.mtrsteamloco.render.scripting.train.ScriptedTrainRenderer;
 
 import java.util.List;
 import java.util.Set;
@@ -243,20 +242,6 @@ public abstract class TrainMixin implements TrainExtraSupplier{
 	}
 
 	private static interface Void {
-	}
-
-	@Inject(method = "simulateTrain", at = @At("HEAD"))
-	private void onSimulateTrain(Level world, float ticksElapsed, Depot depot, CallbackInfo ci) {
-		if (world == null) return;
-		if (path.isEmpty()) return;
-
-		if ((Object) this instanceof TrainClient) {
-			TrainClient train = (TrainClient) (Object) this;
-			TrainRendererBase renderer = train.trainRenderer;
-			if (renderer instanceof ScriptedTrainRenderer) {
-				((ScriptedTrainRenderer) renderer).callRenderFunction();
-			}
-		}
 	}
 
 	@Inject(method = "convertMaxManualSpeed", at = @At("HEAD"), cancellable = true, remap = false)
