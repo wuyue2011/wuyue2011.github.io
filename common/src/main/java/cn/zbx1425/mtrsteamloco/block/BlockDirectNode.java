@@ -73,14 +73,14 @@ public class BlockDirectNode extends BlockNode implements EntityBlockMapper {
             } else {
                 railAngle = null;
             }
-            Main.LOGGER.info("read ----- angle: " + angle + ", locked: " + isLocked() + ", railAngle: " + railAngle);
+            // Main.LOGGER.info("read ----- angle: " + angle + ", locked: " + isLocked() + ", railAngle: " + railAngle);
         }
 
         @Override
         public void writeCompoundTag(CompoundTag compoundTag) {
             compoundTag.putFloat(KEY_ANGLE, angle);
             compoundTag.putBoolean(KEY_LOCKED, isLocked());
-            Main.LOGGER.info("write ----- angle: " + angle + ", locked: " + isLocked() + ", railAngle: " + railAngle);
+            // Main.LOGGER.info("write ----- angle: " + angle + ", locked: " + isLocked() + ", railAngle: " + railAngle);
         }
     }
 }

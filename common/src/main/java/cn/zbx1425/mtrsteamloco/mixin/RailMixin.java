@@ -15,6 +15,7 @@ import cn.zbx1425.mtrsteamloco.network.util.DoubleFloatMapSerializer;
 import net.minecraft.world.phys.Vec3;
 import mtr.data.RailType;
 import net.minecraft.network.FriendlyByteBuf;
+import cn.zbx1425.mtrsteamloco.data.RailCalculator;
 import net.minecraft.util.Mth;
 import mtr.data.RailAngle;
 import mtr.data.TransportMode;
@@ -191,7 +192,7 @@ public abstract class RailMixin implements RailExtraSupplier {
         setOpeningDirection(oth.getOpeningDirection());
     }
 
-    @Inject(method = "<init>(Lnet/minecraft/core/BlockPos;Lmtr/data/RailAngle;Lnet/minecraft/core/BlockPos;Lmtr/data/RailAngle;Lmtr/data/RailType;Lmtr/data/TransportMode;)V", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "<init>(Lnet/minecraft/core/BlockPos;Lmtr/data/RailAngle;Lnet/minecraft/core/BlockPos;Lmtr/data/RailAngle;Lmtr/data/RailType;Lmtr/data/TransportMode;)V", at = @At("TAIL"))
     private void onCreate(BlockPos posStart, RailAngle facingStart, BlockPos posEnd, RailAngle facingEnd, RailType railType, TransportMode transportMode, CallbackInfo ci) {
         String info = "";
 
@@ -201,6 +202,31 @@ public abstract class RailMixin implements RailExtraSupplier {
 		this.transportMode = transportMode;
 		yStart = posStart.getY();
 		yEnd = posEnd.getY();
+
+        if (transportMode == TransportMode.TRAIN) {
+            RailCalculator.Group group = RailCalculator.calculator(posStart, posEnd, facingStart, facingEnd);
+
+            if (group != null) {
+                h1 = group.first.h;
+                k1 = group.first.k;
+                r1 = group.first.r;
+                tStart1 = group.first.tStart;
+                tEnd1 = group.first.tEnd;
+                reverseT1 = group.first.reverseT;
+                isStraight1 = group.first.isStraight;
+
+                h2 = group.second.h;
+                k2 = group.second.k;
+                r2 = group.second.r;
+                tStart2 = group.second.tStart;
+                tEnd2 = group.second.tEnd;
+                reverseT2 = group.second.reverseT;
+                isStraight2 = group.second.isStraight;
+
+                return;
+            }
+        }
+        
 
 		final int xStart = posStart.getX();
 		final int zStart = posStart.getZ();
@@ -364,8 +390,6 @@ public abstract class RailMixin implements RailExtraSupplier {
 		}
 
         Main.LOGGER.info("***** Rail created: " + info);
-
-        ci.cancel();
         return;
     }
 
@@ -400,9 +424,11 @@ public abstract class RailMixin implements RailExtraSupplier {
         boolean b2 = false;
         float f3 = f1.angleDegrees - facingStart.angleDegrees;
         float f4 = f2.angleDegrees - facingEnd.angleDegrees;
+        f3 %= 360;
+        f4 %= 360;
         if (Math.abs(f3) < 0.4 && Math.abs(f4) < 0.4) b2 = true;
-        Main.LOGGER.info("isValid: " + b1 + " " + b2 + " "+ f1 + " " + f2 + "*" + facingStart + " " + facingEnd + "**" + f3 + " " + f4);
-        cir.setReturnValue(b1 && b2);
+        Main.LOGGER.info("isValid: " + b1 + " " + b2 + " "+ f1 + " " + f2 + " * " + facingStart + " " + facingEnd + " ** " + f3 + " " + f4);
+        cir.setReturnValue(b1);//  && b2);
         cir.cancel();
         return;
     }
