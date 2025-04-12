@@ -203,8 +203,13 @@ public abstract class RailMixin implements RailExtraSupplier {
 		yStart = posStart.getY();
 		yEnd = posEnd.getY();
 
+        final int xStart = posStart.getX();
+		final int zStart = posStart.getZ();
+		final int xEnd = posEnd.getX();
+		final int zEnd = posEnd.getZ();
+
         if (transportMode == TransportMode.TRAIN) {
-            RailCalculator.Group group = RailCalculator.calculator(posStart, posEnd, facingStart, facingEnd);
+            RailCalculator.Group group = RailCalculator.calculate(xStart, zStart, xEnd, zEnd, facingStart.angleDegrees, facingEnd.angleDegrees);
 
             if (group != null) {
                 h1 = group.first.h;
@@ -226,12 +231,6 @@ public abstract class RailMixin implements RailExtraSupplier {
                 return;
             }
         }
-        
-
-		final int xStart = posStart.getX();
-		final int zStart = posStart.getZ();
-		final int xEnd = posEnd.getX();
-		final int zEnd = posEnd.getZ();
 
 		// Coordinate system translation and rotation
 		final Vec3 vecDifference = new Vec3(posEnd.getX() - posStart.getX(), 0, posEnd.getZ() - posStart.getZ());
@@ -422,13 +421,16 @@ public abstract class RailMixin implements RailExtraSupplier {
         RailAngle f1 = getRailAngle(false);
         RailAngle f2 = getRailAngle(true);
         boolean b2 = false;
+        boolean b3 = false;
         float f3 = f1.angleDegrees - facingStart.angleDegrees;
         float f4 = f2.angleDegrees - facingEnd.angleDegrees;
-        f3 %= 360;
-        f4 %= 360;
-        if (Math.abs(f3) < 0.4 && Math.abs(f4) < 0.4) b2 = true;
+        f3 = Math.abs(f3) % 180;
+        f4 = Math.abs(f4) % 180;
+        if (f3 < 0.3 || f3 > 179.7) b2 = true;
+        if (f4 < 0.3 || f4 > 179.7) b3 = true;
+        b2 = b2 && b3;
         Main.LOGGER.info("isValid: " + b1 + " " + b2 + " "+ f1 + " " + f2 + " * " + facingStart + " " + facingEnd + " ** " + f3 + " " + f4);
-        cir.setReturnValue(b1);//  && b2);
+        cir.setReturnValue(b1);// && b2);
         cir.cancel();
         return;
     }
