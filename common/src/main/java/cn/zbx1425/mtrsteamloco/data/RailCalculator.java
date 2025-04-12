@@ -211,7 +211,7 @@ public class RailCalculator {
 
             // 判断中间点是否位于逆时针路径上
             boolean isCCW = delta_m_ccw <= delta_ccw;
-            boolean reverseT = isCCW;
+            boolean reverseT = !isCCW;
 
             // 计算起始和结束弧长参数
             double tStart = thetaS * r;
