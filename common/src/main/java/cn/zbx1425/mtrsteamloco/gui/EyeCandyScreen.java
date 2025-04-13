@@ -38,6 +38,7 @@ import me.shedaniel.clothconfig2.gui.entries.*;
 import net.minecraft.client.gui.components.Button;
 import cn.zbx1425.mtrsteamloco.gui.entries.*;
 import com.mojang.blaze3d.platform.Window;
+import cn.zbx1425.mtrsteamloco.gui.entries.SliderOrTextFeildListEntry;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -151,21 +152,13 @@ public class EyeCandyScreen {
                         return Optional.empty();
                     }).setDefaultValue(true).build()
             );
-            if (enableSlider) {
-                addTranslation0(common, entryBuilder, 0, update, blockEntity);
-                addTranslation0(common, entryBuilder, 1, update, blockEntity);
-                addTranslation0(common, entryBuilder, 2, update, blockEntity);
-                addRotation0(common, entryBuilder, 3, update, blockEntity);
-                addRotation0(common, entryBuilder, 4, update, blockEntity);
-                addRotation0(common, entryBuilder, 5, update, blockEntity);
-            } else {
-                addTranslation1(common, entryBuilder, 0, update, blockEntity);
-                addTranslation1(common, entryBuilder, 1, update, blockEntity);
-                addTranslation1(common, entryBuilder, 2, update, blockEntity);
-                addRotation1(common, entryBuilder, 3, update, blockEntity);
-                addRotation1(common, entryBuilder, 4, update, blockEntity);
-                addRotation1(common, entryBuilder, 5, update, blockEntity);
-            }
+            
+            addTranslation(common, entryBuilder, 0, blockEntity);
+            addTranslation(common, entryBuilder, 1, blockEntity);
+            addTranslation(common, entryBuilder, 2, blockEntity);
+            addRotation(common, entryBuilder, 3, blockEntity);
+            addRotation(common, entryBuilder, 4, blockEntity);
+            addRotation(common, entryBuilder, 5, blockEntity);
         }
 
         List<AbstractConfigListEntry> customEntrys = blockEntity.getCustomConfigEntrys(entryBuilder, () -> createScreen(blockPos, parent));
@@ -221,71 +214,30 @@ public class EyeCandyScreen {
         return "";
     }
 
-    private static void addTranslation0(ConfigCategory common, ConfigEntryBuilder entryBuilder, int type, List<Consumer<BlockEntityEyeCandy>> update, BlockEntityEyeCandy blockEntity) {
-        float rv = getValue(type, blockEntity);
-        String str = getStr(type, blockEntity);
-        int sv = (int) Math.round(rv * 20f);
-        IntegerSliderEntry entry = entryBuilder.startIntSlider(
-                Text.literal(str),
-                sv, -20, 20
-            ).setDefaultValue(0)
-            .setErrorSupplier(value -> {
-                save(type, ((float) value) / 20f, blockEntity);
-                return Optional.empty();
-            }).build();
-        entry.setTextGetter(value -> Text.literal(value * 5 + "cm"));
+    private static void addTranslation(ConfigCategory common, ConfigEntryBuilder entryBuilder, int type, BlockEntityEyeCandy blockEntity) {
+        SliderOrTextFeildListEntry entry = new SliderOrTextFeildListEntry(
+            Text.literal(getStr(type, blockEntity)),
+            entryBuilder.getResetButtonKey(),
+            getValue(type, blockEntity),
+            -1F, 1F, 40, f -> String.format("%.0f", f),
+            f -> save(type, f, blockEntity),
+            str -> parseMovement(str)
+        );
+
         common.addEntry(entry);
     }
 
-    private static void addRotation0(ConfigCategory common, ConfigEntryBuilder entryBuilder, int type, List<Consumer<BlockEntityEyeCandy>> update, BlockEntityEyeCandy blockEntity) {
-        float rv = getValue(type, blockEntity);
-        String str = getStr(type, blockEntity);
-        int sv = (int) Math.round(Math.toDegrees(rv) / 5f);
-        IntegerSliderEntry entry = entryBuilder.startIntSlider(
-                Text.literal(str),
-                sv, -18, 18
-            ).setDefaultValue(0)
-            .setErrorSupplier(value -> {
-                save(type, (float) Math.toRadians(value * 5), blockEntity);
-                return Optional.empty();
-            }).build();
-        entry.setTextGetter(value -> Text.literal(value * 5 + "°"));
+    private static void addRotation(ConfigCategory common, ConfigEntryBuilder entryBuilder, int type, BlockEntityEyeCandy blockEntity) {
+        SliderOrTextFeildListEntry entry = new SliderOrTextFeildListEntry(
+            Text.literal(getStr(type, blockEntity)),
+            entryBuilder.getResetButtonKey(),
+            getValue(type, blockEntity) * 180 / (float) Math.PI,
+            -180F, 180F, 40, f -> String.format("%.0f°", f),
+            f -> save(type, f / 180 * (float) Math.PI, blockEntity),
+            str -> parseRotation(str)
+        );
+
         common.addEntry(entry);
-    }
-
-    private static void addTranslation1(ConfigCategory common, ConfigEntryBuilder entryBuilder, int type, List<Consumer<BlockEntityEyeCandy>> update, BlockEntityEyeCandy blockEntity) {
-        float rv = getValue(type, blockEntity);
-        String str = getStr(type, blockEntity);
-        float sv = rv * 100f;
-        common.addEntry(entryBuilder.startTextField(
-                Text.literal(str),
-                sv + "cm"
-            ).setSaveConsumer(str1 -> {
-                float value = parseMovement(str1).orElse(getValue(type, blockEntity));
-                if (value != getValue(type, blockEntity)) {
-                    final float v = value;
-                    update.add(be -> save(type, v, be));
-                }
-            }).setDefaultValue(sv + "cm")
-            .setErrorSupplier(verifyMovement)
-            .build());
-    }
-
-    private static void addRotation1(ConfigCategory common, ConfigEntryBuilder entryBuilder, int type, List<Consumer<BlockEntityEyeCandy>> update, BlockEntityEyeCandy blockEntity) {
-        float rv = getValue(type, blockEntity);
-        String str = getStr(type, blockEntity);
-        common.addEntry(entryBuilder.startTextField(
-                Text.literal(str),
-                Math.toDegrees(rv) + "°"
-            ).setSaveConsumer(str1 -> {
-                Float value = parseRotation(str1).orElse(getValue(type, blockEntity));
-                if (value != getValue(type, blockEntity)) {
-                    final float v = value;
-                    update.add(be -> save(type, v, be));
-                }
-            }).setDefaultValue(Math.toDegrees(rv) + "°")
-            .setErrorSupplier(verifyRotation)
-            .build());
     }
 
     private static Optional<Float> parseMovement(String str) {
@@ -320,22 +272,6 @@ public class EyeCandyScreen {
             return Optional.empty();
         }
     }
-
-    private static Function<String, Optional<Component>> verifyMovement = (str) -> {
-        if (parseMovement(str).isEmpty()) {
-            return Optional.of(Text.translatable("gui.mtrsteamloco.error.invalid_value"));
-        } else {
-            return Optional.empty();
-        }
-    };
-
-    private static Function<String, Optional<Component>> verifyRotation = (str) -> {
-        if (parseRotation(str).isEmpty()) {
-            return Optional.of(Text.translatable("gui.mtrsteamloco.error.invalid_value"));
-        } else {
-            return Optional.empty();
-        }
-    };
 
     private static Optional<BlockEyeCandy.BlockEntityEyeCandy> getBlockEntity(BlockPos blockPos) {
         Level level = Minecraft.getInstance().level;
