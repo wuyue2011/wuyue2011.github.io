@@ -20,6 +20,7 @@
     "rail.mtrsteamloco.builtin_flat": "ANTE 내장형(평면)",
     "gui.mtrsteamloco.train_screen.title": "열차 설치",
     "gui.mtrsteamloco.eye_candy.full_light": "전체 밝기 유지",
+    "gui.mtrsteamloco.eye_candy.reset_pose": "자세 재설정",
     "gui.mtrsteamloco.eye_candy.tip_resource_pack": "리소스 패키지를 통해 더 많은 객체를 가져올 수 있습니다.자세한 내용을 보려면 여기를 클릭하십시오.",
     "gui.mtrsteamloco.eye_candy.title": "인테리어 소품 설정",
     "gui.mtrsteamloco.eye_candy.present": "현재 항목:%s",
@@ -97,5 +98,7 @@
     "gui.mtr.rail_action_slice": "%s에서 슬라이스 작업 생성(%s 상자 길이)",
     "gui.mtrsteamloco.direct_node.unbound": "선 노드가 바인딩되지 않았습니다.",
     "gui.mtrsteamloco.direct_node.success_bind": "선 노드 바인딩 성공",
-    "gui.mtrsteamloco.direct_node.unbind": "바인딩 해제"
+    "gui.mtrsteamloco.direct_node.unbind": "바인딩 해제",
+    "tooltip.mtrsteamloco.direct_node.bound": "§b 바인딩됨:%s°",
+    "tooltip.mtrsteamloco.direct_node.unbound": "바인딩되지 않음"
 }

@@ -199,7 +199,7 @@ def translate_json(input_file, output_dir, appid, secret_key):
             if lang_code == 'zh_cn':  # 简体中文无需翻译
                 translated_data[key] = value
             else:
-                translated_data[key] = translate_text(value, to_lang=baidu_lang_code, appid=appid, secret_key=secret_key).replace('% s', '%s')
+                translated_data[key] = translate_text(value, to_lang=baidu_lang_code, appid=appid, secret_key=secret_key).replace('% s', '%s').replace("§ b", "§b")
                 print(f"已翻译: {key} -> {translated_data[key]}")
 
         # 保存翻译后的 JSON 文件

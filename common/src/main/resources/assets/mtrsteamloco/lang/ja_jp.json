@@ -20,6 +20,7 @@
     "rail.mtrsteamloco.builtin_flat": "ANTE内蔵（平面）",
     "gui.mtrsteamloco.train_screen.title": "列車の設定",
     "gui.mtrsteamloco.eye_candy.full_light": "全輝度を維持",
+    "gui.mtrsteamloco.eye_candy.reset_pose": "姿勢をリセット",
     "gui.mtrsteamloco.eye_candy.tip_resource_pack": "リソースバンドルを介してより多くのアイテムをインポートできます。詳細はこちらをクリックしてご覧ください。",
     "gui.mtrsteamloco.eye_candy.title": "装飾品の設定",
     "gui.mtrsteamloco.eye_candy.present": "現在の物件：%s",
@@ -97,5 +98,7 @@
     "gui.mtr.rail_action_slice": "スライスタスクを%sから作成(%sブロック長)",
     "gui.mtrsteamloco.direct_node.unbound": "直線ノードがバインドされていません",
     "gui.mtrsteamloco.direct_node.success_bind": "直線ノードのバインドに成功しました",
-    "gui.mtrsteamloco.direct_node.unbind": "バインド解除"
+    "gui.mtrsteamloco.direct_node.unbind": "バインド解除",
+    "tooltip.mtrsteamloco.direct_node.bound": "§bバインド済み：%s°",
+    "tooltip.mtrsteamloco.direct_node.unbound": "バインドされていません"
 }

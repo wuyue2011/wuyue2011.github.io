@@ -34,7 +34,14 @@ import mtr.mappings.UtilitiesClient;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.client.gui.Font;
 import me.shedaniel.clothconfig2.gui.entries.TooltipListEntry;
+#if MC_VERSION >= "12000"
+import net.minecraft.client.gui.GuiGraphics;
+#else
+import net.minecraft.client.gui.GuiComponent;
+#endif
 
 import java.util.List;
 import java.util.Optional;
@@ -58,7 +65,6 @@ public class SimpleButtonListEntry extends TooltipListEntry<Boolean> implements 
         this.resetButton = UtilitiesClient.newButton(20, Text.literal(""), widget -> {});
         this.resetButton.active = false;
         this.resetButton.setWidth(Minecraft.getInstance().font.width(resetButtonKey) + 6);
-        this.saveCallback = null;
         this.widgets = Lists.newArrayList(buttonWidget, resetButton);
     }
     
@@ -78,18 +84,22 @@ public class SimpleButtonListEntry extends TooltipListEntry<Boolean> implements 
     }
     
     @Override
+#if MC_VERSION >= "12000"
+    public void render(GuiGraphics matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta) {
+#else
     public void render(PoseStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta) {
+#endif
         super.render(matrices, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
         Window window = Minecraft.getInstance().getWindow();
         UtilitiesClient.setWidgetY(this.buttonWidget, y);
         UtilitiesClient.setWidgetY(this.resetButton, y);
         Component displayedFieldName = getDisplayedFieldName();
         if (Minecraft.getInstance().font.isBidirectional()) {
-            Minecraft.getInstance().font.drawShadow(matrices, displayedFieldName.getVisualOrderText(), window.getGuiScaledWidth() - x - Minecraft.getInstance().font.width(displayedFieldName), y + 6, 16777215);
+            drawString(matrices, Minecraft.getInstance().font, displayedFieldName.getVisualOrderText(), window.getGuiScaledWidth() - x - Minecraft.getInstance().font.width(displayedFieldName), y + 6, getPreferredTextColor());
             UtilitiesClient.setWidgetX(this.resetButton, x);
             UtilitiesClient.setWidgetX(this.buttonWidget, x + this.resetButton.getWidth() + 2);
         } else {
-            Minecraft.getInstance().font.drawShadow(matrices, displayedFieldName.getVisualOrderText(), x, y + 6, getPreferredTextColor());
+            drawString(matrices, Minecraft.getInstance().font, displayedFieldName.getVisualOrderText(), x, y + 6, getPreferredTextColor());
             UtilitiesClient.setWidgetX(this.resetButton, x + entryWidth - resetButton.getWidth());
             UtilitiesClient.setWidgetX(this.buttonWidget, x + entryWidth - 150);
         }
@@ -107,4 +117,14 @@ public class SimpleButtonListEntry extends TooltipListEntry<Boolean> implements 
     public List<? extends NarratableEntry> narratables() {
         return widgets;
     }
+
+#if MC_VERSION >= "12000"
+    public static void drawString(GuiGraphics matrices, Font font, FormattedCharSequence text, int x, int y, int color) {
+        matrices.drawString(font, text, x, y, color);
+    }
+#else
+    public static void drawString(PoseStack matrices, Font font, FormattedCharSequence text, int x, int y, int color) {
+        GuiComponent.drawString(matrices, font, text, x, y, color);
+    }
+#endif
 }

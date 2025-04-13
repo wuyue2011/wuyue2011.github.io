@@ -98,5 +98,7 @@
     "gui.mtr.rail_action_slice": "由 %s 创建切片任务 (%s 方块长)",
     "gui.mtrsteamloco.direct_node.unbound": "直线节点未绑定",
     "gui.mtrsteamloco.direct_node.success_bind": "直线节点绑定成功",
-    "gui.mtrsteamloco.direct_node.unbind": "解除绑定"
+    "gui.mtrsteamloco.direct_node.unbind": "解除绑定",
+    "tooltip.mtrsteamloco.direct_node.bound": "§b已绑定: %s°",
+    "tooltip.mtrsteamloco.direct_node.unbound": "未绑定"
 }

@@ -20,6 +20,7 @@
     "rail.mtrsteamloco.builtin_flat": "ANTE built-in (flat)",
     "gui.mtrsteamloco.train_screen.title": "Train configuration",
     "gui.mtrsteamloco.eye_candy.full_light": "Maintain full brightness",
+    "gui.mtrsteamloco.eye_candy.reset_pose": "Reset posture",
     "gui.mtrsteamloco.eye_candy.tip_resource_pack": "You can import more objects through the resource pack. Please click here to view the details.",
     "gui.mtrsteamloco.eye_candy.title": "Decorative object settings",
     "gui.mtrsteamloco.eye_candy.present": "Current object:%s",
@@ -57,7 +58,7 @@
     "gui.mtrsteamloco.config.client.title": "ANTE client configuration",
     "gui.mtrsteamloco.config.client.category.common": "in common use",
     "gui.mtrsteamloco.config.client.category.misc": "miscellaneous",
-    "gui.mtrsteamloco.config.client.shaderactive": "因其与 Optifine 冲突，立体轨道功能及渲染优化现无法使用。",
+    "gui.mtrsteamloco.config.client.shaderactive": "Due to its conflict with Optifine, the stereoscopic orbit function and rendering optimization are currently unavailable.",
     "gui.mtrsteamloco.config.client.shadercompat": "Using rendering optimization",
     "gui.mtrsteamloco.config.client.rail3d": "Stereoscopic orbit model",
     "gui.mtrsteamloco.config.client.slider": "Adjust posture using slider",
@@ -97,5 +98,7 @@
     "gui.mtr.rail_action_slice": "Create slice task by%s (%s block length)",
     "gui.mtrsteamloco.direct_node.unbound": "The straight line node is not bound",
     "gui.mtrsteamloco.direct_node.success_bind": "Line node binding successful",
-    "gui.mtrsteamloco.direct_node.unbind": "unbind"
+    "gui.mtrsteamloco.direct_node.unbind": "unbind",
+    "tooltip.mtrsteamloco.direct_node.bound": "§b bound:%s°",
+    "tooltip.mtrsteamloco.direct_node.unbound": "unbound"
 }

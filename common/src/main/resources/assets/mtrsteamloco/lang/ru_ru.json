@@ -20,6 +20,7 @@
     "rail.mtrsteamloco.builtin_flat": "Встроенный ANTE (плоский)",
     "gui.mtrsteamloco.train_screen.title": "Настройка поезда",
     "gui.mtrsteamloco.eye_candy.full_light": "Поддерживайте полную яркость.",
+    "gui.mtrsteamloco.eye_candy.reset_pose": "Сбросить положение",
     "gui.mtrsteamloco.eye_candy.tip_resource_pack": "Вы можете импортировать больше объектов через пакет ресурсов. Подробнее читайте здесь.",
     "gui.mtrsteamloco.eye_candy.title": "Настройка декоративных объектов",
     "gui.mtrsteamloco.eye_candy.present": "Текущий объект:%s",
@@ -97,5 +98,7 @@
     "gui.mtr.rail_action_slice": "Создание задачи среза%s (длина блока%s)",
     "gui.mtrsteamloco.direct_node.unbound": "Линейные узлы не привязаны",
     "gui.mtrsteamloco.direct_node.success_bind": "Линейный узел успешно привязан",
-    "gui.mtrsteamloco.direct_node.unbind": "Снять привязку"
+    "gui.mtrsteamloco.direct_node.unbind": "Снять привязку",
+    "tooltip.mtrsteamloco.direct_node.bound": "§b Привязан:% S°",
+    "tooltip.mtrsteamloco.direct_node.unbound": "Без привязки"
 }

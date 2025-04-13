@@ -125,9 +125,9 @@ public class BlockEntityDirectNodeRenderer extends BlockEntityRendererMapper<Blo
                 basePose.rotateY((float) v);
                 MainClient.drawScheduler.enqueue(VERTICAL_MODEL, basePose, light);
             } else {
-                if (ClientConfig.enableRail3D) continue;
-                basePose.rotateY((float) Math.PI / 2F - (float) railAngle.angleRadians);
                 boolean b = blockEntity.getBlockState().getValue(BlockNode.IS_CONNECTED);
+                if (b && ClientConfig.enableRail3D) continue;
+                basePose.rotateY((float) Math.PI / 2F - (float) railAngle.angleRadians);
                 MainClient.drawScheduler.enqueue(b ? CONNECTION_MODEL : VERTICAL_MODEL, basePose, light);
             }
         }

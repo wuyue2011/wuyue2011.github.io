@@ -20,6 +20,7 @@
     "rail.mtrsteamloco.builtin_flat": "ANTE integrato (piatto)",
     "gui.mtrsteamloco.train_screen.title": "Configurazione del treno",
     "gui.mtrsteamloco.eye_candy.full_light": "Mantieni la piena luminosità",
+    "gui.mtrsteamloco.eye_candy.reset_pose": "Ripristina la postura",
     "gui.mtrsteamloco.eye_candy.tip_resource_pack": "È possibile importare più oggetti attraverso il pacchetto risorse. Clicca qui per vedere i dettagli.",
     "gui.mtrsteamloco.eye_candy.title": "Impostazioni oggetti decorativi",
     "gui.mtrsteamloco.eye_candy.present": "Oggetto corrente:%s",
@@ -97,5 +98,7 @@
     "gui.mtr.rail_action_slice": "Crea attività slice per%s (%s lunghezza blocco)",
     "gui.mtrsteamloco.direct_node.unbound": "Il nodo della linea retta non è legato",
     "gui.mtrsteamloco.direct_node.success_bind": "Legatura nodo linea riuscita",
-    "gui.mtrsteamloco.direct_node.unbind": "unbind"
+    "gui.mtrsteamloco.direct_node.unbind": "unbind",
+    "tooltip.mtrsteamloco.direct_node.bound": "§b vincolato:%s°",
+    "tooltip.mtrsteamloco.direct_node.unbound": "non legato"
 }

@@ -20,6 +20,7 @@
     "rail.mtrsteamloco.builtin_flat": "ANTE embutido (plano)",
     "gui.mtrsteamloco.train_screen.title": "Configuração do comboio",
     "gui.mtrsteamloco.eye_candy.full_light": "Manter o brilho total",
+    "gui.mtrsteamloco.eye_candy.reset_pose": "Repor a postura",
     "gui.mtrsteamloco.eye_candy.tip_resource_pack": "Você pode importar mais objetos através do pacote de recursos. Clique aqui para ver os detalhes.",
     "gui.mtrsteamloco.eye_candy.title": "Configuração dos objectos decorativos",
     "gui.mtrsteamloco.eye_candy.present": "Objecto actual:%s",
@@ -97,5 +98,7 @@
     "gui.mtr.rail_action_slice": "Criar tarefa de fatia por%s (%s comprimento do bloco)",
     "gui.mtrsteamloco.direct_node.unbound": "O nó da linha recta não está ligado",
     "gui.mtrsteamloco.direct_node.success_bind": "Ligação de nó de linha bem sucedida",
-    "gui.mtrsteamloco.direct_node.unbind": "unbind"
+    "gui.mtrsteamloco.direct_node.unbind": "unbind",
+    "tooltip.mtrsteamloco.direct_node.bound": "§b vinculado:%s°",
+    "tooltip.mtrsteamloco.direct_node.unbound": "não ligado"
 }

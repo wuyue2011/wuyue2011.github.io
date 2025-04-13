@@ -20,6 +20,7 @@
     "rail.mtrsteamloco.builtin_flat": "ANTE eingebaut (flach)",
     "gui.mtrsteamloco.train_screen.title": "Zugkonfiguration",
     "gui.mtrsteamloco.eye_candy.full_light": "Volle Helligkeit beibehalten",
+    "gui.mtrsteamloco.eye_candy.reset_pose": "Haltung zurücksetzen",
     "gui.mtrsteamloco.eye_candy.tip_resource_pack": "Sie können weitere Objekte über das Ressourcenpaket importieren. Bitte klicken Sie hier, um die Details zu sehen.",
     "gui.mtrsteamloco.eye_candy.title": "Einstellungen für dekorative Objekte",
     "gui.mtrsteamloco.eye_candy.present": "Aktuelles Objekt:%s",
@@ -97,5 +98,7 @@
     "gui.mtr.rail_action_slice": "Slice Task nach%s (%s Blocklänge) erstellen",
     "gui.mtrsteamloco.direct_node.unbound": "Der geradlinige Knoten ist nicht gebunden",
     "gui.mtrsteamloco.direct_node.success_bind": "Linienknotenbindung erfolgreich",
-    "gui.mtrsteamloco.direct_node.unbind": "Abbinden"
+    "gui.mtrsteamloco.direct_node.unbind": "Abbinden",
+    "tooltip.mtrsteamloco.direct_node.bound": "§b gebunden:%s°",
+    "tooltip.mtrsteamloco.direct_node.unbound": "ungebunden"
 }

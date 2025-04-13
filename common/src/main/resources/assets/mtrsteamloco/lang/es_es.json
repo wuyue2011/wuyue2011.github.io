@@ -20,6 +20,7 @@
     "rail.mtrsteamloco.builtin_flat": "Ante incorporado (plano)",
     "gui.mtrsteamloco.train_screen.title": "Configuración del tren",
     "gui.mtrsteamloco.eye_candy.full_light": "Mantener el brillo completo",
+    "gui.mtrsteamloco.eye_candy.reset_pose": "Restablecer la postura",
     "gui.mtrsteamloco.eye_candy.tip_resource_pack": "Puede importar más objetos a través del paquete de recursos. Haga clic aquí para obtener más información.",
     "gui.mtrsteamloco.eye_candy.title": "Configuración del objeto decorativo",
     "gui.mtrsteamloco.eye_candy.present": "Objeto actual: s",
@@ -97,5 +98,7 @@
     "gui.mtr.rail_action_slice": "Crear tarea de corte por% S (%s Square long)",
     "gui.mtrsteamloco.direct_node.unbound": "El nodo lineal no está vinculado",
     "gui.mtrsteamloco.direct_node.success_bind": "Enlace exitoso del nodo lineal",
-    "gui.mtrsteamloco.direct_node.unbind": "Desbloquear"
+    "gui.mtrsteamloco.direct_node.unbind": "Desbloquear",
+    "tooltip.mtrsteamloco.direct_node.bound": "Artículo B vinculado% S °",
+    "tooltip.mtrsteamloco.direct_node.unbound": "No vinculado"
 }

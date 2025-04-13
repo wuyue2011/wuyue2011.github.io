@@ -20,6 +20,7 @@
     "rail.mtrsteamloco.builtin_flat": "Ante intégré (plat)",
     "gui.mtrsteamloco.train_screen.title": "Configuration du train",
     "gui.mtrsteamloco.eye_candy.full_light": "Maintenir la pleine luminosité",
+    "gui.mtrsteamloco.eye_candy.reset_pose": "Réinitialiser la posture",
     "gui.mtrsteamloco.eye_candy.tip_resource_pack": "Vous pouvez importer plus d'objets via le pack de ressources. Cliquez ici pour lire les détails.",
     "gui.mtrsteamloco.eye_candy.title": "Réglage des objets décoratifs",
     "gui.mtrsteamloco.eye_candy.present": "Objet actuel:%s",
@@ -97,5 +98,7 @@
     "gui.mtr.rail_action_slice": "Création d'une tâche de tranche par%s (%s Square long)",
     "gui.mtrsteamloco.direct_node.unbound": "Les nœuds linéaires ne sont pas liés",
     "gui.mtrsteamloco.direct_node.success_bind": "Liaison de nœud linéaire réussie",
-    "gui.mtrsteamloco.direct_node.unbind": "Débrancher la liaison"
+    "gui.mtrsteamloco.direct_node.unbind": "Débrancher la liaison",
+    "tooltip.mtrsteamloco.direct_node.bound": "§ B lié:% S°",
+    "tooltip.mtrsteamloco.direct_node.unbound": "Non lié"
 }

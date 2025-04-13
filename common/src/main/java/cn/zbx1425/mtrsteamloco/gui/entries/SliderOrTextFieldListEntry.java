@@ -195,11 +195,11 @@ public class SliderOrTextFieldListEntry extends TooltipListEntry<Float> implemen
         UtilitiesClient.setWidgetY(this.widget, y);
         Component displayedFieldName = getDisplayedFieldName();
         if (Minecraft.getInstance().font.isBidirectional()) {
-            Minecraft.getInstance().font.drawShadow(matrices, displayedFieldName.getVisualOrderText(), window.getGuiScaledWidth() - x - Minecraft.getInstance().font.width(displayedFieldName), y + 6, 16777215);
+            drawString(matrices, Minecraft.getInstance().font, displayedFieldName.getVisualOrderText(), window.getGuiScaledWidth() - x - Minecraft.getInstance().font.width(displayedFieldName), y + 6, getPreferredTextColor());
             UtilitiesClient.setWidgetX(this.btnSwitches, x);
             UtilitiesClient.setWidgetX(this.widget, x + btnSwitches.getWidth() + 2);
         } else {
-            Minecraft.getInstance().font.drawShadow(matrices, displayedFieldName.getVisualOrderText(), x, y + 6, getPreferredTextColor());
+            drawString(matrices, Minecraft.getInstance().font, displayedFieldName.getVisualOrderText(), x, y + 6, getPreferredTextColor());
             UtilitiesClient.setWidgetX(this.btnSwitches, x + entryWidth - btnSwitches.getWidth());
             UtilitiesClient.setWidgetX(this.widget, x + entryWidth - 150);
         }
@@ -217,4 +217,14 @@ public class SliderOrTextFieldListEntry extends TooltipListEntry<Float> implemen
     public List<? extends NarratableEntry> narratables() {
         return widgets;
     }
+
+#if MC_VERSION >= "12000"
+    public static void drawString(GuiGraphics matrices, Font font, FormattedCharSequence text, int x, int y, int color) {
+        matrices.drawString(font, text, x, y, color);
+    }
+#else
+    public static void drawString(PoseStack matrices, Font font, FormattedCharSequence text, int x, int y, int color) {
+        GuiComponent.drawString(matrices, font, text, x, y, color);
+    }
+#endif
 }
