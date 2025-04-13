@@ -78,7 +78,7 @@ public class Main {
 			registries.registerBlockAndItem("departure_bell", BLOCK_DEPARTURE_BELL, CreativeModeTabs.RAILWAY_FACILITIES);
 			registries.registerBlockAndItem("eye_candy", BLOCK_EYE_CANDY, CreativeModeTabs.STATION_BUILDING_BLOCKS);
 			registries.registerBlockEntityType("eye_candy", BLOCK_ENTITY_TYPE_EYE_CANDY);
-			registries.registerBlockAndItem("direct_node", BLOCK_DIRECT_NODE, CreativeModeTabs.STATION_BUILDING_BLOCKS);
+			registries.registerBlockAndItem("direct_node", BLOCK_DIRECT_NODE, CreativeModeTabs.CORE);
 			registries.registerBlockEntityType("direct_node", BLOCK_ENTITY_TYPE_DIRECT_NODE);
 			registries.registerItem("bridge_creator_1", BRIDGE_CREATOR_1);
 			registries.registerItem("compound_creator", COMPOUND_CREATOR);

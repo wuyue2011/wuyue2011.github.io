@@ -1,6 +1,7 @@
 {
     "modmenu.descriptionTranslation.mtrsteamloco": "Quelques extensions expérimentales de zbx1425 avec Aphrodite pour MTR mod. Certaines de ces caractéristiques pourraient être ajoutées à l'ontologie MTR à l'avenir.",
     "block.mtrsteamloco.departure_bell": "Cloche de départ",
+    "block.mtrsteamloco.direct_node": "Nœuds de ligne droite",
     "block.mtrsteamloco.statistic_turnstile": "Statistiques visiteurs door",
     "block.mtrsteamloco.feedback_box": "Boîte de message",
     "block.mtrsteamloco.eye_candy": "Objets décoratifs",
@@ -74,7 +75,7 @@
     "gui.mtrsteamloco.config.client.custom_config.engaged": "Configuration personnalisée déjà utilisée",
     "gui.mtrsteamloco.config.client.custom_config.untapped": "Configuration personnalisée non utilisée",
     "gui.mtrsteamloco.mtr_version_low": "Veuillez mettre à jour MTR: Ante%s nécessite MTR%s et supérieur, alors que la version%s installée est inférieure.",
-    "gui.mtrsteamloco.compound_creator.title": "Constructeur hybride",
+    "gui.mtrsteamloco.compound_creator.title": "Créateur Composite",
     "gui.mtrsteamloco.compound_creator.copy": "Copier",
     "gui.mtrsteamloco.compound_creator.clear": "Vider",
     "gui.mtrsteamloco.compound_creator.task.config.title": "Configuration des tâches",
@@ -93,5 +94,8 @@
     "key.mtrsteamloco.train_screen": "L'écran du train",
     "category.mtrsteamloco.keybinding": "Ante liaison par clé",
     "gui.mtr.percentage_complete_slice": "Tâches de découpage (%s%)",
-    "gui.mtr.rail_action_slice": "Création d'une tâche de tranche par%s (%s Square long)"
+    "gui.mtr.rail_action_slice": "Création d'une tâche de tranche par%s (%s Square long)",
+    "gui.mtrsteamloco.direct_node.unbound": "Les nœuds linéaires ne sont pas liés",
+    "gui.mtrsteamloco.direct_node.success_bind": "Liaison de nœud linéaire réussie",
+    "gui.mtrsteamloco.direct_node.unbind": "Débrancher la liaison"
 }

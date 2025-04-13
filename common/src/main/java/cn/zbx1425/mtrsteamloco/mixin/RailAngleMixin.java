@@ -54,7 +54,7 @@ public abstract class RailAngleMixin implements RailAngleExtra{
         float f1 = other.angleDegrees, f2 = angleDegrees;
         float f3 = Math.abs(f1 - f2) % 180;
         boolean result = f3 < 0.001;
-        Main.LOGGER.info("isParallel: " + f1 + " " + f2 + " " + f3 + result);
+        // Main.LOGGER.info("isParallel: " + f1 + " " + f2 + " " + f3 + result);
         return result;
     }
 }

@@ -12,11 +12,15 @@ import cn.zbx1425.sowcer.math.Matrix4f;
 import cn.zbx1425.sowcer.math.PoseStackUtil;
 import cn.zbx1425.sowcerext.model.ModelCluster;
 import cn.zbx1425.sowcerext.model.integration.BufferSourceProxy;
+import cn.zbx1425.mtrsteamloco.ClientConfig;
+import net.minecraft.resources.ResourceLocation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mtr.RegistryObject;
+import mtr.block.BlockNode;
 import mtr.block.IBlock;
 import mtr.client.ClientData;
 import mtr.data.TrainClient;
+import mtr.data.RailAngle;
 import mtr.mappings.BlockEntityRendererMapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
@@ -24,6 +28,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import cn.zbx1425.sowcer.object.VertArray;
+import cn.zbx1425.sowcer.model.VertArrays;
 import cn.zbx1425.mtrsteamloco.render.integration.MtrModelRegistryUtil;
 import net.minecraft.client.renderer.LevelRenderer;
 #if MC_VERSION >= "11904"
@@ -34,6 +40,7 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import cn.zbx1425.mtrsteamloco.Main;
@@ -44,6 +51,39 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class BlockEntityDirectNodeRenderer extends BlockEntityRendererMapper<BlockEntityDirectNode> {
+
+    private static final ResourceLocation VERTICAL_MODEL_LOCATION = new ResourceLocation(Main.MOD_ID, "models/block/rail_node_vertical.obj");
+    private static final ResourceLocation CONNECTION_MODEL_LOCATION = new ResourceLocation(Main.MOD_ID, "models/block/rail_node_connection.obj");
+
+    private static ModelCluster VERTICAL_MODEL = null;
+    private static ModelCluster CONNECTION_MODEL = null;
+
+    public static void initGLModel(ResourceManager resourceManager) {
+        try {
+            VERTICAL_MODEL = MainClient.modelManager.uploadVertArrays(MainClient.modelManager.loadRawModel(resourceManager, VERTICAL_MODEL_LOCATION, null));
+            applyColor(VERTICAL_MODEL, 0xAAAAFFFF);
+        } catch (Exception e) {
+            Main.LOGGER.error("Failed to load vertical model: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        try {
+            CONNECTION_MODEL = MainClient.modelManager.uploadVertArrays(MainClient.modelManager.loadRawModel(resourceManager, CONNECTION_MODEL_LOCATION, null));
+            applyColor(CONNECTION_MODEL, 0xAAAAFFFF);
+        } catch (Exception e) {
+            Main.LOGGER.error("Failed to load connection model: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private static void applyColor(ModelCluster model, int color) {
+        VertArrays[] vertArrays = new VertArrays[] {model.uploadedOpaqueParts, model.uploadedTranslucentParts};
+        for (VertArrays vertArray : vertArrays) {
+            for (VertArray vert : vertArray.meshList) {
+                vert.materialProp.attrState.setColor(color);
+            }
+        }
+    }
 
     public BlockEntityDirectNodeRenderer(BlockEntityRenderDispatcher dispatcher) {
         super(dispatcher);
@@ -63,6 +103,7 @@ public class BlockEntityDirectNodeRenderer extends BlockEntityRendererMapper<Blo
     }
 
     public static void commit(@NotNull PoseStack matrices, @NotNull MultiBufferSource vertexConsumers) {
+        if (VERTICAL_MODEL == null || CONNECTION_MODEL == null) return;
         Matrix4f worldPose = new Matrix4f(matrices.last().pose()).copy();
         HashSet<BlockEntityDirectNode> temp = new HashSet<>(entitysToRender);
         for (BlockEntityDirectNode blockEntity : temp) {
@@ -73,66 +114,32 @@ public class BlockEntityDirectNodeRenderer extends BlockEntityRendererMapper<Blo
 
             int light = LevelRenderer.getLightColor(world, blockEntity.getBlockPos());;
 
-            int lightToUse = blockEntity.fullLight ? LightTexture.pack(15, 15) : light;
-
             Matrix4f basePose = worldPose.copy();
-
             final BlockPos pos = blockEntity.getBlockPos();
+            basePose.translate(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F);
 
             RailAngle railAngle = blockEntity.getRailAngle();
             if (railAngle == null) {
-
-            }
-
-            if (prop == null || RailRenderDispatcher.isHoldingBrush) {
-                matrices.pushPose();
-                matrices.translate(pos.getX(), pos.getY(), pos.getZ());
-                matrices.translate(0.5f, 0.5f, 0.5f);
-                PoseStackUtil.rotY(matrices, (float) ((System.currentTimeMillis() % 1000) * (Math.PI * 2 / 1000)));
-#if MC_VERSION >= "11904"
-                if (blockEntity.prefabId != null && prop == null) {
-                    Minecraft.getInstance().getItemRenderer().renderStatic(BARRIER_ITEM_STACK.get(), ItemDisplayContext.GROUND, lightToUse, 0, matrices, vertexConsumers, world, 0);
-                } else {
-                    Minecraft.getInstance().getItemRenderer().renderStatic(BRUSH_ITEM_STACK.get(), ItemDisplayContext.GROUND, lightToUse, 0, matrices, vertexConsumers, world, 0);
-                }
-#else
-                if (blockEntity.prefabId != null && prop == null) {
-                    Minecraft.getInstance().getItemRenderer().renderStatic(BARRIER_ITEM_STACK.get(), ItemTransforms.TransformType.GROUND, lightToUse, 0, matrices, vertexConsumers, 0);
-                } else {
-                    Minecraft.getInstance().getItemRenderer().renderStatic(BRUSH_ITEM_STACK.get(), ItemTransforms.TransformType.GROUND, lightToUse, 0, matrices, vertexConsumers, 0);
-                }
-#endif
-                matrices.popPose();
-
-            }
-            if (prop == null) continue;
-            
-            candyPose.translate(pos.getX(), pos.getY(), pos.getZ());
-            candyPose.translate(0.5f, 0f, 0.5f);
-            candyPose.translate(blockEntity.translateX, blockEntity.translateY, blockEntity.translateZ);
-            candyPose.rotateY(-(float)Math.toRadians(facing.toYRot()) + (float)(Math.PI));
-            candyPose.rotateX(blockEntity.rotateX);
-            candyPose.rotateY(blockEntity.rotateY);
-            candyPose.rotateZ(blockEntity.rotateZ);
-            if (prop.model != null) {
-                MainClient.drawScheduler.enqueue(prop.model, candyPose, lightToUse);
-            }
-            if (prop.script != null && blockEntity.scriptContext != null) {
-                synchronized (blockEntity.scriptContext) {
-                    blockEntity.scriptContext.commit(MainClient.drawScheduler, candyPose, worldPose, lightToUse);
-                }
-                prop.script.tryCallRenderFunctionAsync(blockEntity.scriptContext);
+                double k = 2 * Math.PI;
+                double v = System.currentTimeMillis() / 1000D * k % k;
+                basePose.rotateY((float) v);
+                MainClient.drawScheduler.enqueue(VERTICAL_MODEL, basePose, light);
+            } else {
+                if (ClientConfig.enableRail3D) continue;
+                basePose.rotateY((float) Math.PI / 2F - (float) railAngle.angleRadians);
+                boolean b = blockEntity.getBlockState().getValue(BlockNode.IS_CONNECTED);
+                MainClient.drawScheduler.enqueue(b ? CONNECTION_MODEL : VERTICAL_MODEL, basePose, light);
             }
         }
     }
 
     @Override
-    public boolean shouldRenderOffScreen(BlockEyeCandy.@NotNull BlockEntityEyeCandy blockEntity) {
+    public boolean shouldRenderOffScreen(@NotNull BlockEntityDirectNode blockEntity) {
         return true;
     }
 
     @Override
-    public boolean shouldRender(BlockEyeCandy.@NotNull BlockEntityEyeCandy blockEntity, @NotNull Vec3 vec3) {
+    public boolean shouldRender(@NotNull BlockEntityDirectNode blockEntity, @NotNull Vec3 vec3) {
         return true;
     }
 }

@@ -4,6 +4,8 @@ import cn.zbx1425.mtrsteamloco.Main;
 import mtr.block.BlockNode;
 import net.minecraft.world.level.Level;
 import mtr.mappings.EntityBlockMapper;
+import net.minecraft.world.level.block.RenderShape;
+import org.jetbrains.annotations.NotNull;
 import mtr.mappings.BlockEntityClientSerializableMapper;
 import net.minecraft.nbt.CompoundTag;
 import mtr.mappings.BlockEntityMapper;
@@ -13,11 +15,17 @@ import net.minecraft.core.BlockPos;
 import cn.zbx1425.mtrsteamloco.data.RailAngleExtra;
 import mtr.data.TransportMode;
 import net.minecraft.server.level.ServerLevel;
+import cn.zbx1425.mtrsteamloco.network.PacketUpdateBlockEntity;
 
 public class BlockDirectNode extends BlockNode implements EntityBlockMapper {
 
     public BlockDirectNode() {
         super(TransportMode.TRAIN);
+    }
+
+    @Override
+    public RenderShape getRenderShape(@NotNull BlockState blockState) {
+        return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
@@ -40,12 +48,19 @@ public class BlockDirectNode extends BlockNode implements EntityBlockMapper {
             if (railAngle != null) return;
             BlockPos thi = getBlockPos();
             BlockPos oth = other.getBlockPos();
-            angle = (float) Math.toDegrees(Math.atan2(oth.getZ() - thi.getZ(), oth.getX() - thi.getX()));
+            bind((float) Math.toDegrees(Math.atan2(oth.getZ() - thi.getZ(), oth.getX() - thi.getX())));
+            other.bind(this);
+        }
+
+        public void bind(float angle) {
+            this.angle = angle;
             railAngle = RailAngleExtra.fromDegrees(angle);
             this.setChanged();
             Level level = getLevel();
-            if (level != null) if (level instanceof ServerLevel sl) sl.getChunkSource().blockChanged(getBlockPos());
-            other.bind(this);
+            if (level == null) return;
+
+            if (level instanceof ServerLevel sl) sl.getChunkSource().blockChanged(getBlockPos());
+            else PacketUpdateBlockEntity.sendUpdateC2S(this);
         }
 
         public void unbind() {
@@ -53,14 +68,21 @@ public class BlockDirectNode extends BlockNode implements EntityBlockMapper {
             angle = -114514F;
             this.setChanged();
             Level level = getLevel();
-            if (level != null) if (level instanceof ServerLevel sl) sl.getChunkSource().blockChanged(getBlockPos());
+            if (level == null) return;
+
+            if (level instanceof ServerLevel sl) sl.getChunkSource().blockChanged(getBlockPos());
+            else PacketUpdateBlockEntity.sendUpdateC2S(this);
+        }
+
+        public float getAngleDegrees() {
+            return angle;
         }
 
         public RailAngle getRailAngle() {
             return railAngle;
         }
 
-        public boolean isLocked() {
+        public boolean isBound() {
             return railAngle != null;
         }
         
@@ -79,7 +101,7 @@ public class BlockDirectNode extends BlockNode implements EntityBlockMapper {
         @Override
         public void writeCompoundTag(CompoundTag compoundTag) {
             compoundTag.putFloat(KEY_ANGLE, angle);
-            compoundTag.putBoolean(KEY_LOCKED, isLocked());
+            compoundTag.putBoolean(KEY_LOCKED, isBound());
             // Main.LOGGER.info("write ----- angle: " + angle + ", locked: " + isLocked() + ", railAngle: " + railAngle);
         }
     }

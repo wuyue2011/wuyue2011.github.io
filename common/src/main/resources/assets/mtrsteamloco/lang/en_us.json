@@ -1,6 +1,7 @@
 {
     "modmenu.descriptionTranslation.mtrsteamloco": "Some experimental extension features for MTR mod made by Zbx1425 and Aphrodite. Some of these features may be incorporated into the MTR ontology in the future.",
     "block.mtrsteamloco.departure_bell": "Departure bell",
+    "block.mtrsteamloco.direct_node": "Straight line node",
     "block.mtrsteamloco.statistic_turnstile": "Visitor statistics gate",
     "block.mtrsteamloco.feedback_box": "message box",
     "block.mtrsteamloco.eye_candy": "Decorative objects",
@@ -74,7 +75,7 @@
     "gui.mtrsteamloco.config.client.custom_config.engaged": "Used custom configurations",
     "gui.mtrsteamloco.config.client.custom_config.untapped": "Unused custom configurations",
     "gui.mtrsteamloco.mtr_version_low": "Please update MTR: ANTE%s requires MTR%s and above version, while the currently installed%s version is lower.",
-    "gui.mtrsteamloco.compound_creator.title": "Hybrid Builder",
+    "gui.mtrsteamloco.compound_creator.title": "Composite Creator",
     "gui.mtrsteamloco.compound_creator.copy": "copy",
     "gui.mtrsteamloco.compound_creator.clear": "clear",
     "gui.mtrsteamloco.compound_creator.task.config.title": "Task Configuration",
@@ -93,5 +94,8 @@
     "key.mtrsteamloco.train_screen": "Train screen",
     "category.mtrsteamloco.keybinding": "ANTE key binding",
     "gui.mtr.percentage_complete_slice": "Slice task (%s%%)",
-    "gui.mtr.rail_action_slice": "Create slice task by%s (%s block length)"
+    "gui.mtr.rail_action_slice": "Create slice task by%s (%s block length)",
+    "gui.mtrsteamloco.direct_node.unbound": "The straight line node is not bound",
+    "gui.mtrsteamloco.direct_node.success_bind": "Line node binding successful",
+    "gui.mtrsteamloco.direct_node.unbind": "unbind"
 }

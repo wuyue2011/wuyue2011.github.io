@@ -12,6 +12,7 @@ import cn.zbx1425.mtrsteamloco.Main;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderBuffers;
 import cn.zbx1425.mtrsteamloco.render.block.BlockEntityEyeCandyRenderer;
+import cn.zbx1425.mtrsteamloco.render.block.BlockEntityDirectNodeRenderer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -43,6 +44,7 @@ public class LevelRendererMixin {
     private void renderLevelLast(PoseStack matrices, float f, long l, boolean bl, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, com.mojang.math.Matrix4f matrix4f, CallbackInfo ci) {
 #endif
         BlockEntityEyeCandyRenderer.exchange();
+        BlockEntityDirectNodeRenderer.exchange();
         MainClient.drawContext.resetFrameProfiler();
     }
 

@@ -19,7 +19,11 @@ public class WidgetSlider extends AbstractSliderButton implements IGui {
     private static final int SLIDER_WIDTH = 10;
 
     public WidgetSlider(int maxValue, int value, Function<Integer, String> setMessage) {
-        super(0, 0, 0, 20, Text.literal(""), 0);
+        this(20, maxValue, value, setMessage);
+    }
+
+    public WidgetSlider(int height, int maxValue, int value, Function<Integer, String> setMessage) {
+        super(0, 0, 0, height, Text.literal(""), 0);
         this.maxValue = maxValue;
         this.setMessage = setMessage;
         this.setValue(value);

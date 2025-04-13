@@ -14,6 +14,7 @@ import cn.zbx1425.sowcer.math.Matrix4f;
 import mtr.data.Rail;
 import mtr.entity.EntitySeat;
 import cn.zbx1425.mtrsteamloco.render.block.BlockEntityEyeCandyRenderer;
+import cn.zbx1425.mtrsteamloco.render.block.BlockEntityDirectNodeRenderer;
 import mtr.render.RenderTrains;
 import net.minecraft.client.Minecraft;
 import cn.zbx1425.mtrsteamloco.Main;
@@ -66,6 +67,7 @@ public class RenderTrainsMixin {
         // }
 
         BlockEntityEyeCandyRenderer.commit(matrices, vertexConsumers);
+        BlockEntityDirectNodeRenderer.commit(matrices, vertexConsumers);
 
         MainClient.drawContext.drawWithBlaze = !ClientConfig.useRenderOptimization();
         MainClient.drawContext.sortTranslucentFaces = ClientConfig.translucentSort;

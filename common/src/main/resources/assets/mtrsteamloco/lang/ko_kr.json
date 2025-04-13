@@ -1,6 +1,7 @@
 {
     "modmenu.descriptionTranslation.mtrsteamloco": "Zbx1425와 Aphrodite가 만든 MTR mod를 위한 일부 실험적인 확장 기능이러한 특성 중 일부는 나중에 MTR 본체에 추가될 수 있습니다.",
     "block.mtrsteamloco.departure_bell": "발차벨",
+    "block.mtrsteamloco.direct_node": "선 노드",
     "block.mtrsteamloco.statistic_turnstile": "참관자 통계 브레이크",
     "block.mtrsteamloco.feedback_box": "메모함",
     "block.mtrsteamloco.eye_candy": "장식물",
@@ -74,7 +75,7 @@
     "gui.mtrsteamloco.config.client.custom_config.engaged": "사용된 사용자 정의 구성",
     "gui.mtrsteamloco.config.client.custom_config.untapped": "사용되지 않는 사용자 정의 구성",
     "gui.mtrsteamloco.mtr_version_low": "MTR을 업데이트하십시오.ANTE%s은(는) MTR%s 이상이 필요하지만 현재 설치된%s 버전은 낮습니다.",
-    "gui.mtrsteamloco.compound_creator.title": "블렌드 빌더",
+    "gui.mtrsteamloco.compound_creator.title": "복합 생성기",
     "gui.mtrsteamloco.compound_creator.copy": "복제",
     "gui.mtrsteamloco.compound_creator.clear": "비우기",
     "gui.mtrsteamloco.compound_creator.task.config.title": "작업 구성",
@@ -93,5 +94,8 @@
     "key.mtrsteamloco.train_screen": "열차 스크린",
     "category.mtrsteamloco.keybinding": "ANTE 키 바인딩",
     "gui.mtr.percentage_complete_slice": "슬라이스 작업 (%s%%)",
-    "gui.mtr.rail_action_slice": "%s에서 슬라이스 작업 생성(%s 상자 길이)"
+    "gui.mtr.rail_action_slice": "%s에서 슬라이스 작업 생성(%s 상자 길이)",
+    "gui.mtrsteamloco.direct_node.unbound": "선 노드가 바인딩되지 않았습니다.",
+    "gui.mtrsteamloco.direct_node.success_bind": "선 노드 바인딩 성공",
+    "gui.mtrsteamloco.direct_node.unbind": "바인딩 해제"
 }

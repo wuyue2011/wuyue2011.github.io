@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class RailCalculator {
-    public static final double PRECISION = 1e-6;
+    public static final double PRECISION = 1e-3;
 
     public static class Vec2 {
         public final double x, z;
@@ -56,6 +56,14 @@ public class RailCalculator {
             return x / length();
         }
 
+        public Vec2 normalize() {
+            double length = length();
+            if (length < PRECISION) {
+                return new Vec2(0, 0);
+            }
+            return new Vec2(x / length, z / length);
+        }
+
         public String toString() {
             return String.format("Vec2(%.2f, %.2f)", x, z);
         }
@@ -80,6 +88,12 @@ public class RailCalculator {
             return new Vec2(x, z);
         }
 
+        public boolean parallel(Line other) {
+            Vec2 dir1 = direction();
+            Vec2 dir2 = other.direction();
+            return dir1.equals(dir2);
+        }
+
         public double distance(Vec2 p) {
             return Math.abs(A * p.x + B * p.z + C) / Math.sqrt(A * A + B * B);
         }
@@ -90,11 +104,24 @@ public class RailCalculator {
         }
 
         public Vec2 direction() {
-            return new Vec2(B, -A);
+            return new Vec2(B, -A).normalize();
         }
 
         public String toString() {
             return String.format("Line: %s*x + %s*z + %s = 0", A, B, C);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) return false;
+            if (obj == this) return true;
+            if (obj instanceof Line other) {
+                boolean crossAB = Math.abs(A * other.B - other.A * B) < PRECISION;
+                boolean crossAC = Math.abs(A * other.C - other.A * C) < PRECISION;
+                boolean crossBC = Math.abs(B * other.C - other.B * C) < PRECISION;
+                return crossAB && crossAC && crossBC;
+            }
+            return false;
         }
     }
 
@@ -143,6 +170,10 @@ public class RailCalculator {
         public final double h, k, r, tStart, tEnd;
         public final boolean reverseT, isStraight;
 
+        public Section() {
+            this(0, 0, 0, 0, 0, false, true);
+        }
+
         public Section(double h, double k, double r, double tStart, double tEnd, boolean reverseT, boolean isStraight) {
             this.h = h;
             this.k = k;
@@ -173,49 +204,42 @@ public class RailCalculator {
     }
 
     public static class Arc implements Shape {
-        private final Vec2 center, start, mid, end;
+        private final Vec2 center, start, end;
         private final double radius;
 
-        public Arc(Vec2 center, Vec2 start, Vec2 mid, Vec2 end) {
+        public Arc(Vec2 center, Vec2 start, Vec2 end) {
             this.center = center;
             this.radius = center.distance(start);
             this.start = start;
-            this.mid = mid;
             this.end = end;
         }
 
         @Override
         public Section toSection() {
-            double h = this.center.x;
-            double k = this.center.z;
-            double r = this.radius;
+            // 圆心坐标 (h, k) 和半径 r
+            double h = center.x;
+            double k = center.z;
+            double r = radius;
 
-            // 计算起点、中点、终点相对于圆心的极角（弧度）
-            Vec2 sRel = start.sub(center);
-            double thetaS = sRel.radian();
-            thetaS = (thetaS + 2 * Math.PI) % (2 * Math.PI); // 归一化到0~2π
+            // 计算起点和终点相对于圆心的角度（弧度）
+            Vec2 startRel = start.sub(center);
+            double thetaStart = Math.atan2(startRel.z, startRel.x);
 
-            Vec2 mRel = mid.sub(center);
-            double thetaM = mRel.radian();
-            thetaM = (thetaM + 2 * Math.PI) % (2 * Math.PI);
+            Vec2 endRel = end.sub(center);
+            double thetaEnd = Math.atan2(endRel.z, endRel.x);
 
-            Vec2 eRel = end.sub(center);
-            double thetaE = eRel.radian();
-            thetaE = (thetaE + 2 * Math.PI) % (2 * Math.PI);
+            // 计算标准化的角度差，保持在 [-π, π] 范围内
+            double deltaTheta = thetaEnd - thetaStart;
+            deltaTheta = (deltaTheta + Math.PI) % (2 * Math.PI);
+            if (deltaTheta < 0) deltaTheta += 2 * Math.PI;
+            deltaTheta -= Math.PI;
 
-            // 计算从起点到终点的逆时针角度差
-            double delta_ccw = (thetaE - thetaS + 2 * Math.PI) % (2 * Math.PI);
+            // 计算t参数的范围，考虑半径
+            double tStart = thetaStart * r;
+            double tEnd = tStart + deltaTheta * r;
 
-            // 计算中间点相对于起点的逆时针角度差
-            double delta_m_ccw = (thetaM - thetaS + 2 * Math.PI) % (2 * Math.PI);
-
-            // 判断中间点是否位于逆时针路径上
-            boolean isCCW = delta_m_ccw <= delta_ccw;
-            boolean reverseT = !isCCW;
-
-            // 计算起始和结束弧长参数
-            double tStart = thetaS * r;
-            double tEnd = thetaE * r;
+            // 判断是否需要反转参数方向
+            boolean reverseT = deltaTheta < 0;
 
             return new Section(h, k, r, tStart, tEnd, reverseT, false);
         }
@@ -272,7 +296,7 @@ public class RailCalculator {
     }
 
     public static void pl(String s) {
-        System.out.println(s);
+        // System.out.println(s);
     }
 
     public static void main(String[] args) {
@@ -296,6 +320,11 @@ public class RailCalculator {
         }
         pl("无效的section");
         return null;
+    }
+
+    public static Group segment(double startX, double startZ, double endX, double endZ) {
+        Segment seg = new Segment(new Vec2(startX, startZ), new Vec2(endX, endZ));
+        return new Group(seg.toSection(), new Section());
     }
 
     private static Group _calculate(double startX, double startZ, double endX, double endZ, double startAngle, double endAngle) {
@@ -322,6 +351,12 @@ public class RailCalculator {
 
         Line SS1 = new Line(S, S1);
         Line EE1 = new Line(E, E1);
+
+        if (SS1.equals(EE1)) {
+            pl("直线");
+            Segment seg = new Segment(S, E);
+            return new Group(seg.toSection(), new Section());
+        }
 
         Vec2 M = SS1.intersection(EE1);
 
@@ -354,30 +389,11 @@ public class RailCalculator {
             }
             pl("O " + O);
 
-            Circle c = new Circle(O, dMS);
-            Line OM = new Line(O, M);
-            List<Vec2> intersections = c.intersections(OM);
-            Vec2 H = null;
-            for (Vec2 p : intersections) {
-                if (H == null) {
-                    H = p;
-                    continue;
-                }
-                if (p.distance(E) < H.distance(E)) {
-                    H = p;
-                }
-            }
-            if (H == null) {
-                pl("无交点");
-                return null;
-            }
-            pl("H " + H);
-
-            Arc arc = new Arc(O, S, H, F);
+            Arc arc = new Arc(O, S, F);
             Segment seg = new Segment(F, E);
             Group group = new Group(arc.toSection(), seg.toSection());
             return group;
-        } else {
+        } else if (dME < dMS) { // 曲线在后
             pl("曲线在后");
 
             Line p1 = EE1.perpendicular(E);
@@ -393,29 +409,22 @@ public class RailCalculator {
             }
             pl("O " + O);
 
-            Circle c = new Circle(O, dME);
-            Line OM = new Line(O, M);
-            List<Vec2> intersections = c.intersections(OM);
-            Vec2 H = null;
-            for (Vec2 p : intersections) {
-                if (H == null) {
-                    H = p;
-                    continue;
-                }
-                if (p.distance(S) < H.distance(S)) {
-                    H = p;
-                }
-            }
-            if (H == null) {
+            Segment seg = new Segment(S, F);
+            Arc arc = new Arc(O, F, E);
+            Group group = new Group(seg.toSection(), arc.toSection());
+            return group;
+        } else { // 一段曲线
+            pl("一段曲线");
+            Line p1 = SS1.perpendicular(S);
+            Line p2 = EE1.perpendicular(E);
+            Vec2 O = p1.intersection(p2);
+            if (O == null) {
                 pl("无交点");
                 return null;
             }
-            pl("H " + H);
+            pl("O " + O);
 
-            Segment seg = new Segment(S, F);
-            Arc arc = new Arc(O, F, H, E);
-            Group group = new Group(seg.toSection(), arc.toSection());
-            return group;
+            return new Group(new Arc(O, S, E).toSection(), new Section());
         }
     }
 }

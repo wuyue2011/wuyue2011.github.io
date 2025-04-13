@@ -1,6 +1,7 @@
 {
     "modmenu.descriptionTranslation.mtrsteamloco": "Alcune funzionalità sperimentali di estensione per MTR mod realizzate da Zbx1425 e Aphrodite. Alcune di queste caratteristiche potrebbero essere incorporate nell'ontologia MTR in futuro.",
     "block.mtrsteamloco.departure_bell": "Campana di partenza",
+    "block.mtrsteamloco.direct_node": "Nodo di linea retta",
     "block.mtrsteamloco.statistic_turnstile": "Cancello delle statistiche dei visitatori",
     "block.mtrsteamloco.feedback_box": "casella messaggio",
     "block.mtrsteamloco.eye_candy": "Oggetti decorativi",
@@ -74,7 +75,7 @@
     "gui.mtrsteamloco.config.client.custom_config.engaged": "Configurazioni personalizzate usate",
     "gui.mtrsteamloco.config.client.custom_config.untapped": "Configurazioni personalizzate non usate",
     "gui.mtrsteamloco.mtr_version_low": "Aggiorna MTR: ANTE%s richiede la versione MTR%s e superiore, mentre la versione attualmente installata%s è inferiore.",
-    "gui.mtrsteamloco.compound_creator.title": "Costruttore ibrido",
+    "gui.mtrsteamloco.compound_creator.title": "Creatore composito",
     "gui.mtrsteamloco.compound_creator.copy": "copia",
     "gui.mtrsteamloco.compound_creator.clear": "chiaro",
     "gui.mtrsteamloco.compound_creator.task.config.title": "Configurazione attività",
@@ -93,5 +94,8 @@
     "key.mtrsteamloco.train_screen": "Schermo del treno",
     "category.mtrsteamloco.keybinding": "Legatura chiave ANTE",
     "gui.mtr.percentage_complete_slice": "Attività di taglio (%s%%)",
-    "gui.mtr.rail_action_slice": "Crea attività slice per%s (%s lunghezza blocco)"
+    "gui.mtr.rail_action_slice": "Crea attività slice per%s (%s lunghezza blocco)",
+    "gui.mtrsteamloco.direct_node.unbound": "Il nodo della linea retta non è legato",
+    "gui.mtrsteamloco.direct_node.success_bind": "Legatura nodo linea riuscita",
+    "gui.mtrsteamloco.direct_node.unbind": "unbind"
 }

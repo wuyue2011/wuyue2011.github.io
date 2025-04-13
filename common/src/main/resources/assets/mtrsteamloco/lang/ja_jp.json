@@ -1,6 +1,7 @@
 {
     "modmenu.descriptionTranslation.mtrsteamloco": "Zbx 1425とAphroditeで作られたMTRモード用の実験的な拡張機能のいくつか。その中のいくつかの特性は、将来的にMTR本体に組み込まれる可能性があります。",
     "block.mtrsteamloco.departure_bell": "ベルを鳴らす",
+    "block.mtrsteamloco.direct_node": "直線ノード",
     "block.mtrsteamloco.statistic_turnstile": "見学者統計ブレーキ",
     "block.mtrsteamloco.feedback_box": "伝言箱",
     "block.mtrsteamloco.eye_candy": "装飾品",
@@ -74,7 +75,7 @@
     "gui.mtrsteamloco.config.client.custom_config.engaged": "使用されているカスタム構成",
     "gui.mtrsteamloco.config.client.custom_config.untapped": "未使用のカスタム構成",
     "gui.mtrsteamloco.mtr_version_low": "MTRを更新してください:ANTE%sにはMTR%s以上のバージョンが必要ですが、現在インストールされている%sバージョンは低いです。",
-    "gui.mtrsteamloco.compound_creator.title": "ハイブリッドビルダー",
+    "gui.mtrsteamloco.compound_creator.title": "複合作成器",
     "gui.mtrsteamloco.compound_creator.copy": "レプリケーション",
     "gui.mtrsteamloco.compound_creator.clear": "クリアランス",
     "gui.mtrsteamloco.compound_creator.task.config.title": "タスク構成",
@@ -93,5 +94,8 @@
     "key.mtrsteamloco.train_screen": "列車のスクリーン",
     "category.mtrsteamloco.keybinding": "ANTEキー・バインド",
     "gui.mtr.percentage_complete_slice": "スライスタスク(%s%%)",
-    "gui.mtr.rail_action_slice": "スライスタスクを%sから作成(%sブロック長)"
+    "gui.mtr.rail_action_slice": "スライスタスクを%sから作成(%sブロック長)",
+    "gui.mtrsteamloco.direct_node.unbound": "直線ノードがバインドされていません",
+    "gui.mtrsteamloco.direct_node.success_bind": "直線ノードのバインドに成功しました",
+    "gui.mtrsteamloco.direct_node.unbind": "バインド解除"
 }

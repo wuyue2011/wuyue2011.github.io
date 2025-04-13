@@ -89,11 +89,10 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class CompoundCreatorScreen extends Screen {
-    public static void setScreen(Screen parent) {
+    public static Screen createScreen(Screen parent) {
         CompoundCreatorScreen screen = new CompoundCreatorScreen(parent);
-        if (screen.load()) {
-            Minecraft.getInstance().setScreen(screen);
-        }
+        if (screen.load()) return screen;
+        return parent;
     }
 
     private static final String TAG_TASKS = "tasks";

@@ -40,7 +40,7 @@ public abstract class ItemNodeModifierBaseMixin {
     private static final String TAG_TRANSPORT_MODE = "transport_mode";
     @Shadow(remap = false) private boolean isConnector;
 
-    @Shadow abstract void onConnect(Level world, ItemStack stack, TransportMode transportMode, BlockState stateStart, BlockState stateEnd, BlockPos posStart, BlockPos posEnd, RailAngle facingStart, RailAngle facingEnd, Player player, RailwayData railwayData);
+    @Shadow abstract void onConnect(Level world, ItemStack stack, TransportMode transportMode, BlockState stateStart, BlockState stateEnd, BlockPos posStart, BlockPos posEnd, RailAngle railAngleStart, RailAngle railAngleEnd, Player player, RailwayData railwayData);
 
     @Shadow abstract void onRemove(Level world, BlockPos posStart, BlockPos posEnd, Player player, RailwayData railwayData);
 
@@ -68,33 +68,41 @@ public abstract class ItemNodeModifierBaseMixin {
 
                     BlockEntityDirectNode beStart = getBlockEntity(world, posStart);
                     BlockEntityDirectNode beEnd = getBlockEntity(world, posEnd);
-                    int t1 = 0, t2 = 0, t3 = 0;
-                    Main.LOGGER.info("a1." + railAngleStart.angleDegrees + " a2." + railAngleEnd.angleDegrees);
                     if (beStart != null && beEnd != null) {
-                        t1 = 1;
-                        if (!beStart.isLocked() && !beEnd.isLocked()) beStart.bind(beEnd); t1 = 2;
-                    } 
-                    if (beStart != null) {
-                        RailAngle railAngle = beStart.getRailAngle();
-                        t2 = 1;
-                        if (railAngle != null) railAngleStart = railAngle; t2 = 2;
+                        if (!beStart.isBound() && !beEnd.isBound()) {
+                            beStart.bind(beEnd);
+                            if (player != null) player.displayClientMessage(Text.translatable("gui.mtrsteamloco.direct_node.success_bind"), true);
+                        }
                     }
-                    if (beEnd != null) {
-                        RailAngle railAngle = beEnd.getRailAngle();
-                        t3 = 1;
-                        if (railAngle != null) railAngleEnd = railAngle; t3 = 2;
+                    boolean s1 = false, s2 = false;
+                    if (beStart == null) s1 = true;
+                    else {
+                        RailAngle f = beStart.getRailAngle();
+                        if (f == null) s1 = false;
+                        else {
+                            railAngleStart = f;
+                            s1 = true;
+                        }
                     }
 
-                    Main.LOGGER.info("t1." + railAngleStart + " t2." + railAngleEnd);
+                    if (beEnd == null) s2 = true;
+                    else {
+                        RailAngle f = beEnd.getRailAngle();
+                        if (f == null) s2 = false;
+                        else {
+                            railAngleEnd = f;
+                            s2 = true;
+                        }
+                    }
 
-                    if (!RailAngle.similarFacing(angleDifference, railAngleStart.angleDegrees)) railAngleStart = railAngleStart.getOpposite();
-                    if (RailAngle.similarFacing(angleDifference, railAngleEnd.angleDegrees)) railAngleEnd = railAngleEnd.getOpposite();
-
-                    Main.LOGGER.info("c1." + railAngleStart.angleDegrees + " c2." + railAngleEnd.angleDegrees);
-
-                    Main.LOGGER.info("t1." + t1 + " t2." + t2 + " t3." + t3);
-
-					onConnect(world, context.getItemInHand(), ((BlockNode) blockStart).transportMode, stateStart, stateEnd, posStart, posEnd, railAngleStart, railAngleEnd, player, railwayData);
+                    if (s1 && s2) {
+                        if (!RailAngle.similarFacing(angleDifference, railAngleStart.angleDegrees)) railAngleStart = railAngleStart.getOpposite();
+                        if (RailAngle.similarFacing(angleDifference, railAngleEnd.angleDegrees)) railAngleEnd = railAngleEnd.getOpposite();
+                        
+                        onConnect(world, context.getItemInHand(), ((BlockNode) blockStart).transportMode, stateStart, stateEnd, posStart, posEnd, railAngleStart, railAngleEnd, player, railwayData);
+                    } else {
+                        if (player != null) player.displayClientMessage(Text.translatable("gui.mtrsteamloco.direct_node.unbound"), true);
+                    }
 				}
 			} else {
 				onRemove(world, posStart, posEnd, player, railwayData);
@@ -105,7 +113,6 @@ public abstract class ItemNodeModifierBaseMixin {
         info.cancel();
         return;
 	}
-
 
     private BlockEntityDirectNode getBlockEntity(Level world, BlockPos pos) {
         BlockEntity entity = world.getBlockEntity(pos);

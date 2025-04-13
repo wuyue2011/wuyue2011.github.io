@@ -1,6 +1,7 @@
 {
     "modmenu.descriptionTranslation.mtrsteamloco": "Alguns recursos experimentais de extensão para o mod MTR feitos por Zbx1425 e Aphrodite. Algumas dessas características podem ser incorporadas à ontologia MTR no futuro.",
     "block.mtrsteamloco.departure_bell": "Sino de partida",
+    "block.mtrsteamloco.direct_node": "Nó recto",
     "block.mtrsteamloco.statistic_turnstile": "Portal de estatísticas dos visitantes",
     "block.mtrsteamloco.feedback_box": "caixa de mensagens",
     "block.mtrsteamloco.eye_candy": "Objetos decorativos",
@@ -74,7 +75,7 @@
     "gui.mtrsteamloco.config.client.custom_config.engaged": "Configurações personalizadas usadas",
     "gui.mtrsteamloco.config.client.custom_config.untapped": "Configurações personalizadas não utilizadas",
     "gui.mtrsteamloco.mtr_version_low": "Actualize por favor o MTR: ANTE%s requer MTR%s e versão superior, enquanto a versão atualmente instalada%s é menor.",
-    "gui.mtrsteamloco.compound_creator.title": "Construtor Híbrido",
+    "gui.mtrsteamloco.compound_creator.title": "Criador Composto",
     "gui.mtrsteamloco.compound_creator.copy": "cópia",
     "gui.mtrsteamloco.compound_creator.clear": "claro",
     "gui.mtrsteamloco.compound_creator.task.config.title": "Configuração da Tarefa",
@@ -93,5 +94,8 @@
     "key.mtrsteamloco.train_screen": "Ecrã do comboio",
     "category.mtrsteamloco.keybinding": "Ligação de teclas ANTE",
     "gui.mtr.percentage_complete_slice": "Tarefa de corte (%s%%)",
-    "gui.mtr.rail_action_slice": "Criar tarefa de fatia por%s (%s comprimento do bloco)"
+    "gui.mtr.rail_action_slice": "Criar tarefa de fatia por%s (%s comprimento do bloco)",
+    "gui.mtrsteamloco.direct_node.unbound": "O nó da linha recta não está ligado",
+    "gui.mtrsteamloco.direct_node.success_bind": "Ligação de nó de linha bem sucedida",
+    "gui.mtrsteamloco.direct_node.unbind": "unbind"
 }
