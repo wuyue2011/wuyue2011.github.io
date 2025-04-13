@@ -20,6 +20,7 @@
     "rail.mtrsteamloco.builtin_flat": "ANTE 内置 (平面)",
     "gui.mtrsteamloco.train_screen.title": "列车设置",
     "gui.mtrsteamloco.eye_candy.full_light": "保持全亮度",
+    "gui.mtrsteamloco.eye_candy.reset_pose": "重置姿态",
     "gui.mtrsteamloco.eye_candy.tip_resource_pack": "您可通过资源包导入更多物件。请点击此处阅览详情。",
     "gui.mtrsteamloco.eye_candy.title": "装饰物件设置",
     "gui.mtrsteamloco.eye_candy.present": "当前物件: %s",

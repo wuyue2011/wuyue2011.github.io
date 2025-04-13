@@ -37,7 +37,8 @@ public class ClientConfig {
     public static boolean enableTrainRender = true;
     public static boolean enableTrainSound = true;
     public static boolean enableSmoke = true;
-    public static boolean enableSlider = true;
+    public static int eyeCandyScreenMode = 0b000000;
+    public static int directNodeScreenMode = 0;
 
     public static boolean useEditBoxSetRailRolling = true;
 
@@ -63,8 +64,9 @@ public class ClientConfig {
             enableTrainSound = getOrDefault(configObject, "enableTrainSound", JsonElement::getAsBoolean, true);
             enableSmoke = getOrDefault(configObject, "enableSmoke", JsonElement::getAsBoolean, true);
             hideRidingTrain = getOrDefault(configObject, "hideRidingTrain", JsonElement::getAsBoolean, false);
-            enableSlider = getOrDefault(configObject, "enableSlider", JsonElement::getAsBoolean, true);
             useEditBoxSetRailRolling = getOrDefault(configObject, "useEditBoxSetRailRolling", JsonElement::getAsBoolean, true);
+            eyeCandyScreenMode = getOrDefault(configObject, "eyeCandyScreenMode", JsonElement::getAsInt, 0b000000);
+            directNodeScreenMode = getOrDefault(configObject, "directNodeScreenMode", JsonElement::getAsInt, 0);
 
             customConfigs.clear();
             if (configObject.has("custom")) {
@@ -116,8 +118,9 @@ public class ClientConfig {
             configObject.addProperty("enableTrainSound", enableTrainSound);
             configObject.addProperty("enableSmoke", enableSmoke);
             configObject.addProperty("hideRidingTrain", hideRidingTrain);
-            configObject.addProperty("enableSlider", enableSlider);
+            configObject.addProperty("eyeCandyScreenMode", eyeCandyScreenMode);
             configObject.addProperty("useEditBoxSetRailRolling", useEditBoxSetRailRolling);
+            configObject.addProperty("directNodeScreenMode", directNodeScreenMode);
 
             JsonObject customObject = new JsonObject();
             for (Map.Entry<String, String> entry : customConfigs.entrySet()) {

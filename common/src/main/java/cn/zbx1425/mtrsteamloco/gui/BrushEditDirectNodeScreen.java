@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import mtr.client.IDrawing;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import cn.zbx1425.mtrsteamloco.ClientConfig;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.Level;
@@ -43,8 +44,7 @@ public class BrushEditDirectNodeScreen extends Screen {
     private float partialTick;
 
     Button btnReturn = UtilitiesClient.newButton(Text.literal("X"), btn -> onClose());
-    static int mode = 0;
-    Button btnCirculateMode = UtilitiesClient.newButton(Text.literal("⇄"), btn -> switchMode(mode + 1));
+    Button btnCirculateMode = UtilitiesClient.newButton(Text.literal("⇄"), btn -> switchMode(ClientConfig.directNodeScreenMode + 1));
     Pattern pattern;
 
     Button btnUnbind = UtilitiesClient.newButton(Text.translatable("gui.mtrsteamloco.direct_node.unbind"), btn -> entity.unbind());
@@ -53,13 +53,16 @@ public class BrushEditDirectNodeScreen extends Screen {
         super(Text.literal("Brush Edit Direct Node Screen"));
         this.entity = entity;
         this.parent = parent;
-        switchMode(mode);
+        switchMode(ClientConfig.directNodeScreenMode);
     }
 
     private void switchMode(int mode) {
         mode %= 2;
-        BrushEditDirectNodeScreen.mode = mode;
-        pattern = mode == 0 ? new DegreeSlider() : new DegreeTextField();
+        if (mode != ClientConfig.directNodeScreenMode) {
+            ClientConfig.directNodeScreenMode = mode;
+            ClientConfig.save();
+            pattern = mode == 0 ? new DegreeSlider() : new DegreeTextField();
+        }
     }
 
     @Override

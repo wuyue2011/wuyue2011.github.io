@@ -75,7 +75,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.Optional;
 
-public class SliderOrTextFeildListEntry extends TooltipListEntry<Float> implements ContainerEventHandler {
+public class SliderOrTextFieldListEntry extends TooltipListEntry<Float> implements ContainerEventHandler {
     private EditBox textFieldWidget;
     private WidgetSlider slider;
     private Button btnSwitches;
@@ -83,6 +83,7 @@ public class SliderOrTextFeildListEntry extends TooltipListEntry<Float> implemen
     private AbstractWidget widget;
 
     private Consumer<Float> saveConsumer;
+    private Consumer<Integer> modeSaveConsumer;
     private Function<Float, String> setMessage;
     private float original;
     private float min;
@@ -93,7 +94,7 @@ public class SliderOrTextFeildListEntry extends TooltipListEntry<Float> implemen
 
     private int mode;
 
-    public SliderOrTextFeildListEntry(Component fieldName, Component resetButtonKey, float original, float min, float max, int step, Function<Float, String> setMessage, Consumer<Float> saveConsumer, Function<String, Optional<Float>> valueParser) {
+    public SliderOrTextFieldListEntry(Component fieldName, Component resetButtonKey, float original, float min, float max, int step, Function<Float, String> setMessage, Consumer<Float> saveConsumer, Function<String, Optional<Float>> valueParser, int mode, Consumer<Integer> modeSaveConsumer) {
         super(fieldName, null, false);
         this.min = min;
         this.max = max;
@@ -102,6 +103,8 @@ public class SliderOrTextFeildListEntry extends TooltipListEntry<Float> implemen
         this.setMessage = setMessage;
         this.saveConsumer = saveConsumer;
         this.value = original;
+        this.modeSaveConsumer = modeSaveConsumer;
+        this.mode = mode;
 
         this.textFieldWidget = new EditBox(Minecraft.getInstance().font, 0, 0, 150, 20, Text.literal(""));
         this.textFieldWidget.setResponder(str -> {
@@ -113,6 +116,7 @@ public class SliderOrTextFeildListEntry extends TooltipListEntry<Float> implemen
                 save(f);
             }
         });
+        this.textFieldWidget.moveCursorToStart();
 
         this.btnSwitches = UtilitiesClient.newButton(Text.literal("⇄"), btn -> switchMode(mode + 1));
         this.btnSwitches.setWidth(Minecraft.getInstance().font.width(resetButtonKey) + 6);
@@ -122,6 +126,8 @@ public class SliderOrTextFeildListEntry extends TooltipListEntry<Float> implemen
             return setMessage.apply(f);
         });
         slider.setWidth(150);
+
+        switchMode(mode);
 
         this.widgets = Lists.newArrayList(textFieldWidget, slider, btnSwitches);
     }
@@ -143,6 +149,7 @@ public class SliderOrTextFeildListEntry extends TooltipListEntry<Float> implemen
     }
 
     public void switchMode(int newMode) {
+        int oldMode = mode;
         mode = newMode % 2;
         if (mode == 0) {
             textFieldWidget.visible = true;
@@ -153,6 +160,11 @@ public class SliderOrTextFeildListEntry extends TooltipListEntry<Float> implemen
             slider.visible = true;
             widget = slider;
         }
+        if (oldMode != mode) {
+            modeSaveConsumer.accept(mode);
+        }
+        textFieldWidget.setValue(Float.toString(value));
+        slider.setValue(getNowLevel());
     }
 
     @Override
@@ -172,7 +184,6 @@ public class SliderOrTextFeildListEntry extends TooltipListEntry<Float> implemen
 
     @Override
 #if MC_VERSION >= "12000"
-    @Override
     public void render(GuiGraphics matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta) {
 #else
     public void render(PoseStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta) {
