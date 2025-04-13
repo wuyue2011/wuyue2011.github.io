@@ -245,7 +245,7 @@ public class EyeCandyScreen {
             getValue(type, blockEntity) * 180 / (float) Math.PI,
             -180F, 180F, 36, f -> String.format("%.0f°", f),
             f -> save(type, f / 180 * (float) Math.PI, blockEntity),
-            str -> parseRotation(str)
+            str -> parseRotation(str),
             getMode(type), i -> setMode(type, i)
         );
 

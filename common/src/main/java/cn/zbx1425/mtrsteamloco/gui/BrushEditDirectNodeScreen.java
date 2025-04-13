@@ -63,6 +63,9 @@ public class BrushEditDirectNodeScreen extends Screen {
             ClientConfig.save();
             pattern = mode == 0 ? new DegreeSlider() : new DegreeTextField();
         }
+        if (pattern == null) {
+            pattern = mode == 0 ? new DegreeSlider() : new DegreeTextField();
+        }
     }
 
     @Override

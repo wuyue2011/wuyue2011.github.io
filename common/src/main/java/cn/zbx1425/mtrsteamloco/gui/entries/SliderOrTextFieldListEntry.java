@@ -118,9 +118,9 @@ public class SliderOrTextFieldListEntry extends TooltipListEntry<Float> implemen
         });
         this.textFieldWidget.moveCursorToStart();
 
-        this.btnSwitches = UtilitiesClient.newButton(Text.literal("⇄"), btn -> switchMode(mode + 1));
+        this.btnSwitches = UtilitiesClient.newButton(Text.literal("⇄"), btn -> switchMode(this.mode + 1));
         this.btnSwitches.setWidth(Minecraft.getInstance().font.width(resetButtonKey) + 6);
-        this.slider = new WidgetSlider(40, getNowLevel(), i -> {
+        this.slider = new WidgetSlider(step, getNowLevel(), i -> {
             float f = i / (float) step * (max - min) + min;
             save(f);
             return setMessage.apply(f);
@@ -140,7 +140,7 @@ public class SliderOrTextFieldListEntry extends TooltipListEntry<Float> implemen
     }
 
     public int getNowLevel() {
-        int v = (int) ((value - min) / (max - min) * step);
+        int v = (int) Math.round((value - min) / (max - min) * step);
         return Math.min(Math.max(v, 0), step);
     }
 

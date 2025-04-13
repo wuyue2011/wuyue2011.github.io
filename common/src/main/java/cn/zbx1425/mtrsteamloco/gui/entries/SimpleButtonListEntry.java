@@ -31,6 +31,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import mtr.mappings.Text;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import mtr.mappings.UtilitiesClient;
+import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import me.shedaniel.clothconfig2.gui.entries.TooltipListEntry;
@@ -42,7 +43,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @Environment(EnvType.CLIENT)
-public class SimpleButtonListEntry extends TooltipListEntry<Boolean> {
+public class SimpleButtonListEntry extends TooltipListEntry<Boolean> implements ContainerEventHandler {
     
     private final Button buttonWidget;
     private final Button resetButton;
