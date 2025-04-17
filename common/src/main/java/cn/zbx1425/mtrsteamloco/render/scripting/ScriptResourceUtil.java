@@ -50,7 +50,7 @@ public class ScriptResourceUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger("MTR-ANTE JS");
 
     static {
-        LOGGER.info("NTE version: " + getNTEVersion() + " (protocol " + getNTEProtoVersion() + ")");
+        LOGGER.info("NTE version: " + getNTEVersion() + " (int " + getNTEVersionInt() + ") (protocol " + getNTEProtoVersion() + ")");
     }
 
     public static void init(ResourceManager resourceManager) {
