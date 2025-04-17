@@ -58,12 +58,11 @@ public class SimpleButtonListEntry extends TooltipListEntry<Boolean> implements 
     
     @ApiStatus.Internal
     @Deprecated
-    public SimpleButtonListEntry(Component fieldName, Component btnName, Component resetButtonKey, Button.OnPress onPress) {
+    public SimpleButtonListEntry(Component fieldName, Component btnName0, Button.OnPress onPress0, Component btnName1, Button.OnPress onPress1, Component resetButtonKey) {
         super(fieldName, null, false);
-        this.buttonWidget = UtilitiesClient.newButton(20, btnName, onPress);
+        this.buttonWidget = UtilitiesClient.newButton(20, btnName0, onPress0);
         this.buttonWidget.setWidth(150);
-        this.resetButton = UtilitiesClient.newButton(20, Text.literal(""), widget -> {});
-        this.resetButton.active = false;
+        this.resetButton = UtilitiesClient.newButton(20, btnName1, onPress1);
         this.resetButton.setWidth(Minecraft.getInstance().font.width(resetButtonKey) + 6);
         this.widgets = Lists.newArrayList(buttonWidget, resetButton);
     }
@@ -116,6 +115,11 @@ public class SimpleButtonListEntry extends TooltipListEntry<Boolean> implements 
     @Override
     public List<? extends NarratableEntry> narratables() {
         return widgets;
+    }
+
+    @Override
+    public void save() {
+        
     }
 
 #if MC_VERSION >= "12000"

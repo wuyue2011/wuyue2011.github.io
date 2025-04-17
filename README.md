@@ -10,6 +10,10 @@ Aphrodite's Nemo's Transit Expansion, created by Zbx1425, now developed by Aphro
 
 Initially published at the [Teacon 2022 mod development jam](https://teacon.cn), the mod was originally named MTRSteamLoco.
 
+## Documentation
+
+The documentation for the mod can be found in the [website](https://aphrodite281.github.io/mtr-ante/#/).
+
 ## Setup
 
 1. Clone this repository
@@ -19,6 +23,7 @@ Initially published at the [Teacon 2022 mod development jam](https://teacon.cn),
    2. In the root project, run the Gradle `setupLibrary` task
    3. Sync the Gradle Project again
 
-# Download Alpha Builds
+## Download
 
-跳转点击右侧发行版，向下滚动，下载对应版本。
+The mod can be downloaded from the [releases page](https://github.com/aphrodite281/mtr-ante/releases).
+Or in [Modrinth](https://modrinth.com/mod/mtr-ante/)

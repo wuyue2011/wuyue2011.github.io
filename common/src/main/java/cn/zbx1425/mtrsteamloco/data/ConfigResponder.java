@@ -259,6 +259,93 @@ public interface ConfigResponder {
             return Collections.singletonList(entry);
         }
     }
+
+    public static class IntSlider implements ConfigResponder {
+        public String key;
+        public Component name;
+        public double defaultValue;
+        public double min;
+        public double max;
+        public int step;    
+        public Function<Double, Optional<Component[]>> tooltipSupplier = str -> Optional.empty();
+        public Consumer<Double> saveConsumer = bool -> {};
+        public boolean requireRestart = false;
+
+        public IntSlider(String key, Component name, double defaultValue, double min, double max, int step, Function<Double, Optional<Component[]>> tooltipSupplier, Consumer<Double> saveConsumer, boolean requireRestart) {
+
+        }
+
+        public IntSlider setDefaultValue(double defaultValue) {
+            this.defaultValue = defaultValue;
+            return this;
+        }
+
+        public IntSlider setName(Component name) {
+            this.name = name;
+            return this;
+        }
+
+        public IntSlider setSaveConsumer(Consumer<Double> saveConsumer) {
+            this.saveConsumer = saveConsumer;
+            return this;
+        }
+
+        public IntSlider setTooltipSupplier(Function<Double, Optional<Component[]>> tooltipSupplier) {
+            this.tooltipSupplier = tooltipSupplier;
+            return this;
+        }
+
+        public IntSlider setRequireRestart(boolean requireRestart) {
+            this.requireRestart = requireRestart;
+            return this;
+        }
+
+        public IntSlider setValues(double min, double max, int step) {
+            this.min = min;
+            this.max = max;
+            this.step = step;
+            return this;
+        }
+
+        @Override
+        public void init(Map<String, String> map) {
+            if (!map.containsKey(key)) {
+                map.put(key, defaultValue + "");
+            }
+        }
+
+        @Override
+        public String key() {
+            return key;
+        }
+
+        @Override
+        public List<AbstractConfigListEntry> getListEntries(Map<String, String> map, ConfigEntryBuilder builder, Supplier<Screen> screenSupplier) {
+            double now = map.containsKey(key) ? Double.parseDouble(map.get(key)) : defaultValue;
+            AbstractConfigListEntry entry = builder.startIntSlider(name, getLevel(now), 0, step)
+                .setDefaultValue(getLevel(defaultValue))
+                .setSaveConsumer(level -> {
+                    map.put(key, getValue(level) + "");
+                    saveConsumer.accept(getValue(level));
+                })
+                .setTooltipSupplier(
+                    level -> tooltipSupplier.apply(getValue(level))
+                )
+                .build();
+            if (requireRestart) 
+                entry.setRequiresRestart(true);
+            return Collections.singletonList(entry);
+        }
+
+        private int getLevel(double value) {
+            return (int) Math.round((value - min) / (max - min) * step);
+        }
+
+        public double getValue(int level) {
+            return min + (max - min) * level / step;
+        }
+
+    }
     
     public static List<AbstractConfigListEntry> getEntrysFromMaps(Map<String, String> customConfigs, Map<String, ConfigResponder> customResponders, ConfigEntryBuilder builder, Supplier<Screen> screenSupplier) {
         List<AbstractConfigListEntry> hasResponders = new ArrayList<>();

@@ -56,6 +56,10 @@ public class RailCalculator {
             return x / length();
         }
 
+        public Vec2 scale(double factor) {
+            return new Vec2(x * factor, z * factor);
+        }
+
         public Vec2 normalize() {
             double length = length();
             if (length < PRECISION) {
@@ -89,9 +93,7 @@ public class RailCalculator {
         }
 
         public boolean parallel(Line other) {
-            Vec2 dir1 = direction();
-            Vec2 dir2 = other.direction();
-            return dir1.equals(dir2);
+            return Math.abs(A * other.B - other.A * B) < PRECISION;
         }
 
         public double distance(Vec2 p) {
@@ -286,6 +288,8 @@ public class RailCalculator {
     }
 
     public static class Group {
+        public static Group EMPTY = new Group(new Section(), new Section());
+
         public final Section first;
         public final Section second;
 
@@ -313,13 +317,13 @@ public class RailCalculator {
     public static Group calculate(double startX, double startZ, double endX, double endZ, double startAngle, double endAngle) {
         Group group = _calculate(startX, startZ, endX, endZ, startAngle, endAngle);
 
-        if (group == null) return null;
+        if (group == null) return Group.EMPTY;
         if (group.first.isValid() && group.second.isValid()) {
             pl(group.first.getLength() + " " + group.second.getLength());
             return group;
         }
         pl("无效的section");
-        return null;
+        return Group.EMPTY;
     }
 
     public static Group segment(double startX, double startZ, double endX, double endZ) {
@@ -352,12 +356,47 @@ public class RailCalculator {
         Line SS1 = new Line(S, S1);
         Line EE1 = new Line(E, E1);
 
-        if (SS1.equals(EE1)) {
-            pl("直线");
-            Segment seg = new Segment(S, E);
-            return new Group(seg.toSection(), new Section());
-        }
+        if (SS1.parallel(EE1)) {
+            pl("平行");
+            if (SS1.equals(EE1)) {
+                pl("直线");
+                Segment seg = new Segment(S, E);
+                return new Group(seg.toSection(), new Section());
+            }
 
+            Line SE = new Line(S, E);
+            
+            Vec2 vSE = E.sub(S);
+            pl("vSE " + vSE);
+            
+            Vec2 vSD = vSE.scale(1.0D / 4.0D);
+
+            Vec2 D = S.add(vSD);
+
+            Line l1 = SE.perpendicular(D);
+            Line l2 = SS1.perpendicular(S);
+            Vec2 O1 = l1.intersection(l2);
+
+            Vec2 vEF = vSD.scale(-1);
+            Vec2 F = E.add(vEF);
+            pl("F " + F);
+
+            Line l3 = SE.perpendicular(F);
+            Line l4 = EE1.perpendicular(E);
+            Vec2 O2 = l3.intersection(l4);
+
+            pl("O1 " + O1 + " O2 " + O2);
+            if (O1 == null || O2 == null) {
+                pl("无交点");
+                return null;
+            }
+
+            Vec2 vSM = vSE.scale(1.0D / 2.0D);
+            Vec2 M = S.add(vSM);
+
+            return new Group(new Arc(O1, S, M).toSection(), new Arc(O2, M, E).toSection());
+        }
+    
         Vec2 M = SS1.intersection(EE1);
 
         if (M == null) {

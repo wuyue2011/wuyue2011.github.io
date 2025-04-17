@@ -31,9 +31,10 @@ public class BlockItemDirectNode extends BlockItem {
         System.out.println(s);
     }
 
+    @Override
     public void appendHoverText(ItemStack stack, Level level, List<Component> list, TooltipFlag flag) {
         if (stack.getItem() instanceof BlockItemDirectNode bi) {
-            CompoundTag tag = getBlockEntityData(stack);
+            CompoundTag tag = stack.getTagElement("BlockEntityTag");
             if (tag == null) {
                 list.add(Text.translatable("tooltip.mtrsteamloco.direct_node.unbound"));
                 return;

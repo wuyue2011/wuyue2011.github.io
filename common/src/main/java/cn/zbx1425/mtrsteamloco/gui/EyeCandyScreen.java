@@ -143,12 +143,18 @@ public class EyeCandyScreen {
             common.addEntry(entryBuilder.startTextDescription(
                     Text.literal("RX: " + Math.toDegrees(blockEntity.rotateX) + "°, RY: " + Math.toDegrees(blockEntity.rotateY) + "°, RZ: " + Math.toDegrees(blockEntity.rotateZ) + "°")
             ).build());
+
+            common.addEntry(entryBuilder.startTextDescription(
+                    Text.literal("SX: " + blockEntity.scaleX + ", SY: " + blockEntity.scaleY + ", SZ: " + blockEntity.scaleZ)
+            ).build());
         } else {
+            List<SliderOrTextFieldListEntry> entries = new ArrayList<>();
 
             common.addEntry(new SimpleButtonListEntry(
-                tr("reset_pose"), 
+                tr("adjust_settings_and_reset_pose"), 
+                Text.translatable("gui.mtrsteamloco.adjust_settings"),
+                btn -> Minecraft.getInstance().setScreen(createAdjustScreen(blockPos, () -> createScreen(blockPos, parent))),
                 entryBuilder.getResetButtonKey(), 
-                entryBuilder.getResetButtonKey(),
                 btn -> {
                     blockEntity.translateX = 0;
                     blockEntity.translateY = 0;
@@ -156,21 +162,54 @@ public class EyeCandyScreen {
                     blockEntity.rotateX = 0;
                     blockEntity.rotateY = 0;
                     blockEntity.rotateZ = 0;
+                    blockEntity.scaleX = 1;
+                    blockEntity.scaleY = 1;
+                    blockEntity.scaleZ = 1;
                     blockEntity.sendUpdateC2S();
-                    Minecraft.getInstance().setScreen(createScreen(blockPos, parent));
-                }
+                    for (int i = 0; i < 9; i++) {
+                        entries.get(i).setValue(getValue(i, blockEntity));
+                    }
+                },
+                entryBuilder.getResetButtonKey()
             ));
         
-            addTranslation(common, entryBuilder, 0, blockEntity);
-            addTranslation(common, entryBuilder, 1, blockEntity);
-            addTranslation(common, entryBuilder, 2, blockEntity);
-            addRotation(common, entryBuilder, 3, blockEntity);
-            addRotation(common, entryBuilder, 4, blockEntity);
-            addRotation(common, entryBuilder, 5, blockEntity);
+            addTranslation(entries, common, entryBuilder, 0, blockEntity);
+            addTranslation(entries, common, entryBuilder, 1, blockEntity);
+            addTranslation(entries, common, entryBuilder, 2, blockEntity);
+            addRotation(entries, common, entryBuilder, 3, blockEntity);
+            addRotation(entries, common, entryBuilder, 4, blockEntity);
+            addRotation(entries, common, entryBuilder, 5, blockEntity);
+            addScale(entries, common, entryBuilder, 6, blockEntity);
+            addScale(entries, common, entryBuilder, 7, blockEntity);
+            addScale(entries, common, entryBuilder, 8, blockEntity);
         }
 
         List<AbstractConfigListEntry> customEntrys = blockEntity.getCustomConfigEntrys(entryBuilder, () -> createScreen(blockPos, parent));
         for (AbstractConfigListEntry entry : customEntrys) {
+            common.addEntry(entry);
+        }
+
+        return builder.build();
+    }
+
+    private static Screen createAdjustScreen(BlockPos blockPos, Supplier<Screen> parent) {
+        ConfigBuilder builder = ConfigBuilder.create()
+                .setParentScreen(new FakeScreen(parent))
+                .setTitle(Text.translatable("gui.mtrsteamloco.adjust_settings"))
+                .setDoesConfirmSave(false)
+                .setSavingRunnable(() -> {
+                    ClientConfig.save();
+                })
+                .transparentBackground();
+        ConfigEntryBuilder entryBuilder = builder.entryBuilder();
+        ConfigCategory common = builder.getOrCreateCategory(
+                Text.translatable("gui.mtrsteamloco.config.client.category.common")
+        );
+
+        List<AbstractConfigListEntry> entries = new ArrayList<>();
+        ClientConfig.eyecandyScreenGroup.getListEntries(entries, entryBuilder, () -> createAdjustScreen(blockPos, parent));
+
+        for (AbstractConfigListEntry entry : entries) {
             common.addEntry(entry);
         }
 
@@ -187,6 +226,9 @@ public class EyeCandyScreen {
             case 3: blockEntity.rotateX = value; break;
             case 4: blockEntity.rotateY = value; break;
             case 5: blockEntity.rotateZ = value; break;
+            case 6: blockEntity.scaleX = value; break;
+            case 7: blockEntity.scaleY = value; break;
+            case 8: blockEntity.scaleZ = value; break;
         }
         blockEntity.sendUpdateC2S();
     }
@@ -199,6 +241,9 @@ public class EyeCandyScreen {
             case 3: return blockEntity.rotateX;
             case 4: return blockEntity.rotateY;
             case 5: return blockEntity.rotateZ;
+            case 6: return blockEntity.scaleX;
+            case 7: return blockEntity.scaleY;
+            case 8: return blockEntity.scaleZ;
         }
         return 0;
     }
@@ -211,45 +256,80 @@ public class EyeCandyScreen {
             case 3: return "RX";
             case 4: return "RY";
             case 5: return "RZ";
+            case 6: return "SX";
+            case 7: return "SY";
+            case 8: return "SZ";
         }
         return "";
     }
 
-    private static int getMode(int type) {
-        return ClientConfig.eyeCandyScreenMode >> type & 1;
-    }
-
-    private static void setMode(int type, int mode) {
-        ClientConfig.eyeCandyScreenMode = (ClientConfig.eyeCandyScreenMode & ~(1 << type)) | (mode << type);
-        ClientConfig.save();
-    }
-
-    private static void addTranslation(ConfigCategory common, ConfigEntryBuilder entryBuilder, int type, BlockEntityEyeCandy blockEntity) {
+    private static void addTranslation(List<SliderOrTextFieldListEntry> entries, ConfigCategory common, ConfigEntryBuilder entryBuilder, int type, BlockEntityEyeCandy blockEntity) {
+        ClientConfig.Entry e = ClientConfig.eyecandyScreenGroup.entries[0];
+        int type0 = type;
         SliderOrTextFieldListEntry entry = new SliderOrTextFieldListEntry(
             Text.literal(getStr(type, blockEntity)),
             entryBuilder.getResetButtonKey(),
             getValue(type, blockEntity),
-            -1F, 1F, 40, f -> String.format("%.0fCM", f * 100),
+            e.min, e.max, e.step, f -> String.format("%.0fCM", f * 100),
             f -> save(type, f, blockEntity),
             str -> parseMovement(str),
-            getMode(type), i -> setMode(type, i)
+            e.modes[type0], i -> {
+                e.modes[type0] = i;
+                ClientConfig.save();
+            }
         );
 
         common.addEntry(entry);
+        entries.add(entry);
     }
 
-    private static void addRotation(ConfigCategory common, ConfigEntryBuilder entryBuilder, int type, BlockEntityEyeCandy blockEntity) {
+    private static void addRotation(List<SliderOrTextFieldListEntry> entries, ConfigCategory common, ConfigEntryBuilder entryBuilder, int type, BlockEntityEyeCandy blockEntity) {
+        ClientConfig.Entry e = ClientConfig.eyecandyScreenGroup.entries[1];
+        int type0 = type - 3;
         SliderOrTextFieldListEntry entry = new SliderOrTextFieldListEntry(
             Text.literal(getStr(type, blockEntity)),
             entryBuilder.getResetButtonKey(),
             getValue(type, blockEntity) * 180 / (float) Math.PI,
-            -180F, 180F, 36, f -> String.format("%.0f°", f),
+            e.min, e.max, e.step, f -> String.format("%.0f°", f),
             f -> save(type, f / 180 * (float) Math.PI, blockEntity),
             str -> parseRotation(str),
-            getMode(type), i -> setMode(type, i)
+            e.modes[type0], i -> {
+                e.modes[type0] = i;
+                ClientConfig.save();
+            }
         );
 
         common.addEntry(entry);
+        entries.add(entry);
+    }
+
+    private static void addScale(List<SliderOrTextFieldListEntry> entries, ConfigCategory common, ConfigEntryBuilder entryBuilder, int type, BlockEntityEyeCandy blockEntity) {
+        ClientConfig.Entry e = ClientConfig.eyecandyScreenGroup.entries[2];
+        int type0 = type - 6;
+        SliderOrTextFieldListEntry entry = new SliderOrTextFieldListEntry(
+            Text.literal(getStr(type, blockEntity)),
+            entryBuilder.getResetButtonKey(),
+            getValue(type, blockEntity),
+            e.min, e.max, e.step, f -> String.format("%.2f", f),
+            f -> save(type, f, blockEntity),
+            str -> parseScale(str),
+            e.modes[type0], i -> {
+                e.modes[type0] = i;
+                ClientConfig.save();
+            }
+        );
+
+        common.addEntry(entry);
+        entries.add(entry);
+    }
+
+    private static Optional<Float> parseScale(String str) {
+        try {
+            Float value = Float.parseFloat(str);
+            return Optional.of(value);
+        } catch (NumberFormatException e) {
+            return Optional.empty();
+        }
     }
 
     private static Optional<Float> parseMovement(String str) {

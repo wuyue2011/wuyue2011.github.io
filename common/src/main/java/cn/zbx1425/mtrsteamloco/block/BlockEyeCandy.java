@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import cn.zbx1425.sowcer.math.Matrix4f;
 import net.minecraft.world.level.block.state.StateDefinition;
 #if MC_VERSION < "12000"
 import net.minecraft.world.level.material.Material;
@@ -218,6 +219,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public float translateX = 0, translateY = 0, translateZ = 0;
         public float rotateX = 0, rotateY = 0, rotateZ = 0;
+        public float scaleX = 1, scaleY = 1, scaleZ = 1;
 
         public boolean fullLight = false;
 
@@ -267,6 +269,9 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             rotateX = compoundTag.contains("rotateX") ? compoundTag.getFloat("rotateX") : 0;
             rotateY = compoundTag.contains("rotateY") ? compoundTag.getFloat("rotateY") : 0;
             rotateZ = compoundTag.contains("rotateZ") ? compoundTag.getFloat("rotateZ") : 0;
+            scaleX = compoundTag.contains("scaleX") ? compoundTag.getFloat("scaleX") : 1;
+            scaleY = compoundTag.contains("scaleY") ? compoundTag.getFloat("scaleY") : 1;
+            scaleZ = compoundTag.contains("scaleZ") ? compoundTag.getFloat("scaleZ") : 1;
             asPlatform = compoundTag.contains("asPlatform") ? compoundTag.getBoolean("asPlatform") : false;
             // doorValue = compoundTag.contains("doorValue") ? compoundTag.getFloat("doorValue") : 0;
             // doorTarget = compoundTag.contains("doorTarget") ? compoundTag.getBoolean("doorTarget") : false;
@@ -294,6 +299,9 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putFloat("rotateX", rotateX);
             compoundTag.putFloat("rotateY", rotateY);
             compoundTag.putFloat("rotateZ", rotateZ);
+            compoundTag.putFloat("scaleX", scaleX);
+            compoundTag.putFloat("scaleY", scaleY);
+            compoundTag.putFloat("scaleZ", scaleZ);
             compoundTag.putBoolean("asPlatform", asPlatform);
             // compoundTag.putFloat("doorValue", doorValue);
             // compoundTag.putBoolean("doorTarget", doorTarget);
@@ -303,6 +311,18 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             compoundTag.putInt("lightLevel", lightLevel);
             compoundTag.putBoolean("isTicketBarrier", isTicketBarrier);
             compoundTag.putBoolean("isEntrance", isEntrance);
+        }
+
+        public Matrix4f getBaseMatrix() {
+            final Direction facing = IBlock.getStatePropertySafe(getBlockState(), FACING);
+            final Matrix4f matrix = new Matrix4f();
+            BlockPos pos = getWorldPos();
+            matrix.translate(pos.getX() + 0.5F + translateX, pos.getY() + translateY, pos.getZ() + 0.5F + translateZ);
+            matrix.rotateX(rotateX);
+            matrix.rotateY(rotateY);
+            matrix.rotateZ(rotateZ);
+            matrix.scale(scaleX, scaleY, scaleZ);
+            return matrix;
         }
 
         public AABB getRenderBoundingBox() {

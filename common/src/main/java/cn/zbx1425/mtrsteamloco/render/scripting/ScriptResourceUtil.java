@@ -49,6 +49,10 @@ public class ScriptResourceUtil {
     private static final Stack<ResourceLocation> scriptLocationStack = new Stack<>();
     private static final Logger LOGGER = LoggerFactory.getLogger("MTR-ANTE JS");
 
+    static {
+        LOGGER.info("NTE version: " + getNTEVersion() + " (protocol " + getNTEProtoVersion() + ")");
+    }
+
     public static void init(ResourceManager resourceManager) {
         hasNotoSansCjk = UtilitiesClient.hasResource(NOTO_SANS_CJK_LOCATION);
     }
@@ -242,7 +246,7 @@ public class ScriptResourceUtil {
     }
 
     public static String getNTEVersion() {
-        return BuildConfig.MOD_VERSION;
+        return BuildConfig.MOD_VERSION.split("\\-", 3)[0];
     }
 
     public static int getNTEVersionInt() {

@@ -37,8 +37,8 @@ public class ClientConfig {
     public static boolean enableTrainRender = true;
     public static boolean enableTrainSound = true;
     public static boolean enableSmoke = true;
-    public static int eyeCandyScreenMode = 0b000000;
-    public static int directNodeScreenMode = 0;
+    public static final EyecandyScreenGroup eyecandyScreenGroup = new EyecandyScreenGroup();
+    public static final Entry directNodeScreenGroup = new Entry("direct_node_screen", "rotation", 0, 180F, 180, 1, 1);
 
     public static boolean useEditBoxSetRailRolling = true;
 
@@ -65,8 +65,9 @@ public class ClientConfig {
             enableSmoke = getOrDefault(configObject, "enableSmoke", JsonElement::getAsBoolean, true);
             hideRidingTrain = getOrDefault(configObject, "hideRidingTrain", JsonElement::getAsBoolean, false);
             useEditBoxSetRailRolling = getOrDefault(configObject, "useEditBoxSetRailRolling", JsonElement::getAsBoolean, true);
-            eyeCandyScreenMode = getOrDefault(configObject, "eyeCandyScreenMode", JsonElement::getAsInt, 0b000000);
-            directNodeScreenMode = getOrDefault(configObject, "directNodeScreenMode", JsonElement::getAsInt, 0);
+
+            eyecandyScreenGroup.init(configObject);
+            directNodeScreenGroup.init(configObject);
 
             customConfigs.clear();
             if (configObject.has("custom")) {
@@ -118,9 +119,9 @@ public class ClientConfig {
             configObject.addProperty("enableTrainSound", enableTrainSound);
             configObject.addProperty("enableSmoke", enableSmoke);
             configObject.addProperty("hideRidingTrain", hideRidingTrain);
-            configObject.addProperty("eyeCandyScreenMode", eyeCandyScreenMode);
             configObject.addProperty("useEditBoxSetRailRolling", useEditBoxSetRailRolling);
-            configObject.addProperty("directNodeScreenMode", directNodeScreenMode);
+            eyecandyScreenGroup.save(configObject);
+            directNodeScreenGroup.save(configObject);
 
             JsonObject customObject = new JsonObject();
             for (Map.Entry<String, String> entry : customConfigs.entrySet()) {
@@ -178,5 +179,139 @@ public class ClientConfig {
             };
         }
         return entries;
+    }
+
+    public static interface ConfigGroup {
+        String key();
+        void init(JsonObject configObject);
+        void save(JsonObject configObject);
+        void getListEntries(List<AbstractConfigListEntry> entries, ConfigEntryBuilder builder, Supplier<Screen> screenSupplier);
+    }
+
+    public static class EyecandyScreenGroup implements ConfigGroup {
+        public static final String KEY = "eyecandy_screen";
+        public final Entry[] entries = new Entry[] {
+            new Entry("translation", -1.0F, 1.0F, 40, 1, 3),
+            new Entry("rotation", -180F, 180F, 36, 1, 3),
+            new Entry("scale", -2.0F, 2.0F, 40, 1, 3),
+        }; 
+
+        @Override
+        public String key() {
+            return KEY;
+        }
+
+        @Override
+        public void init(JsonObject configObject) {
+            configObject = configObject.getAsJsonObject(KEY);
+            if (configObject == null) return;
+            for (Entry entry : entries) {
+                entry.init(configObject);
+            }
+        }
+
+        @Override
+        public void save(JsonObject configObject0) {
+            JsonObject configObject = new JsonObject();
+            for (Entry entry : entries) {
+                entry.save(configObject);
+            }
+            configObject0.add(KEY, configObject);
+        }
+
+        @Override
+        public void getListEntries(List<AbstractConfigListEntry> entries, ConfigEntryBuilder builder, Supplier<Screen> screenSupplier) {
+            for (Entry entry : this.entries) {
+                entry.getListEntries(entries, builder, screenSupplier);
+            }
+        }
+    }
+
+    public static class Entry implements ConfigGroup {
+        public float defaultMin, defaultMax;
+        public int defaultStep, defaultMode, quantity;
+
+        public float min, max;
+        public int step;
+        public int[] modes;
+        public String key, tooltipKey;
+
+        public Entry(String key, float defaultMin, float defaultMax, int defaultStep, int defaultMode, int quantity) {
+            this(key, key, defaultMin, defaultMax, defaultStep, defaultMode, quantity);
+        }
+        
+        public Entry(String key, String tooltipKey, float defaultMin, float defaultMax, int defaultStep, int defaultMode, int quantity) {
+            this.defaultMin = defaultMin;
+            this.defaultMax = defaultMax;
+            this.defaultStep = defaultStep;
+            this.defaultMode = defaultMode;
+            this.quantity = quantity;
+
+            min = defaultMin;
+            max = defaultMax;
+            step = defaultStep;
+            modes = new int[quantity];
+            Arrays.fill(modes, defaultMode);
+            this.key = key;
+            this.tooltipKey = tooltipKey;
+        }
+
+        @Override
+        public String key() {
+            return key;
+        }
+
+        @Override
+        public void init(JsonObject configObject) {
+            JsonObject entryObject = configObject.getAsJsonObject(key);
+            if (entryObject == null) return;
+            min = getOrDefault(configObject, "min", JsonElement::getAsFloat, min);
+            max = getOrDefault(configObject, "max", JsonElement::getAsFloat, max);
+            step = getOrDefault(configObject, "step", JsonElement::getAsInt, step);
+            JsonObject modesObject = entryObject.getAsJsonObject("modes");
+            if (modesObject == null) return;
+            int [] modes = new int[quantity];
+            for (int i = 0; i < quantity; i++) {
+                modes[i] = getOrDefault(modesObject, Integer.toString(i), JsonElement::getAsInt, defaultMode);
+            }
+            this.modes = modes;
+        }
+
+        @Override
+        public void save(JsonObject configObject) {
+            JsonObject entryObject = new JsonObject();
+            entryObject.addProperty("min", min);
+            entryObject.addProperty("max", max);
+            entryObject.addProperty("step", step);
+            JsonObject modesObject = new JsonObject();
+            for (int i = 0; i < modes.length; i++) {
+                modesObject.addProperty(Integer.toString(i), modes[i]);
+            }
+            configObject.add(key, entryObject);
+        }
+
+        @Override
+        public void getListEntries(List<AbstractConfigListEntry> entries, ConfigEntryBuilder builder, Supplier<Screen> screenSupplier) {
+            entries.add(
+                builder.startFloatField(Text.translatable("gui.mtrsteamloco." + tooltipKey + ".min"), min)
+                .setDefaultValue(defaultMin)
+                .setSaveConsumer(value -> min = value)
+                .build()
+            );
+
+            entries.add(
+                builder.startFloatField(Text.translatable("gui.mtrsteamloco." + tooltipKey + ".max"), max)
+                .setDefaultValue(defaultMax)
+                .setSaveConsumer(value -> max = value)
+                .build()
+            );
+
+            entries.add(
+                builder.startIntField(Text.translatable("gui.mtrsteamloco." + tooltipKey + ".step"), step)
+                .setDefaultValue(defaultStep)
+                .setSaveConsumer(value -> step = value)
+                .build()
+            );
+        }
     }
 }

@@ -139,6 +139,11 @@ public class SliderOrTextFieldListEntry extends TooltipListEntry<Float> implemen
         }
     }
 
+    public void setValue(float newValue) {
+        value = newValue;
+        switchMode(mode);
+    }
+
     public int getNowLevel() {
         int v = (int) Math.round((value - min) / (max - min) * step);
         return Math.min(Math.max(v, 0), step);
@@ -180,6 +185,11 @@ public class SliderOrTextFieldListEntry extends TooltipListEntry<Float> implemen
     @Override
     public Optional<Float> getDefaultValue() {
         return Optional.empty();
+    }
+
+    @Override
+    public void save() {
+        
     }
 
     @Override

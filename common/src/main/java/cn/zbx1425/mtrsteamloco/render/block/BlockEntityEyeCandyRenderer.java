@@ -76,15 +76,11 @@ public class BlockEntityEyeCandyRenderer extends BlockEntityRendererMapper<Block
             
             final Level world = blockEntity.getLevel();
             if (world == null) continue;
+            BlockPos pos = blockEntity.getBlockPos();
 
-            int light = LevelRenderer.getLightColor(world, blockEntity.getBlockPos());;
+            int light = LevelRenderer.getLightColor(world, pos);;
 
             int lightToUse = blockEntity.fullLight ? LightTexture.pack(15, 15) : light;
-
-            Matrix4f candyPose = worldPose.copy();
-
-            final BlockPos pos = blockEntity.getBlockPos();
-            final Direction facing = IBlock.getStatePropertySafe(world, pos, BlockEyeCandy.FACING);
 
             EyeCandyProperties prop = EyeCandyRegistry.getProperty(blockEntity.prefabId);
             if (prop == null || RailRenderDispatcher.isHoldingBrush) {
@@ -110,13 +106,8 @@ public class BlockEntityEyeCandyRenderer extends BlockEntityRendererMapper<Block
             }
             if (prop == null) continue;
             
-            candyPose.translate(pos.getX(), pos.getY(), pos.getZ());
-            candyPose.translate(0.5f, 0f, 0.5f);
-            candyPose.translate(blockEntity.translateX, blockEntity.translateY, blockEntity.translateZ);
-            candyPose.rotateY(-(float)Math.toRadians(facing.toYRot()) + (float)(Math.PI));
-            candyPose.rotateX(blockEntity.rotateX);
-            candyPose.rotateY(blockEntity.rotateY);
-            candyPose.rotateZ(blockEntity.rotateZ);
+            Matrix4f candyPose = worldPose.copy();
+            candyPose.mul(blockEntity.getBaseMatrix());
             if (prop.model != null) {
                 MainClient.drawScheduler.enqueue(prop.model, candyPose, lightToUse);
             }
