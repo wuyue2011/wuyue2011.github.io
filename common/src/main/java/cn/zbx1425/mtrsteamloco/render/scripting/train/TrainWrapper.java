@@ -67,12 +67,7 @@ public class TrainWrapper {
 
     public void reset() {
         if (trainPlatformsValidPath == null || !trainPlatformsValidPath.equals(train.path)) {
-            if (!train.getRouteIds().isEmpty()) {
-                trainPlatforms = getTrainPlatforms();
-                trainPlatformsValidPath = train.path;
-            } else {
-                trainPlatforms = new PlatformLookupMap();
-            }
+            trainPlatforms = getTrainPlatforms();
         }
     }
 
@@ -120,6 +115,8 @@ public class TrainWrapper {
                 }
             }
         }
+
+        trainPlatformsValidPath = train.path;
 
         return result;
     }

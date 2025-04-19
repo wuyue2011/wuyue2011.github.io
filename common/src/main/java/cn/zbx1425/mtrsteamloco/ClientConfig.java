@@ -164,6 +164,10 @@ public class ClientConfig {
         return customConfigs;
     }
 
+    public static void clearCustomResponders() {
+        customResponders.clear();
+    }
+
     public static List<AbstractConfigListEntry> getCustomConfigEntrys(ConfigEntryBuilder builder, Supplier<Screen> screenSupplier) {
         Set<String> keys = customConfigs.keySet();
         List<String> usedKeys = new ArrayList<>();
