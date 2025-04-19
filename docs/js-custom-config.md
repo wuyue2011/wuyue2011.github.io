@@ -107,6 +107,36 @@ ANTE 使用 `ConfigResponder` 接口来表示配置的响应器，存储配置�
 
 最后，本类支持链式调用。
 
+## DoubleSlider
+
+`ConfigResponder` 提供了一个基础的实现: `DoubleSlider` (双精度浮点数滑块)
+
+- `new DoubleSlider(key: String, name: Component, defaultValue: double, min: double, max: double, step: int)`
+
+- `new DoubleSlider(key: String, name: Component, defaultValue: double, min: double, max: double, step: int, tooltipSupplier: Function<Double, Optional<Component[]>>, saveConsumer: Consumer<Double>, requireRestart: boolean)`
+  
+    创建一个配置响应器。
+
+您可以使用 [ComponentUtil](js-util.md#componentutil) 来创建 `Component` 对象。
+
+包含以下属性以及对应方法：
+| 属性 | 方法 | 说明 |
+| ------------- | ------------- | ------------- |
+| `DoubleSlider.key: String` | 无 | 配置项的标识。 |
+| `DoubleSlider.name: Component` | `DoubleSlider.setName(name: Component): DoubleSlider` | 配置项的名称 |
+| `DoubleSlider.defaultValue: double` | `DoubleSlider.setDefaultValue(defaultValue: double): DoubleSlider` | 配置项的默认值 |
+| `DoubleSlider.min: double` | `DoubleSlider.setMin(min: double): DoubleSlider` | 配置项的最小值 |
+| `DoubleSlider.max: double` | `DoubleSlider.setMax(max: double): DoubleSlider` | 配置项的最大值 |
+| `DoubleSlider.step: int` | `DoubleSlider.setStep(step: int): DoubleSlider` | 配置项的层级 |
+| `DoubleSlider.tooltipSupplier: Function<Double, Optional<Component[]>>` | `DoubleSlider.setTooltipSupplier(tooltipSupplier: Function<Double, Optional<List<Component>>>): DoubleSlider` | 配置项的提示信息 |
+| `DoubleSlider.saveConsumer: Consumer<Double>` | `DoubleSlider.setSaveConsumer(saveConsumer: Consumer<Double>): DoubleSlider` | 配置项的保存函数 |
+| `DoubleSlider.requireRestart: boolean` | `DoubleSlider.setRequireRestart(requireRestart: boolean): DoubleSlider` | 配置项是否需要重启游戏 |
+
+上文中的 [Optional](https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html) 是 Java 8 引入的类，用来表示一个值可能为空，防止空指针异常。ANTE 已将此添加到了 JavaScript 环境中，您可以直接使用。
+
+`tooltipSupplier` 变量的返回值应该是 `Optional<Component[]>` 类型，您需要用 `asJavaArray([...])` 方法将JS的数组转换为Java的数组。
+
+最后，本类支持链式调用。
 
 ## ClientConfig
 

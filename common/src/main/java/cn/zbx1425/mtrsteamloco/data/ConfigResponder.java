@@ -276,7 +276,9 @@ public interface ConfigResponder {
             this.key = key;
             setName(name);
             setDefaultValue(defaultValue);
-            setValues(min, max, step);
+            setMin(min);
+            setMax(max);
+            setStep(step);
             setTooltipSupplier(tooltipSupplier);
             setSaveConsumer(saveConsumer);
         }
@@ -285,7 +287,9 @@ public interface ConfigResponder {
             this.key = key;
             setName(name);
             setDefaultValue(defaultValue);
-            setValues(min, max, step);
+            setMin(min);
+            setMax(max);
+            setStep(step);
         }
 
         public DoubleSlider setDefaultValue(double defaultValue) {
@@ -313,9 +317,17 @@ public interface ConfigResponder {
             return this;
         }
 
-        public DoubleSlider setValues(double min, double max, int step) {
+        public DoubleSlider setMin(double min) {
             this.min = min;
+            return this;
+        }
+
+        public DoubleSlider setMax(double max) {
             this.max = max;
+            return this;
+        }
+
+        public DoubleSlider setStep(int step) {
             this.step = step;
             return this;
         }
