@@ -93,7 +93,7 @@ public final class ConfigScreen {
                         ClientConfig.translucentSort
                 ).setTooltip(
                         Text.translatable("gui.mtrsteamloco.config.client.translucentsort.description")
-                ).setSaveConsumer(checked -> ClientConfig.translucentSort = checked).setDefaultValue(false).build()
+                ).setSaveConsumer(checked -> ClientConfig.translucentSort = checked).setDefaultValue(true).build()
         );
         common.addEntry(entryBuilder
                 .startBooleanToggle(

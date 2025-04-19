@@ -29,7 +29,7 @@ public class ClientConfig {
 
     public static boolean enableOptimization = true;
     public static boolean enableBbModelPreload = false;
-    public static boolean translucentSort = false;
+    public static boolean translucentSort = true;
 
     public static boolean enableScriptDebugOverlay = false;
 
