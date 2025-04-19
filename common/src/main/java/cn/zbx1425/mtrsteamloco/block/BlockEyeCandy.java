@@ -319,7 +319,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             BlockPos pos = getWorldPos();
             matrix.translate(pos.getX() + 0.5F + translateX, pos.getY() + translateY, pos.getZ() + 0.5F + translateZ);
             matrix.rotateX(rotateX);
-            matrix.rotateY(rotateY);
+            matrix.rotateY(rotateY + facing.toYRot());
             matrix.rotateZ(rotateZ);
             matrix.scale(scaleX, scaleY, scaleZ);
             return matrix;
@@ -340,6 +340,8 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         }
 
         public void restore() {
+            customConfigs.clear();
+            customResponders.clear();
             if (scriptContext != null) {
                 scriptContext.disposeForReload = true;
             }
@@ -349,8 +351,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             setCollisionShape(properties.collisionShape);
             fixedMatrix = properties.fixedMatrix;
             setLightLevel(properties.lightLevel);
-            customConfigs.clear();
-            customResponders.clear();
             isTicketBarrier = properties.isTicketBarrier;
             isEntrance = properties.isEntrance;
             asPlatform = properties.asPlatform;
@@ -478,6 +478,10 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
         public Map<String, String> getCustomConfigs() {
             return customConfigs;
         } 
+
+        public Map<String, ConfigResponder> getCustomResponders() {
+            return customResponders;
+        }
 
         public String getCustomConfig(String key) {
             return customConfigs.get(key);

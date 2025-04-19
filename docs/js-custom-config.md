@@ -28,6 +28,8 @@ ANTE 使用 `ConfigResponder` 接口来表示配置的响应器，存储配置�
 
     创建一个配置响应器。
 
+您可以使用 [ComponentUtil](js-util.md#componentutil) 来创建 `Component` 对象。
+
 包含以下属性以及对应方法：
 
 | 属性 | 方法 | 说明 |
@@ -58,6 +60,8 @@ ANTE 使用 `ConfigResponder` 接口来表示配置的响应器，存储配置�
 
     创建一个配置响应器。
 
+您可以使用 [ComponentUtil](js-util.md#componentutil) 来创建 `Component` 对象。
+
 包含以下属性以及对应方法：
 | 属性 | 方法 | 说明 |
 | ------------- | ------------- | ------------- |
@@ -84,6 +88,8 @@ ANTE 使用 `ConfigResponder` 接口来表示配置的响应器，存储配置�
 - `new BooleanToggle(key: String, name: Component, defaultValue: boolean, tooltipSupplier: Function<Boolean, Optional<Component[]>>, saveConsumer: Consumer<Boolean>, requireRestart: boolean)`
   
     创建一个配置响应器。
+
+您可以使用 [ComponentUtil](js-util.md#componentutil) 来创建 `Component` 对象。
 
 包含以下属性以及对应方法：
 | 属性 | 方法 | 说明 |

@@ -5,6 +5,7 @@ import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
 import net.minecraft.client.Minecraft;
 import me.shedaniel.clothconfig2.gui.entries.StringListEntry;
 import me.shedaniel.clothconfig2.impl.builders.StringFieldBuilder;
@@ -84,8 +85,18 @@ public class ClientConfig {
     }
 
     private static <T> T getOrDefault(JsonObject jsonObject, String key, Function<JsonElement, T> getter, T defaultValue) {
+        if (jsonObject == null) return defaultValue;
         if (jsonObject.has(key)) {
             return getter.apply(jsonObject.get(key));
+        } else {
+            return defaultValue;
+        }
+    }
+
+    private static <T> T getOrDefault(JsonArray jsonArray, int index, Function<JsonElement, T> getter, T defaultValue) {
+        if (jsonArray == null) return defaultValue;
+        if (jsonArray.size() > index) {
+            return getter.apply(jsonArray.get(index));
         } else {
             return defaultValue;
         }
@@ -268,11 +279,11 @@ public class ClientConfig {
             min = getOrDefault(configObject, "min", JsonElement::getAsFloat, min);
             max = getOrDefault(configObject, "max", JsonElement::getAsFloat, max);
             step = getOrDefault(configObject, "step", JsonElement::getAsInt, step);
-            JsonObject modesObject = entryObject.getAsJsonObject("modes");
-            if (modesObject == null) return;
+            JsonArray modesArray = entryObject.getAsJsonArray("modes");
+            if (modesArray == null) return;
             int [] modes = new int[quantity];
             for (int i = 0; i < quantity; i++) {
-                modes[i] = getOrDefault(modesObject, Integer.toString(i), JsonElement::getAsInt, defaultMode);
+                modes[i] = getOrDefault(modesArray, i, JsonElement::getAsInt, defaultMode);
             }
             this.modes = modes;
         }
@@ -283,10 +294,11 @@ public class ClientConfig {
             entryObject.addProperty("min", min);
             entryObject.addProperty("max", max);
             entryObject.addProperty("step", step);
-            JsonObject modesObject = new JsonObject();
-            for (int i = 0; i < modes.length; i++) {
-                modesObject.addProperty(Integer.toString(i), modes[i]);
+            JsonArray modesArray = new JsonArray();
+            for (int i = 0; i < quantity; i++) {
+                modesArray.add(modes[i]);
             }
+            entryObject.add("modes", modesArray);
             configObject.add(key, entryObject);
         }
 

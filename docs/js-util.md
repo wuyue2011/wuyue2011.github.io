@@ -393,7 +393,7 @@ MTR 的客户端数据，可以用来读取换乘线路等。参见 MTR 源码 C
 
 ## ComponentUtil
 
-为了方便创建我的世界(文本)组件，我向JS环境中添加了ComponentUtil类，含有以下方法：
+为了方便创建我的世界(文本)组件 `Component`，我向JS环境中添加了 `ComponentUtil` 类，含有以下方法：
 
 - `static translatable(text: String, ...objects: Object): Component`
   获取一个可翻译的组件，参数为文本和可变参数，返回一个可翻译的组件。

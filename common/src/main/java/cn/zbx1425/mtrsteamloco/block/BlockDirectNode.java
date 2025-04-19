@@ -34,11 +34,10 @@ public class BlockDirectNode extends BlockNode implements EntityBlockMapper {
 	}
 
     public static class BlockEntityDirectNode extends BlockEntityClientSerializableMapper {
-        private float angle = -114514F;
+        private double angle = -114514F;
         private RailAngle railAngle = null;
 
         public static final String KEY_ANGLE = "angle";
-        public static final String KEY_LOCKED = "locked";
 
         public BlockEntityDirectNode(BlockPos pos, BlockState state) {
             super(Main.BLOCK_ENTITY_TYPE_DIRECT_NODE.get(), pos, state);
@@ -48,12 +47,13 @@ public class BlockDirectNode extends BlockNode implements EntityBlockMapper {
             if (railAngle != null) return;
             BlockPos thi = getBlockPos();
             BlockPos oth = other.getBlockPos();
-            bind((float) Math.toDegrees(Math.atan2(oth.getZ() - thi.getZ(), oth.getX() - thi.getX())));
+            bind(Math.toDegrees(Math.atan2(oth.getZ() - thi.getZ(), oth.getX() - thi.getX())));
             other.bind(this);
         }
 
-        public void bind(float angle) {
-            this.angle = angle;
+        public void bind(double angle) {
+            angle = normalize(angle);
+            this.angle =angle;
             railAngle = RailAngleExtra.fromDegrees(angle);
             this.setChanged();
             Level level = getLevel();
@@ -65,7 +65,7 @@ public class BlockDirectNode extends BlockNode implements EntityBlockMapper {
 
         public void unbind() {
             railAngle = null;
-            angle = -114514F;
+            angle = -114514D;
             this.setChanged();
             Level level = getLevel();
             if (level == null) return;
@@ -74,7 +74,7 @@ public class BlockDirectNode extends BlockNode implements EntityBlockMapper {
             else PacketUpdateBlockEntity.sendUpdateC2S(this);
         }
 
-        public float getAngleDegrees() {
+        public double getAngleDegrees() {
             return angle;
         }
 
@@ -88,21 +88,25 @@ public class BlockDirectNode extends BlockNode implements EntityBlockMapper {
         
         @Override
         public void readCompoundTag(CompoundTag compoundTag) {
-            angle = compoundTag.contains(KEY_ANGLE) ? compoundTag.getFloat(KEY_ANGLE) : -114514F;
-            boolean locked = compoundTag.contains(KEY_LOCKED) ? compoundTag.getBoolean(KEY_LOCKED) : false;
-            if (locked) {
+            if (compoundTag.contains(KEY_ANGLE)) {
+                angle = compoundTag.getDouble(KEY_ANGLE);
                 railAngle = RailAngleExtra.fromDegrees(angle);
             } else {
+                angle = -114514D;
                 railAngle = null;
             }
-            // Main.LOGGER.info("read ----- angle: " + angle + ", locked: " + isLocked() + ", railAngle: " + railAngle);
         }
 
         @Override
         public void writeCompoundTag(CompoundTag compoundTag) {
-            compoundTag.putFloat(KEY_ANGLE, angle);
-            compoundTag.putBoolean(KEY_LOCKED, isBound());
-            // Main.LOGGER.info("write ----- angle: " + angle + ", locked: " + isLocked() + ", railAngle: " + railAngle);
+            if (!isBound()) return;
+            compoundTag.putDouble(KEY_ANGLE, angle);
+        }
+
+        public static double normalize(double angle) {
+            while (angle < 0F) angle += 180D;
+            while (angle >= 180F) angle -= 180D;
+            return angle;
         }
     }
 }

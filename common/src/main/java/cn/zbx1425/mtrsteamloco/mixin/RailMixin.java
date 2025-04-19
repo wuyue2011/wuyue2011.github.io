@@ -209,7 +209,7 @@ public abstract class RailMixin implements RailExtraSupplier {
 		final int zEnd = posEnd.getZ();
 
         if (transportMode == TransportMode.TRAIN) {
-            RailCalculator.Group group = RailCalculator.calculate(xStart, zStart, xEnd, zEnd, facingStart.angleDegrees, facingEnd.angleDegrees);
+            RailCalculator.Group group = RailCalculator.calculate(xStart, zStart, xEnd, zEnd, facingStart.angleRadians, facingEnd.angleRadians);
 
             if (group != null) {
                 h1 = group.first.h;

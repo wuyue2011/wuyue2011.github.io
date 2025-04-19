@@ -176,7 +176,7 @@ public class CompoundCreator extends ItemNodeModifierBase {
 			final boolean goodRadius = rail1.goodRadius() && rail2.goodRadius();
 			final boolean isValid = rail1.isValid() && rail2.isValid();
 
-            Main.LOGGER.info("*****" + isValid + " " + isValidContinuousMovement + " " + goodRadius);
+            // Main.LOGGER.info("*****" + isValid + " " + isValidContinuousMovement + " " + goodRadius);
 
 			if (goodRadius && isValid && isValidContinuousMovement) {
                 RailExtraSupplier rail1Extra = (RailExtraSupplier) (Object) rail1;

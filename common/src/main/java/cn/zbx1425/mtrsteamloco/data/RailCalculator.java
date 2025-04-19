@@ -308,8 +308,8 @@ public class RailCalculator {
         double startZ = 3;
         double endX = 4;
         double endZ = 1;
-        double startAngle = -45;
-        double endAngle = -135;
+        float startAngle = -45;
+        float endAngle = -135;
 
         Group group = calculate(startX, startZ, endX, endZ, startAngle, endAngle);
     }
@@ -347,10 +347,10 @@ public class RailCalculator {
             beta = temp2;
         }
 
-        Vec2 vSS1 = new Vec2(1, 0).rotateDeg(alpha);
+        Vec2 vSS1 = new Vec2(1, 0).rotateRad(alpha);
         Vec2 S1 = S.add(vSS1);
 
-        Vec2 vEE1 = new Vec2(1, 0).rotateDeg(beta);
+        Vec2 vEE1 = new Vec2(1, 0).rotateRad(beta);
         Vec2 E1 = E.add(vEE1);
 
         Line SS1 = new Line(S, S1);
@@ -385,6 +385,11 @@ public class RailCalculator {
             Line l4 = EE1.perpendicular(E);
             Vec2 O2 = l3.intersection(l4);
 
+            if (l2.equals(l4)) {
+                pl("方向无效");
+                return null;
+            }
+
             pl("O1 " + O1 + " O2 " + O2);
             if (O1 == null || O2 == null) {
                 pl("无交点");
@@ -410,8 +415,11 @@ public class RailCalculator {
         double theta = vME.degree() - vMS.degree();
         double dME = M.distance(E);
         double dMS = M.distance(S);
+        double diff = dME - dMS;
 
-        if (dME > dMS) { // 曲线在前
+        pl("theta " + theta + " dME " + dME + " dMS " + dMS);
+
+        if (diff > PRECISION) { // 曲线在前
             pl("曲线在前");
 
             Line p1 = SS1.perpendicular(S);
@@ -432,7 +440,7 @@ public class RailCalculator {
             Segment seg = new Segment(F, E);
             Group group = new Group(arc.toSection(), seg.toSection());
             return group;
-        } else if (dME < dMS) { // 曲线在后
+        } else if (diff < -PRECISION) { // 曲线在后
             pl("曲线在后");
 
             Line p1 = EE1.perpendicular(E);
@@ -465,5 +473,58 @@ public class RailCalculator {
 
             return new Group(new Arc(O, S, E).toSection(), new Section());
         }
+    }
+
+    public static Double calculateMaxRadiusAngle(double startX, double startZ, double endX, double endZ, double startAngle) {
+        pl("calculateMaxRadiusAngle");
+
+        Vec2 S = new Vec2(startX, startZ);
+        double alpha = startAngle;
+        Vec2 E = new Vec2(endX, endZ);
+
+        Vec2 vSS1 = new Vec2(1, 0).rotateRad(alpha);
+        Vec2 S1 = S.add(vSS1);
+        Line SS1 = new Line(S, S1);
+
+        Line SE = new Line(S, E);
+        
+        if (SS1.equals(SE)) {
+            pl("直线");
+            return startAngle;
+        }
+
+        Line SD = SS1.perpendicular(S);
+
+        Vec2 vSE = E.sub(S);
+        Vec2 vSF = vSE.scale(1.0D / 2.0D);
+        Vec2 F = S.add(vSF);
+
+        pl("F " + F);
+
+        Vec2 D = SD.intersection(SE.perpendicular(F));
+
+        if (D == null) {
+            pl("无交点");
+            return null;
+        }
+
+        pl("交点：" + D);
+
+        Line DE = new Line(D, E);
+
+        Line l = DE.perpendicular(E);
+
+        double dir = l.direction().degree();
+
+        Group group = _calculate(startX, startZ, endX, endZ, startAngle, Math.toRadians(dir));
+
+        if (group == null) {
+            pl("无效的section");
+            return null;
+        }
+
+        pl(group + "");
+        
+        return dir;
     }
 }

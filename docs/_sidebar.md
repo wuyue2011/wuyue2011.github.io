@@ -6,6 +6,7 @@
   - [OBJ 模型格式](objschem.md)
   - [将 OBJ 模型用于列车](trainmodel.md)
   - [装饰物件](eyecandy.md)
+  - [直线节点](direct-node.md)
   - [自定义轨道模型](railmodel.md)
 - JavaScript 支持
   - [普遍内容](js-general.md)

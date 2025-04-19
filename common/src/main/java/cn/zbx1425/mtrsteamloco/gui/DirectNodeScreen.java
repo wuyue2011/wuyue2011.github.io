@@ -118,7 +118,7 @@ public class DirectNodeScreen extends Screen {
         pattern.render();
     }
 
-    private void bindAngle(float degree) {
+    private void bindAngle(double degree) {
         entity.bind(degree);
     }
 
@@ -170,7 +170,8 @@ public class DirectNodeScreen extends Screen {
 
     public class DegreeSlider implements Pattern {
         WidgetSlider slider;
-        float min, max, now;
+        float min, max;
+        double now;
         int step;
 
         public DegreeSlider() {
@@ -180,7 +181,7 @@ public class DirectNodeScreen extends Screen {
             step = entry.step;
             now = entity.getAngleDegrees();
             slider = new WidgetSlider(step, getLevel(now), integer -> {
-                float p = getValue(integer);
+                double p = getValue(integer);
                 if (p != now) {
                     setNow(p);
                 }
@@ -188,16 +189,16 @@ public class DirectNodeScreen extends Screen {
             }); 
         }
 
-        public int getLevel(float v) {
-            return (int) Math.round((v - min) / ((max - min) / (float) step));
+        public int getLevel(double v) {
+            return (int) Math.round((v - min) / ((max - min) / (double) step));
         }
 
-        public void setNow(float now) {
+        public void setNow(double now) {
             this.now = now;
             bindAngle(now);
         }
 
-        public float getValue(int level) {
+        public double getValue(int level) {
             return min + level * ((max - min) / (float) step);
         }
 
@@ -216,14 +217,14 @@ public class DirectNodeScreen extends Screen {
 
     public class DegreeTextField implements Pattern {
         WidgetBetterTextField textField;
-        float now = entity.getAngleDegrees();
+        double now = entity.getAngleDegrees();
 
         public DegreeTextField() {
             textField = new WidgetBetterTextField(String.format("%.1f", now), 10);
             textField.setResponder(s -> {
-                float p = getNow();
+                double p = getNow();
                 try {
-                    float f = Float.parseFloat(s);
+                    double f = Double.parseDouble(s);
                     if (f != p) {
                         setNow(f);
                     }
@@ -249,11 +250,11 @@ public class DirectNodeScreen extends Screen {
             return Collections.singletonList(textField);
         }
 
-        public float getNow() {
+        public double getNow() {
             return now;
         }
 
-        public void setNow(float now) {
+        public void setNow(double now) {
             this.now = now;
             bindAngle(now);
         }

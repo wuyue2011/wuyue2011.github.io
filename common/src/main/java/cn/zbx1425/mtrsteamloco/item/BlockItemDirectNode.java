@@ -39,14 +39,9 @@ public class BlockItemDirectNode extends BlockItem {
                 list.add(Text.translatable("tooltip.mtrsteamloco.direct_node.unbound"));
                 return;
             }
-            if (tag.contains(BlockEntityDirectNode.KEY_ANGLE) && tag.contains(BlockEntityDirectNode.KEY_LOCKED)) {
-                float angle = tag.getFloat(BlockEntityDirectNode.KEY_ANGLE);
-                boolean locked = tag.getBoolean(BlockEntityDirectNode.KEY_LOCKED);
-                if (locked) {
-                    list.add(Text.translatable("tooltip.mtrsteamloco.direct_node.bound", angle));
-                } else {
-                    list.add(Text.translatable("tooltip.mtrsteamloco.direct_node.unbound"));
-                }
+            if (tag.contains(BlockEntityDirectNode.KEY_ANGLE)) {
+                double angle = tag.getDouble(BlockEntityDirectNode.KEY_ANGLE);
+                list.add(Text.translatable("tooltip.mtrsteamloco.direct_node.bound", angle));
             } else {
                 list.add(Text.translatable("tooltip.mtrsteamloco.direct_node.unbound"));
             }

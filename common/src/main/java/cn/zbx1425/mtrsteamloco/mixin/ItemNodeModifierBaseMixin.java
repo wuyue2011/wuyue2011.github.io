@@ -11,6 +11,7 @@ import mtr.data.TransportMode;
 import mtr.mappings.Text;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import cn.zbx1425.mtrsteamloco.data.RailCalculator;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -92,6 +93,30 @@ public abstract class ItemNodeModifierBaseMixin {
                         else {
                             railAngleEnd = f;
                             s2 = true;
+                        }
+                    }
+
+                    if (s1 && !s2) {
+                        Double deg = RailCalculator.calculateMaxRadiusAngle(posStart.getX(), posStart.getZ(), posEnd.getX(), posEnd.getZ(), railAngleStart.angleRadians);
+                        if (deg == null) {
+                            player.displayClientMessage(Text.translatable("gui.mtr.invalid_orientation"), true);
+                            return;
+                        } else {
+                            beEnd.bind(deg);
+                            railAngleEnd = RailAngleExtra.fromDegrees(deg);
+                            s2 = true;
+                            if (player != null) player.displayClientMessage(Text.translatable("gui.mtrsteamloco.direct_node.success_bind"), true);
+                        }
+                    } else if (s2 && !s1) {
+                        Double deg = RailCalculator.calculateMaxRadiusAngle(posEnd.getX(), posEnd.getZ(), posStart.getX(), posStart.getZ(), railAngleEnd.angleRadians);
+                        if (deg == null) {
+                            player.displayClientMessage(Text.translatable("gui.mtr.invalid_orientation"), true);
+                            return;
+                        } else {
+                            beStart.bind(deg);
+                            railAngleStart = RailAngleExtra.fromDegrees(deg);
+                            s1 = true;
+                            if (player != null) player.displayClientMessage(Text.translatable("gui.mtrsteamloco.direct_node.success_bind"), true);
                         }
                     }
 

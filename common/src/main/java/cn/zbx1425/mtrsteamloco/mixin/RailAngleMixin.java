@@ -17,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(RailAngle.class)
 public abstract class RailAngleMixin implements RailAngleExtra{
     @Shadow(remap = false) @Final private float angleDegrees;
+    @Shadow(remap = false) @Final @Mutable private double angleRadians, sin, cos, tan;
 
     @Inject(method = "<init>", at = @At("TAIL"), remap = false)
     private void init(String name, int ordinal, float angleDegrees, CallbackInfo ci) {
@@ -29,9 +30,29 @@ public abstract class RailAngleMixin implements RailAngleExtra{
     }
 
     @Override
-    public RailAngle _fromDegrees(float angleDegrees) {
-        RailAngle result = create("A" + String.format("%.2f", angleDegrees), -1, angleDegrees);
+    public RailAngle _fromDegrees(double angleDegrees) {
+        RailAngle result = create("D" + String.format("%.2f", angleDegrees), -1, (float) angleDegrees);
+        setRadians(result, Math.toRadians(angleDegrees));
         return result;
+    }
+
+    @Override
+    public RailAngle _fromRadians(double angleRadians) {
+        RailAngle result = create("R" + String.format("%.2f", angleRadians), -1, (float) Math.toDegrees(angleRadians));
+        setRadians(result, angleRadians);
+        return result;
+    }
+
+    @Override
+    public void setRadians(double angleRadians) {
+        this.angleRadians = angleRadians;
+        this.sin = Math.sin(angleRadians);
+        this.cos = Math.cos(angleRadians);
+        this.tan = Math.tan(angleRadians);
+    }
+
+    private static void setRadians(RailAngle angle, double angleRadians) {
+        ((RailAngleMixin) (Object) angle).setRadians(angleRadians);
     }
 
     private RailAngle fromDegrees(float angleDegrees) {

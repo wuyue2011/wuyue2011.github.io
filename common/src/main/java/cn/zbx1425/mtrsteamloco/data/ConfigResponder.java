@@ -260,7 +260,7 @@ public interface ConfigResponder {
         }
     }
 
-    public static class IntSlider implements ConfigResponder {
+    public static class DoubleSlider implements ConfigResponder {
         public String key;
         public Component name;
         public double defaultValue;
@@ -268,42 +268,60 @@ public interface ConfigResponder {
         public double max;
         public int step;    
         public Function<Double, Optional<Component[]>> tooltipSupplier = str -> Optional.empty();
-        public Consumer<Double> saveConsumer = bool -> {};
+        public Function<Double, Component> textGetter = str -> Text.literal(String.format("%.2f", str));
+        public Consumer<Double> saveConsumer = num -> {};
         public boolean requireRestart = false;
 
-        public IntSlider(String key, Component name, double defaultValue, double min, double max, int step, Function<Double, Optional<Component[]>> tooltipSupplier, Consumer<Double> saveConsumer, boolean requireRestart) {
-
+        public DoubleSlider(String key, Component name, double defaultValue, double min, double max, int step, Function<Double, Optional<Component[]>> tooltipSupplier, Consumer<Double> saveConsumer, boolean requireRestart) {
+            this.key = key;
+            setName(name);
+            setDefaultValue(defaultValue);
+            setValues(min, max, step);
+            setTooltipSupplier(tooltipSupplier);
+            setSaveConsumer(saveConsumer);
         }
 
-        public IntSlider setDefaultValue(double defaultValue) {
+        public DoubleSlider(String key, Component name, double defaultValue, double min, double max, int step) {
+            this.key = key;
+            setName(name);
+            setDefaultValue(defaultValue);
+            setValues(min, max, step);
+        }
+
+        public DoubleSlider setDefaultValue(double defaultValue) {
             this.defaultValue = defaultValue;
             return this;
         }
 
-        public IntSlider setName(Component name) {
+        public DoubleSlider setName(Component name) {
             this.name = name;
             return this;
         }
 
-        public IntSlider setSaveConsumer(Consumer<Double> saveConsumer) {
+        public DoubleSlider setSaveConsumer(Consumer<Double> saveConsumer) {
             this.saveConsumer = saveConsumer;
             return this;
         }
 
-        public IntSlider setTooltipSupplier(Function<Double, Optional<Component[]>> tooltipSupplier) {
+        public DoubleSlider setTooltipSupplier(Function<Double, Optional<Component[]>> tooltipSupplier) {
             this.tooltipSupplier = tooltipSupplier;
             return this;
         }
 
-        public IntSlider setRequireRestart(boolean requireRestart) {
+        public DoubleSlider setRequireRestart(boolean requireRestart) {
             this.requireRestart = requireRestart;
             return this;
         }
 
-        public IntSlider setValues(double min, double max, int step) {
+        public DoubleSlider setValues(double min, double max, int step) {
             this.min = min;
             this.max = max;
             this.step = step;
+            return this;
+        }
+
+        public DoubleSlider setTextGetter(Function<Double, Component> textGetter) {
+            this.textGetter = textGetter;
             return this;
         }
 
@@ -331,6 +349,7 @@ public interface ConfigResponder {
                 .setTooltipSupplier(
                     level -> tooltipSupplier.apply(getValue(level))
                 )
+                .setTextGetter(level -> textGetter.apply(getValue(level)))
                 .build();
             if (requireRestart) 
                 entry.setRequiresRestart(true);
