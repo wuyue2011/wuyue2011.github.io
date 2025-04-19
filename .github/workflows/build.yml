@@ -81,20 +81,32 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Extract changelog
+        run: |
+          chmod +x ./extract_changelog.sh
+          ./extract_changelog.sh
+      - name: Read changelog content
+        id: read_changelog
+        run: |
+          CONTENT=$(cat extracted_changelog.md | sed 's/%/%25/g' | sed ':a;N;$!ba;s/\n/%0A/g' | sed 's/\r/%0D/g')
+          echo "content=$CONTENT" >> $GITHUB_OUTPUT
       - name: Download release artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts
           merge-multiple: true
+
       - name: Get Mod Version
         run: |
           MOD_VERSION=$(grep "mod_version=" gradle.properties | cut -d'=' -f2)
-          echo "MOD_VERSION=$MOD_VERSION"
           echo "MOD_VERSION=$MOD_VERSION" >> $GITHUB_ENV
+
       - name: Set current date
         run: echo "CUR_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
       - name: Get commit SHA
         run: echo "SHA_SHORT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
@@ -104,6 +116,7 @@ jobs:
             工作流: [${{ env.SHA_SHORT }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
 
             更新内容:
+            ${{ steps.read_changelog.outputs.content }}
 
             相关链接:
             - [RailwayAesthetics-Future文档](https://aphrodite281.github.io/RailwayAesthetics-Future/#/)
@@ -132,6 +145,10 @@ jobs:
           MOD_VERSION=$(grep "mod_version=" gradle.properties | cut -d'=' -f2)
           echo "MOD_VERSION=$MOD_VERSION"
           echo "MOD_VERSION=$MOD_VERSION" >> $GITHUB_ENV
+      - name: Extract changelog
+        run: |
+          chmod +x ./extract_changelog.sh
+          ./extract_changelog.sh
       - name: Download release artifacts
         uses: actions/download-artifact@v4
         with:
@@ -160,3 +177,4 @@ jobs:
           fail-mode: fail
           dependencies: |
             MTR-3.2.2(required){modrinth:XKPAmI6u}
+          changelog-file: extracted_changelog.md

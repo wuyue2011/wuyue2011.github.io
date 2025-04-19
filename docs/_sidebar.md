@@ -2,6 +2,7 @@
   - [首页](README.md)
   - [特性功能](feature.md)
   - [下载](download.md)
+  - [更新日志](changelog.md)
 - 物品使用与资源包制作
   - [OBJ 模型格式](objschem.md)
   - [将 OBJ 模型用于列车](trainmodel.md)

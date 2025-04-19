@@ -58,3 +58,6 @@ _Minecraft-Transit-Railway-3.x.x
 # logs
 
 *.log
+
+# Extracted changelog
+extracted_changelog.md
