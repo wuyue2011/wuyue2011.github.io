@@ -21,8 +21,11 @@
 
 | 类名 | 说明 |
 | --- | --- |
+| 资源加载相关 | |
 | [`Resources`](js-resources-env.md#资源) | 管理资源的加载与使用。 |
+| 动态贴图相关 | |
 | [`GraphicsTexture`](js-dynamic-texture.md#GraphicsTexture) | 动态贴图类。 | 
+| 工具类 | |
 | [`Timing`](js-util.md#Timing) | 管理时间的工具类。 |
 | [`StateTracker`](js-util.md#StateTracker) | 管理状态的工具类。 |
 | [`CycleTracker`](js-util.md#CycleTracker) | 管理循环的工具类。 |
@@ -34,31 +37,35 @@
 | [`GlobalRegister`](js-util.md#GlobalRegister) | 全局注册器，用于打通不同脚本之间的通信。 |
 | [`WrappedEntity`](js-util.md#WrappedEntity) | 包装了 Minecraft 实体的工具类。 |
 | [`ComponentUtil`](js-util.md#ComponentUtil) | 文本组件工具类。 |
+| [`Component`](js-util.md#componentutil) | 我的世界的文本组件。 |
 | [`IScreen`](js-util.md#IScreen) | 屏幕接口。 |
-| [`OrderedMap`](js-util.md#OrderedMap与PlacementOrder) | 有序的表。 |
-| [`PlacementOrder`](js-util.md#OrderedMap与PlacementOrder) | 表的排序方式。 |
+| [`OrderedMap`](js-util.md#orderedmap-与-placementorder) | 有序的表。 |
+| [`PlacementOrder`](js-util.md#OrderedMap-与-PlacementOrder) | 表的排序方式。 |
 | [`ShapeSerializer`](js-util.md#ShapeSerializer) | 形状的序列化器。 |
 | [`MinecraftClient`](js-util.md#MinecraftClient) | 客户端工具类。 |
+| 交互相关 | |
 | [`ConfigResponder`](js-custom-config.md#ConfigResponder) | 自定义配置响应器。 |
 | [`ClientConfig`](js-custom-config.md#ClientConfig) | 客户端配置。 |
+| 渲染相关 | |
 | [`DrawCall`](js-draw-call.md) | 绘制调用接口。 |
 | [`ClusterDrawCall`](js-draw-call.md#clusterdrawcall) | 集群绘制调用。 |
 | [`WorldDrawCall`](js-draw-call.md#worlddrawcall) | 世界绘制调用。 |
 | [`RailDrawCall`](js-rail.md#RailDrawCall) | 铁轨绘制调用。 |
 | [`SimpleRailDrawCall`](js-rail.md#SimpleRailDrawCall) | 简单的铁轨绘制调用。 |
 | [`ModelManager`](js-model-processing.md#ModelManager) | 管理模型的加载。 |
-| [`RawMesh`](js-model-processing.md#RawMesh) | 原始网格。 |
+| [`RawMesh`](js-model-processing.md#RawMeshBuilder) | 原始网格。 |
 | [`RawMeshBuilder`](js-model-processing.md#RawMeshBuilder) | 原始网格构建器。 |
 | [`RawModel`](js-model-processing.md#RawModel) | 原始模型。 |
 | [`ModelCluster`](js-model-processing.md#ModelCluster) | 上传后的模型集群。 |
 | [`DynamicModelHolder`](js-model-processing.md#DynamicModelHolder) | 动态模型容器。 |
+| 数学相关 | |
 | [`Matrices`](js-math.md#Matrices) | 矩阵工具类。 |
-| [`Matrix4f`](js-math.md#Matrices) | 4x4 矩阵。 |
-| [`Vector3f`](js-math.md#Matrices) | 3D 向量。 |
+| [`Matrix4f`](js-math.md#matrix4f) | 4x4 矩阵。 |
+| [`Vector3f`](js-math.md#vector3f) | 3D 向量。 |
+| 其他 | |
 | [`MTRClientData`](js-util.md#mtrclientdata) | 客户端数据。 |
 | [`UtilitiesClient`](js-util.md#utilitiesclient) | MTR的客户端工具类。 |
 | [`IDrawing`](js-util.md#IDrawing) | MTR的绘制接口。 |
-| [`Component`](js-util.md#componentutil) | 我的世界的文本组件。 |
 | [`Optional`](https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html) | Java 8 引入的 Optional 类。 |
 
 ## 资源

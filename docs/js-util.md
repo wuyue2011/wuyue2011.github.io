@@ -146,7 +146,7 @@ MTR 采用了一个 `中文部分|English Part||EXTRA` 的车站命名方法，�
 
 ## MTRClientData
 
-MTR 的客户端数据，可以用来读取换乘线路等。参见 MTR 源码 ClientData.java。
+MTR 的客户端数据，可以用来读取换乘线路等。参见 MTR 源码 [ClientData.java](https://github.com/aphrodite281/Minecraft-Transit-Railway/blob/master/common/src/main/java/mtr/client/ClientData.java)。
 
 
 
@@ -651,6 +651,20 @@ function use(ctx, state, entity, player) {
     MinecraftClient.setScreen(screen);
 }
 ```
+
+## GlobalRegister
+
+为了不重复加载资源，您可以使用 `GlobalRegister` 来实现单实例化。
+
+`GlobalRegister` 提供了以下方法：
+
+- `static GlobalRegister.put(key: string, value: Object): void`
+向注册表中添加一个对象。
+
+- `static GlobalRegister.get(key: string): Object`
+从注册表中获取一个对象。
+
+详见源码 [GlobalRegister.java](https://github.com/aphrodite281/mtr-ante/blob/alpha/common/src/main/java/cn/zbx1425/mtrsteamloco/render/scripting/util/GlobalRegister.java)
 
 ## ShapeSerializer 
 
