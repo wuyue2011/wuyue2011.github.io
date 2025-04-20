@@ -111,7 +111,6 @@ public class ScriptHolder {
         scope.put("asJavaArray", scope, new NativeJavaMethod(
                 JsFriendlyJavaUtils.class.getMethod("asJavaArray", List.class, Class.class), "asJavaArray"));
 
-        scope.put("ModelManager", scope, Context.toObject(MainClient.modelManager, scope));
         scope.put("Resources", scope, new NativeJavaClass(scope, ScriptResourceUtil.class));
         scope.put("GraphicsTexture", scope, new NativeJavaClass(scope, GraphicsTexture.class));
         scope.put("Timing", scope, new NativeJavaClass(scope, TimingUtil.class));
@@ -139,6 +138,7 @@ public class ScriptHolder {
         scope.put("RailDrawCall", scope, new NativeJavaClass(scope, RailDrawCall.class));
         scope.put("SimpleRailDrawCall", scope, new NativeJavaClass(scope, SimpleRailDrawCall.class));
 
+        scope.put("ModelManager", scope, Context.toObject(MainClient.modelManager, scope));
         scope.put("RawModel", scope, new NativeJavaClass(scope, RawModel.class));
         scope.put("RawMesh", scope, new NativeJavaClass(scope, RawMesh.class));
         scope.put("RawMeshBuilder", scope, new NativeJavaClass(scope, RawMeshBuilder.class));

@@ -490,7 +490,7 @@ public class RailCalculator {
         
         if (SS1.equals(SE)) {
             pl("直线");
-            return startAngle;
+            return Math.toDegrees(startAngle);
         }
 
         Line SD = SS1.perpendicular(S);

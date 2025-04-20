@@ -55,20 +55,16 @@ public abstract class RailAngleMixin implements RailAngleExtra{
         ((RailAngleMixin) (Object) angle).setRadians(angleRadians);
     }
 
-    private RailAngle fromDegrees(float angleDegrees) {
-        return _fromDegrees(angleDegrees);
-    }
-
     public RailAngle getOpposite() {
-        return fromDegrees(angleDegrees + 180);
+        return _fromRadians(angleRadians + Math.PI);
     }
 
     public RailAngle add(RailAngle other) {
-        return fromDegrees(angleDegrees + other.angleDegrees);
+        return _fromRadians(angleRadians + other.angleRadians);
     }
 
     public RailAngle subtract(RailAngle other) {
-        return fromDegrees(angleDegrees - other.angleDegrees);
+        return _fromRadians(angleRadians - other.angleRadians);
     }
 
     public boolean isParallel(RailAngle other) {

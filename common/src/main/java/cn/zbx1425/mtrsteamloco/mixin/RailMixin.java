@@ -194,14 +194,6 @@ public abstract class RailMixin implements RailExtraSupplier {
 
     @Inject(method = "<init>(Lnet/minecraft/core/BlockPos;Lmtr/data/RailAngle;Lnet/minecraft/core/BlockPos;Lmtr/data/RailAngle;Lmtr/data/RailType;Lmtr/data/TransportMode;)V", at = @At("TAIL"))
     private void onCreate(BlockPos posStart, RailAngle facingStart, BlockPos posEnd, RailAngle facingEnd, RailType railType, TransportMode transportMode, CallbackInfo ci) {
-        String info = "";
-
-        this.facingStart = facingStart;
-		this.facingEnd = facingEnd;
-		this.railType = railType;
-		this.transportMode = transportMode;
-		yStart = posStart.getY();
-		yEnd = posEnd.getY();
 
         final int xStart = posStart.getX();
 		final int zStart = posStart.getZ();
@@ -227,6 +219,9 @@ public abstract class RailMixin implements RailExtraSupplier {
                 tEnd2 = group.second.tEnd;
                 reverseT2 = group.second.reverseT;
                 isStraight2 = group.second.isStraight;
+
+                this.facingStart = getRailAngle(false);
+                this.facingEnd = getRailAngle(true);
             }
         }
     }
@@ -248,7 +243,7 @@ public abstract class RailMixin implements RailExtraSupplier {
 		}
 		final Vec3 pos1 = getPosition(start);
 		final Vec3 pos2 = getPosition(end);
-		RailAngle result =  RailAngleExtra.fromDegrees((float) Math.toDegrees(Math.atan2(pos2.z - pos1.z, pos2.x - pos1.x)));
+		RailAngle result =  RailAngleExtra.fromRadians(Math.atan2(pos2.z - pos1.z, pos2.x - pos1.x));
         cir.setReturnValue(result);
         cir.cancel();
         return;
@@ -263,10 +258,10 @@ public abstract class RailMixin implements RailExtraSupplier {
         boolean b3 = false;
         float f3 = f1.angleDegrees - facingStart.angleDegrees;
         float f4 = f2.angleDegrees - facingEnd.angleDegrees;
-        f3 = Math.abs(f3) % 360;
-        f4 = Math.abs(f4) % 360;
-        if (f3 < 0.3 || f3 > 179.7) b2 = true;
-        if (f4 < 0.3 || f4 > 179.7) b3 = true;
+        f3 = Math.abs(f3) % 180;
+        f4 = Math.abs(f4) % 180;
+        if (f3 < 0.3) b2 = true;
+        if (f4 < 0.3) b3 = true;
         b2 = b2 && b3;
         // Main.LOGGER.info("isValid: " + b1 + " " + b2 + " "+ f1 + " " + f2 + " * " + facingStart + " " + facingEnd + " ** " + f3 + " " + f4);
         cir.setReturnValue(b1);// && b2);
