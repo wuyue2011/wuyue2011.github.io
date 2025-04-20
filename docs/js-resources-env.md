@@ -12,7 +12,7 @@
 ### 变量
 (A)NTE 为 JavaScript 环境提供了以下环境变量：
 
-### CONFIG_INFO
+#### CONFIG_INFO
 - `CONFIG_INFO` : 使用此脚本的Json块的配置信息
 例如：
 您在mtrsteamloco:eyecandies/script.json中定义了如下配置：
@@ -50,7 +50,7 @@ print(CONFIG_INFO.key); // qssnn
 
 您可以参考 [RailwayAesthetics-Future](https://github.com/aphrodite281/RailwayAesthetics-Future) 中 [JavaScript脚本](https://github.com/aphrodite281/RailwayAesthetics-Future/blob/main/assets/mtrsteamloco/eyecandies/signal_lighta/common.js#4) 和 [Json配置](https://github.com/aphrodite281/RailwayAesthetics-Future/blob/main/assets/mtrsteamloco/eyecandies/signal_lighta.json) 的搭配。
 
-
+### 方法
 (A)NTE 为 JavaScript 环境额外提供了以下方法：
 
 | 方法名 | 说明 |
@@ -59,6 +59,7 @@ print(CONFIG_INFO.key); // qssnn
 | [`print`](js-util.md#输出测试信息) | 输出测试信息到控制台。 |
 | [`asJavaArray`](js-util.md#转换类型) | 将 JavaScript 数组转换为 Java 数组。 |
 
+### 类
 (A)NTE 为 JavaScirpt 环境额外提供了以下类：
 
 | 类名 | 说明 |
