@@ -9,8 +9,10 @@
 
 ## 环境
 
-(A)NTE 为 JavaScript 环境提供了以下全局变量：
+### 变量
+(A)NTE 为 JavaScript 环境提供了以下环境变量：
 
+### CONFIG_INFO
 - `CONFIG_INFO` : 使用此脚本的Json块的配置信息
 例如：
 您在mtrsteamloco:eyecandies/script.json中定义了如下配置：
