@@ -35,10 +35,24 @@
 
 
 
-### 使用 Java 内置类
+### 使用 Java 类
 
-Rhino 脚本引擎中可以使用 `java.包名.类名` 的形式使用 Java 标准库里的类。似乎还不能使用 mtr 内的类，或许是因为某些类加载器方面的问题。
+Rhino 脚本引擎中可以使用 `Packages.包名.类名` 的形式使用 Java 的类，若为 Java 标准库里的类可以简写为 `java.包名.类名` 这等同于 `Packages.java.包名.类名`。
 
+例如，您可以使用 `mtr.data.Station` 类，创建一个站点对象：
+
+```javascript
+let sta = new Packages.mtr.data.Station();
+sta.name = "晴纱是男娘";
+```
+
+或者使用 `java.awt.image.BufferedImage` 类，创建一个 BufferedImage 对象：
+
+```javascript
+let img = new java.awt.image.BufferedImage(100, 100, java.awt.image.BufferedImage.TYPE_INT_RGB);
+let g = img.getGraphics();
+g.dispose();
+```
 
 
 ### 要使用 let 或 var 声明变量

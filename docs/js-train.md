@@ -116,7 +116,7 @@ NTE 调用这几个函数时会使用三个参数，稍后介绍其各自的内�
 
 - `EyeCandyScriptContext.drawCalls: Map<Object, DrawCall>[]`
   
-  按列车分的[绘制调用](https://aphrodite281.github.io/mtr-ante/#/js-draw-call)表。(此Map为java的Map，请使用[java-Map](https://docs.oracle.com/javase/8/docs/api/java/util/Map.html)的方法)。
+  按列车分的[绘制调用](js-draw-call.md)表。(此Map为java的Map，请使用[java-Map](https://docs.oracle.com/javase/8/docs/api/java/util/Map.html)的方法)。
 
 此外，还有一组函数以 **辅助开发调试**。
 

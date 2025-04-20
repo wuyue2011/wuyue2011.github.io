@@ -11,7 +11,7 @@
   - [自定义轨道模型](railmodel.md)
 - JavaScript 支持
   - [普遍内容](js-general.md)
-  - [资源加载](js-resources.md)
+  - [资源与环境](js-resources-env.md)
   - [模型处理](js-model-processing.md)
   - [数学](js-math.md)
   - [工具类](js-util.md)

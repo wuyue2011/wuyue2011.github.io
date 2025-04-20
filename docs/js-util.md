@@ -651,3 +651,15 @@ function use(ctx, state, entity, player) {
     MinecraftClient.setScreen(screen);
 }
 ```
+
+## ShapeSerializer 
+
+`ShapeSerializer` 是 `ANTE` 序列化装饰物件形状的工具类，详见源码 [ShapeSerializer.java](https://github.com/aphrodite281/mtr-ante/blob/alpha/common/src/main/java/cn/zbx1425/mtrsteamloco/data/ShapeSerializer.java)。一般来说您用不到这个类。
+
+## IDrawing
+
+`IDrawing` 是 `MTR` 的绘制接口，详见源码 [IDrawing.java](https://github.com/aphrodite281/Minecraft-Transit-Railway/blob/master/common/src/main/java/mtr/client/IDrawing.java)
+
+## UtilitiesClient
+
+`UtilitiesClient` 是 `MTR` 的客户端工具类，详见源码[UtilitiesClient.java](https://github.com/aphrodite281/Minecraft-Transit-Railway/blob/master/common/src/main/java/mtr/mappings/UtilitiesClient.java)
