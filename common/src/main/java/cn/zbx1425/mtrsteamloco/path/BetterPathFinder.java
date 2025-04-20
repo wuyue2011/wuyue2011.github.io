@@ -13,21 +13,21 @@ public class BetterPathFinder {
     private static final int MAX_AIRPLANE_TURN_ARC = 128;
 
     public static int findPath(List<PathData> path, Map<BlockPos, Map<BlockPos, Rail>> rails, List<SavedRailBase> savedRailBases, int stopIndexOffset, int cruisingAltitude, boolean useFastSpeed) {
-        pl("Entering findPath (public)");
+        // pl("Entering findPath (public)");
         path.clear();
         if (savedRailBases.size() < 2) {
-            pl("savedRailBases.size() < 2, returning 0");
+            // pl("savedRailBases.size() < 2, returning 0");
             return 0;
         }
 
         for (int i = 0; i < savedRailBases.size() - 1; i++) {
-            pl("Processing saved rail base pair " + i);
+            // pl("Processing saved rail base pair " + i);
             final SavedRailBase savedRailBaseStart = savedRailBases.get(i);
             final SavedRailBase savedRailBaseEnd = savedRailBases.get(i + 1);
 
             final Set<BlockPos> runways = new HashSet<>();
             if (savedRailBaseStart.transportMode == TransportMode.AIRPLANE) {
-                pl("TransportMode is AIRPLANE, collecting runways");
+                // pl("TransportMode is AIRPLANE, collecting runways");
                 rails.forEach((startPos, railMap) -> {
                     if (railMap.size() == 1 && railMap.values().stream().allMatch(rail -> rail.railType == RailType.RUNWAY)) {
                         runways.add(startPos);
@@ -37,7 +37,7 @@ public class BetterPathFinder {
 
             final List<PathData> partialPath = findPath(rails, runways, savedRailBaseStart, savedRailBaseEnd, i + stopIndexOffset, cruisingAltitude, useFastSpeed);
             if (partialPath.isEmpty()) {
-                pl("Partial path is empty, clearing path and returning " + (i + 1));
+                // pl("Partial path is empty, clearing path and returning " + (i + 1));
                 path.clear();
                 return i + 1;
             }
@@ -45,31 +45,31 @@ public class BetterPathFinder {
             appendPath(path, partialPath);
         }
 
-        pl("Successfully processed all saved rail bases, returning " + savedRailBases.size());
+        // pl("Successfully processed all saved rail bases, returning " + savedRailBases.size());
         return savedRailBases.size();
     }
 
     public static void appendPath(List<PathData> path, List<PathData> partialPath) {
-        pl("Entering appendPath");
+        // pl("Entering appendPath");
         if (partialPath.isEmpty()) {
-            pl("partialPath is empty, clearing path");
+            // pl("partialPath is empty, clearing path");
             path.clear();
         } else {
-            pl("partialPath not empty, checking sameFirstRail");
+            // pl("partialPath not empty, checking sameFirstRail");
             final boolean sameFirstRail = !path.isEmpty() && path.get(path.size() - 1).isSameRail(partialPath.get(0));
             for (int j = 0; j < partialPath.size(); j++) {
                 if (!(j == 0 && sameFirstRail)) {
-                    pl("Adding element from partialPath at index " + j);
+                    // pl("Adding element from partialPath at index " + j);
                     path.add(partialPath.get(j));
                 } else {
-                    pl("Skipping first element due to sameFirstRail");
+                    // pl("Skipping first element due to sameFirstRail");
                 }
             }
         }
     }
 
     private static List<PathData> findPath(Map<BlockPos, Map<BlockPos, Rail>> rails, Set<BlockPos> runways, SavedRailBase savedRailBaseStart, SavedRailBase savedRailBaseEnd, int stopIndex, int cruisingAltitude, boolean useFastSpeed) {
-        pl("Entering findPath (private)");
+        // pl("Entering findPath (private)");
         final BlockPos savedRailBaseEndMidPos = savedRailBaseEnd.getMidPos();
         final Function<Map<BlockPos, Rail>, Comparator<BlockPos>> comparator = newConnections -> (pos1, pos2) -> {
             if (pos1 == pos2) {
@@ -86,31 +86,31 @@ public class BetterPathFinder {
         };
 
         for (int i = 0; i < 2; i++) {
-            pl("Starting iteration " + i + " of path finding loop");
+            // pl("Starting iteration " + i + " of path finding loop");
             final List<PathPart> path = new ArrayList<>();
             final Set<BlockPos> turnBacks = new HashSet<>();
             final List<BlockPos> startPositions = savedRailBaseStart.getOrderedPositions(savedRailBaseEndMidPos, i == 0);
-            pl("startPositions: " + startPositions);
+            // pl("startPositions: " + startPositions);
             path.add(new PathPart(null, startPositions.get(0), new ArrayList<>()));
             addPathPart(rails, runways, startPositions.get(1), startPositions.get(0), path, turnBacks, comparator);
 
             while (path.size() >= 2) {
-                pl("While loop with path size " + path.size());
+                // pl("While loop with path size " + path.size());
                 final PathPart lastPathPart = path.get(path.size() - 1);
 
                 if (lastPathPart.otherOptions.isEmpty()) {
-                    pl("Removing lastPathPart as otherOptions is empty");
+                    // pl("Removing lastPathPart as otherOptions is empty");
                     path.remove(lastPathPart);
                 } else {
-                    pl("Processing otherOptions for lastPathPart");
+                    // pl("Processing otherOptions for lastPathPart");
                     final BlockPos newPos = lastPathPart.otherOptions.remove(0);
                     addPathPart(rails, runways, newPos, lastPathPart.pos, path, turnBacks, comparator);
 
                     if (savedRailBaseEnd.containsPos(newPos)) {
-                        pl("Found end position at newPos: " + newPos);
+                        // pl("Found end position at newPos: " + newPos);
                         final List<PathData> railPath = new ArrayList<>();
                         for (int j = 0; j < path.size() - 1; j++) {
-                            pl("Processing path segment " + j);
+                            // pl("Processing path segment " + j);
                             final PathPart pathPart1 = path.get(j);
                             final PathPart pathPart2 = path.get(j + 1);
                             final BlockPos pos1 = pathPart1.pos;
@@ -118,12 +118,12 @@ public class BetterPathFinder {
                             final Rail rail = DataCache.tryGet(rails, pos1, pos2);
 
                             if (rail == null) {
-                                pl("Rail is null, checking runways");
+                                // pl("Rail is null, checking runways");
                                 if (runways.isEmpty()) {
-                                    pl("Runways is empty, returning empty list");
+                                    // pl("Runways is empty, returning empty list");
                                     return new ArrayList<>();
                                 } else {
-                                    pl("Adding airplane dummy path");
+                                    // pl("Adding airplane dummy path");
                                     final int heightDifference1 = cruisingAltitude - pos1.getY();
                                     final int heightDifference2 = cruisingAltitude - pos2.getY();
                                     final BlockPos cruisingPos1 = RailwayData.offsetBlockPos(pos1, pathPart1.direction.cos * Math.abs(heightDifference1) * 4, heightDifference1, pathPart1.direction.sin * Math.abs(heightDifference1) * 4);
@@ -145,19 +145,19 @@ public class BetterPathFinder {
                                 }
                             } else {
                                 final boolean turningBack = rail.railType == RailType.TURN_BACK && j < path.size() - 2 && path.get(j + 2).pos.equals(pos1);
-                                pl("Adding rail to path, turningBack: " + turningBack);
+                                // pl("Adding rail to path, turningBack: " + turningBack);
                                 railPath.add(new PathData(rail, j == 0 ? savedRailBaseStart.id : 0, turningBack ? 1 : 0, pos1, pos2, stopIndex));
                             }
                         }
 
                         final BlockPos endPos = savedRailBaseEnd.getOtherPosition(newPos);
-                        pl("Processing endPos: " + endPos);
+                        // pl("Processing endPos: " + endPos);
                         final Rail rail = DataCache.tryGet(rails, newPos, endPos);
                         if (rail == null) {
-                            pl("End rail is null, returning empty list");
+                            // pl("End rail is null, returning empty list");
                             return new ArrayList<>();
                         } else {
-                            pl("Adding end rail with dwell time: " + savedRailBaseEnd.getDwellTime());
+                            // pl("Adding end rail with dwell time: " + savedRailBaseEnd.getDwellTime());
                             railPath.add(new PathData(rail, savedRailBaseEnd.id, savedRailBaseEnd instanceof Platform ? savedRailBaseEnd.getDwellTime() : 0, newPos, endPos, stopIndex + 1));
                             return railPath;
                         }
@@ -166,22 +166,22 @@ public class BetterPathFinder {
             }
         }
 
-        pl("No path found, returning empty list");
+        // pl("No path found, returning empty list");
         return new ArrayList<>();
     }
 
     private static BlockPos addAirplanePath(RailAngle startAngle, BlockPos startPos, RailAngle expectedAngle, int turnArc, List<PathData> tempRailPath, RailType railType, int stopIndex, boolean reverse) {
-        pl("Entering addAirplanePath: reverse=" + reverse);
+        // pl("Entering addAirplanePath: reverse=" + reverse);
         final RailAngle angleDifference = expectedAngle.sub(startAngle);
         final boolean turnRight = angleDifference.angleRadians > 0;
-        pl("turnRight: " + turnRight);
+        // pl("turnRight: " + turnRight);
         RailAngle tempAngle = startAngle;
         BlockPos tempPos = startPos;
 
         for (int i = 0; i < RailAngle.values().length; i++) {
-            pl("Processing angle loop " + i);
+            // pl("Processing angle loop " + i);
             if (tempAngle == expectedAngle) {
-                pl("Reached expected angle, breaking loop");
+                // pl("Reached expected angle, breaking loop");
                 break;
             }
 
@@ -193,15 +193,15 @@ public class BetterPathFinder {
             tempPos = RailwayData.offsetBlockPos(oldTempPos, posOffset.x, posOffset.y, posOffset.z);
 
             if (reverse) {
-                pl("Adding reverse path data at tempPos: " + tempPos);
+                // pl("Adding reverse path data at tempPos: " + tempPos);
                 tempRailPath.add(0, new PathData(new Rail(tempPos, tempAngle.getOpposite(), oldTempPos, oldTempAngle, railType, TransportMode.AIRPLANE), 0, 0, tempPos, oldTempPos, stopIndex));
             } else {
-                pl("Adding forward path data from oldTempPos: " + oldTempPos);
+                // pl("Adding forward path data from oldTempPos: " + oldTempPos);
                 tempRailPath.add(new PathData(new Rail(oldTempPos, oldTempAngle, tempPos, tempAngle.getOpposite(), railType, TransportMode.AIRPLANE), 0, 0, oldTempPos, tempPos, stopIndex));
             }
         }
 
-        pl("Returning tempPos: " + tempPos);
+        // pl("Returning tempPos: " + tempPos);
         return tempPos;
     }
 
@@ -217,7 +217,7 @@ public class BetterPathFinder {
         // 获取当前路径部分的访问记录
         PathPart currentPart = path.get(path.size() - 1);
         if (currentPart.isVisited(newPos)) {
-            pl("Skipping already visited position: " + newPos);
+            // pl("Skipping already visited position: " + newPos);
             return;
         }
 
@@ -271,9 +271,9 @@ public class BetterPathFinder {
                path.stream().noneMatch(p -> p.isSame(newPos, newDirection));
     }
 
-    private static void pl(String s) {
+    // private static void pl(String s) {
         // System.out.println("[PathFinder] " + s);
-    }
+    // }
 
     private static final float ANGLE_EQUALITY_THRESHOLD = 0.01745f * 45; // 1 degree in radians
 

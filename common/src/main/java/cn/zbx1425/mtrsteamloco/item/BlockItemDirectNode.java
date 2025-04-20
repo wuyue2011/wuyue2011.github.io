@@ -27,10 +27,6 @@ public class BlockItemDirectNode extends BlockItem {
         this.creativeModeTab = creativeModeTab;
     }
 
-    private static void pl(String s) {
-        System.out.println(s);
-    }
-
     @Override
     public void appendHoverText(ItemStack stack, Level level, List<Component> list, TooltipFlag flag) {
         if (stack.getItem() instanceof BlockItemDirectNode bi) {

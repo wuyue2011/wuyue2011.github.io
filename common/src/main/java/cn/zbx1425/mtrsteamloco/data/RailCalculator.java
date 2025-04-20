@@ -196,7 +196,7 @@ public class RailCalculator {
             boolean b3 = Double.isFinite(r);
             boolean b4 = Double.isFinite(tStart);
             boolean b5 = Double.isFinite(tEnd);
-            pl("isValid: " + b1 + " " + b2 + " " + b3 + " " + b4 + " " + b5);
+            // pl("isValid: " + b1 + " " + b2 + " " + b3 + " " + b4 + " " + b5);
             return b1 && b2 && b3 && b4 && b5;
         }
     }
@@ -299,9 +299,9 @@ public class RailCalculator {
         }
     }
 
-    public static void pl(String s) {
+    // public static void pl(String s) {
         // System.out.println(s);
-    }
+    // }
 
     public static void main(String[] args) {
         double startX = -4;
@@ -319,10 +319,10 @@ public class RailCalculator {
 
         if (group == null) return Group.EMPTY;
         if (group.first.isValid() && group.second.isValid()) {
-            pl(group.first.getLength() + " " + group.second.getLength());
+            // pl(group.first.getLength() + " " + group.second.getLength());
             return group;
         }
-        pl("无效的section");
+        // pl("无效的section");
         return Group.EMPTY;
     }
 
@@ -336,7 +336,7 @@ public class RailCalculator {
         double alpha = startAngle;
         Vec2 E = new Vec2(endX, endZ);
         double beta = endAngle;
-        pl ("S " + S + " alpha " + alpha + " E " + E + " beta " + beta);
+        // pl ("S " + S + " alpha " + alpha + " E " + E + " beta " + beta);
 
         if (false) {
             Vec2 temp = S;
@@ -357,9 +357,9 @@ public class RailCalculator {
         Line EE1 = new Line(E, E1);
 
         if (SS1.parallel(EE1)) {
-            pl("平行");
+            // pl("平行");
             if (SS1.equals(EE1)) {
-                pl("直线");
+                // pl("直线");
                 Segment seg = new Segment(S, E);
                 return new Group(seg.toSection(), new Section());
             }
@@ -367,7 +367,7 @@ public class RailCalculator {
             Line SE = new Line(S, E);
             
             Vec2 vSE = E.sub(S);
-            pl("vSE " + vSE);
+            // pl("vSE " + vSE);
             
             Vec2 vSD = vSE.scale(1.0D / 4.0D);
 
@@ -379,20 +379,20 @@ public class RailCalculator {
 
             Vec2 vEF = vSD.scale(-1);
             Vec2 F = E.add(vEF);
-            pl("F " + F);
+            // pl("F " + F);
 
             Line l3 = SE.perpendicular(F);
             Line l4 = EE1.perpendicular(E);
             Vec2 O2 = l3.intersection(l4);
 
             if (l2.equals(l4)) {
-                pl("方向无效");
+                // pl("方向无效");
                 return null;
             }
 
-            pl("O1 " + O1 + " O2 " + O2);
+            // pl("O1 " + O1 + " O2 " + O2);
             if (O1 == null || O2 == null) {
-                pl("无交点");
+                // pl("无交点");
                 return null;
             }
 
@@ -405,10 +405,10 @@ public class RailCalculator {
         Vec2 M = SS1.intersection(EE1);
 
         if (M == null) {
-            pl("无交点");
+            // pl("无交点");
             return null;
         }
-        pl("交点：" + M);
+        // pl("交点：" + M);
 
         Vec2 vMS = S.sub(M);
         Vec2 vME = E.sub(M);
@@ -417,10 +417,10 @@ public class RailCalculator {
         double dMS = M.distance(S);
         double diff = dME - dMS;
 
-        pl("theta " + theta + " dME " + dME + " dMS " + dMS);
+        // pl("theta " + theta + " dME " + dME + " dMS " + dMS);
 
         if (diff > PRECISION) { // 曲线在前
-            pl("曲线在前");
+            // pl("曲线在前");
 
             Line p1 = SS1.perpendicular(S);
 
@@ -431,17 +431,17 @@ public class RailCalculator {
             Vec2 O = p1.intersection(p2);
 
             if (O == null) {
-                pl("无交点");
+                // pl("无交点");
                 return null;
             }
-            pl("O " + O);
+            // pl("O " + O);
 
             Arc arc = new Arc(O, S, F);
             Segment seg = new Segment(F, E);
             Group group = new Group(arc.toSection(), seg.toSection());
             return group;
         } else if (diff < -PRECISION) { // 曲线在后
-            pl("曲线在后");
+            // pl("曲线在后");
 
             Line p1 = EE1.perpendicular(E);
 
@@ -451,32 +451,32 @@ public class RailCalculator {
             
             Vec2 O = p1.intersection(p2);
             if (O == null) {
-                pl("无交点");
+                // pl("无交点");
                 return null;
             }
-            pl("O " + O);
+            // pl("O " + O);
 
             Segment seg = new Segment(S, F);
             Arc arc = new Arc(O, F, E);
             Group group = new Group(seg.toSection(), arc.toSection());
             return group;
         } else { // 一段曲线
-            pl("一段曲线");
+            // pl("一段曲线");
             Line p1 = SS1.perpendicular(S);
             Line p2 = EE1.perpendicular(E);
             Vec2 O = p1.intersection(p2);
             if (O == null) {
-                pl("无交点");
+                // pl("无交点");
                 return null;
             }
-            pl("O " + O);
+            // pl("O " + O);
 
             return new Group(new Arc(O, S, E).toSection(), new Section());
         }
     }
 
     public static Double calculateMaxRadiusAngle(double startX, double startZ, double endX, double endZ, double startAngle) {
-        pl("calculateMaxRadiusAngle");
+        // pl("calculateMaxRadiusAngle");
 
         Vec2 S = new Vec2(startX, startZ);
         double alpha = startAngle;
@@ -489,7 +489,7 @@ public class RailCalculator {
         Line SE = new Line(S, E);
         
         if (SS1.equals(SE)) {
-            pl("直线");
+            // pl("直线");
             return Math.toDegrees(startAngle);
         }
 
@@ -499,16 +499,16 @@ public class RailCalculator {
         Vec2 vSF = vSE.scale(1.0D / 2.0D);
         Vec2 F = S.add(vSF);
 
-        pl("F " + F);
+        // pl("F " + F);
 
         Vec2 D = SD.intersection(SE.perpendicular(F));
 
         if (D == null) {
-            pl("无交点");
+            // pl("无交点");
             return null;
         }
 
-        pl("交点：" + D);
+        // pl("交点：" + D);
 
         Line DE = new Line(D, E);
 
@@ -519,11 +519,11 @@ public class RailCalculator {
         Group group = _calculate(startX, startZ, endX, endZ, startAngle, Math.toRadians(dir));
 
         if (group == null) {
-            pl("无效的section");
+            // pl("无效的section");
             return null;
         }
 
-        pl(group + "");
+        // pl(group + "");
         
         return dir;
     }
