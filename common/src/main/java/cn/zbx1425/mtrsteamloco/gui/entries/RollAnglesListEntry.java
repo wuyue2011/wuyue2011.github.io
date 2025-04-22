@@ -703,9 +703,7 @@ public class RollAnglesListEntry extends TooltipListEntry<String> implements Con
                 textField.visible = false;
                 slider.visible = true;
             }
-            System.out.println("mode: " + mode + " now: " + now);
             setValue(now);
-            System.out.println("now: " + now);
         }
 
         public void setValue(float value) {
