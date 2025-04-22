@@ -276,7 +276,7 @@ public class BrushEditRailScreen {
             float d1 = p1.distance(start);
             float d2 = p2.distance(start);
             boolean flag = d1 < d2;
-            if (enableRollAngle) common.addEntry(new RollAnglesListEntry(pickedRail, flag, this::updateRailAngle));
+            if (enableRollAngle) common.addEntry(new RollAnglesListEntry(pickedRail, flag, this::updateRailAngle, f -> PacketUpdateRail.sendUpdateC2S(pickedRail, pickedPosStart, pickedPosEnd), () -> BrushEditRailScreen.createScreen(pickedRail, pickedPosStart, pickedPosEnd, parent)));
 
             Function<Integer, Optional<Component[]>> f = v -> Optional.of(new Component[]{Text.translatable("gui.mtrsteamloco.brush_edit_rail.opening_direction_tooltip")});
 

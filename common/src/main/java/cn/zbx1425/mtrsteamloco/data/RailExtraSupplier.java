@@ -48,8 +48,10 @@ public interface RailExtraSupplier {
     void setRailType(RailType railType);
 
     void partialCopyFrom(Rail rail);
+    
+    void setRollingOffset(float rollingOffset);
 
-    void straighten();
+    float getRollingOffset();
 
     static float getVTheta(Rail rail, double verticalCurveRadius) {
         double H = Math.abs(((RailExtraSupplier) rail).getHeight());
@@ -83,7 +85,9 @@ public interface RailExtraSupplier {
             if (last <= value && value < t) {
                 float a0 = rollAngleMap.get(last);
                 float a1 = rollAngleMap.get(t);
-                return (float) (k * (a0 + (a1 - a0) * (value - last) / (t - last)));
+                double ratio = (value - last) / (t - last);
+                double sinRatio = Math.sin(ratio * Math.PI / 2);
+                return (float) (a0 + (a1 - a0) * sinRatio);
             }
             last = t;
         }

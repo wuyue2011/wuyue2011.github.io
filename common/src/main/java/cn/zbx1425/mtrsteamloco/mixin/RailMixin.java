@@ -13,6 +13,7 @@ import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
 import cn.zbx1425.mtrsteamloco.network.util.StringMapSerializer;
 import cn.zbx1425.mtrsteamloco.network.util.DoubleFloatMapSerializer;
 import net.minecraft.world.phys.Vec3;
+import cn.zbx1425.mtrsteamloco.data.RailCalculator.Vec2;
 import mtr.data.RailType;
 import net.minecraft.network.FriendlyByteBuf;
 import cn.zbx1425.mtrsteamloco.data.RailCalculator;
@@ -74,6 +75,7 @@ public abstract class RailMixin implements RailExtraSupplier {
     private Map<String, ConfigResponder> customResponders = new HashMap<>();
     private Map<Double, Float> rollAngleMap = new HashMap<>();
     private int openingDirection = 0;// 0 不开 1 左 2 右 3 双向
+    private float rollingOffset = 1.435F / 2F;
 
     @Override
     public String getModelKey() {
@@ -190,6 +192,17 @@ public abstract class RailMixin implements RailExtraSupplier {
         }
         setRollAngleMap(dst);
         setOpeningDirection(oth.getOpeningDirection());
+        setRollingOffset(oth.getRollingOffset());
+    }
+
+    @Override
+    public void setRollingOffset(float rollingOffset) {
+        this.rollingOffset = rollingOffset;
+    }
+
+    @Override
+    public float getRollingOffset() {
+        return rollingOffset;
     }
 
     @Inject(method = "<init>(Lnet/minecraft/core/BlockPos;Lmtr/data/RailAngle;Lnet/minecraft/core/BlockPos;Lmtr/data/RailAngle;Lmtr/data/RailType;Lmtr/data/TransportMode;)V", at = @At("TAIL"))
@@ -286,6 +299,7 @@ public abstract class RailMixin implements RailExtraSupplier {
             rollAngleMap = new HashMap<>();
         }
         openingDirection = messagePackHelper.getInt("opening_direction", 0);
+        rollingOffset = messagePackHelper.getFloat("rolling_offset", 1.435F / 2F);
     }
 
     @Inject(method = "toMessagePack", at = @At("TAIL"), remap = false)
@@ -308,11 +322,12 @@ public abstract class RailMixin implements RailExtraSupplier {
 		}
         messagePacker.packString("roll_angle_map").packString(res2);
         messagePacker.packString("opening_direction").packInt(openingDirection);
+        messagePacker.packString("rolling_offset").packFloat(rollingOffset);
     }
 
     @Inject(method = "messagePackLength", at = @At("TAIL"), cancellable = true, remap = false)
     private void messagePackLength(CallbackInfoReturnable<Integer> cir) {
-        cir.setReturnValue(cir.getReturnValue() + 6);
+        cir.setReturnValue(cir.getReturnValue() + 7);
     }
 
     private final int NTE_PACKET_EXTRA_MAGIC = 0x25141425;
@@ -339,6 +354,7 @@ public abstract class RailMixin implements RailExtraSupplier {
             rollAngleMap = new HashMap<>();
         }
         openingDirection = packet.readInt();
+        rollingOffset = packet.readFloat();
     }
 
     @Inject(method = "writePacket", at = @At("TAIL"))
@@ -363,6 +379,7 @@ public abstract class RailMixin implements RailExtraSupplier {
         }
         packet.writeUtf(res2);
         packet.writeInt(openingDirection);
+        packet.writeFloat(rollingOffset);
     }
 
     @Redirect(method = "renderSegment", remap = false, at = @At(value = "INVOKE", target = "Ljava/lang/Math;round(D)J"))
@@ -379,33 +396,85 @@ public abstract class RailMixin implements RailExtraSupplier {
 
     private float vTheta;
 
+    private static final int CABLE_CURVATURE_SCALE = 1000;
+	private static final int MAX_CABLE_DIP = 8;
+
+    private double _getPositionY(double value) {
+		final double length = getLength();
+
+		if (railType.railSlopeStyle == RailType.RailSlopeStyle.CABLE) {
+			if (value < 0.5) {
+				return yStart;
+			} else if (value > length - 0.5) {
+				return yEnd;
+			}
+
+			final double offsetValue = value - 0.5;
+			final double offsetLength = length - 1;
+			final double posY = yStart + (yEnd - yStart) * offsetValue / offsetLength;
+			final double dip = offsetLength * offsetLength / 4 / CABLE_CURVATURE_SCALE;
+			return posY + (dip > MAX_CABLE_DIP ? MAX_CABLE_DIP / dip : 1) * (offsetValue - offsetLength) * offsetValue / CABLE_CURVATURE_SCALE;
+		} else {
+			final double intercept = length / 2;
+			final double yChange;
+			final double yInitial;
+			final double offsetValue;
+
+			if (value < intercept) {
+				yChange = (yEnd - yStart) / 2D;
+				yInitial = yStart;
+				offsetValue = value;
+			} else {
+				yChange = (yStart - yEnd) / 2D;
+				yInitial = yEnd;
+				offsetValue = length - value;
+			}
+
+			return yChange * offsetValue * offsetValue / (intercept * intercept) + yInitial;
+		}
+	}
+
     @Inject(method = "getPositionY", at = @At("HEAD"), cancellable = true, remap = false)
-    private void getPositionY(double rawValue, CallbackInfoReturnable<Double> cir) {
+    private void onGetPositionY(double rawValue, CallbackInfoReturnable<Double> cir) {
         if (((Rail)(Object)this).railType.railSlopeStyle == RailType.RailSlopeStyle.CABLE) return;
         double H = Math.abs(yEnd - yStart);
         double L = ((Rail)(Object)this).getLength();
         int sign = yStart < yEnd ? 1 : -1;
         double maxRadius = (H == 0) ? 0 : Math.abs((H * H + L * L) / (H * 4));
+        double result = 0d;
         if (verticalCurveRadius < 0) {
             // Magic value for a flat rail
-            cir.setReturnValue(sign * ((rawValue / L) * H) + yStart);
+            result = sign * (rawValue / L) * H + yStart;
         } else if (verticalCurveRadius == 0 || verticalCurveRadius > maxRadius) {
             // Magic default value / impossible radius, fallback to MTR all curvy track
+            result  = _getPositionY(rawValue);
         } else {
             if (vTheta == 0) vTheta = RailExtraSupplier.getVTheta((Rail)(Object)this, verticalCurveRadius);
-            if (!Double.isFinite(vTheta)) return;
-            float curveL = Mth.sin(vTheta) * verticalCurveRadius;
-            float curveH = (1 - Mth.cos(vTheta)) * verticalCurveRadius;
-            if (rawValue < curveL) {
-                float r = (float)rawValue;
-                cir.setReturnValue(sign * (verticalCurveRadius - Math.sqrt(verticalCurveRadius * verticalCurveRadius - r * r)) + yStart);
-            } else if (rawValue > L - curveL) {
-                float r = (float)(L - rawValue);
-                cir.setReturnValue(-sign * (verticalCurveRadius - Math.sqrt(verticalCurveRadius * verticalCurveRadius - r * r)) + yEnd);
+            if (!Double.isFinite(vTheta)) {
+                result = _getPositionY(rawValue);
             } else {
-                cir.setReturnValue(sign * (((rawValue - curveL) / (L - 2 * curveL)) * (H - 2 * curveH) + curveH) + yStart);
+                float curveL = Mth.sin(vTheta) * verticalCurveRadius;
+                float curveH = (1 - Mth.cos(vTheta)) * verticalCurveRadius;
+                if (rawValue < curveL) {
+                    float r = (float)rawValue;
+                    result = sign * (verticalCurveRadius - Math.sqrt(verticalCurveRadius * verticalCurveRadius - r * r)) + yStart;
+                } else if (rawValue > L - curveL) {
+                    float r = (float)(L - rawValue);
+                    result = sign * (verticalCurveRadius - Math.sqrt(verticalCurveRadius * verticalCurveRadius - r * r)) + yEnd;
+                } else {
+                    result = sign * (rawValue - curveL) * (H - 2 * curveH) / (L - 2 * curveL) + yStart + curveH;
+                }
             }
         }
+        float r = RailExtraSupplier.getRollAngle((Rail) (Object) this, rawValue);
+        float offset = getRollingOffset();
+        if (r != 0) {
+            double dy = new Vec2(offset, 0).rotateRad(r).z;
+            result += Math.abs(dy);
+        }
+        cir.setReturnValue(result);
+        cir.cancel();
+        return;
     }
 
     private static final FriendlyByteBuf hashBuilder = new FriendlyByteBuf(Unpooled.buffer());

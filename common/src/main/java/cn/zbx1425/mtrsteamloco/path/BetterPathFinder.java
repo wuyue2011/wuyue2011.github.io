@@ -216,10 +216,6 @@ public class BetterPathFinder {
 
         // 获取当前路径部分的访问记录
         PathPart currentPart = path.get(path.size() - 1);
-        if (currentPart.isVisited(newPos)) {
-            // pl("Skipping already visited position: " + newPos);
-            return;
-        }
 
         final RailAngle newDirection = calculateNewDirection(oldRail, newConnections);
         final List<BlockPos> otherOptions = new ArrayList<>();
@@ -229,11 +225,9 @@ public class BetterPathFinder {
             
             newConnections.forEach((connectedPos, rail) -> {
                 if (isValidConnection(rail, newDirection, path, newPos, canTurnBack)) {
-                    if (!currentPart.isVisited(connectedPos)) {
-                        otherOptions.add(connectedPos);
-                        if (canTurnBack) {
-                            turnBacks.add(newPos);
-                        }
+                    otherOptions.add(connectedPos);
+                    if (canTurnBack) {
+                        turnBacks.add(newPos);
                     }
                 }
             });
@@ -242,8 +236,6 @@ public class BetterPathFinder {
         if (!otherOptions.isEmpty()) {
             otherOptions.sort(comparator.apply(newConnections));
             PathPart newPart = new PathPart(newDirection, newPos, otherOptions);
-            newPart.copyVisited(currentPart);
-            newPart.addVisited(newPos);
             path.add(newPart);
         }
     }
@@ -292,26 +284,11 @@ public class BetterPathFinder {
         private final RailAngle direction;
         private final BlockPos pos;
         private final List<BlockPos> otherOptions;
-        private final Set<BlockPos> visitedNodes;
 
         private PathPart(RailAngle direction, BlockPos pos, List<BlockPos> otherOptions) {
             this.direction = direction;
             this.pos = pos;
             this.otherOptions = new ArrayList<>(otherOptions);
-            this.visitedNodes = new HashSet<>();
-            this.visitedNodes.add(pos);
-        }
-
-        private void copyVisited(PathPart other) {
-            this.visitedNodes.addAll(other.visitedNodes);
-        }
-
-        private void addVisited(BlockPos pos) {
-            visitedNodes.add(pos.immutable());
-        }
-
-        private boolean isVisited(BlockPos pos) {
-            return visitedNodes.contains(pos);
         }
 
         private boolean isSame(BlockPos newPos, RailAngle newDirection) {

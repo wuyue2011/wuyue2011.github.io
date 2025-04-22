@@ -648,7 +648,7 @@ public class CompoundCreatorScreen extends Screen {
             ).setDefaultValue(false).build()
         );
 
-        common.addEntry(new RollAnglesListEntry(rail, false, res -> this.update()));
+        common.addEntry(new RollAnglesListEntry(rail, false, res -> this.update(), f -> update(), () -> newRailModifierScreen(task)));
 
         common.addEntry(
             entryBuilder.startIntSlider(

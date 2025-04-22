@@ -39,6 +39,7 @@ public class ClientConfig {
     public static boolean enableTrainSound = true;
     public static boolean enableSmoke = true;
     public static final EyecandyScreenGroup eyecandyScreenGroup = new EyecandyScreenGroup();
+    public static final RollAnglesListEntryGroup rollAnglesListEntryGroup = new RollAnglesListEntryGroup();
     public static final Entry directNodeScreenGroup = new Entry("direct_node_screen", "rotation", 0, 180F, 180, 1, 1);
 
     public static boolean useEditBoxSetRailRolling = true;
@@ -69,6 +70,7 @@ public class ClientConfig {
 
             eyecandyScreenGroup.init(configObject);
             directNodeScreenGroup.init(configObject);
+            rollAnglesListEntryGroup.init(configObject);
 
             customConfigs.clear();
             if (configObject.has("custom")) {
@@ -133,6 +135,7 @@ public class ClientConfig {
             configObject.addProperty("useEditBoxSetRailRolling", useEditBoxSetRailRolling);
             eyecandyScreenGroup.save(configObject);
             directNodeScreenGroup.save(configObject);
+            rollAnglesListEntryGroup.save(configObject);
 
             JsonObject customObject = new JsonObject();
             for (Map.Entry<String, String> entry : customConfigs.entrySet()) {
@@ -203,35 +206,36 @@ public class ClientConfig {
         void getListEntries(List<AbstractConfigListEntry> entries, ConfigEntryBuilder builder, Supplier<Screen> screenSupplier);
     }
 
-    public static class EyecandyScreenGroup implements ConfigGroup {
-        public static final String KEY = "eyecandy_screen";
-        public final Entry[] entries = new Entry[] {
-            new Entry("translation", -1.0F, 1.0F, 40, 1, 3),
-            new Entry("rotation", -180F, 180F, 36, 1, 3),
-            new Entry("scale", -2.0F, 2.0F, 40, 1, 3),
-        }; 
+    public static abstract class EntryGroup implements ConfigGroup {
+        public final String key;
+        public final Entry[] entries;
+
+        public EntryGroup(String key, Entry... entries) {
+            this.key = key;
+            this.entries = entries;
+        }
 
         @Override
         public String key() {
-            return KEY;
+            return key;
         }
 
         @Override
         public void init(JsonObject configObject) {
-            configObject = configObject.getAsJsonObject(KEY);
-            if (configObject == null) return;
+            JsonObject entryObject = configObject.getAsJsonObject(key());
+            if (entryObject == null) return;
             for (Entry entry : entries) {
-                entry.init(configObject);
+                entry.init(entryObject);
             }
         }
 
         @Override
-        public void save(JsonObject configObject0) {
-            JsonObject configObject = new JsonObject();
+        public void save(JsonObject configObject) {
+            JsonObject entryObject = new JsonObject();
             for (Entry entry : entries) {
-                entry.save(configObject);
+                entry.save(entryObject);
             }
-            configObject0.add(KEY, configObject);
+            configObject.add(key(), entryObject);
         }
 
         @Override
@@ -239,6 +243,29 @@ public class ClientConfig {
             for (Entry entry : this.entries) {
                 entry.getListEntries(entries, builder, screenSupplier);
             }
+        }
+    }
+
+    public static class RollAnglesListEntryGroup extends EntryGroup {
+
+        public RollAnglesListEntryGroup() {
+            super(
+                "roll_angles_list_entry", 
+                new Entry("rotation", -20F, 20F, 80, 1, 2),
+                new Entry("offset", 0F, 1F, 10000, 1, 2)
+            );
+        }
+    }
+
+    public static class EyecandyScreenGroup extends EntryGroup {
+
+        public EyecandyScreenGroup() {
+            super(
+                "eyecandy_screen", 
+                new Entry("translation", -1.0F, 1.0F, 40, 1, 3),
+                new Entry("rotation", -180F, 180F, 36, 1, 3),
+                new Entry("scale", -2.0F, 2.0F, 40, 1, 3)
+            );
         }
     }
 

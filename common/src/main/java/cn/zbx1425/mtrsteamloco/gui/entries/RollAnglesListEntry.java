@@ -28,6 +28,7 @@ import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.Util;
 import mtr.data.RailType;
+import cn.zbx1425.mtrsteamloco.gui.WidgetSlider;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.Minecraft;
 #if MC_VERSION >= "12000"
@@ -46,6 +47,7 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import cn.zbx1425.mtrsteamloco.gui.FakeScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -78,12 +80,6 @@ import java.util.Optional;
 public class RollAnglesListEntry extends TooltipListEntry<String> implements ContainerEventHandler {
     private final List<Node> nodes = new ArrayList<>();
     private Node now = null;
-    private final Slider angleSlider = new Slider(50, 0, 200, 20, -180D, 0D, 180D, 
-        value -> Text.translatable("gui.mtrsteamloco.brush_edit_rail.roll_angle", value * 360D - 180D), 
-        value -> {
-            if (now != null) now.setAngle((float) Math.toRadians(value * 360D - 180D));
-        });
-    private final EditBox angleInput = new EditBox(Minecraft.getInstance().font, 50, 0, 200, 20, Text.literal(""));
     
     Button btnAddNode = UtilitiesClient.newButton(
         Text.translatable("+"),
@@ -95,47 +91,130 @@ public class RollAnglesListEntry extends TooltipListEntry<String> implements Con
         Text.translatable("gui.mtrsteamloco.brush_edit_rail.clear"),
         sender -> removeAllNodes()
     );
-    Button btnChangeMode = UtilitiesClient.newButton(
-        Text.translatable("⇄"),
-        sender -> {
-            ClientConfig.useEditBoxSetRailRolling = !ClientConfig.useEditBoxSetRailRolling;
-            ClientConfig.save();
-            focusNode(now);
+    Button btnCopy = UtilitiesClient.newButton(
+        Text.translatable("gui.mtrsteamloco.brush_edit_rail.copy"),
+        btn -> {
+            if (now == null) return;
+            addNode(new Node(now));
         }
     );
-    private final List<AbstractWidget> widgets = Lists.newArrayList(btnAddNode, btnRemoveNode, btnClear);
+    Button btnAdjust;
+    // Button btnChangeMode = UtilitiesClient.newButton(
+    //     Text.translatable("⇄"),
+    //     sender -> {
+    //         ClientConfig.useEditBoxSetRailRolling = !ClientConfig.useEditBoxSetRailRolling;
+    //         ClientConfig.save();
+    //         focusNode(now);
+    //     }
+    // );
+    private final List<AbstractWidget> widgets;
     private static final ResourceLocation WHITE = new ResourceLocation("minecraft", "textures/block/white_concrete_powder.png");
     private static final ResourceLocation POS = new ResourceLocation(Main.MOD_ID, "textures/gui/rail/ante.png");
-    private static final int START = 50;
-    private static final int WIDTH = 200;
     private final boolean flag;
+    private int sliderWidth, sliderStartX;
     private Consumer<Map<Double, Float>> updateFunction;
     private Rail pickedRail;
     private RailExtraSupplier supplier;
-    public RollAnglesListEntry(Rail pickedRail, boolean reversed, Consumer<Map<Double, Float>> updateFunction) {
+    private SliderTextFieldGroup offsetInput, positionInput, angleInput;
+    private Supplier<Screen> parent;
+
+    public RollAnglesListEntry(Rail pickedRail, boolean reversed, Consumer<Map<Double, Float>> updateFunction, Consumer<Float> updateRollingOffset,  Supplier<Screen> parent) {
         super(Text.literal(""), null, false);
         this.supplier = (RailExtraSupplier) pickedRail;
         this.pickedRail = pickedRail;
         this.updateFunction = updateFunction;
+        flag = reversed;
+
+        ClientConfig.EntryGroup e0 = ClientConfig.rollAnglesListEntryGroup;
+        ClientConfig.Entry e = e0.entries[0], e1 = e0.entries[1];
+
+        System.out.println("RollingOffset: " + supplier.getRollingOffset());
+
+        offsetInput = new SliderTextFieldGroup(
+            e1.min, e1.max, e1.step, e1.modes[0],
+            i -> {
+                e1.modes[0] = i;
+                ClientConfig.save();
+            }, supplier.getRollingOffset(), 1.435F / 2F, d -> {
+                supplier.setRollingOffset(d);
+                updateRollingOffset.accept(d);
+            }, d -> Text.literal(String.format("%.4fM", d)), false,
+            Text.translatable("gui.mtrsteamloco.brush_edit_rail.offset_input")
+        );
+
+        positionInput = new SliderTextFieldGroup(
+            0F, (float) pickedRail.getLength(), 10000, e.modes[1], 
+            i -> {
+                e.modes[1] = i;
+                ClientConfig.save();
+            }, 0F, 0F, d -> {
+                if (now == null) return;
+                now.directSetValue(d / pickedRail.getLength());
+            }, d -> Text.literal(String.format("%.4fM", d)), true,
+            Text.translatable("gui.mtrsteamloco.brush_edit_rail.position_input")
+        );
+
+        
+        angleInput = new SliderTextFieldGroup(
+            e.min, e.max, e.step, e.modes[0],
+            i -> {
+                e.modes[0] = i;
+                ClientConfig.save();
+            }, 0F, 0F, d -> {
+                if (now == null) return;
+                now.setAngle((float) Math.toRadians(d));
+            }, d -> Text.literal(String.format("%.2f°", d)), false,
+            Text.translatable("gui.mtrsteamloco.brush_edit_rail.angle_input")
+        );
+
         Map<Double, Float> rollAngles = supplier.getRollAngleMap();
         Set<Map.Entry<Double, Float>> entries = new HashSet<>(rollAngles.entrySet());
         for (Map.Entry<Double, Float> entry : entries) {
-            addNode(new Node(entry.getKey(), entry.getValue()));
+            addNode(new Node(entry.getKey(), entry.getValue()), false);
         }
-        flag = reversed;
-        angleInput.setResponder(str -> {
-            try {
-                float angle = Float.parseFloat(str);
-                if (now != null) now.setAngle((float) Math.toRadians(angle));
-                angleInput.setTextColor(0x00FF00);
-            } catch (Exception ignored) {
-                angleInput.setTextColor(0xFF0000);
+        if (nodes.isEmpty()) {
+            focusNode(null);
+        }
+
+        positionInput.setEditable(!entries.isEmpty());
+        angleInput.setEditable(!entries.isEmpty());
+
+        this.parent = parent;
+
+        btnAdjust = UtilitiesClient.newButton(
+            Text.translatable("gui.mtrsteamloco.adjust_settings"),
+            sender -> {
+                Minecraft.getInstance().setScreen(createAdjustScreen(parent));
             }
-        });
+        );
+
+        widgets = Lists.newArrayList(btnAddNode, btnRemoveNode, btnClear, btnCopy, btnAdjust);
     }
-    public boolean mode() {
-        return ClientConfig.useEditBoxSetRailRolling;
+
+    private static Screen createAdjustScreen(Supplier<Screen> parent) {
+        ConfigBuilder builder = ConfigBuilder.create()
+                .setParentScreen(new FakeScreen(parent))
+                .setTitle(Text.translatable("gui.mtrsteamloco.adjust_settings"))
+                .setDoesConfirmSave(false)
+                .setSavingRunnable(() -> {
+                    ClientConfig.save();
+                })
+                .transparentBackground();
+        ConfigEntryBuilder entryBuilder = builder.entryBuilder();
+        ConfigCategory common = builder.getOrCreateCategory(
+                Text.translatable("gui.mtrsteamloco.config.client.category.common")
+        );
+
+        List<AbstractConfigListEntry> entries = new ArrayList<>();
+        ClientConfig.rollAnglesListEntryGroup.getListEntries(entries, entryBuilder, () -> createAdjustScreen(parent));
+
+        for (AbstractConfigListEntry entry : entries) {
+            common.addEntry(entry);
+        }
+
+        return builder.build();
     }
+
     public void update() {
         Map<Double, Float> res = new HashMap<>();
         List<Node> copy = new ArrayList<>(nodes);
@@ -145,13 +224,12 @@ public class RollAnglesListEntry extends TooltipListEntry<String> implements Con
         supplier.setRollAngleMap(res);
         updateFunction.accept(res);
     }
+
     public void focusNode(Node node) {
         now = node;
         if (now != null) {
-            if (mode()) {
-                angleInput.setValue(Math.toDegrees(node.getAngle()) + "");
-                angleInput.setTextColor(0xFFFFFF);
-            } else angleSlider.setValue(1 / 360D * ((Math.toDegrees((double) node.getAngle())) + 180D), true);
+            angleInput.setValue((float) Math.toDegrees(now.getAngle()));
+            positionInput.setValue((float) (now.getValue()));
             for (int i = 0; i < nodes.size(); i++) {
                 if (nodes.get(i) == node) {
                     nodes.remove(i);
@@ -159,13 +237,30 @@ public class RollAnglesListEntry extends TooltipListEntry<String> implements Con
                     break;
                 }
             }
+            angleInput.setEditable(true);
+            positionInput.setEditable(true);
+            btnClear.active = true;
+            btnCopy.active = true;
+            btnRemoveNode.active = true;
+        } else {
+            angleInput.setValue(0F);
+            positionInput.setValue(0F);
+            angleInput.setEditable(false);
+            positionInput.setEditable(false);
+            btnClear.active = false;
+            btnCopy.active = false;
+            btnRemoveNode.active = false;
         }
     }
     
     public void addNode(Node node) {
+        addNode(node, true);
+    }
+
+    public void addNode(Node node, boolean update) {
         nodes.add(node);
         focusNode(node);
-        update();
+        if (update) update();
     }
     public void removeNode(Node node) {
         if (node == null) return;
@@ -203,30 +298,29 @@ public class RollAnglesListEntry extends TooltipListEntry<String> implements Con
     }
     @Override
     public int getItemHeight() {
-        return 24 * 3;
+        return 24 * (now == null ? 4 : 6);
     }
     @Override
     public List<? extends GuiEventListener> children() {
         List<GuiEventListener> res = new ArrayList<>(widgets);
-        if (now != null) {
-            if (ClientConfig.useEditBoxSetRailRolling) res.add(angleInput);
-            else res.add(angleSlider);
-            res.add(btnChangeMode);
-        }
         res.addAll(nodes);
+        res.addAll(offsetInput.children());
+        if (now == null) return res;
+        res.addAll(positionInput.children());
+        res.addAll(angleInput.children());
         return res;
     }
     
     @Override
     public List<? extends NarratableEntry> narratables() {
         List<NarratableEntry> res = new ArrayList<>(widgets);
-        if (now != null) {
-            if (ClientConfig.useEditBoxSetRailRolling) res.add(angleInput);
-            else res.add(angleSlider);
-            res.add(btnChangeMode);
-        }
+        res.addAll(offsetInput.narratables());
+        if (now == null) return res;
+        res.addAll(positionInput.narratables());
+        res.addAll(angleInput.narratables());
         return widgets;
     }
+
     @Override
 #if MC_VERSION >= "12000"
     public void render(GuiGraphics matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta) {
@@ -234,54 +328,62 @@ public class RollAnglesListEntry extends TooltipListEntry<String> implements Con
     public void render(PoseStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta) {
 #endif
         super.render(matrices, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
-        drawText(matrices, Minecraft.getInstance().font, Text.translatable("gui.mtrsteamloco.brush_edit_rail.roll_setting").getString(),x, y + 6, 0xA8A8A8);
-        y += 22;
+        FormattedCharSequence displayedFieldName = Text.translatable("gui.mtrsteamloco.brush_edit_rail.roll_setting").getVisualOrderText();
+        Window window = Minecraft.getInstance().getWindow();
+        if (Minecraft.getInstance().font.isBidirectional()) {
+            drawString(matrices, Minecraft.getInstance().font, displayedFieldName, window.getGuiScaledWidth() - x - Minecraft.getInstance().font.width(displayedFieldName), y + 6, getPreferredTextColor());
+        } else {
+            drawString(matrices, Minecraft.getInstance().font, displayedFieldName, x, y + 6, getPreferredTextColor());
+        }
+        y += 24;
+
+        offsetInput.render(matrices, x, y, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
+    
+        y += 24;
+
+        y += 2;
         boolean reversed = ((RailExtraSupplier) pickedRail).getRenderReversed();
         if (!reversed == flag) {
-            blit(matrices, POS, 25, y + 2, 20, 20);
-            if (25 <= mouseX && mouseX <= 45 && y + 2 <= mouseY && mouseY <= y + 22) {
-                addTooltip(Tooltip.of(new Point(mouseX, mouseY), wrapLinesToScreen(new Component[] {Text.translatable("gui.mtrsteamlocobrush_edit_rail.roll_setting.pos")})));
-            }
+            blitPos(matrices, x, y, mouseX, mouseY);
         } else {
-            blit(matrices, POS, 255, y + 2, 20, 20);
-            if (255 <= mouseX && mouseX <= 275 && y + 2 <= mouseY && mouseY <= y + 22) {
-                addTooltip(Tooltip.of(new Point(mouseX, mouseY), wrapLinesToScreen(new Component[] {Text.translatable("gui.mtrsteamlocobrush_edit_rail.roll_setting.pos")})));
-            }
+            blitPos(matrices, x + entryWidth - 20, y, mouseX, mouseY);
         }
-        blit(matrices, WHITE, 50, y + 8,  200, 8);
+        sliderWidth = entryWidth - 40;
+        sliderStartX = x + 20;
+        blit(matrices, WHITE, sliderStartX, y + 6, sliderWidth, 8);
         for (int i = nodes.size() - 1; i >= 0; i--) {
             Node node = nodes.get(i);
-            node.render(matrices, x, y, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
+            node.render(matrices, x, y + 10, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
         }
-        y += 2;
-        // drawText(matrices, Minecraft.getInstance().font, nodes.size() + "", 30, y + 6, 0xFFFFFF);
-        IDrawing.setPositionAndWidth(btnAddNode, 280, y, 50);
-        IDrawing.setPositionAndWidth(btnRemoveNode, 335, y, 50);
-        IDrawing.setPositionAndWidth(btnClear, 390, y, 50);
+        y += 20;
+        y += 2 * 2;
+
+        int w = 40, in = 10;
+        int aw = 5 * w + 5 * in;
+        w += in;
+        int s = x + (int) Math.round((entryWidth - aw) / 2f);
+
+        IDrawing.setPositionAndWidth(btnAddNode, s, y, w);
+        s += w;
+        IDrawing.setPositionAndWidth(btnRemoveNode, s, y, w);
+        s += w;
+        IDrawing.setPositionAndWidth(btnClear, s, y, w);
+        s += w;
+        IDrawing.setPositionAndWidth(btnCopy, s, y, w);
+        s += w + in;
+        IDrawing.setPositionAndWidth(btnAdjust, s, y, w);
         btnAddNode.render(matrices, mouseX, mouseY, delta);
         btnRemoveNode.render(matrices, mouseX, mouseY, delta);
         btnClear.render(matrices, mouseX, mouseY, delta);
+        btnCopy.render(matrices, mouseX, mouseY, delta);
+        btnAdjust.render(matrices, mouseX, mouseY, delta);
+        y += 22;
+        
+        if (now == null) return;
+        positionInput.render(matrices, x, y, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
+
         y += 24;
-        IDrawing.setPositionAndWidth(btnChangeMode, 280, y, 50);
-        UtilitiesClient.setWidgetY(angleSlider, y);
-        UtilitiesClient.setWidgetY(angleInput, y);
-        if (now != null) {
-            if (!ClientConfig.useEditBoxSetRailRolling) {
-                angleSlider.render(matrices, mouseX, mouseY, delta);
-                angleSlider.visible = true;
-                angleInput.visible = false;
-            } else {
-                angleInput.render(matrices, mouseX, mouseY, delta);
-                angleInput.visible = true;
-                angleSlider.visible = false;
-            } 
-            btnChangeMode.visible = true;
-            btnChangeMode.render(matrices, mouseX, mouseY, delta);
-        } else {
-            angleSlider.visible = false;
-            angleInput.visible = false;
-            btnChangeMode.visible = false;
-        }
+        angleInput.render(matrices, x, y, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
     }
     protected FormattedCharSequence[] wrapLinesToScreen(Component[] lines) {
         return wrapLines(lines, Minecraft.getInstance().getWindow().getGuiScaledWidth());
@@ -295,6 +397,16 @@ public class RollAnglesListEntry extends TooltipListEntry<String> implements Con
                 .flatMap(List::stream)
                 .toArray(FormattedCharSequence[]::new);
     }
+
+#if MC_VERSION >= "12000"
+    public static void drawString(GuiGraphics matrices, Font font, FormattedCharSequence text, int x, int y, int color) {
+        matrices.drawString(font, text, x, y, color);
+    }
+#else
+    public static void drawString(PoseStack matrices, Font font, FormattedCharSequence text, int x, int y, int color) {
+        GuiComponent.drawString(matrices, font, text, x, y, color);
+    }
+#endif
 #if MC_VERSION >= "12000"
     private static int drawText(GuiGraphics guiGraphics, Font font, String text, int x, int y, int color) {
         FormattedText formattedText = FormattedText.of(text);
@@ -328,6 +440,18 @@ public class RollAnglesListEntry extends TooltipListEntry<String> implements Con
     //     GuiComponent.fill(matrices, x1, y1, x2, y2, argb);
     // }
 #endif
+
+#if MC_VERSION >= "12000"
+    private void blitPos(GuiGraphics matrices, int x, int y, int mx, int my) {
+#else
+    private void blitPos(PoseStack matrices, int x, int y, int mx, int my) {
+#endif
+        blit(matrices, POS, x, y, 20, 20);
+
+        if (x <= mx && mx <= x + 20 && y <= my && my <= y + 20) {
+            addTooltip(Tooltip.of(new Point(mx, my), wrapLinesToScreen(new Component[] {Text.translatable("gui.mtrsteamloco.brush_edit_rail.roll_setting.pos")})));
+        }
+    }
 
     private class Slider extends AbstractSliderButton {
         Function<Double, Component> textGetter;
@@ -378,12 +502,17 @@ public class RollAnglesListEntry extends TooltipListEntry<String> implements Con
         // private static final ResourceLocation P = new ResourceLocation(Main.MOD_ID, "textures/gui/rail/p.png");
         private static final ResourceLocation P = new ResourceLocation(Main.MOD_ID, "textures/gui/rail/pi.png");
         private static final ResourceLocation Y = new ResourceLocation(Main.MOD_ID, "textures/gui/rail/y.png");
-        private static final float NW = 6;
-        private static final float NH = 10;
+        private static final int NW = 6;
+        private static final int NH = 10;
         
         public Node(double value, float angle) {
             this.value = value / pickedRail.getLength();
             this.angle = angle;
+        }
+
+        public Node(Node node) {
+            this.value = node.value;
+            this.angle = node.angle;
         }
 
 #if MC_VERSION >= "12000"
@@ -391,24 +520,32 @@ public class RollAnglesListEntry extends TooltipListEntry<String> implements Con
 #else 
         public void render(PoseStack matrices, int x, int y, int width, int height, int mouseX, int mouseY, boolean isHovered, float delta) {
 #endif  
-            this.y = y + 8 + 4;
+            this.y = y;
             if (isActive()) {
-                blit(matrices, Y, getX() - (int) (NW / 2), this.y - (int) (NH / 2), (int) NW, (int) NH);
+                blit(matrices, Y, getX() - NW / 2, this.y - NH / 2,  NW, NH);
             } else {
-                blit(matrices, P, getX() - (int) (NW / 2), this.y - (int) (NH / 2), (int) NW, (int) NH);
+                blit(matrices, P, getX() - NW / 2, this.y - NH / 2, NW,  NH);
             }
         }
+
         public int getX() {
-            return (int) (START + value * WIDTH);
+            return (int) (sliderStartX + value * sliderWidth);
         }
+
+        public void directSetValue(double value) {
+            this.value = value;
+            update();
+        }
+
         public void setValue(int x) {
             double old = value;
-            if (x <= START) x = START;
-            else if (x >= START + WIDTH) x = START + WIDTH;
-            else value = (x - START) / (double) WIDTH;
+            if (x <= sliderStartX) x = sliderStartX;
+            else if (x >= sliderStartX + sliderWidth) x = sliderStartX + sliderWidth;
+            else value = (x - sliderStartX) / (double) sliderWidth;
             if (old == value) return;
             update();
         }
+
         public void setValue(double value) {
             double old = this.value;
             if (value < 0) value = 0;
@@ -465,6 +602,7 @@ public class RollAnglesListEntry extends TooltipListEntry<String> implements Con
         @Override
         public boolean mouseDragged(double sx, double sy, int t, double dx, double dy) {
             if ((isActive() && dragged) || isMouseOver(sx, sy)) {
+                focusNode(this);
                 setValue((int) (sx + dx));
                 dragged = true;
                 return true;
@@ -487,6 +625,170 @@ public class RollAnglesListEntry extends TooltipListEntry<String> implements Con
                 setValue(value + f);
             }
             return false;
+        }
+    }
+
+    private class SliderTextFieldGroup {
+        private final EditBox textField;
+        private final WidgetSlider slider;
+        private final Button btnChangeMode, btnReset;
+        private final float min, max, defaultValue;
+        private float now;
+        private final int step;
+        private int mode;
+        private final Consumer<Integer> saveModeConsumer;
+        private final Consumer<Float> valueSetter;
+
+        public SliderTextFieldGroup(float min, float max, int step, int mode, Consumer<Integer> saveModeConsumer, float now, float defaultValue, Consumer<Float> valueSetter, Function<Float, Component> textGetter, boolean clamp, Component name) {
+            this.min = min;
+            this.max = max;
+            this.now = now;
+            this.step = step;
+            this.valueSetter = valueSetter;
+            this.saveModeConsumer = saveModeConsumer;
+            this.mode = mode;
+            this.defaultValue = defaultValue;
+
+            textField = new EditBox(Minecraft.getInstance().font, 0, 0, 0, 20, Text.literal(""));
+            btnReset = UtilitiesClient.newButton(Text.translatable("gui.mtrsteamloco.brush_edit_rail.reset"), btn -> setValue(defaultValue));
+
+            textField.setResponder(s -> {
+                Float f = null;
+                try {
+                    f = Float.parseFloat(s);
+                } catch (NumberFormatException e) {
+                    textField.setTextColor(0xFF0000);
+                    return;
+                }
+                if (clamp) {
+                    boolean flag = f < min || f > max;
+                    if (flag) {
+                        textField.setTextColor(0xFF0000);
+                        return;
+                    }
+                }
+                textField.setTextColor(0xFFFFFF);
+                setValue(f, false);
+            });
+            textField.setValue(Float.toString(now));
+            textField.moveCursorToStart();
+
+            slider = new WidgetSlider(20, step, getLevel(now), i -> {
+                float f = getValue(i);
+                Component c = textGetter.apply(f);
+                setValue(f, false);
+                return c;
+            });
+            btnChangeMode = UtilitiesClient.newButton(name, btn -> switchMode(this.mode + 1));
+
+            btnReset.active = now == defaultValue;
+            switchMode(mode);
+        }
+
+        private float now() {
+            return now;
+        }
+
+        public void switchMode(int mode) {
+            mode = mode % 2;
+            if (mode == this.mode) return;
+                
+            this.mode = mode;
+            saveModeConsumer.accept(mode);
+
+            if (mode == 0) {
+                textField.visible = true;
+                slider.visible = false;
+            } else {
+                textField.visible = false;
+                slider.visible = true;
+            }
+            System.out.println("mode: " + mode + " now: " + now);
+            setValue(now);
+            System.out.println("now: " + now);
+        }
+
+        public void setValue(float value) {
+            setValue(value, true);
+        }
+
+        public void setValue(float value, boolean flag) {
+            if (textField == null || slider == null || btnReset == null || btnChangeMode == null) return;
+            if (flag) {
+                slider.setValue(getLevel(value));
+                textField.setValue(Float.toString(value));
+                textField.moveCursorToStart();
+            }
+            if (now == value) return;
+            now = value;
+            valueSetter.accept(value);
+        }
+
+        private int getLevel(float value) {
+            return (int) Math.round((value - min) / (max - min) * step);
+        }
+
+        private float getValue(int level) {
+            return min + level / (float) step * (max - min);
+        }
+
+    #if MC_VERSION >= "12000"
+        public void render(GuiGraphics matrices, int x, int y, int width, int height, int mouseX, int mouseY, boolean isHovered, float delta) {
+    #else 
+        public void render(PoseStack matrices, int x, int y, int width, int height, int mouseX, int mouseY, boolean isHovered, float delta) {
+    #endif 
+            y += 2;
+            int v1 = (int) Math.round(width * 0.5D);
+            int v4 = Math.min(v1, 380);
+
+            int v2 = (int) Math.round(width * 0.05D);
+
+            int v3 = (int) Math.round(width * 0.3D);
+            int v5 = Math.min(v3, 228);
+
+            int v6 = (int) Math.round(width * 0.1D);
+            int v7 = Math.min(v6, 100);
+
+            btnReset.active = Math.abs(now - defaultValue) > 0.00001F;
+
+            x += (width - v4 - v2 - v5 - v2 - v7) / 2;
+            IDrawing.setPositionAndWidth(textField, x, y, v4);
+            IDrawing.setPositionAndWidth(slider, x, y, v4);
+            x += v4 + v2;
+            IDrawing.setPositionAndWidth(btnChangeMode, x, y, v5);
+            x += v5 + v2;
+            IDrawing.setPositionAndWidth(btnReset, x, y, v7);
+
+            if (mode == 0) textField.render(matrices, mouseX, mouseY, delta);
+            else slider.render(matrices, mouseX, mouseY, delta);
+            btnChangeMode.render(matrices, mouseX, mouseY, delta);
+            btnReset.render(matrices, mouseX, mouseY, delta);
+        }
+
+        public List<GuiEventListener> children() {
+            List<GuiEventListener> listeners = new ArrayList<>();
+            if (mode == 0) listeners.add(textField);
+            else listeners.add(slider);
+            listeners.add(btnChangeMode);
+            listeners.add(btnReset);
+            return listeners;
+        }
+
+        public List<NarratableEntry> narratables() {
+            List<NarratableEntry> narratables = new ArrayList<>();
+            if (mode == 0) narratables.add(textField);
+            else narratables.add(slider);
+            narratables.add(btnChangeMode);
+            narratables.add(btnReset);
+            return narratables;
+        }
+
+        public void setEditable(boolean editable) {
+            textField.moveCursorToStart();
+            textField.setEditable(editable);
+            slider.setEditable(editable);
+            btnReset.active = editable;
+            btnChangeMode.active = editable;
         }
     }
 }
