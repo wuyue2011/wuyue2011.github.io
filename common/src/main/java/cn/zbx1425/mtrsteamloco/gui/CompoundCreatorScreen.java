@@ -549,8 +549,8 @@ public class CompoundCreatorScreen extends Screen {
 
         public void init() {
             IDrawing.setPositionAndWidth(btnReturn, 10, 10, 20);
-            IDrawing.setPositionAndWidth(btnNewRailModifier, 20, 50, width - 40);
-            IDrawing.setPositionAndWidth(btnNewSliceTask, 20, 80, width - 40);
+            IDrawing.setPositionAndWidth(btnNewRailModifier, width / 2 - 150, 50, 300);
+            IDrawing.setPositionAndWidth(btnNewSliceTask, width / 2 - 150, 80, 300);
             addRenderableWidget(btnReturn);
             addRenderableWidget(btnNewRailModifier);
             addRenderableWidget(btnNewSliceTask);
@@ -967,11 +967,7 @@ public class CompoundCreatorScreen extends Screen {
                     task.start
                 ).setDefaultValue(0)
                 .setSaveConsumer(d -> {
-                    if (d <= 0) {
-                        task.interval = null;
-                    } else {
-                        task.interval = d;
-                    }
+                    task.start = d;
                 })
                 .setMin(0)
                 .build()

@@ -9,6 +9,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 #endif
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import mtr.mappings.UtilitiesClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -29,6 +30,18 @@ import java.util.function.Supplier;
 @Environment(EnvType.CLIENT)
 public class ButtonListEntry extends TooltipListEntry<String> implements ContainerEventHandler{
     
+    public static ButtonListEntry createCenteredInstance(Component filler, Button.OnPress onPress) {
+        Button btn = UtilitiesClient.newButton(filler, onPress);
+        btn.setWidth(300);
+        ButtonListEntry entry = new ButtonListEntry(Text.literal(""), btn, 
+            (e, b, a1, a2, a3, a4, a5, a6, a7, a8, a9) -> {
+                Window window = Minecraft.getInstance().getWindow();
+                UtilitiesClient.setWidgetX(b, (window.getGuiScaledWidth() / 2 - 150));
+            }
+        );
+        return entry;
+    }
+
     private final Button buttonWidget;
     private final List<AbstractWidget> widgets;
     private final Processor processor;

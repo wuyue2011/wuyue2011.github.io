@@ -9,39 +9,54 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
+import mtr.data.RailType;
 import cn.zbx1425.mtrsteamloco.ClientConfig;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import cn.zbx1425.mtrsteamloco.data.RailExtraSupplier;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import mtr.block.BlockNode;
 import net.minecraft.world.level.Level;
+import mtr.data.Rail;
 import cn.zbx1425.mtrsteamloco.block.BlockDirectNode.BlockEntityDirectNode;
 import mtr.screen.WidgetBetterTextField;
 import mtr.data.IGui;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Block;
 #if MC_VERSION >= "12000"
 import net.minecraft.client.gui.GuiGraphics;
 #endif
 import com.mojang.blaze3d.vertex.PoseStack;
+import mtr.client.ClientData;
+import mtr.data.RailAngle;
+import cn.zbx1425.mtrsteamloco.render.rail.BakedRail;
 
 import java.util.ArrayList;
 import java.util.function.Supplier;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 
 public class DirectNodeScreen extends Screen {
-    public static Screen createScreen(Level world, BlockPos pos, Screen parent) {
+
+    public static Screen createScreen(Level world, BlockPos pos, Supplier<Screen> parent) {
+        if (parent == null) parent = () -> null;
         BlockEntity entity = world.getBlockEntity(pos);
-        if (entity == null) return parent;
+        if (entity == null) return parent.get();
         if (entity instanceof BlockEntityDirectNode e) {
-            if (e.getBlockState().getValue(BlockNode.IS_CONNECTED) == true) return parent;
             return new DirectNodeScreen(e, parent);
         } else {
-            return parent;
+            return parent.get();
         }
     }
 
+    public static Screen createScreen(BlockEntityDirectNode entity, Supplier<Screen> parent) {
+        return new DirectNodeScreen(entity, parent);
+    }
+
     private BlockEntityDirectNode entity;
-    private Screen parent;
+    private Supplier<Screen> parent;
     #if MC_VERSION >= "12000"
     private GuiGraphics matrices;
 #else 
@@ -63,7 +78,7 @@ public class DirectNodeScreen extends Screen {
     Pattern pattern;
 
     
-    DirectNodeScreen(BlockEntityDirectNode entity, Screen parent) {
+    DirectNodeScreen(BlockEntityDirectNode entity, Supplier<Screen> parent) {
         super(Text.literal("Brush Edit Direct Node Screen"));
         this.entity = entity;
         this.parent = parent;
@@ -81,6 +96,19 @@ public class DirectNodeScreen extends Screen {
     public static void setMode(int mode) {
         ClientConfig.directNodeScreenGroup.modes[0] = mode;
         ClientConfig.save();
+    }
+
+    private static RailAngle getRailAngle(BlockPos pos, Level world) {
+        BlockState state = world.getBlockState(pos);
+        Block block = state.getBlock();
+        BlockEntity entity = world.getBlockEntity(pos);
+
+        if (!(block instanceof BlockNode)) return null;
+        if (entity == null) {
+            return RailAngle.fromAngle(BlockNode.getAngle(state));
+        }
+        if (!(entity instanceof BlockEntityDirectNode)) return RailAngle.fromAngle(BlockNode.getAngle(state));
+        return ((BlockEntityDirectNode) entity).getRailAngle();
     }
 
     private void switchMode(int mode) {
@@ -110,7 +138,7 @@ public class DirectNodeScreen extends Screen {
         IDrawing.setPositionAndWidth(btnCirculateMode, width / 2 + w / 2 - 40, height - 80, 40);
         IDrawing.setPositionAndWidth(btnAdjust, width / 2 + w / 2 - 100, height - 80, 50);
         IDrawing.setPositionAndWidth(btnUnbind, width / 2 - w / 2, height - 80, 60);
-        btnUnbind.active = entity.isBound();
+        btnUnbind.active = entity.isBound() && !entity.isConnected();
         btnUnbind.render(matrices, mouseX, mouseY, partialTick);
         btnReturn.render(matrices, mouseX, mouseY, partialTick);
         btnAdjust.render(matrices, mouseX, mouseY, partialTick);
@@ -123,7 +151,7 @@ public class DirectNodeScreen extends Screen {
     }
 
     public void onClose() {
-        minecraft.setScreen(parent);
+        minecraft.setScreen(parent.get());
     }
 
     @Override
@@ -136,6 +164,11 @@ public class DirectNodeScreen extends Screen {
         children.add(btnAdjust);
         children.addAll(pattern.children());
         return children;
+    }
+
+    @Override
+    public boolean isPauseScreen() {
+        return false;
     }
 
     public static Screen createAdjustScreen(Supplier<Screen> parent) {

@@ -45,7 +45,7 @@ public class PacketScreen {
                     case "compound_creator":
                         minecraftClient.setScreen(CompoundCreatorScreen.createScreen(null));
                         break;
-                    case "brush_edit_direct_node":
+                    case "direct_node":
                         minecraftClient.setScreen(DirectNodeScreen.createScreen(minecraftClient.level, pos, null));
                 }
             });

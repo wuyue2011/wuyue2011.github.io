@@ -31,6 +31,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
 import cn.zbx1425.mtrsteamloco.data.RailModelProperties;
+import cn.zbx1425.mtrsteamloco.gui.DirectNodeScreen;
 
 import java.util.*;
 

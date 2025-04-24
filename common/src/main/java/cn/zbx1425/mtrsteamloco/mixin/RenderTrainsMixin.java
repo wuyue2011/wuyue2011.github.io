@@ -12,7 +12,9 @@ import cn.zbx1425.sowcerext.model.integration.BufferSourceProxy;
 import com.mojang.blaze3d.vertex.PoseStack;
 import cn.zbx1425.sowcer.math.Matrix4f;
 import mtr.data.Rail;
+import net.minecraft.client.player.LocalPlayer;
 import mtr.entity.EntitySeat;
+import mtr.data.IGui;
 import cn.zbx1425.mtrsteamloco.render.block.BlockEntityEyeCandyRenderer;
 import cn.zbx1425.mtrsteamloco.render.block.BlockEntityDirectNodeRenderer;
 import mtr.render.RenderTrains;
@@ -21,13 +23,19 @@ import cn.zbx1425.mtrsteamloco.Main;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.Level;
+import cn.zbx1425.mtrsteamloco.gui.DirectNodeScreen;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(RenderTrains.class)
-public class RenderTrainsMixin {
+public class RenderTrainsMixin implements IGui{
 
     @Inject(at = @At("HEAD"),
             method = "render(Lmtr/entity/EntitySeat;FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;)V")
@@ -36,7 +44,6 @@ public class RenderTrainsMixin {
         RenderUtil.commonVertexConsumers = vertexConsumers;
         RenderUtil.commonPoseStack = matrices;
         RenderUtil.updateElapsedTicks();
-
     }
 
     @Inject(at = @At("TAIL"),
@@ -85,9 +92,14 @@ public class RenderTrainsMixin {
         ScriptContextManager.disposeDeadContexts();
     }
 
+    @Shadow(remap = false) 
+    private static void renderRailStandard(Level world, Rail rail, float yOffset, boolean renderColors, float railWidth) {
+        throw new IllegalStateException("Mixin failed to apply");
+    }
+
     @Inject(at = @At("HEAD"), cancellable = true,
             method = "renderRailStandard(Lnet/minecraft/world/level/Level;Lmtr/data/Rail;FZFLjava/lang/String;FFFF)V")
-    private static void renderRailStandard(Level world, Rail rail, float yOffset, boolean renderColors, float railWidth, String texture, float u1, float v1, float u2, float v2, CallbackInfo ci) {
+    private static void onRenderRailStandard(Level world, Rail rail, float yOffset, boolean renderColors, float railWidth, String texture, float u1, float v1, float u2, float v2, CallbackInfo ci) {
         if (ClientConfig.getRailRenderLevel() == 0) {
             ci.cancel();
             return;

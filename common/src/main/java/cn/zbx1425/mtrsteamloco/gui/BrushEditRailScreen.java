@@ -7,11 +7,14 @@ import cn.zbx1425.mtrsteamloco.network.PacketUpdateHoldingItem;
 import cn.zbx1425.mtrsteamloco.network.PacketUpdateRail;
 import cn.zbx1425.mtrsteamloco.render.RailPicker;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.world.level.block.state.BlockState;
 import io.netty.buffer.Unpooled;
 import mtr.client.ClientData;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.netty.buffer.ByteBufUtil;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import cn.zbx1425.mtrsteamloco.block.BlockDirectNode.BlockEntityDirectNode;
 import net.minecraft.util.FormattedCharSequence;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.FriendlyByteBuf;
@@ -26,6 +29,7 @@ import mtr.mappings.UtilitiesClient;
 import net.minecraft.client.gui.screens.Screen;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import mtr.screen.WidgetBetterCheckbox;
+import mtr.block.BlockNode;
 import mtr.screen.WidgetBetterTextField;
 import net.minecraft.util.Mth;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
@@ -63,6 +67,7 @@ import org.jetbrains.annotations.ApiStatus;
 import me.shedaniel.clothconfig2.gui.entries.*;
 import mtr.mappings.Text;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
+import mtr.data.TransportMode;
 import cn.zbx1425.sowcer.math.Vector3f;
 import cn.zbx1425.mtrsteamloco.ClientConfig;
 import net.minecraft.client.gui.components.EditBox;
@@ -70,6 +75,7 @@ import me.shedaniel.clothconfig2.api.Tooltip;
 import me.shedaniel.math.Point;
 import cn.zbx1425.mtrsteamloco.network.util.DoubleFloatMapSerializer;
 import cn.zbx1425.mtrsteamloco.gui.entries.*;
+import cn.zbx1425.mtrsteamloco.network.PacketReplaceRailNode;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -113,7 +119,7 @@ public class BrushEditRailScreen {
     private BrushEditRailScreen(Screen parent) {
         this(RailPicker.pickedRail, RailPicker.pickedPosStart, RailPicker.pickedPosEnd, parent);
     }
-
+    
     private void init() {
         if (pickedRail == null) screen = parent;
         else {
@@ -129,6 +135,40 @@ public class BrushEditRailScreen {
 
             CompoundTag brushTag = getBrushTag();
             String modelKey = supplier.getModelKey();
+
+            Minecraft minecraft = Minecraft.getInstance();
+            BlockEntityDirectNode entity = null;
+            if (minecraft != null) {
+                if (minecraft.level != null) {
+                    BlockEntity e = minecraft.level.getBlockEntity(pickedPosStart);
+                    if (e != null) {
+                        if (e instanceof BlockEntityDirectNode en) {
+                            entity = en;
+                        }
+                    }
+                }
+            }
+
+            if (entity != null) {
+                final BlockEntityDirectNode entity1 = entity;
+                common.addEntry(
+                    ButtonListEntry.createCenteredInstance(
+                        Text.translatable("gui.mtrsteamloco.brush_edit_rail.adjust_angle"),
+                        btn -> minecraft.setScreen(DirectNodeScreen.createScreen(entity1, () -> createScreen(pickedRail, pickedPosStart, pickedPosEnd, parent)))
+                    )
+                );
+            } else if (pickedRail.transportMode == TransportMode.TRAIN) {
+                BlockState state = minecraft.level.getBlockState(pickedPosStart);
+                if (state != null && state.getBlock() instanceof BlockNode) {
+                    common.addEntry(
+                        ButtonListEntry.createCenteredInstance(
+                            Text.translatable("gui.mtrsteamloco.brush_edit_rail.switch_to_direct_node"),
+                            btn -> PacketReplaceRailNode.sendUpdateC2S(pickedPosStart, state, "brush_edit_rail")
+                        )
+                    );
+                }
+            }
+
 
             common.addEntry(
                 entryBuilder.startTextDescription(
@@ -200,27 +240,10 @@ public class BrushEditRailScreen {
 
             if (enableModelKey) {
                 RailModelProperties properties = RailModelRegistry.elements.get(modelKey);
-                common.addEntry(new ButtonListEntry(
-                    Text.literal(""),
-#if MC_VERSION >= "11903"
-                    new Button.Builder(
-                        Text.translatable("gui.mtrsteamloco.brush_edit_rail.present", 
-                            (properties != null ? (properties.name.getString()) : (modelKey + " (???)"))),
-                        btn -> Minecraft.getInstance().setScreen(new SelectScreen())).pos(0, 0).size(300, 20).build(),
-#else
-                    new Button(0, 0, 300, 20, 
-                        Text.translatable("gui.mtrsteamloco.brush_edit_rail.present", 
-                            (properties != null ? (properties.name.getString()) : (modelKey + " (???)"))), 
-                        btn -> Minecraft.getInstance().setScreen(new SelectScreen())), 
-#endif
-                    (e, b, a1, a2, a3, a4, a5, a6, a7, a8, a9) -> {
-                        Window window = Minecraft.getInstance().getWindow();
-#if MC_VERSION >= "11903"
-                        b.setX(window.getGuiScaledWidth() / 2 - 150);
-#else
-                        b.x = window.getGuiScaledWidth() / 2 - 150;
-#endif
-                }));
+                common.addEntry(ButtonListEntry.createCenteredInstance(
+                    Text.translatable("gui.mtrsteamloco.brush_edit_rail.present", (properties != null ? (properties.name.getString()) : (modelKey + " (???)"))),
+                    btn -> Minecraft.getInstance().setScreen(new SelectScreen())
+                ));
             }
 
             boolean enableVertCurveRadius = brushTag != null && brushTag.contains("VerticalCurveRadius");

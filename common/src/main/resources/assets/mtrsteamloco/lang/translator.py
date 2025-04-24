@@ -1,166 +1,78 @@
-# -*- coding: utf-8 -*-
 import requests
-import random
+import threading
 import json
-import re
-from hashlib import md5
-from tqdm import tqdm
 import os
-import time
+from openai import OpenAI
 
-# 配置路径
-CONFIG_PATH = r"D:\bdapi.json"
-SOURCE_FILE = "zh_cn.json"
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# 读取 API 密钥
+with open("D://OpenRouter.json", "r", encoding="utf-8") as f:
+    api_keys = json.load(f)
+    api_key = api_keys["api_key"]
 
-# 语言映射配置
-LANG_MAP = {
-    'de_de': 'de',
-    'en_us': 'en',
-    'ja_jp': 'jp',
-    'pt_pt': 'pt',
-    'zh_hk': 'cht',
-    'zh_tw': 'cht',
-    'fr_fr': 'fra',
-    'es_es': 'spa',
-    'it_it': 'it',
-    'ru_ru': 'ru',
-    'ko_kr': 'kor'
-}
+print("API key: " + api_key)
 
-class BaiduTranslator:
-    def __init__(self, appid, secret_key):
-        self.appid = appid
-        self.secret_key = secret_key
-        self.endpoint = 'http://api.fanyi.baidu.com/api/trans/vip/translate'
-        self.retry_limit = 3
-        self.delay = 1
+# 读取 zhcn.json 文件
+with open("zh_cn.json", "r", encoding="utf-8") as f:
+    content = json.dumps(json.load(f), ensure_ascii=False, indent=4)
+    content = content.replace("\\n", "<br>")
 
-    def _make_md5(self, s):
-        return md5(s.encode('utf-8')).hexdigest()
+# raise Exception("Stop here")
 
-    def _replace_specials(self, text):
-        # 保护特殊格式
-        replacements = {
-            r'%s': ' MTR_PLACEHOLDER_S ',
-            r'§[a-f0-9]': lambda m: f' MTR_COLOR_{m.group(0)[1:]} ',
-            r'https?://\S+': lambda m: f' MTR_URL_{hash(m.group(0))} '
-        }
-        
-        protected = text
-        for pattern, repl in replacements.items():
-            protected = re.sub(pattern, repl, protected, flags=re.IGNORECASE)
-        
-        return protected, replacements
 
-    def _restore_specials(self, text, replacements):
-        # 恢复特殊格式
-        restored = text
-        restore_map = {
-            'MTR_PLACEHOLDER_S': '%s',
-            r'MTR_COLOR_([a-f0-9])': r'§\1',
-            r'MTR_URL_(\d+)': lambda m: next((k for k, v in replacements[2].items() 
-                                          if str(hash(k)) == m.group(1)), '')
-        }
-        
-        for i, (pattern, repl) in enumerate(restore_map.items()):
-            if i == 2:  # URL 处理
-                for url_placeholder in re.findall(r'MTR_URL_\d+', restored):
-                    hash_val = url_placeholder.split('_')[-1]
-                    for original_url in replacements[2]:
-                        if str(hash(original_url)) == hash_val:
-                            restored = restored.replace(url_placeholder, original_url)
-                            break
-            else:
-                restored = re.sub(pattern, repl, restored, flags=re.IGNORECASE)
-        
-        return restored
+# 构造 client
+client = OpenAI(
+    api_key=api_key, 
+    base_url="https://openrouter.ai/api/v1/", 
+)
 
-    def translate(self, query, to_lang):
-        salt = random.randint(32768, 65536)
-        sign = self._make_md5(self.appid + query + str(salt) + self.secret_key)
-        
-        params = {
-            'q': query,
-            'from': 'zh',
-            'to': to_lang,
-            'appid': self.appid,
-            'salt': salt,
-            'sign': sign
-        }
+# 目标语言
+languages = ["en_us", "af_za", "ar_sa", "ast_es", "az_az", "ba_ru", "bar", "be_by", "be_latn", "bg_bg", "br_fr", "brb", "bs_ba", "ca_es", "cs_cz", "cy_gb", "da_dk", "de_at", "de_ch", "de_de", "el_gr", "en_au", "en_ca", "en_gb", "en_nz", "en_pt", "en_ud", "enp", "enws", "eo_uy", "es_ar", "es_cl", "es_ec", "es_es", "es_mx", "es_uy", "es_ve", "esan", "et_ee", "eu_es", "fa_ir", "fi_fi", "fil_ph", "fo_fo", "fr_ca", "fr_fr", "fra_de", "fur_it", "fy_nl", "ga_ie", "gd_gb", "gl_es", "haw_us", "he_il", "hi_in", "hn_no", "hr_hr", "hu_hu", "hy_am", "id_id", "ig_ng", "io_en", "is_is", "isv", "it_it", "ja_jp", "jbo_en", "ka_ge", "kk_kz", "kn_in", "ko_kr", "ksh", "kw_gb", "ky_kg", "la_la", "lb_lu", "li_li", "lmo", "lo_la", "lol_us", "lt_lt", "lv_lv", "lzh", "mk_mk", "mn_mn", "ms_my", "mt_mt", "nah", "nds_de", "nl_be", "nl_nl", "nn_no", "no_no", "oc_fr", "ovd", "pl_pl", "pls", "pt_br", "pt_pt", "qya_aa", "ro_ro", "rpr", "ru_ru", "ry_ua", "sah_sah", "se_no", "sk_sk", "sl_si", "so_so", "sq_al", "sr_cs", "sr_sp", "sv_se", "sxu", "szl", "ta_in", "th_th", "tl_ph", "tlh_aa", "tok", "tr_tr", "tt_ru", "tzo_mx", "uk_ua", "val_es", "vec_it", "vi_vn", "vp_vl", "yi_de", "yo_ng", "zh_hk", "zh_tw", "zlm_arab"]
 
-        for _ in range(self.retry_limit):
-            try:
-                response = requests.post(self.endpoint, params=params, timeout=10)
-                result = response.json()
-                if 'error_code' in result:
-                    raise Exception(f"API Error {result['error_code']}: {result['error_msg']}")
-                return ' '.join([item['dst'] for item in result['trans_result']])
-            except Exception as e:
-                print(f"Translation failed: {str(e)}, retrying...")
-                time.sleep(self.delay)
-        
-        raise Exception("Translation failed after multiple retries")
+target_languages = ["en_us", "de_de", "ja_jp", "is_is", "pt_pt", "ko_kr", "ru_ru", "zh_hk", "zh_tw"]
 
-class TranslationProcessor:
-    def __init__(self, translator):
-        self.translator = translator
-        self.total_items = 0
-        self.processed_items = 0
+def translate(target):
 
-    def process_file(self, src_data, target_lang):
-        translated = {}
-        target_code = LANG_MAP[target_lang]
-        
-        with tqdm(total=len(src_data), desc=f"Translating {target_lang}", unit="item") as pbar:
-            for key, value in src_data.items():
-                protected_text, replacements = self.translator._replace_specials(value)
-                
-                try:
-                    translated_text = self.translator.translate(protected_text, target_code)
-                    final_text = self.translator._restore_specials(translated_text, replacements)
-                except Exception as e:
-                    print(f"Error translating {key}: {str(e)}")
-                    final_text = value  # 保留原文作为后备
-                
-                translated[key] = final_text
-                pbar.update(1)
-                self.processed_items += 1
-        
-        return translated
+    text = text = f"""请将以下JSON语言文件准确翻译为{target}语言,
+    保留源文件格式,输出纯净的JSON文本,保留如 ANTE BBMODEL <br> 网址或人名不变.
+    不需要```json 的标签，请直接输出 JSON 文本。
+     严格按此格式输出翻译结果：\n{content}"""
 
-def main():
-    # 加载配置
-    with open(CONFIG_PATH, 'r', encoding='utf-8') as f:
-        config = json.load(f)
-    
-    # 初始化翻译器
-    translator = BaiduTranslator(config['appid'], config['secret_key'])
-    processor = TranslationProcessor(translator)
-    
-    # 加载源文件
-    with open(os.path.join(BASE_DIR, SOURCE_FILE), 'r', encoding='utf-8') as f:
-        source_data = json.load(f)
-    
-    # 计算总工作量
-    total_langs = len(LANG_MAP)
-    processor.total_items = len(source_data) * total_langs
-    
-    # 全局进度条
-    with tqdm(total=total_langs, desc="Overall Progress", unit="lang") as global_pbar:
-        for target_lang, target_code in LANG_MAP.items():
-            if target_lang == 'zh_cn':  # 跳过简体中文
-                continue
-            
-            # 翻译处理
-            translated_data = processor.process_file(source_data, target_lang)
-            
-            # 保存结果
-            output_path = os.path.join(BASE_DIR, f"{target_lang}.json")
-            with open(output_path, 'w', encoding='utf-8') as f:
-                json.dump(translated_data, f, ensure_ascii=False, indent=4)
-            
-            global_pbar.update(1)
+    completion = client.chat.completions.create(
+        model="microsoft/mai-ds-r1:free",
+        messages=[
+            {
+                "role": "user",
+                "content": text
+            }
+        ]
+    )
 
-if __name__ == "__main__":
-    main()
+    result = completion.choices[0].message.content
+    result = result.replace("<br>", "\\n")
+
+    # 写入文件
+    with open(target + ".json", "w", encoding="utf-8") as f:
+        f.write(result)
+
+    print(f"Translation to {target} done.")
+
+for target in languages:
+    if target == "zh_cn":
+        continue
+    file_path = target + ".json"
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+threads = []
+for target in target_languages:
+    if target == "zh_cn":
+        continue
+    threads.append(threading.Thread(target=translate, args=(target,)))
+
+for thread in threads:
+    thread.start()
+
+for thread in threads:
+    thread.join()
+
+print("All translations done.")

@@ -38,7 +38,7 @@ public abstract class ItemWithCreativeTabBaseMixin extends Item {
                 if (blockEntity instanceof BlockEntityDirectNode e) {
                     if (state.getValue(BlockNode.IS_CONNECTED) == false) {
                         if (!level.isClientSide) {
-                            PacketScreen.sendScreenBlockS2C((ServerPlayer) context.getPlayer(), "brush_edit_direct_node", pos);
+                            PacketScreen.sendScreenBlockS2C((ServerPlayer) context.getPlayer(), "direct_node", pos);
                         }
                         return InteractionResult.SUCCESS;
                     }

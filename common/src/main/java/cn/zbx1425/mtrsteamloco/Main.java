@@ -99,6 +99,8 @@ public class Main {
 					PacketUpdateHoldingItem::receiveUpdateC2S);
 			mtr.Registry.registerNetworkReceiver(PacketUpdateTrainCustomConfigs.C2S,
 					PacketUpdateTrainCustomConfigs::receiveUpdateC2S);
+			mtr.Registry.registerNetworkReceiver(PacketReplaceRailNode.C2S, 
+					PacketReplaceRailNode::receiveUpdateC2S);
 
 			mtr.Registry.registerPlayerJoinEvent(PacketVersionCheck::sendVersionCheckS2C);
 		}
