@@ -97,29 +97,31 @@ task setupLibrary() {
 	} */
 
 	String url = "https://aphrodite281.github.io/Minecraft-Transit-Railway/lib/" + minecraft_version + "/"
+	
+	doLast {
+		download {
+			src "${url}mtr-common.jar"
+			dest "checkouts/mtr-common.jar"
+			overwrite true
+		}
 
-	download {
-		src "${url}mtr-common.jar"
-		dest "checkouts/mtr-common.jar"
-		overwrite true
-	}
+		download {
+			src "${url}mtr-fabric.jar"
+			dest "checkouts/mtr-fabric.jar"
+			overwrite true
+		}
 
-	download {
-		src "${url}mtr-fabric.jar"
-		dest "checkouts/mtr-fabric.jar"
-		overwrite true
-	}
+		download {
+			src "${url}mtr-forge.jar"
+			dest "checkouts/mtr-forge.jar"
+			overwrite true
+		}
 
-	download {
-		src "${url}mtr-forge.jar"
-		dest "checkouts/mtr-forge.jar"
-		overwrite true
-	}
-
-	download {
-		src "${url}files.zip"
-		dest "checkouts/files.zip"
-		overwrite true
+		download {
+			src "${url}files.zip"
+			dest "checkouts/files.zip"
+			overwrite true
+		}
 	}
 
 	copy {
