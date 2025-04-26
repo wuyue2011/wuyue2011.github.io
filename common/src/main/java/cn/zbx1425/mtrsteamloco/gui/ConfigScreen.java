@@ -131,6 +131,18 @@ public final class ConfigScreen {
                         ClientConfig.enableSmoke
                 ).setSaveConsumer(checked -> ClientConfig.enableSmoke = checked).setDefaultValue(true).build()
         );
+        common.addEntry(entryBuilder
+                .startIntField(
+                        Text.translatable("gui.mtrsteamloco.config.client.rail_distance_renderer_interval"),
+                        ClientConfig.railDistanceRendererInterval
+                ).setSaveConsumer(value -> ClientConfig.railDistanceRendererInterval = value).setDefaultValue(5).build()
+        );
+        common.addEntry(entryBuilder
+                .startIntField(
+                        Text.translatable("gui.mtrsteamloco.config.client.rail_distance_renderer_max_distance_sqr"),
+                        ClientConfig.railDistanceRendererMaxDistanceSqr
+                ).setSaveConsumer(value -> ClientConfig.railDistanceRendererMaxDistanceSqr = value).setDefaultValue(16 * 16).build()
+        );
 
         List<AbstractConfigListEntry> customConfigs = ClientConfig.getCustomConfigEntrys(entryBuilder, () -> ConfigScreen.createScreen(parent));
         if (!customConfigs.isEmpty()) {

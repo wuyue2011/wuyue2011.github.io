@@ -32,6 +32,7 @@ import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
 import cn.zbx1425.mtrsteamloco.data.RailModelProperties;
 import cn.zbx1425.mtrsteamloco.gui.DirectNodeScreen;
+import cn.zbx1425.mtrsteamloco.Main;
 
 import java.util.*;
 
@@ -126,7 +127,9 @@ public class RailRenderDispatcher {
         isPreviewingModel = currentScreen instanceof SelectListScreen && ((SelectListScreen)currentScreen).isSelecting();
         if (!isPreviewingModel) {
             isHoldingRailItem = RenderTrains.isHoldingRailRelated(Minecraft.getInstance().player);
-            isHoldingBrush = Utilities.isHolding(Minecraft.getInstance().player, (item) -> item.equals(mtr.Items.BRUSH.get()));
+            isHoldingBrush = Utilities.isHolding(Minecraft.getInstance().player, (item) -> item.equals(mtr.Items.BRUSH.get())) ||
+                Utilities.isHolding(Minecraft.getInstance().player, (item) -> item.equals(Main.COMPOUND_CREATOR.get())) ||
+                Utilities.isHolding(Minecraft.getInstance().player, (item) -> item.equals(Main.DISPLACEMENT_TOOL.get()));
             isHoldingRailItemOrBrush = isHoldingRailItem || isHoldingBrush;
         } else {
             isHoldingRailItem = false;

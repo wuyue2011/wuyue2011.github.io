@@ -24,6 +24,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.Level;
 import cn.zbx1425.mtrsteamloco.gui.DirectNodeScreen;
+import cn.zbx1425.mtrsteamloco.render.RailDistanceRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,6 +86,7 @@ public class RenderTrainsMixin implements IGui{
         if (Minecraft.getInstance().player != null && RailRenderDispatcher.isHoldingBrush) {
             RailPicker.pick();
             RailPicker.render(matrices, vertexConsumers);
+            RailDistanceRenderer.render(matrices, vertexConsumers);
         } else {
             RailPicker.pickedRail = null;
         }

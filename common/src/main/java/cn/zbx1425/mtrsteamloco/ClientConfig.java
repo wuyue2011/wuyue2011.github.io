@@ -38,13 +38,16 @@ public class ClientConfig {
     public static boolean enableTrainRender = true;
     public static boolean enableTrainSound = true;
     public static boolean enableSmoke = true;
-    public static final EyecandyScreenGroup eyecandyScreenGroup = new EyecandyScreenGroup();
-    public static final RollAnglesListEntryGroup rollAnglesListEntryGroup = new RollAnglesListEntryGroup();
-    public static final Entry directNodeScreenGroup = new Entry("direct_node_screen", "rotation", 0, 180F, 180, 1, 1);
+    public static int railDistanceRendererInterval = 5;
+    public static int railDistanceRendererMaxDistanceSqr = 16 * 16;
 
     public static boolean useEditBoxSetRailRolling = true;
 
     public static boolean hideRidingTrain = false;
+
+    public static final EyecandyScreenGroup eyecandyScreenGroup = new EyecandyScreenGroup();
+    public static final RollAnglesListEntryGroup rollAnglesListEntryGroup = new RollAnglesListEntryGroup();
+    public static final Entry directNodeScreenGroup = new Entry("direct_node_screen", "rotation", 0, 180F, 180, 1, 1);
 
     private static Map<String, String> customConfigs = new HashMap<>();
     private static Map<String, ConfigResponder> customResponders = new HashMap<>();
@@ -67,6 +70,8 @@ public class ClientConfig {
             enableSmoke = getOrDefault(configObject, "enableSmoke", JsonElement::getAsBoolean, true);
             hideRidingTrain = getOrDefault(configObject, "hideRidingTrain", JsonElement::getAsBoolean, false);
             useEditBoxSetRailRolling = getOrDefault(configObject, "useEditBoxSetRailRolling", JsonElement::getAsBoolean, true);
+            railDistanceRendererInterval = getOrDefault(configObject, "railDistanceRendererInterval", JsonElement::getAsInt, 5);
+            railDistanceRendererMaxDistanceSqr = getOrDefault(configObject, "railDistanceRendererMaxDistanceSqr", JsonElement::getAsInt, 16 * 16);
 
             eyecandyScreenGroup.init(configObject);
             directNodeScreenGroup.init(configObject);
@@ -133,6 +138,8 @@ public class ClientConfig {
             configObject.addProperty("enableSmoke", enableSmoke);
             configObject.addProperty("hideRidingTrain", hideRidingTrain);
             configObject.addProperty("useEditBoxSetRailRolling", useEditBoxSetRailRolling);
+            configObject.addProperty("railDistanceRendererInterval", railDistanceRendererInterval);
+            configObject.addProperty("railDistanceRendererMaxDistanceSqr", railDistanceRendererMaxDistanceSqr);
             eyecandyScreenGroup.save(configObject);
             directNodeScreenGroup.save(configObject);
             rollAnglesListEntryGroup.save(configObject);

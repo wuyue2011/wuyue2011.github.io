@@ -68,6 +68,7 @@ public class Main {
 
 	public static final RegistryObject<ItemWithCreativeTabBase> BRIDGE_CREATOR_1 = new RegistryObject<>(() -> new ItemBridgeCreator(1));
 	public static final RegistryObject<ItemWithCreativeTabBase> COMPOUND_CREATOR = new RegistryObject<>(() -> new CompoundCreator());
+	public static final RegistryObject<ItemWithCreativeTabBase> DISPLACEMENT_TOOL = new RegistryObject<>(() -> new DisplacementTool());
 
 	public static final SoundEvent SOUND_EVENT_BELL = RegistryUtilities.createSoundEvent(new ResourceLocation("mtrsteamloco:bell"));
 
@@ -87,6 +88,8 @@ public class Main {
 
 			registries.registerItem("bridge_creator_1", BRIDGE_CREATOR_1);
 			registries.registerItem("compound_creator", COMPOUND_CREATOR);
+			registries.registerItem("displacement_tool", DISPLACEMENT_TOOL);
+
 			registries.registerSoundEvent("bell", SOUND_EVENT_BELL);
 			PARTICLE_STEAM_SMOKE = registries.createParticleType(true);
 			registries.registerParticleType("steam_smoke", PARTICLE_STEAM_SMOKE);
