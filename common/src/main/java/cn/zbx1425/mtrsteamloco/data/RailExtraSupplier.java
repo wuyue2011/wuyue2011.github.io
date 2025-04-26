@@ -85,9 +85,10 @@ public interface RailExtraSupplier {
             if (last <= value && value < t) {
                 float a0 = rollAngleMap.get(last);
                 float a1 = rollAngleMap.get(t);
-                double ratio = (value - last) / (t - last);
-                double sinRatio = Math.sin(ratio * Math.PI / 2);
-                return (float) (a0 + (a1 - a0) * sinRatio);
+                double alpha = (value - last) / (t - last);
+                double smoothedAlpha = (1 - Math.cos(alpha * Math.PI)) / 2;
+                float interpolated = a0 + (a1 - a0) * (float) smoothedAlpha;
+                return k * interpolated;
             }
             last = t;
         }
