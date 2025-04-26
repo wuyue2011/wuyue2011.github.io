@@ -140,8 +140,8 @@ public final class ConfigScreen {
         common.addEntry(entryBuilder
                 .startIntField(
                         Text.translatable("gui.mtrsteamloco.config.client.rail_distance_renderer_max_distance_sqr"),
-                        ClientConfig.railDistanceRendererMaxDistanceSqr
-                ).setSaveConsumer(value -> ClientConfig.railDistanceRendererMaxDistanceSqr = value).setDefaultValue(16 * 16).build()
+                        (int) Math.round(Math.sqrt(ClientConfig.railDistanceRendererMaxDistanceSqr))
+                ).setSaveConsumer(value -> ClientConfig.railDistanceRendererMaxDistanceSqr = value * value).setDefaultValue(16).build()
         );
 
         List<AbstractConfigListEntry> customConfigs = ClientConfig.getCustomConfigEntrys(entryBuilder, () -> ConfigScreen.createScreen(parent));

@@ -44,7 +44,7 @@ public class RailDistanceRenderer {
         double length = rail.getLength();
         int interval = ClientConfig.railDistanceRendererInterval;
         for (int i = 0; i < length - 5; i += 5) {
-            render(rail, i, new String[] { String.format("%.0f", i) , ""}, matrices, vertexConsumers);
+            render(rail, i, new String[] { Integer.toString(i) , ""}, matrices, vertexConsumers);
         }
         render(rail, length - 1E-4, new String[] { "", String.format("%.1f", length - 1E-4)}, matrices, vertexConsumers);
     }
