@@ -93,9 +93,8 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
         trainExtra.lastCarPosition[carIndex] = copy.getTranslationPart();
         trainExtra.lastCarRotation[carIndex] = copy.getEulerAnglesXYZ();
         trainExtra.shouldRender = shouldRender;
-        trainExtra.isInDetailDistance = (posAverage != null && posAverage.distSqr(camera.getBlockPosition()) <= RenderTrains.DETAIL_RADIUS_SQUARED);
+        trainExtra.isInDetailDistance = true;// (posAverage != null && posAverage.distSqr(camera.getBlockPosition()) <= RenderTrains.DETAIL_RADIUS_SQUARED);
 
-        /*
         if (posAverage == null) {
             if (carIndex == train.trainCars - 1) {
                 // So it's outside visible range, but still need to call render function
@@ -104,9 +103,6 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
             }
             return;
         }
-        */
-
-        if (posAverage == null) return;
 
 
         final int light = LightTexture.pack(world.getBrightness(LightLayer.BLOCK, posAverage), world.getBrightness(LightLayer.SKY, posAverage));
@@ -126,12 +122,10 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
 
         matrices.popPose();
 
-        /*
         if (carIndex == train.trainCars - 1) {
             trainScripting.extraFinished();
             typeScripting.tryCallRenderFunctionAsync(trainScripting);
         }
-        */
     }
 
     @Override
@@ -173,10 +167,5 @@ public class ScriptedTrainRenderer extends TrainRendererBase {
         if (baseRenderer != null) {
             baseRenderer.renderBarrier(prevPos1, prevPos2, prevPos3, prevPos4, thisPos1, thisPos2, thisPos3, thisPos4, x, y, z, yaw, pitch);
         }
-    }
-
-    public void callRenderFunction() {
-        trainScripting.trainExtra.reset();
-        typeScripting.tryCallRenderFunctionAsync(trainScripting);
     }
 }

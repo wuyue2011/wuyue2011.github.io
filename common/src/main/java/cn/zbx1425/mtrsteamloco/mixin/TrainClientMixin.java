@@ -275,7 +275,7 @@ public abstract class TrainClientMixin extends Train implements IGui{
 		}
     }
 
-	@Inject(method = "simulateTrain", at = @At("RETURN")) @Final @Mutable
+	/* @Inject(method = "simulateTrain", at = @At("RETURN")) @Final @Mutable
 	private void onSimulateTrain(Level world, float ticksElapsed, SpeedCallback speedCallback, AnnouncementCallback announcementCallback, AnnouncementCallback lightRailAnnouncementCallback, CallbackInfo ci) {
 		if (world == null) return;
 		if (!world.isClientSide) return;
@@ -288,7 +288,7 @@ public abstract class TrainClientMixin extends Train implements IGui{
 				((ScriptedTrainRenderer) renderer).callRenderFunction();
 			}
 		}
-	}
+	}*/
 
     private static Vec3 now(Matrices matrices) {
         return matrices.last().getTranslationPart().toVec3();

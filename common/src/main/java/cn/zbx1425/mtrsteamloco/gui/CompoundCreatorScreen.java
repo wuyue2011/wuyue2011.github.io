@@ -1294,7 +1294,7 @@ public class CompoundCreatorScreen extends Screen {
 
             common.addEntry(
                 entryBuilder.startBooleanToggle(
-                    Text.translatable("gui.mtrstakeloco.compound_creator.replacement"),
+                    Text.translatable("gui.mtrsteamloco.compound_creator.replacement"),
                     present.replacement
                 ).setDefaultValue(true)
                 .setSaveConsumer(b -> {
