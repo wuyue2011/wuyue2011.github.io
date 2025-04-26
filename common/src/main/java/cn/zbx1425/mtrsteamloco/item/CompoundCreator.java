@@ -81,6 +81,16 @@ public class CompoundCreator extends ItemNodeModifierBase {
 
 	@Override
 	protected void onConnect(Level world, ItemStack stack, TransportMode transportMode, BlockState stateStart, BlockState stateEnd, BlockPos posStart, BlockPos posEnd, RailAngle facingStart, RailAngle facingEnd, Player player, RailwayData railwayData) {
+        BlockPos tempPos = posStart;
+        posStart = posEnd;
+        posEnd = tempPos;
+        RailAngle tempFacing = facingStart;
+        facingStart = facingEnd;
+        facingEnd = tempFacing;
+        BlockState tempState = stateStart;
+        stateStart = stateEnd;
+        stateEnd = tempState;
+
         if (player == null) return;
         CompoundTag tag = stack.getOrCreateTag();
         if (tag.contains(TAG_TASKS)) {
@@ -163,7 +173,7 @@ public class CompoundCreator extends ItemNodeModifierBase {
 			}
 
             RailType p1, p2;
-            if (!isReversed) {
+            if (isReversed) {
                 p2 = newRailType;
                 p1 = isOneWay ? RailType.NONE : newRailType;
             } else {

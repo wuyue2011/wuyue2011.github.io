@@ -460,7 +460,7 @@ public abstract class RailMixin implements RailExtraSupplier {
                     result = sign * (verticalCurveRadius - Math.sqrt(verticalCurveRadius * verticalCurveRadius - r * r)) + yStart;
                 } else if (rawValue > L - curveL) {
                     float r = (float)(L - rawValue);
-                    result = sign * (verticalCurveRadius - Math.sqrt(verticalCurveRadius * verticalCurveRadius - r * r)) + yEnd;
+                    result = -sign * (verticalCurveRadius - Math.sqrt(verticalCurveRadius * verticalCurveRadius - r * r)) + yEnd;
                 } else {
                     result = sign * (rawValue - curveL) * (H - 2 * curveH) / (L - 2 * curveL) + yStart + curveH;
                 }
