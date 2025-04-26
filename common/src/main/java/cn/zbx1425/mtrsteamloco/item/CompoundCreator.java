@@ -638,7 +638,7 @@ public class CompoundCreator extends ItemNodeModifierBase {
 
                 last = next;
 
-                mat.translate(-width / 2.0F + 0.5F, height / 2.0F - 0.5F, 0);
+                mat.translate(width / 2.0F + 0.5F, height / 2.0F - 0.5F, 0);
 
                 for (int i = 0; i < height; i++) {
                     for (int j = 0; j < width; j++) {
@@ -646,7 +646,7 @@ public class CompoundCreator extends ItemNodeModifierBase {
                         Lump lump = task.lumps.get(index);
                         BlockState state = lump.blockState;
                         Vector3f pos = mat.getTranslationPart();
-                        mat.translate(1.0F, 0, 0);
+                        mat.translate(-1.0F, 0, 0);
                         BlockPos blockPos = new BlockPos((int) Math.floor(pos.x()), (int) Math.floor(pos.y()), (int) Math.floor(pos.z()));
                         if (!world.getBlockState(blockPos).isAir() && !lump.replacement) continue;
                         if (state == null) continue;
@@ -666,7 +666,7 @@ public class CompoundCreator extends ItemNodeModifierBase {
                         world.setBlockAndUpdate(blockPos, state);
                         blacklistedPos.add(blockPos);
                     }
-                    mat.translate(width * -1.0F, -1.0F, 0);
+                    mat.translate(width, -1.0F, 0);
                 }
             }
 
