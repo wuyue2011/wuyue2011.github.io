@@ -561,9 +561,8 @@ public class CompoundCreatorScreen extends Screen {
     #else 
         public void render(PoseStack matrices, int mouseX, int mouseY, float partialTick) {
     #endif
-            IDrawing.setPositionAndWidth(btnReturn, 10, 10, 20);
-            IDrawing.setPositionAndWidth(btnNewRailModifier, 20, 50, width - 40);
-            IDrawing.setPositionAndWidth(btnNewSliceTask, 20, 80, width - 40);
+            IDrawing.setPositionAndWidth(btnNewRailModifier, width / 2 - 150, 50, 300);
+            IDrawing.setPositionAndWidth(btnNewSliceTask, width / 2 - 150, 80, 300);
             CompoundCreatorScreen.renderDirtBackground(this, matrices);
             super.render(matrices, mouseX, mouseY, partialTick);
         }
