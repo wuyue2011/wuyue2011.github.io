@@ -132,10 +132,10 @@ NTE 调用这几个函数时会使用三个参数，稍后介绍其各自的内�
 
 ## Train
 
-| 属性                                          | 说明                                                         |
+| 属性/方法                                          | 说明                                                         |
 | --------------------------------------------- | ------------------------------------------------------------ |
 | `train.shouldRender(): boolean`               | 现在是否应该显示这列车。在打开 “隐藏正在乘坐的列车” 时，JS 脚本仍然会照常运行，以保证如广播的功能还可以照常运作。此时这个函数会返回 `false` 以便关闭如粒子效果的功能。注意不需要用这个来判断停止 `drawCarModel`，NTE 会自动让它调用也没有效果。 |
-| ~~`train.shouldRenderDetail(): boolean`~~         | ~~列车是否在细节显示范围（32 格）以内。推荐在它为 `false` 的时候停止处理如广播、显示屏、细节模型等来节省性能。~~ 此功能已被废弃，一律返回 `true`。(由于是按照列车一端点的距离来计算的距离，在列车另一端会返回false，因此废弃。若您希望优化性能，建议使用 `MinecraftClient.getCameraDistance(train.lastCarPosition[carIndex])` 计算车厢距摄像机的距离来判断是否在细节显示范围内。) |
+| ~~`train.shouldRenderDetail(): boolean`~~         | ~~列车是否在细节显示范围（32 格）以内。推荐在它为 `false` 的时候停止处理如广播、显示屏、细节模型等来节省性能。~~ 此功能已被废弃，一律返回 `true`。(由于是按照列车一端点的距离来计算的距离，在列车另一端会返回false，因此废弃。若您希望优化性能，建议使用 `MinecraftClient.getCameraDistance(train.lastCarPosition[carIndex: int]): float` 计算车厢距摄像机的距离来判断是否在细节显示范围内。) |
 | `train.trainTypeId(): String`                 | 车型 ID。                                                    |
 | `train.baseTrainType(): String`               | 基于的车型 ID。                                              |
 | `train.id(): long`                            | 这辆车在 MTR 内部的唯一编号，是一个随机的 64 位整数。<br />在 JavaScript 里可能因为有效数字位数不够，末尾的几位变成 0？ |
@@ -155,6 +155,9 @@ NTE 调用这几个函数时会使用三个参数，稍后介绍其各自的内�
 | `train.isDoorOpening(): boolean`              | 是否正在开门。                                               |
 | `train.doorLeftOpen[carIndex: int]: boolean`  | 某一车厢的左侧车门是否可以打开。                             |
 | `train.doorRightOpen[carIndex: int]: boolean` | 某一车厢的右侧车门是否可以打开。                             |
+| `train.lastWorldPose[carIndex: int]: Matrix4f` | 列车在上一帧的世界坐标。                                     |
+| `train.lastCarPosition[carIndex: int]: Vector3f` | 列车在上一帧的位置。                                     |
+| `train.lastCarRotation[carIndex: int]: Vector3f` | 列车在上一帧的旋转角度。(XYZ欧拉)                          |
 | `train.isCurrentlyManual(): boolean`          | 是否正在被人工控制。                                         |
 | `train.isReversed(): boolean`                 | 是否已折返，即现在 1 号车是车尾。                            |
 | `train.isOnRoute(): boolean`                  | 是否已出库。                                                 |
