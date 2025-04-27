@@ -126,6 +126,10 @@ task setupFiles() {
 	}
 }
 
+tasks.named('build') {
+    mustRunAfter 'setupLibrary'  // 强制顺序
+}
+
 configure(allprojects.findAll {it.name != 'rhino'}) {
 	apply plugin: "architectury-plugin"
 
