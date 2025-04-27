@@ -638,7 +638,7 @@ public class CompoundCreator extends ItemNodeModifierBase {
 
                 last = next;
 
-                mat.translate(width / 2.0F + 0.5F, height / 2.0F - 0.5F, 0);
+                mat.translate(width / 2.0F - 0.5F, height / 2.0F - 0.5F, 0);
 
                 for (int i = 0; i < height; i++) {
                     for (int j = 0; j < width; j++) {
