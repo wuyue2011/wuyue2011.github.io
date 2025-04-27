@@ -53,7 +53,7 @@ task setupLibrary() {
 
 	String url = "https://aphrodite281.github.io/Minecraft-Transit-Railway/lib/" + minecraft_version + "/"
 
-	doFirst {
+	doLast {
 		download {
 			src "${url}mtr-common.jar"
 			dest "checkouts/mtr-common.jar"
@@ -73,7 +73,7 @@ task setupLibrary() {
 		}
 
 		download {
-			src url + "files.zip"
+			src "${url}files.zip"
 			dest "checkouts/files.zip"
 			overwrite true
 		}
