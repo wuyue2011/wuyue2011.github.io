@@ -170,7 +170,7 @@ jobs:
           files: artifacts/MTR-ANTE-${{ env.MOD_VERSION }}+${{ matrix.minecraft }}.jar
           name: MTR-ANTE-${{ env.MOD_VERSION }}+${{ matrix.minecraft }}
           version: ${{ env.MOD_VERSION }}+${{ matrix.minecraft }}
-          version-type: beta
+          version-type: release
           loaders: |
             fabric
             forge
