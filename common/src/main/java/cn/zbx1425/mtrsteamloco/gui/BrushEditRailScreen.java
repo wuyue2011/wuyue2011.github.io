@@ -163,7 +163,7 @@ public class BrushEditRailScreen {
                     common.addEntry(
                         ButtonListEntry.createCenteredInstance(
                             Text.translatable("gui.mtrsteamloco.brush_edit_rail.switch_to_direct_node"),
-                            btn -> PacketReplaceRailNode.sendUpdateC2S(pickedPosStart, state, "brush_edit_rail")
+                            btn -> PacketReplaceRailNode.sendUpdateC2S(minecraft.level, pickedPosStart, state, "brush_edit_rail")
                         )
                     );
                 }

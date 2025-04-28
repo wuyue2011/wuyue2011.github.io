@@ -8,7 +8,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.client.Minecraft;
 import cn.zbx1425.mtrsteamloco.Main;
 import io.netty.buffer.Unpooled;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,7 +22,7 @@ import net.minecraft.world.level.block.Block;
 public class PacketReplaceRailNode {
     public static ResourceLocation C2S = new ResourceLocation(Main.MOD_ID, "replace_rail_node");
 
-    public static void sendUpdateC2S(BlockPos pos, BlockState state, String screenName) {
+    public static void sendUpdateC2S(Level level, BlockPos pos, BlockState state, String screenName) {
         Block block = state.getBlock();
         if (!(block instanceof BlockNode)) return;
 
@@ -32,9 +31,6 @@ public class PacketReplaceRailNode {
 
         float dir = BlockNode.getAngle(state);
         
-        Minecraft client = Minecraft.getInstance();
-        if (client == null) return;
-        Level level = client.level;
         if (level == null) return;
 
         FriendlyByteBuf packet = new FriendlyByteBuf(Unpooled.buffer());
