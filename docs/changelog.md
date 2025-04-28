@@ -18,7 +18,7 @@
 3. JavaScript 相关：
     1. ConfigResponder：添加基础实现类 DoubleSlider ，更方便的使用滑块
     2. Resources：添加 ANTE_FLAG 常量，更方便的判断是否为 ANTE 环境（建议搭配getNTEVersion()使用）
-    3. GraphicsTexture：调整了临时路径问题，将`-`换为了`_`，预防路径中含有`-`导致的错误
+    3. GraphicsTexture：调整了临时路径的生成方式，将`-`换为了`_`，预防路径中含有`-`导致的错误
     4. TrainWrapper：废弃了 `TrainWrapper.isInDetailDistance(): boolean` 方法，防止有些脚本因此方法导致的在列车一端时明明能看到列车，但脚本不运行的情况。
 4. 复合创建器(原 混合构建器)
     1. 更名为复合创建器
