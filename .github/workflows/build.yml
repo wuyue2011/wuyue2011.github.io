@@ -131,7 +131,7 @@ jobs:
           prerelease: false
           tag_name: ${{ env.MOD_VERSION }}
   modrinth-publish:
-    if: startsWith(github.event.head_commit.message, 'rel -m') || startWith(github.event.head_commit.message, 'rel -a')
+    if: startsWith(github.event.head_commit.message, 'rel -m') || startsWith(github.event.head_commit.message, 'rel -a')
     strategy:
       fail-fast: false
       matrix:
