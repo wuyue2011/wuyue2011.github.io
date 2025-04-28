@@ -86,9 +86,8 @@ jobs:
       - name: Read changelog content
         id: read_changelog
         run: |
-          dos2unix extracted_changelog.md
           
-          CONTENT=$(cat extracted_changelog.md | sed 's/%/%25/g' | sed 's/"/%22/g' | sed ':a;N;$!ba;s/\n/%0A/g')
+          CONTENT=$(cat extracted_changelog.md)
           
           # 使用EOF声明多行输出
           echo "content<<EOF" >> $GITHUB_OUTPUT
