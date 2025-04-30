@@ -10,7 +10,7 @@
 
 ## ……下载
 
-您可以去往[github-Releases](https://github.com/aphrodite281/mtr-ante/releases)下载最新版本的模组。
+您可以去往[Github](https://github.com/aphrodite281/mtr-ante/releases) 或 [Modrinth](https://modrinth.com/mod/mtr-ante/) 下载最新版本的模组。
 
 MTR 版本要求: 3.1.12
 
