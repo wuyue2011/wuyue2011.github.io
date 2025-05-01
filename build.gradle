@@ -31,6 +31,8 @@ configure(subprojects.findAll {it.name != 'rhino'}) {
 	}
 
 	dependencies {
+		implementation "com.github.stuxuhai:jpinyin:1.1.7"
+		shadowCommon("com.github.stuxuhai:jpinyin:1.1.7")
 		modApi("me.shedaniel.cloth:basic-math:+")
 		annotationProcessor 'systems.manifold:manifold-preprocessor:+'
 		minecraft "com.mojang:minecraft:${minecraft_version}"

@@ -31,6 +31,7 @@ configurations {
 }
 
 dependencies {
+	implementation "com.github.stuxuhai:jpinyin:1.1.7"
 	modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
 	modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
 
@@ -66,6 +67,7 @@ shadowJar {
 	}
 
 	relocate 'de.javagl', 'vendor.cn.zbx1425.sowcerext.de.javagl'
+	relocate 'com.github.stuxuhai', "vendor.cn.zbx1425.mtrsteamloco.com.github.stuxuhai"
 	// relocate 'org.mozilla', 'vendor.cn.zbx1425.mtrsteamloco.org.mozilla'
 
 	from project.configurations.clothConfigJar.files.collect {

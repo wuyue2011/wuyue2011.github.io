@@ -58,6 +58,7 @@ import net.minecraft.core.Direction;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.GameRenderer;
 import mtr.data.*;
+import cn.zbx1425.mtrsteamloco.util.PinyinUtils;
 import cn.zbx1425.mtrsteamloco.gui.entries.*;
 import static cn.zbx1425.mtrsteamloco.item.CompoundCreator.*;
 
@@ -1360,24 +1361,22 @@ public class CompoundCreatorScreen extends Screen {
                     searchedList = new ArrayList<>(blocksList);
                     return;
                 }
-                if (str.startsWith("#")) {
-                    str = str.substring(1);
-                    List<Square> list = new ArrayList<>();
-                    for (Square square : blocksList) {
-                        if (square.state.getBlock().getDescriptionId().contains(str)) {
+                str = str.toLowerCase();
+                List<Square> list = new ArrayList<>();
+                for (Square square : blocksList) {
+                    String blockName = square.state.getBlock().getName().getString().toLowerCase();
+                    String di = square.state.getBlock().getDescriptionId().toLowerCase();
+                    if (blockName.contains(str) || di.contains(str)) {
+                        list.add(square);
+                    } else {
+                        String pinyin = PinyinUtils.getPinyin(blockName);
+                        String initials = PinyinUtils.getPinyinInitials(blockName);
+                        if (pinyin.contains(str) || initials.contains(str)) {
                             list.add(square);
                         }
                     }
-                    searchedList = list;
-                } else {
-                    List<Square> list = new ArrayList<>();
-                    for (Square square : blocksList) {
-                        if (square.state.getBlock().getName().getString().contains(str)) {
-                            list.add(square);
-                        }
-                    }
-                    searchedList = list;
                 }
+                searchedList = list;
             }
 
         #if MC_VERSION >= "12000"

@@ -28,6 +28,7 @@ configurations {
 }
 
 dependencies {
+	implementation "com.github.stuxuhai:jpinyin:1.1.7"
 	forge "net.minecraftforge:forge:${rootProject.forge_version}"
 	modApi "${rootProject.architectury_id}:architectury-forge:${rootProject.architectury_version}"
 
@@ -63,6 +64,7 @@ shadowJar {
 	}
 
 	relocate 'de.javagl', 'vendor.cn.zbx1425.sowcerext.de.javagl'
+	relocate 'com.github.stuxuhai', "vendor.cn.zbx1425.mtrsteamloco.com.github.stuxuhai"
 	// relocate 'org.mozilla', 'vendor.cn.zbx1425.mtrsteamloco.org.mozilla'
 
 	from project.configurations.clothConfigJar.files.collect {
@@ -75,6 +77,7 @@ shadowJar {
 			}
 		}
 	}
+
 
 	relocate "me.shedaniel", "cn.zbx1425.mtrsteamloco.vendor.me.shedaniel"
 
