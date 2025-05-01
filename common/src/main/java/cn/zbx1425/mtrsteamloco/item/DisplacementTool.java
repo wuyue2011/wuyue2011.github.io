@@ -98,7 +98,10 @@ public class DisplacementTool extends ItemWithCreativeTabBase {
 
         if (player instanceof ServerPlayer sp) {
             if (world instanceof ServerLevel sw) {
-                sp.teleportTo(sw, t.x, t.y, t.z, player.getYRot() + (float) rot, player.getXRot());
+                final float fr = (float) rot;
+                sw.getServer().execute(() -> {
+                    sp.teleportTo(sw, t.x, t.y, t.z, player.getYRot() + fr, player.getXRot());
+                });
             }
         }
         return InteractionResult.SUCCESS;
