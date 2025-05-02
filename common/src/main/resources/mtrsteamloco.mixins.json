@@ -45,7 +45,8 @@
     "SidingScreenMixin",
     "RailAngleMixin",
     "ItemNodeModifierBaseMixin",
-    "PathFinderMixin"
+    "PathFinderMixin",
+    "ItemRailModifierMixin"
   ],
   "server": [
     

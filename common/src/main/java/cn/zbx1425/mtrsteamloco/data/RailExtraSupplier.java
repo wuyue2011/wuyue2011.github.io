@@ -53,6 +53,8 @@ public interface RailExtraSupplier {
 
     float getRollingOffset();
 
+    boolean isStraightOnly();
+
     static float getVTheta(Rail rail, double verticalCurveRadius) {
         double H = Math.abs(((RailExtraSupplier) rail).getHeight());
         double L = rail.getLength();

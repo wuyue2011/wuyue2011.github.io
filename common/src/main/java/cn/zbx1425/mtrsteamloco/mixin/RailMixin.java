@@ -205,6 +205,12 @@ public abstract class RailMixin implements RailExtraSupplier {
         return rollingOffset;
     }
 
+    @Override
+    public boolean isStraightOnly() {
+        System.out.println("isStraightOnly" + isStraight1 + " " + isStraight2 + " " + h1 + " " + k1 + " " + r1 + " " + tStart1 + " " + tEnd1 + " " + h2 + " " + k2 + " " + r2 + " " + tStart2 + " " + tEnd2);
+        return (isStraight1 || (h1 == 0 && k1 == 0 && r1 == 0 && tStart1 == 0 && tEnd1 == 0)) && (isStraight2 || (h2 == 0 && k2 == 0 && r2 == 0 && tStart2 == 0 && tEnd2 == 0));
+    }
+
     @Inject(method = "<init>(Lnet/minecraft/core/BlockPos;Lmtr/data/RailAngle;Lnet/minecraft/core/BlockPos;Lmtr/data/RailAngle;Lmtr/data/RailType;Lmtr/data/TransportMode;)V", at = @At("TAIL"))
     private void onCreate(BlockPos posStart, RailAngle facingStart, BlockPos posEnd, RailAngle facingEnd, RailType railType, TransportMode transportMode, CallbackInfo ci) {
 
@@ -232,11 +238,10 @@ public abstract class RailMixin implements RailExtraSupplier {
                 tEnd2 = group.second.tEnd;
                 reverseT2 = group.second.reverseT;
                 isStraight2 = group.second.isStraight;
-
-                this.facingStart = getRailAngle(false);
-                this.facingEnd = getRailAngle(true);
             }
         }
+        this.facingStart = getRailAngle(false);
+        this.facingEnd = getRailAngle(true);
     }
 
     @Shadow(remap = false) public abstract double getLength();
@@ -273,11 +278,11 @@ public abstract class RailMixin implements RailExtraSupplier {
         float f4 = f2.angleDegrees - facingEnd.angleDegrees;
         f3 = Math.abs(f3) % 180;
         f4 = Math.abs(f4) % 180;
-        if (f3 < 0.3) b2 = true;
-        if (f4 < 0.3) b3 = true;
+        if (f3 < 0.3 || f3 > 179.7) b2 = true;
+        if (f4 < 0.3 || f4 > 179.7) b3 = true;
         b2 = b2 && b3;
         // Main.LOGGER.info("isValid: " + b1 + " " + b2 + " "+ f1 + " " + f2 + " * " + facingStart + " " + facingEnd + " ** " + f3 + " " + f4);
-        cir.setReturnValue(b1);// && b2);
+        cir.setReturnValue(b1 && b2);
         cir.cancel();
         return;
     }

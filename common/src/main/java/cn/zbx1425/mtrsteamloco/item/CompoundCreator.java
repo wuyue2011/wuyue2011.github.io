@@ -676,7 +676,7 @@ public class CompoundCreator extends ItemNodeModifierBase {
 
         private Direction rotateDirection(Direction dir, Matrix4f mat) {
             if (dir == Direction.UP || Direction.DOWN == dir) return dir;
-            double d = dir.toYRot() + mat.getEulerAnglesYXZ().y() / Math.PI * 180;
+            double d = dir.toYRot() + mat.getEulerAnglesYXZ().y() / Math.PI * 180 + 180;
             return Direction.fromYRot(d);
         }
 
