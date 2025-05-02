@@ -28,7 +28,8 @@ configurations {
 }
 
 dependencies {
-	implementation "com.github.stuxuhai:jpinyin:1.1.7"
+	// implementation "com.github.stuxuhai:jpinyin:1.1.7"
+	shadowCommon("com.github.stuxuhai:jpinyin:1.1.7")
 	forge "net.minecraftforge:forge:${rootProject.forge_version}"
 	modApi "${rootProject.architectury_id}:architectury-forge:${rootProject.architectury_version}"
 
@@ -58,13 +59,16 @@ processResources {
 shadowJar {
 	exclude "fabric.mod.json"
 	exclude "*.bmp"
+	exclude '**/*.kotlin_metadata'
+    exclude '**/*.kotlin_module'
+    exclude '**/*.kotlin_builtins'
 
 	if (rootProject.ext.assetExcludeFont) {
 		exclude "assets/mtr/font/**"
 	}
 
 	relocate 'de.javagl', 'vendor.cn.zbx1425.sowcerext.de.javagl'
-	relocate 'com.github.stuxuhai', "vendor.cn.zbx1425.mtrsteamloco.com.github.stuxuhai"
+	relocate 'com.github.stuxuhai', 'vendor.cn.zbx1425.mtrsteamloco.com.github.stuxuhai'
 	// relocate 'org.mozilla', 'vendor.cn.zbx1425.mtrsteamloco.org.mozilla'
 
 	from project.configurations.clothConfigJar.files.collect {
@@ -78,8 +82,8 @@ shadowJar {
 		}
 	}
 
-
 	relocate "me.shedaniel", "cn.zbx1425.mtrsteamloco.vendor.me.shedaniel"
+
 
 	configurations = [project.configurations.shadowCommon]
 	archiveClassifier = "dev-shadow"

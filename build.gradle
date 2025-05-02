@@ -6,7 +6,7 @@ plugins {
 	id "architectury-plugin" version "3.4.160"
 	id "dev.architectury.loom" version "1.9.424" apply false
 	id "de.undercouch.download" version "4.1.2"
-	id "com.github.johnrengelman.shadow" version "7.1.0"
+	id "com.github.johnrengelman.shadow" version "8.1.1"
 	id "io.github.pacifistmc.forgix" version "1.2.9"
 	id "base"
 }
@@ -31,9 +31,8 @@ configure(subprojects.findAll {it.name != 'rhino'}) {
 	}
 
 	dependencies {
-		implementation "com.github.stuxuhai:jpinyin:1.1.7"
-		shadowCommon("com.github.stuxuhai:jpinyin:1.1.7")
-		modApi("me.shedaniel.cloth:basic-math:+")
+		compileOnly("com.github.stuxuhai:jpinyin:1.1.7")
+		compileOnly("me.shedaniel.cloth:basic-math:+")
 		annotationProcessor 'systems.manifold:manifold-preprocessor:+'
 		minecraft "com.mojang:minecraft:${minecraft_version}"
 		mappings parchment_version == "" ? loom.officialMojangMappings() : loom.layered() {
@@ -212,6 +211,7 @@ class DummyArchiveTask extends AbstractArchiveTask {
 tasks.register('dummyForgixOutput', DummyArchiveTask) {
 	// Forgix's mergeJars task doesn't extend AbstractArchiveTask.
 	// This is to make github.com/teaconmc/longjing happy.
+
 	destinationDirectory = file("build/")
 	archiveBaseName = "MTR-ANTE"
 	archiveVersion = rootProject.mod_version + "+" + minecraft_version
