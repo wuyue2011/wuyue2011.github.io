@@ -8,7 +8,8 @@ import net.minecraft.world.phys.Vec3;
 import com.mojang.blaze3d.vertex.PoseStack;
 import cn.zbx1425.mtrsteamloco.ClientConfig;
 #if MC_VERSION >= "11903"
-
+import org.joml.Quaternionf;
+import org.joml.AxisAngle4d;
 #else
 import com.mojang.math.Quaternion;
 #endif
@@ -35,16 +36,7 @@ public class Rolling {
         if (!ClientConfig.enableRolling) return;
         if (rotation.isIdentity()) return;
         
-        Rotation rot = rotation;
-
-        Matrix4f mat = new Matrix4f();
-        mat.rotateX(rot.pitch);
-        mat.rotateY(rot.yaw);
-        mat.rotateZ(rot.reversed ? -rot.roll : rot.roll);
-        mat.rotateY(-rot.yaw);
-        mat.rotateX(-rot.pitch);
-
-        poseStack.last().pose().multiply(mat.asMoj());
+        poseStack.mulPose(getRollQuaternion(true));
     }
 
     public static Vector3f applyRolling(Vector3f pos, float eyeHeight) {
@@ -65,9 +57,33 @@ public class Rolling {
         return pos;
     }
 
+
+
 #if MC_VERSION >= "11903"
+    public static Quaternionf getRollQuaternion() {
+        return getRollQuaternion(false);
+    }
+
+    public static Quaternionf getRollQuaternion(boolean reversed) {
+        if (rotation.isIdentity()) return new Quaternionf();
+
+        Rotation rot = rotation;
+
+        Matrix4f mat = new Matrix4f();
+        mat.rotateX(rot.pitch);
+        mat.rotateY(rot.yaw);
+        Vector3f fp = mat.transform(new Vector3f(0, 0, 1));
+        Quaternionf q = new Quaternionf(new AxisAngle4d(reversed != rot.reversed ? rot.roll : -rot.roll, fp.x(), fp.y(), fp.z()));
+
+        return q;
+    }
 #else
+
     public static Quaternion getRollQuaternion() {
+        return getRollQuaternion(false);
+    }
+
+    public static Quaternion getRollQuaternion(boolean reversed) {
         if (rotation.isIdentity()) return Quaternion.ONE.copy();
         Rotation rot = rotation;
 
@@ -75,7 +91,7 @@ public class Rolling {
         mat.rotateX(rot.pitch);
         mat.rotateY(rot.yaw);
         Vector3f fp = mat.transform(new Vector3f(0, 0, 1));
-        Quaternion q = new Quaternion(fp.asMoj(), rot.reversed ? rot.roll : -rot.roll, false);
+        Quaternion q = new Quaternion(fp.asMoj(), reversed != rot.reversed ? rot.roll : -rot.roll, false);
 
         return q;
     }

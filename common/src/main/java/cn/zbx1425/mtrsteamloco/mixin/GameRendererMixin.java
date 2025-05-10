@@ -54,7 +54,6 @@ public class GameRendererMixin {
         method = "renderLevel",
         at = @At(
             value = "INVOKE",
-            // target = "Lnet/minecraft/client/Camera;getXRot()F",
 #if MC_VERSION >= "11903"
             target = "Lcom/mojang/blaze3d/vertex/PoseStack$Pose;normal()Lorg/joml/Matrix3f",
 #else 
@@ -62,8 +61,7 @@ public class GameRendererMixin {
 #endif
             ordinal = 0,
             shift = At.Shift.AFTER
-        ),
-        locals = LocalCapture.CAPTURE_FAILHARD
+        )// , locals = LocalCapture.CAPTURE_FAILHARD
     )
     private void injectCustomRotation(
         float partialTick,

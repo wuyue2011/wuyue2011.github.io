@@ -8,7 +8,7 @@ import net.minecraft.util.Mth;
 import cn.zbx1425.sowcer.math.Vector3f;
 import cn.zbx1425.mtrsteamloco.data.Rolling;
 #if MC_VERSION >= "11903"
-
+import org.joml.Quaternionf;
 #else
 import com.mojang.math.Quaternion;
 #endif
@@ -30,6 +30,9 @@ public abstract class CameraMixin {
     @Shadow private float eyeHeight;
     @Shadow private float eyeHeightOld;
 #if MC_VERSION >= "11903"
+    @Shadow @Final private Quaternionf rotation;
+
+    @Unique private Quaternionf roll = new Quaternionf(0.0F, 0.0F, 0.0F, 1.0F);
 #else
     @Shadow private Quaternion rotation;
 
@@ -56,6 +59,21 @@ public abstract class CameraMixin {
         roll = Rolling.getRollQuaternion();
     }
 
+#if MC_VERSION >= "11903"
+    @Inject(
+        method = "setRotation",
+        at = @At(
+            value = "INVOKE",
+            target = "Lorg/joml/Quaternionf;set(FFFF)Lorg/joml/Quaternionf",
+            ordinal = 0,
+            shift = At.Shift.AFTER
+        ),
+        locals = LocalCapture.CAPTURE_FAILHARD
+    )
+    private void injectSetRotation(float p_90573_, float p_90574_, CallbackInfo ci) {
+        rotation.mul(roll);
+    }
+#else
     @Inject(
         method = "setRotation",
         at = @At(
@@ -69,4 +87,6 @@ public abstract class CameraMixin {
     private void injectSetRotation(float p_90573_, float p_90574_, CallbackInfo ci) {
         rotation.mul(roll);
     }
+#endif
+
 }
