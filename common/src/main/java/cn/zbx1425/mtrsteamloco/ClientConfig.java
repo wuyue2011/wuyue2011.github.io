@@ -38,6 +38,7 @@ public class ClientConfig {
     public static boolean enableTrainRender = true;
     public static boolean enableTrainSound = true;
     public static boolean enableSmoke = true;
+    public static boolean enableRolling = true;
     public static int railDistanceRendererInterval = 5;
     public static int railDistanceRendererMaxDistanceSqr = 16 * 16;
 
@@ -69,6 +70,7 @@ public class ClientConfig {
             enableTrainSound = getOrDefault(configObject, "enableTrainSound", JsonElement::getAsBoolean, true);
             enableSmoke = getOrDefault(configObject, "enableSmoke", JsonElement::getAsBoolean, true);
             hideRidingTrain = getOrDefault(configObject, "hideRidingTrain", JsonElement::getAsBoolean, false);
+            enableRolling = getOrDefault(configObject, "enableRolling", JsonElement::getAsBoolean, true);
             useEditBoxSetRailRolling = getOrDefault(configObject, "useEditBoxSetRailRolling", JsonElement::getAsBoolean, true);
             railDistanceRendererInterval = getOrDefault(configObject, "railDistanceRendererInterval", JsonElement::getAsInt, 5);
             railDistanceRendererMaxDistanceSqr = getOrDefault(configObject, "railDistanceRendererMaxDistanceSqr", JsonElement::getAsInt, 16 * 16);
@@ -140,6 +142,7 @@ public class ClientConfig {
             configObject.addProperty("useEditBoxSetRailRolling", useEditBoxSetRailRolling);
             configObject.addProperty("railDistanceRendererInterval", railDistanceRendererInterval);
             configObject.addProperty("railDistanceRendererMaxDistanceSqr", railDistanceRendererMaxDistanceSqr);
+            configObject.addProperty("enableRolling", enableRolling);
             eyecandyScreenGroup.save(configObject);
             directNodeScreenGroup.save(configObject);
             rollAnglesListEntryGroup.save(configObject);

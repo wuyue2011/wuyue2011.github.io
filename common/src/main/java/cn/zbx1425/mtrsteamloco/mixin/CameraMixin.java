@@ -1,0 +1,45 @@
+package cn.zbx1425.mtrsteamloco.mixin;
+
+import net.minecraft.client.Camera;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.util.Mth;
+import cn.zbx1425.sowcer.math.Vector3f;
+import cn.zbx1425.mtrsteamloco.data.Rolling;
+
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+
+@Mixin(Camera.class)
+public abstract class CameraMixin {
+    @Shadow public abstract void setPosition(Vec3 p_90582_);
+    @Shadow protected abstract Vec3 getPosition();
+    @Shadow private float eyeHeight;
+    @Shadow private float eyeHeightOld;
+
+    @Inject(
+        method = "setup",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/client/Camera;setPosition(DDD)V",
+            ordinal = 0,
+            shift = At.Shift.AFTER
+        ),
+        locals = LocalCapture.CAPTURE_FAILHARD
+    )
+    private void injectSetup(BlockGetter p_90576_, Entity p_90577_, boolean p_90578_, boolean p_90579_, float p_90580_, CallbackInfo ci) {
+        float eyeHeight = (float) Mth.lerp(p_90580_, this.eyeHeightOld, this.eyeHeight);
+        
+        Vector3f pos = new Vector3f(getPosition());
+        pos = Rolling.applyRolling(pos, eyeHeight);
+        setPosition(pos.toVec3());
+    }
+}

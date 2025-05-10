@@ -2,14 +2,19 @@ package cn.zbx1425.mtrsteamloco.mixin;
 
 import cn.zbx1425.mtrsteamloco.render.rail.RailRenderDispatcher;
 import net.minecraft.client.Minecraft;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.GameRenderer;
+import cn.zbx1425.mtrsteamloco.data.Rolling;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(GameRenderer.class)
 public class GameRendererMixin {
@@ -43,5 +48,29 @@ public class GameRendererMixin {
             minecraft.options.hideGui = hideGuiOptionCache;
             hideGuiOptionCache = null;
         }
+    }
+
+    @Inject(
+        method = "renderLevel",
+        at = @At(
+            value = "INVOKE",
+            // target = "Lnet/minecraft/client/Camera;getXRot()F",
+#if MC_VERSION >= "11903"
+            target = "Lcom/mojang/blaze3d/vertex/PoseStack$Pose;normal()Lorg/joml/Matrix3f",
+#else 
+            target = "Lcom/mojang/blaze3d/vertex/PoseStack$Pose;normal()Lcom/mojang/math/Matrix3f;",
+#endif
+            ordinal = 0,
+            shift = At.Shift.AFTER
+        ),
+        locals = LocalCapture.CAPTURE_FAILHARD
+    )
+    private void injectCustomRotation(
+        float partialTick,
+        long finishNanoTime,
+        PoseStack poseStack,
+        CallbackInfo ci
+    ) {
+        Rolling.applyRolling(poseStack);
     }
 }

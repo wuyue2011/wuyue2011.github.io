@@ -78,6 +78,10 @@ public class Vector3f {
         impl.cross(other.impl);
     }
 
+    public org.joml.Vector3f asMoj() {
+        return impl;
+    }
+
     #else
 
     protected final com.mojang.math.Vector3f impl;
@@ -150,6 +154,10 @@ public class Vector3f {
         impl.cross(other.impl);
     }
 
+    public com.mojang.math.Vector3f asMoj() {
+        return impl.copy();
+    }
+
 #endif
 
     public Vector3f(double x, double y, double z) {
@@ -193,6 +201,10 @@ public class Vector3f {
 
     public Vec3 toVec3() {
         return new Vec3(x(), y(), z());
+    }
+
+    public float lengthSquared() {
+        return x() * x() + y() * y() + z() * z();
     }
 
     @Override

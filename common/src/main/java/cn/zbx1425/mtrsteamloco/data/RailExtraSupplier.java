@@ -66,33 +66,38 @@ public interface RailExtraSupplier {
         Map<Double, Float> rollAngleMap = ((RailExtraSupplier) rail).getRollAngleMap();
         boolean reversed = ((RailExtraSupplier) rail).getRenderReversed();
         float k = reversed ? -1F : 1F;
+        
         if (reversed) {
             value = rail.getLength() - value;
         }
+        
         if (rollAngleMap.isEmpty()) {
             return 0;
         }
+        
         List<Double> keys = new ArrayList<>(rollAngleMap.keySet());
         keys.sort(Double::compareTo);
+        
         if (value <= keys.get(0)) {
-            return (float) k * rollAngleMap.get(keys.get(0));
+            return k * rollAngleMap.get(keys.get(0));
         }
+        
         int size = keys.size();
         if (value >= keys.get(size - 1)) {
-            return (float) k * rollAngleMap.get(keys.get(size - 1));
+            return k * rollAngleMap.get(keys.get(size - 1));
         }
-        double last = keys.get(0);
+        
+        double lastKey = keys.get(0);
         for (int i = 1; i < size; i++) {
-            double t = keys.get(i);
-            if (last <= value && value < t) {
-                float a0 = rollAngleMap.get(last);
-                float a1 = rollAngleMap.get(t);
-                double alpha = (value - last) / (t - last);
-                double smoothedAlpha = (1 - Math.cos(alpha * Math.PI)) / 2;
-                float interpolated = a0 + (a1 - a0) * (float) smoothedAlpha;
+            double currentKey = keys.get(i);
+            if (lastKey <= value && value < currentKey) {
+                double t = (value - lastKey) / (currentKey - lastKey);
+                double cosFactor = (1 - Math.cos(t * Math.PI)) / 2.0;
+                float interpolated = (float) (rollAngleMap.get(lastKey) * (1 - cosFactor) 
+                                            + rollAngleMap.get(currentKey) * cosFactor);
                 return k * interpolated;
             }
-            last = t;
+            lastKey = currentKey;
         }
         return 0;
     }

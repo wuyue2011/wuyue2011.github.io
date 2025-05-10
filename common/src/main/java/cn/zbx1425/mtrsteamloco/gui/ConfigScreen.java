@@ -78,11 +78,6 @@ public final class ConfigScreen {
                 ).setSaveConsumer(checked -> ClientConfig.enableScriptDebugOverlay = checked).setDefaultValue(false).build()
         );
 
-        /*
-        ConfigCategory misc = builder.getOrCreateCategory(
-                Text.translatable("gui.mtrsteamloco.config.client.category.misc")
-        );
-         */
         common.addEntry(entryBuilder.startTextDescription(
                         Text.translatable("gui.mtrsteamloco.config.client.category.misc")
                 ).build()
@@ -130,6 +125,12 @@ public final class ConfigScreen {
                         Text.translatable("gui.mtrsteamloco.config.client.slsmoke"),
                         ClientConfig.enableSmoke
                 ).setSaveConsumer(checked -> ClientConfig.enableSmoke = checked).setDefaultValue(true).build()
+        );
+        common.addEntry(entryBuilder
+                .startBooleanToggle(
+                        Text.translatable("gui.mtrsteamloco.config.client.rolling"),
+                        ClientConfig.enableRolling
+                ).setSaveConsumer(checked -> ClientConfig.enableRolling = checked).setDefaultValue(true).build()
         );
         common.addEntry(entryBuilder
                 .startIntField(

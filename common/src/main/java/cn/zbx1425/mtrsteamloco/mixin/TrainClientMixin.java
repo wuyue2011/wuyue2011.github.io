@@ -18,7 +18,6 @@ import net.minecraft.client.player.LocalPlayer;
 import mtr.path.PathData;
 import mtr.sound.TrainSoundBase;
 import cn.zbx1425.mtrsteamloco.data.TrainExtraSupplier;
-// import cn.zbx1425.mtrsteamloco.data.VehicleRidingClientExtraSupplier;
 import cn.zbx1425.sowcer.math.Matrix4f;
 import cn.zbx1425.sowcer.math.Matrices;
 import net.minecraft.world.phys.Vec3;
@@ -31,10 +30,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Pose;
+import cn.zbx1425.mtrsteamloco.data.VehicleRidingClientExtraSupplier;
+import mtr.render.RenderDrivingOverlay;
 
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.ArrayList;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -91,12 +93,17 @@ public abstract class TrainClientMixin extends Train implements IGui{
 	@Shadow(remap = false) AnnouncementCallback lightRailAnnouncementCallback;
 	@Shadow(remap = false) Depot depot;
 	@Shadow(remap = false) List<Long> routeIds;
+	@Shadow(remap = false) int currentStationIndex;
+	@Shadow(remap = false) Route thisRoute;
+	@Shadow(remap = false) Route nextRoute;
+	@Shadow(remap = false) Station thisStation;
+	@Shadow(remap = false) Station nextStation;
+	@Shadow(remap = false) Station lastStation;
 
 	@Shadow(remap = false) abstract int getPreviousStoppingIndex(int headIndex);
 	@Shadow(remap = false) abstract boolean justOpening();
 
-    // @Override
-    protected boolean handlePositions123(Level world, Vec3[] positions, float ticksElapsed) {
+	protected boolean handlePositions(Level world, Vec3[] positions, float ticksElapsed) {
 		final Minecraft client = Minecraft.getInstance();
 		final LocalPlayer clientPlayer = client.player;
 		if (clientPlayer == null) {
@@ -104,6 +111,15 @@ public abstract class TrainClientMixin extends Train implements IGui{
 		}
 
 		vehicleRidingClient.begin();
+
+		float[] rolls = new float[trainCars];
+		for (int i = 0; i < trainCars; i++) {
+			float roll = TrainExtraSupplier.getRollAngleAt((Train) (Object) this, i);
+			rolls[i] = roll;
+		}
+		((VehicleRidingClientExtraSupplier) (Object) vehicleRidingClient).setReversed(reversed);
+		((VehicleRidingClientExtraSupplier) (Object) vehicleRidingClient).setRoll(rolls);
+		((VehicleRidingClientExtraSupplier) (Object) vehicleRidingClient).setPositions(positions);
 
 		if (ticksElapsed > 0) {
 			if (isPlayerRiding(clientPlayer)) {
@@ -128,25 +144,21 @@ public abstract class TrainClientMixin extends Train implements IGui{
 
 			final TrainProperties trainProperties = TrainClientRegistry.getTrainProperties(trainId);
 			vehicleRidingClient.movePlayer(uuid -> {
-				final CalculateCarCallback calculateCarCallback = (x, y, z, yaw, pitch, realSpacingRender, doorLeftOpenRender, doorRightOpenRender) ->  {                    
-                    vehicleRidingClient.setOffsets(uuid, x, y, z, yaw, pitch, transportMode.maxLength == 1 ? spacing : realSpacingRender, width, doorLeftOpenRender, doorRightOpenRender, transportMode.hasPitchAscending, transportMode.hasPitchDescending, trainProperties.riderOffset, trainProperties.riderOffsetDismounting, speed > 0, doorValue == 0, () -> {
-                        final boolean isShifting = clientPlayer.isShiftKeyDown();
-                        if (Config.shiftToToggleSitting() && !MTRClient.isVivecraft()) {
-                            if (isShifting && !previousShifting) {
-                                isSitting = !isSitting;
-                            }
-                            clientPlayer.setPose(isSitting && !client.gameRenderer.getMainCamera().isDetached() ? Pose.CROUCHING : Pose.STANDING);
-                        }
-                        previousShifting = isShifting;
-                    });
-                };
-
 				final int currentRidingCar = Mth.clamp((int) Math.floor(vehicleRidingClient.getPercentageZ(uuid)), 0, positions.length - 2);
+				final CalculateCarCallback calculateCarCallback = (x, y, z, yaw, pitch, realSpacingRender, doorLeftOpenRender, doorRightOpenRender) -> vehicleRidingClient.setOffsets(uuid, x, y, z, yaw, pitch, transportMode.maxLength == 1 ? spacing : realSpacingRender, width, doorLeftOpenRender, doorRightOpenRender, transportMode.hasPitchAscending, transportMode.hasPitchDescending, trainProperties.riderOffset, trainProperties.riderOffsetDismounting, speed > 0, doorValue == 0, () -> {
+					final boolean isShifting = clientPlayer.isShiftKeyDown();
+					if (Config.shiftToToggleSitting() && !MTRClient.isVivecraft()) {
+						if (isShifting && !previousShifting) {
+							isSitting = !isSitting;
+						}
+						clientPlayer.setPose(isSitting && !client.gameRenderer.getMainCamera().isDetached() ? Pose.CROUCHING : Pose.STANDING);
+					}
+					previousShifting = isShifting;
+				});
 				calculateCar(world, positions, currentRidingCar, 0, (x, y, z, yaw, pitch, realSpacingRender, doorLeftOpenRender, doorRightOpenRender) -> {
 					vehicleRidingClient.moveSelf(id, uuid, realSpacingRender, width, yaw, currentRidingCar, trainCars, doorLeftOpenRender, doorRightOpenRender, !trainProperties.hasGangwayConnection, ticksElapsed);
 
 					final int newRidingCar = Mth.clamp((int) Math.floor(vehicleRidingClient.getPercentageZ(uuid)), 0, positions.length - 2);
-                    // ((VehicleRidingClientExtraSupplier) vehicleRidingClient).setRoll(TrainExtraSupplier.getRollAngleAt(((Train) (Object) this), newRidingCar));
 					if (currentRidingCar == newRidingCar) {
 						calculateCarCallback.calculateCarCallback(x, y, z, yaw, pitch, realSpacingRender, doorLeftOpenRender, doorRightOpenRender);
 					} else {
@@ -204,9 +216,8 @@ public abstract class TrainClientMixin extends Train implements IGui{
 		trainTranslucentRenders.add(() -> trainRenderer.renderCar(ridingCar, newX, newY, newZ, carYaw, carPitch, doorLeftOpen, doorRightOpen));
 
 		if (ridingCar > 0) {
-
+			float roll = TrainExtraSupplier.getRollAngleAt((Train) (Object) this, ridingCar);
             float preRoll = TrainExtraSupplier.getRollAngleAt((Train) (Object) this, ridingCar - 1);
-            float roll = TrainExtraSupplier.getRollAngleAt((Train) (Object) this, ridingCar);
 
             Matrices pre = new Matrices();
             pre.translate(prevCarX - offset.x, prevCarY - offset.y, prevCarZ - offset.z);
@@ -275,20 +286,53 @@ public abstract class TrainClientMixin extends Train implements IGui{
 		}
     }
 
-	/* @Inject(method = "simulateTrain", at = @At("RETURN")) @Final @Mutable
-	private void onSimulateTrain(Level world, float ticksElapsed, SpeedCallback speedCallback, AnnouncementCallback announcementCallback, AnnouncementCallback lightRailAnnouncementCallback, CallbackInfo ci) {
-		if (world == null) return;
-		if (!world.isClientSide) return;
-		if (path.isEmpty()) return;
-
-		if ((Object) this instanceof TrainClient) {
-			TrainClient train = (TrainClient) (Object) this;
-			TrainRendererBase renderer = train.trainRenderer;
-			if (renderer instanceof ScriptedTrainRenderer) {
-				((ScriptedTrainRenderer) renderer).callRenderFunction();
+	@Inject(method = "simulateTrain", at = @At("HEAD"), remap = false, cancellable = true)
+	private void simulateTrain(Level world, float ticksElapsed, SpeedCallback speedCallback, AnnouncementCallback announcementCallback, AnnouncementCallback lightRailAnnouncementCallback, CallbackInfo ci) {
+		trainTranslucentRenders.clear();
+		this.speedCallback = speedCallback;
+		this.announcementCallback = announcementCallback;
+		this.lightRailAnnouncementCallback = lightRailAnnouncementCallback;
+		oldSpeed = speed;
+		oldRailProgress = railProgress;
+		oldDoorValue = doorValue;
+		
+		if (ticksElapsed != 0) {
+			final int stopIndex = path.get(getIndex(0, spacing, false)).stopIndex - 1;
+			if (!RailwayData.useRoutesAndStationsFromIndex(stopIndex, routeIds, ClientData.DATA_CACHE, (currentStationIndex, thisRoute1, nextRoute1, thisStation1, nextStation1, lastStation1) -> {
+				this.currentStationIndex = currentStationIndex;
+				thisRoute = thisRoute1;
+				nextRoute = nextRoute1;
+				thisStation = thisStation1;
+				nextStation = nextStation1;
+				lastStation = lastStation1;
+			})) {
+				currentStationIndex = 0;
+				thisRoute = null;
+				nextRoute = null;
+				thisStation = null;
+				nextStation = null;
+				lastStation = null;
 			}
 		}
-	}*/
+
+		simulateTrain(world, ticksElapsed, null);
+
+		if (depot == null || routeIds.isEmpty()) {
+			final Siding siding = ClientData.DATA_CACHE.sidingIdMap.get(sidingId);
+			depot = siding == null ? null : ClientData.DATA_CACHE.sidingIdToDepot.get(siding.id);
+			routeIds = depot == null ? new ArrayList<>() : depot.routeIds;
+			if (depot != null) {
+				depot.lastDeployedMillis = System.currentTimeMillis();
+			}
+		}
+
+		final LocalPlayer player = Minecraft.getInstance().player;
+		if (isManualAllowed && Train.isHoldingKey(player) && isPlayerRiding(player)) {
+			RenderDrivingOverlay.setData(manualNotch, (TrainClient) (Object) this);
+		}
+		
+		ci.cancel();
+	}
 
     private static Vec3 now(Matrices matrices) {
         return matrices.last().getTranslationPart().toVec3();

@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.Level;
 import cn.zbx1425.mtrsteamloco.gui.DirectNodeScreen;
 import cn.zbx1425.mtrsteamloco.render.RailDistanceRenderer;
+import cn.zbx1425.mtrsteamloco.data.Rolling;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +52,7 @@ public class RenderTrainsMixin implements IGui{
             method = "render(Lmtr/entity/EntitySeat;FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;)V")
     private static void renderTail(EntitySeat entity, float tickDelta, PoseStack matrices, MultiBufferSource vertexConsumers, CallbackInfo ci) {
         // Already once per frame, since TAIL
-
+        Rolling.update();
         Minecraft.getInstance().level.getProfiler().popPush("NTERailwayData");
         Matrix4f viewMatrix = new Matrix4f(matrices.last().pose());
         MainClient.railRenderDispatcher.prepareDraw();

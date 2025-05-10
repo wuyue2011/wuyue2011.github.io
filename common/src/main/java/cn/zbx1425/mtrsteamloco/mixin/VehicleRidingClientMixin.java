@@ -1,0 +1,258 @@
+package cn.zbx1425.mtrsteamloco.mixin;
+
+import cn.zbx1425.sowcer.math.Matrix4f;
+import net.minecraft.world.phys.Vec3;
+import cn.zbx1425.mtrsteamloco.data.VehicleRidingClientExtraSupplier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.Mth;
+import mtr.data.*;
+import mtr.data.*;
+import mtr.client.*;
+import mtr.*;
+import mtr.packet.PacketTrainDataGuiClient;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.client.Camera;
+import mtr.mappings.Utilities;
+import net.minecraft.world.entity.player.Player;
+import mtr.entity.EntitySeat;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+import com.mojang.blaze3d.vertex.PoseStack;
+import mtr.render.RenderTrains;
+import cn.zbx1425.sowcer.math.PoseStackUtil;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import cn.zbx1425.sowcer.math.Matrix4f;
+import cn.zbx1425.sowcer.math.Vector3f;
+import cn.zbx1425.mtrsteamloco.data.Rolling;
+
+import java.util.*;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.Shadow;
+
+@Mixin(VehicleRidingClient.class)
+public abstract class VehicleRidingClientMixin implements VehicleRidingClientExtraSupplier {
+
+    private float[] roll = new float[0];
+	private Vec3[] positions;
+	private boolean reversed;
+
+    @Override
+    public float getRoll(int index) {
+        if (index >= roll.length || index < 0) return 0; 
+        return roll[index];
+    }
+
+    @Override
+    public void setRoll(float[] roll) {
+		this.roll = roll;
+    }
+
+	@Override
+	public void setPositions(Vec3[] positions) {
+		this.positions = positions;
+	}
+
+	@Override
+	public void setReversed(boolean reversed) {
+		this.reversed = reversed;
+	}
+
+
+	@Shadow(remap = false) private float clientPrevYaw;
+	@Shadow(remap = false) private float oldPercentageX;
+	@Shadow(remap = false) private float oldPercentageZ;
+	@Shadow(remap = false) private double lastSentX;
+	@Shadow(remap = false) private double lastSentY;
+	@Shadow(remap = false) private double lastSentZ;
+	@Shadow(remap = false) private float lastSentTicks;
+	@Shadow(remap = false) private int interval;
+	@Shadow(remap = false) private int previousInterval;
+
+	@Shadow(remap = false) private List<Double> offset;
+	@Shadow(remap = false) private Map<UUID, Float> percentagesX;
+	@Shadow(remap = false) private Map<UUID, Float> percentagesZ;
+	@Shadow(remap = false) private Map<UUID, Float> newPercentagesX;
+	@Shadow(remap = false) private Map<UUID, Float> newPercentagesZ;
+	@Shadow(remap = false) private Map<UUID, Vec3> riderPositions;
+	@Shadow(remap = false) private Set<UUID> ridingEntities;
+	@Shadow(remap = false) private ResourceLocation packetId;
+
+	@Shadow(remap = false)
+	private Vec3 getViewOffset() {
+		throw new AssertionError();
+	}
+
+	@Inject(method = "renderPlayerAndGetOffset", remap = false, at = @At("HEAD"), cancellable = true)
+	private void onRenderPlayerAndGetOffset(CallbackInfoReturnable<Vec3> cir) {
+		final boolean noOffset = offset.isEmpty();
+		riderPositions.forEach((uuid, position) -> {
+			if (noOffset) {
+				renderRidingPlayer(getViewOffset(), uuid, position);
+			} else {
+				renderRidingPlayer(getViewOffset(), uuid, position.subtract(offset.get(0), offset.get(1), offset.get(2)));
+			}
+		});
+
+		if (noOffset) {
+			cir.setReturnValue(Vec3.ZERO);
+		} else {
+			cir.setReturnValue(new Vec3(offset.get(0), offset.get(1), offset.get(2)));
+		}
+	}
+
+	@Unique
+	private Map<UUID, Float> prevYaw = new HashMap<>();
+	private Map<UUID, Float> prevPitch = new HashMap<>();
+
+	private static double getValueFromPercentage(double percentage, double total) {
+		return (percentage - 0.5) * total;
+	}
+
+	@Inject(method = "setOffsets", at = @At("HEAD"), remap = false, cancellable = true)
+	public void setOffsets(UUID uuid, double x, double y, double z, float yaw, float pitch, double length, int width, boolean doorLeftOpen, boolean doorRightOpen, boolean hasPitchAscending, boolean hasPitchDescending, float riderOffset, float riderOffsetDismounting, boolean shouldSetOffset, boolean shouldSetYaw, Runnable clientPlayerCallback, CallbackInfo ci) {
+		prevYaw.put(uuid, yaw);
+		prevPitch.put(uuid, pitch);
+
+		final LocalPlayer clientPlayer = Minecraft.getInstance().player;
+		if (clientPlayer == null) {
+			return;
+		}
+
+		final boolean isClientPlayer = uuid.equals(clientPlayer.getUUID());
+		final double percentageX = getValueFromPercentage(percentagesX.get(uuid), width);
+		final float riderOffsetNew = doorLeftOpen && percentageX < 0 || doorRightOpen && percentageX > 1 ? riderOffsetDismounting : riderOffset;
+		int currentRidingCar = Mth.clamp((int) Math.floor(percentagesZ.get(uuid)), 0, positions.length - 2);
+		Matrix4f mat = new Matrix4f();
+		mat.rotateX((pitch < 0 ? hasPitchAscending : hasPitchDescending) ? (float) pitch : 0);
+		mat.rotateY(yaw);//(reversed ? (float)Math.PI : 0)
+		mat.translate(0, -1, 0);
+		mat.rotateZ(-getRoll(currentRidingCar));//(reversed ? 1 : -1) *
+		mat.translate(0, 1, 0);
+		mat.translate((float) percentageX, riderOffsetNew, (float) getValueFromPercentage(Mth.frac(percentagesZ.get(uuid)), length));
+		Vector3f vect = mat.getTranslationPart();
+		final Vec3 playerOffset = new Vec3(vect.x(), vect.y(), vect.z());
+		ClientData.updatePlayerRidingOffset(uuid);
+		riderPositions.put(uuid, playerOffset.add(x, y, z));
+
+		if (isClientPlayer) {
+			Rolling.setRollMatrix(x, y, z, (reversed ? (float) Math.PI : 0) + yaw, (pitch < 0 ? hasPitchAscending : hasPitchDescending) ? (float) pitch : 0, (reversed ? 1 : -1) * getRoll(currentRidingCar), reversed);
+
+			final double moveX = x + playerOffset.x;
+			final double moveY = y + playerOffset.y;
+			final double moveZ = z + playerOffset.z;
+			final boolean movePlayer;
+
+			if (MTRClient.isVivecraft()) {
+				final Entity vehicle = clientPlayer.getVehicle();
+				if (vehicle instanceof EntitySeat) {
+					((EntitySeat) vehicle).setPosByTrain(moveX, moveY, moveZ);
+					movePlayer = false;
+				} else {
+					movePlayer = true;
+				}
+
+				final float tempPercentageX = percentagesX.get(uuid);
+				final boolean doorOpen = doorLeftOpen && tempPercentageX < 0 || doorRightOpen && tempPercentageX > 1;
+				final boolean movedFar = Math.abs(lastSentX - moveX) > 2 || Math.abs(lastSentY - moveY) > 2 || Math.abs(lastSentZ - moveZ) > 2;
+
+				if (doorOpen || MTRClient.getGameTick() - lastSentTicks > 60 && movedFar) {
+					PacketTrainDataGuiClient.sendUpdateEntitySeatPassengerPosition(moveX, moveY, moveZ);
+					lastSentX = moveX;
+					lastSentY = moveY;
+					lastSentZ = moveZ;
+					lastSentTicks = MTRClient.getGameTick();
+				}
+			} else {
+				movePlayer = true;
+			}
+
+			if (movePlayer) {
+				clientPlayer.fallDistance = 0;
+				clientPlayer.setDeltaMovement(0, 0, 0);
+				clientPlayer.setSpeed(0);
+				if (MTRClient.getGameTick() > 40) {
+					clientPlayer.absMoveTo(moveX, moveY, moveZ);
+				}
+			}
+
+			clientPlayerCallback.run();
+
+			if (shouldSetOffset) {
+				if (shouldSetYaw) {
+					float angleDifference = (float) Math.toDegrees(clientPrevYaw - yaw);
+					if (angleDifference > 180) {
+						angleDifference -= 360;
+					} else if (angleDifference < -180) {
+						angleDifference += 360;
+					}
+					Utilities.incrementYaw(clientPlayer, angleDifference);
+				}
+				offset.add(x);
+				offset.add(y);
+				offset.add(z);
+				if (MTRClient.isVivecraft()) {
+					offset.add(playerOffset.x);
+					offset.add(playerOffset.y);
+					offset.add(playerOffset.z);
+				} else {
+					float eyeHeight = clientPlayer.getEyeHeight();
+					Vector3f of = new Vector3f(playerOffset);
+					of.add(0, eyeHeight, 0);
+					of = Rolling.applyRolling(of, eyeHeight);
+					Vec3 off = of.toVec3();
+					offset.add(off.x);
+					offset.add(off.y);
+					offset.add(off.z);
+				}
+			}
+
+			clientPrevYaw = yaw;
+		}
+		ci.cancel();
+	}
+
+	private void renderRidingPlayer(Vec3 viewOffset, UUID playerId, Vec3 playerPositionOffset) {
+		final BlockPos posAverage = TrainRendererBaseAccessor.invokeApplyAverageTransform(viewOffset, playerPositionOffset.x, playerPositionOffset.y, playerPositionOffset.z);
+		if (posAverage == null) {
+			return;
+		}
+		PoseStack matrices = TrainRendererBaseAccessor.getMatrices();
+		Camera camera = TrainRendererBaseAccessor.getCamera();
+		Level world = TrainRendererBaseAccessor.getWorld();
+		matrices.translate(0, RenderTrains.PLAYER_RENDER_OFFSET, 0);
+		
+		final Player renderPlayer = world.getPlayerByUUID(playerId);
+		if (renderPlayer != null && (!playerId.equals(TrainRendererBaseAccessor.getPlayer().getUUID()) || camera.isDetached())) {
+			EntityRenderer<? super Entity> entityrenderer = TrainRendererBaseAccessor.getEntityRenderDispatcher().getRenderer(renderPlayer);
+			Vec3 vec3 = entityrenderer.getRenderOffset(renderPlayer, 1);
+			vec3 = vec3.add(playerPositionOffset);
+			matrices.pushPose();
+			matrices.translate(vec3.x, vec3.y, vec3.z);
+			Float yaw = prevYaw.get(playerId);
+			Float pitch = prevPitch.get(playerId);
+			if (yaw != null && pitch != null) {
+				int currentRidingCar = Mth.clamp((int) Math.floor(percentagesZ.get(playerId)), 0, positions.length - 2);
+				PoseStackUtil.rotX(matrices, pitch);
+				PoseStackUtil.rotY(matrices, yaw);
+				PoseStackUtil.rotZ(matrices, -getRoll(currentRidingCar));
+				PoseStackUtil.rotY(matrices, -yaw);
+				PoseStackUtil.rotX(matrices, -pitch);
+			}
+			matrices.translate(-vec3.x, -vec3.y, -vec3.z);
+			matrices.translate(playerPositionOffset.x, playerPositionOffset.y, playerPositionOffset.z);
+			TrainRendererBaseAccessor.getEntityRenderDispatcher().render(renderPlayer, 0, 0, 0, 0, 1, matrices, TrainRendererBaseAccessor.getVertexConsumers(), 0xF000F0);
+			matrices.popPose();
+		}
+		matrices.popPose();
+	}
+}
