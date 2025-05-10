@@ -18,8 +18,8 @@ public class Rolling {
     private static Rotation rotation = Rotation.IDENTITY;
     private static Rotation tempRotation = null;
 
-    public static void setRollMatrix(double x, double y, double z, float yaw, float pitch, float roll, boolean reversed) {
-        tempRotation = new Rotation(x, y, z, yaw, pitch, roll, reversed);
+    public static void setRotation(Rotation rotation) {
+        tempRotation = rotation;
     }
 
     public static void update() {
@@ -32,7 +32,6 @@ public class Rolling {
     }
 
     public static void applyRolling(PoseStack poseStack) {
-        // if (!Minecraft.getInstance().options.getCameraType().isFirstPerson()) return;
         if (!ClientConfig.enableRolling) return;
         if (rotation.isIdentity()) return;
         
@@ -97,7 +96,7 @@ public class Rolling {
     }
 #endif
 
-    private static class Rotation {
+    public static class Rotation {
         public final Vector3f pos;
         public final float yaw;
         public final float pitch;

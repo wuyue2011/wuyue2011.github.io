@@ -61,7 +61,7 @@ public class GameRendererMixin {
 #endif
             ordinal = 0,
             shift = At.Shift.AFTER
-        )// , locals = LocalCapture.CAPTURE_FAILHARD
+        )
     )
     private void injectCustomRotation(
         float partialTick,

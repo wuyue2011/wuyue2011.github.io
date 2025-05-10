@@ -28,6 +28,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import cn.zbx1425.sowcer.math.Matrix4f;
 import cn.zbx1425.sowcer.math.Vector3f;
 import cn.zbx1425.mtrsteamloco.data.Rolling;
+import cn.zbx1425.mtrsteamloco.data.Rolling.Rotation;
 
 import java.util.*;
 
@@ -92,10 +93,21 @@ public abstract class VehicleRidingClientMixin implements VehicleRidingClientExt
 		throw new AssertionError();
 	}
 
+	@Unique
+	private Rotation prevRotation = Rotation.IDENTITY;
+
 	@Inject(method = "renderPlayerAndGetOffset", remap = false, at = @At("HEAD"), cancellable = true)
 	private void onRenderPlayerAndGetOffset(CallbackInfoReturnable<Vec3> cir) {
 		final boolean noOffset = offset.isEmpty();
+		final LocalPlayer clientPlayer = Minecraft.getInstance().player;
+
 		riderPositions.forEach((uuid, position) -> {
+			if (clientPlayer != null) {
+				if (uuid.equals(clientPlayer.getUUID())) {
+					Rolling.setRotation(prevRotation);
+				}
+			}
+			
 			if (noOffset) {
 				renderRidingPlayer(getViewOffset(), uuid, position);
 			} else {
@@ -108,6 +120,7 @@ public abstract class VehicleRidingClientMixin implements VehicleRidingClientExt
 		} else {
 			cir.setReturnValue(new Vec3(offset.get(0), offset.get(1), offset.get(2)));
 		}
+		cir.cancel();
 	}
 
 	@Unique
@@ -145,7 +158,7 @@ public abstract class VehicleRidingClientMixin implements VehicleRidingClientExt
 		riderPositions.put(uuid, playerOffset.add(x, y, z));
 
 		if (isClientPlayer) {
-			Rolling.setRollMatrix(x, y, z, yaw, (pitch < 0 ? hasPitchAscending : hasPitchDescending) ? (float) pitch : 0, getRoll(currentRidingCar), reversed);
+			prevRotation = new Rotation(x, y, z, yaw, (pitch < 0 ? hasPitchAscending : hasPitchDescending) ? (float) pitch : 0, getRoll(currentRidingCar), reversed);
 
 			final double moveX = x + playerOffset.x;
 			final double moveY = y + playerOffset.y;

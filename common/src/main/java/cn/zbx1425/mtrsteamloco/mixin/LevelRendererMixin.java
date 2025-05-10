@@ -13,6 +13,8 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderBuffers;
 import cn.zbx1425.mtrsteamloco.render.block.BlockEntityEyeCandyRenderer;
 import cn.zbx1425.mtrsteamloco.render.block.BlockEntityDirectNodeRenderer;
+import cn.zbx1425.mtrsteamloco.data.Rolling;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
