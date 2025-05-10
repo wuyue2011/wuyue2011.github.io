@@ -7,6 +7,11 @@ import cn.zbx1425.sowcer.math.Matrix4f;
 import net.minecraft.world.phys.Vec3;
 import com.mojang.blaze3d.vertex.PoseStack;
 import cn.zbx1425.mtrsteamloco.ClientConfig;
+#if MC_VERSION >= "11903"
+
+#else
+import com.mojang.math.Quaternion;
+#endif
 
 public class Rolling {
     private static Rotation rotation = Rotation.IDENTITY;
@@ -26,6 +31,7 @@ public class Rolling {
     }
 
     public static void applyRolling(PoseStack poseStack) {
+        // if (!Minecraft.getInstance().options.getCameraType().isFirstPerson()) return;
         if (!ClientConfig.enableRolling) return;
         if (rotation.isIdentity()) return;
         
@@ -34,7 +40,7 @@ public class Rolling {
         Matrix4f mat = new Matrix4f();
         mat.rotateX(rot.pitch);
         mat.rotateY(rot.yaw);
-        mat.rotateZ(rot.reversed ? rot.roll : -rot.roll);
+        mat.rotateZ(rot.reversed ? -rot.roll : rot.roll);
         mat.rotateY(-rot.yaw);
         mat.rotateX(-rot.pitch);
 
@@ -49,15 +55,31 @@ public class Rolling {
 
 
         Matrix4f mat = new Matrix4f();
-        mat.rotateX(rot.pitch);
+        mat.rotateZ(rot.reversed? -rot.roll : rot.roll);
         mat.rotateY(rot.yaw);
-        mat.rotateZ(rot.reversed ? -rot.roll : rot.roll);
+        mat.rotateX(rot.pitch);
 
         pos.add(0, -eyeHeight, 0);
         Vector3f ep = mat.transform(new Vector3f(0, eyeHeight, 0));
         pos.add(ep);
         return pos;
     }
+
+#if MC_VERSION >= "11903"
+#else
+    public static Quaternion getRollQuaternion() {
+        if (rotation.isIdentity()) return Quaternion.ONE.copy();
+        Rotation rot = rotation;
+
+        Matrix4f mat = new Matrix4f();
+        mat.rotateX(rot.pitch);
+        mat.rotateY(rot.yaw);
+        Vector3f fp = mat.transform(new Vector3f(0, 0, 1));
+        Quaternion q = new Quaternion(fp.asMoj(), rot.reversed ? rot.roll : -rot.roll, false);
+
+        return q;
+    }
+#endif
 
     private static class Rotation {
         public final Vector3f pos;

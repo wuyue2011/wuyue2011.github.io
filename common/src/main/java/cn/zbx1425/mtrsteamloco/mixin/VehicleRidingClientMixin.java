@@ -136,7 +136,7 @@ public abstract class VehicleRidingClientMixin implements VehicleRidingClientExt
 		mat.rotateX((pitch < 0 ? hasPitchAscending : hasPitchDescending) ? (float) pitch : 0);
 		mat.rotateY(yaw);//(reversed ? (float)Math.PI : 0)
 		mat.translate(0, -1, 0);
-		mat.rotateZ(-getRoll(currentRidingCar));//(reversed ? 1 : -1) *
+		mat.rotateZ((reversed ? 1 : -1) * getRoll(currentRidingCar));
 		mat.translate(0, 1, 0);
 		mat.translate((float) percentageX, riderOffsetNew, (float) getValueFromPercentage(Mth.frac(percentagesZ.get(uuid)), length));
 		Vector3f vect = mat.getTranslationPart();
@@ -145,7 +145,7 @@ public abstract class VehicleRidingClientMixin implements VehicleRidingClientExt
 		riderPositions.put(uuid, playerOffset.add(x, y, z));
 
 		if (isClientPlayer) {
-			Rolling.setRollMatrix(x, y, z, (reversed ? (float) Math.PI : 0) + yaw, (pitch < 0 ? hasPitchAscending : hasPitchDescending) ? (float) pitch : 0, (reversed ? 1 : -1) * getRoll(currentRidingCar), reversed);
+			Rolling.setRollMatrix(x, y, z, yaw, (pitch < 0 ? hasPitchAscending : hasPitchDescending) ? (float) pitch : 0, getRoll(currentRidingCar), reversed);
 
 			final double moveX = x + playerOffset.x;
 			final double moveY = y + playerOffset.y;
@@ -206,10 +206,13 @@ public abstract class VehicleRidingClientMixin implements VehicleRidingClientExt
 					offset.add(playerOffset.z);
 				} else {
 					float eyeHeight = clientPlayer.getEyeHeight();
-					Vector3f of = new Vector3f(playerOffset);
-					of.add(0, eyeHeight, 0);
-					of = Rolling.applyRolling(of, eyeHeight);
-					Vec3 off = of.toVec3();
+					Vec3 off;
+					if (Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
+						mat.translate(0, eyeHeight, 0);
+						off = mat.getTranslationPart().toVec3();
+					} else {
+						off = playerOffset.add(0, eyeHeight, 0);
+					}
 					offset.add(off.x);
 					offset.add(off.y);
 					offset.add(off.z);
