@@ -244,7 +244,7 @@ public abstract class VehicleRidingClientMixin implements VehicleRidingClientExt
 				int currentRidingCar = Mth.clamp((int) Math.floor(percentagesZ.get(playerId)), 0, positions.length - 2);
 				PoseStackUtil.rotX(matrices, pitch);
 				PoseStackUtil.rotY(matrices, yaw);
-				PoseStackUtil.rotZ(matrices, -getRoll(currentRidingCar));
+				PoseStackUtil.rotZ(matrices, (reversed? 1 : -1) * getRoll(currentRidingCar));
 				PoseStackUtil.rotY(matrices, -yaw);
 				PoseStackUtil.rotX(matrices, -pitch);
 			}
