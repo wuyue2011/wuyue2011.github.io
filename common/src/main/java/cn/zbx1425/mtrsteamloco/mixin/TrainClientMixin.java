@@ -315,7 +315,7 @@ public abstract class TrainClientMixin extends Train implements IGui{
 			}
 		}
 
-		simulateTrain(world, ticksElapsed, null);
+		simulateTrain(world, 0, null);
 
 		if (depot == null || routeIds.isEmpty()) {
 			final Siding siding = ClientData.DATA_CACHE.sidingIdMap.get(sidingId);

@@ -29,7 +29,8 @@
     "DynamicImageAccessor",
     "TrainRendererBaseAccessor",
     "VehicleRidingClientMixin",
-    "CameraMixin"
+    "CameraMixin",
+    "RenderTrainsAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

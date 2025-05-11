@@ -219,13 +219,13 @@ public abstract class VehicleRidingClientMixin implements VehicleRidingClientExt
 					offset.add(playerOffset.z);
 				} else {
 					float eyeHeight = clientPlayer.getEyeHeight();
-					Vec3 off;
+					final Vec3 off;
 					if (Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
 						mat.translate(0, eyeHeight, 0);
 						off = mat.getTranslationPart().toVec3();
 					} else {
 						off = playerOffset.add(0, eyeHeight, 0);
-					}
+					} 
 					offset.add(off.x);
 					offset.add(off.y);
 					offset.add(off.z);

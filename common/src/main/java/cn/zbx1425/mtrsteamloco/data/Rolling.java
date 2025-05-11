@@ -64,7 +64,7 @@ public class Rolling {
     }
 
     public static Quaternionf getRollQuaternion(boolean reversed) {
-        if (rotation.isIdentity()) return new Quaternionf();
+        if (rotation.isIdentity() || !ClientConfig.enableRolling) return new Quaternionf();
 
         Rotation rot = rotation;
 
@@ -83,7 +83,7 @@ public class Rolling {
     }
 
     public static Quaternion getRollQuaternion(boolean reversed) {
-        if (rotation.isIdentity()) return Quaternion.ONE.copy();
+        if (rotation.isIdentity() || !ClientConfig.enableRolling) return Quaternion.ONE.copy();
         Rotation rot = rotation;
 
         Matrix4f mat = new Matrix4f();

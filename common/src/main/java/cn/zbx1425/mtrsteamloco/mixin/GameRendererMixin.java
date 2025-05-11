@@ -3,8 +3,13 @@ package cn.zbx1425.mtrsteamloco.mixin;
 import cn.zbx1425.mtrsteamloco.render.rail.RailRenderDispatcher;
 import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.vertex.PoseStack;
+import mtr.MTRClient;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.world.level.Level;
 import cn.zbx1425.mtrsteamloco.data.Rolling;
+import mtr.client.ClientData;
+import cn.zbx1425.mtrsteamloco.mixin.TrainAccessor;
+import cn.zbx1425.mtrsteamloco.mixin.RenderTrainsAccessor;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -52,6 +57,19 @@ public class GameRendererMixin {
 
     @Inject(
         method = "renderLevel",
+        at = @At("HEAD")
+    )
+    private void injectSimulateTrains(
+        float partialTick,
+        long finishNanoTime,
+        PoseStack poseStack,
+        CallbackInfo ci
+    ) {
+        simulateTrains(Minecraft.getInstance());
+    }
+
+    @Inject(
+        method = "renderLevel",
         at = @At(
             value = "INVOKE",
 #if MC_VERSION >= "11903"
@@ -69,6 +87,18 @@ public class GameRendererMixin {
         PoseStack poseStack,
         CallbackInfo ci
     ) {
+        Rolling.update();
         Rolling.applyRolling(poseStack);
+    }
+
+    private void simulateTrains(Minecraft client) {
+        if (client == null) return;
+        Level world = client.level;
+        if (world == null) return;
+		final float lastFrameDuration = MTRClient.getLastFrameDuration();
+		final float newLastFrameDuration = client.isPaused() || RenderTrainsAccessor.getLastRenderedTick() == MTRClient.getGameTick() ? 0 : lastFrameDuration;
+        ClientData.TRAINS.forEach(train -> {
+            ((TrainAccessor) train).invokeSimulateTrain(world, newLastFrameDuration, null);
+        });
     }
 }
