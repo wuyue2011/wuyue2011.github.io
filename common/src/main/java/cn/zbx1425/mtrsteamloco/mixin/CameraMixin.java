@@ -64,9 +64,10 @@ public abstract class CameraMixin {
         method = "setRotation",
         at = @At(
             value = "INVOKE",
-            target = "Lorg/joml/Quaternionf;set(FFFF)Lorg/joml/Quaternionf",
+            target = "Lorg/joml/Quaternionf;rotationYXZ(FFF)Lorg/joml/Quaternionf;",
             ordinal = 0,
-            shift = At.Shift.AFTER
+            shift = At.Shift.AFTER,
+            remap = false
         ),
         locals = LocalCapture.CAPTURE_FAILHARD
     )
