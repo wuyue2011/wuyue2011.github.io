@@ -9,7 +9,6 @@ import mtr.mappings.BlockEntityClientSerializableMapper;
 import mtr.mappings.BlockEntityMapper;
 import mtr.mappings.EntityBlockMapper;
 import net.minecraft.core.BlockPos;
-import mtr.client.ClientData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -36,14 +35,12 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import mtr.block.IBlock;
-import net.minecraft.client.Minecraft;
 import mtr.MTRClient;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import java.util.Random;
@@ -62,7 +59,6 @@ import cn.zbx1425.mtrsteamloco.data.EyeCandyProperties;
 import cn.zbx1425.mtrsteamloco.data.ShapeSerializer;
 import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
 import mtr.mappings.Text;
-import net.minecraft.client.gui.screens.Screen;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import net.minecraft.world.phys.AABB;
 import me.shedaniel.clothconfig2.impl.builders.TextDescriptionBuilder;
@@ -499,10 +495,6 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
 
         public void putCustomConfig(String key, String value) {
             customConfigs.put(key, value);
-        }
-
-        public List<AbstractConfigListEntry> getCustomConfigEntrys(ConfigEntryBuilder builder, Supplier<Screen> screenSupplier) {
-            return ConfigResponder.getEntrysFromMaps(customConfigs, customResponders, builder, screenSupplier);
         }
     }
 }

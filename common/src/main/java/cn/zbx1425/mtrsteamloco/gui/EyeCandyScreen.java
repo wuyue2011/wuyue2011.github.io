@@ -38,6 +38,7 @@ import me.shedaniel.clothconfig2.gui.entries.*;
 import net.minecraft.client.gui.components.Button;
 import cn.zbx1425.mtrsteamloco.gui.entries.*;
 import com.mojang.blaze3d.platform.Window;
+import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
 import cn.zbx1425.mtrsteamloco.gui.entries.SliderOrTextFieldListEntry;
 
 import java.lang.reflect.Method;
@@ -184,7 +185,7 @@ public class EyeCandyScreen {
             addScale(entries, common, entryBuilder, 8, blockEntity);
         }
 
-        List<AbstractConfigListEntry> customEntrys = blockEntity.getCustomConfigEntrys(entryBuilder, () -> createScreen(blockPos, parent));
+        List<AbstractConfigListEntry> customEntrys = ConfigResponder.getEntrysFromMaps(blockEntity.getCustomConfigs(), blockEntity.getCustomResponders(), entryBuilder, () -> createScreen(blockPos, parent));
         for (AbstractConfigListEntry entry : customEntrys) {
             common.addEntry(entry);
         }

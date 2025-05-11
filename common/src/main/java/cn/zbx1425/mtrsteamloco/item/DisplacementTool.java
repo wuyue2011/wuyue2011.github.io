@@ -40,7 +40,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.InteractionHand;
 import cn.zbx1425.mtrsteamloco.render.scripting.rail.RailScriptContext;
-import mtr.client.ClientData;
 import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolder;
 import cn.zbx1425.mtrsteamloco.data.RailModelProperties;
 import cn.zbx1425.mtrsteamloco.data.RailModelRegistry;
@@ -72,7 +71,7 @@ public class DisplacementTool extends ItemWithCreativeTabBase {
 
         if (railwayData == null) return InteractionResult.PASS;
 
-        Map<BlockPos, Map<BlockPos, Rail>> railMap = ((RailwayDataAccessor) railwayData).getRails();// railwayData == null ? ClientData.RAILS : 
+        Map<BlockPos, Map<BlockPos, Rail>> railMap = ((RailwayDataAccessor) railwayData).getRails();
 
         if (railMap.get(pos) == null) return InteractionResult.SUCCESS;
 
