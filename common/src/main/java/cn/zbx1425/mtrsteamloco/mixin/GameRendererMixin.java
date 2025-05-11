@@ -66,6 +66,7 @@ public class GameRendererMixin {
         CallbackInfo ci
     ) {
         simulateTrains(Minecraft.getInstance());
+        Rolling.update();
     }
 
     @Inject(
@@ -73,7 +74,7 @@ public class GameRendererMixin {
         at = @At(
             value = "INVOKE",
 #if MC_VERSION >= "11903"
-            target = "Lcom/mojang/blaze3d/vertex/PoseStack$Pose;normal()Lorg/joml/Matrix3f",
+            target = "Lcom/mojang/blaze3d/vertex/PoseStack$Pose;normal()Lorg/joml/Matrix3f;",
 #else 
             target = "Lcom/mojang/blaze3d/vertex/PoseStack$Pose;normal()Lcom/mojang/math/Matrix3f;",
 #endif
@@ -87,7 +88,6 @@ public class GameRendererMixin {
         PoseStack poseStack,
         CallbackInfo ci
     ) {
-        Rolling.update();
         Rolling.applyRolling(poseStack);
     }
 

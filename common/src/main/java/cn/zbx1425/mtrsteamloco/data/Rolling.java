@@ -46,9 +46,9 @@ public class Rolling {
 
 
         Matrix4f mat = new Matrix4f();
-        mat.rotateZ(rot.reversed? -rot.roll : rot.roll);
-        mat.rotateY(rot.yaw);
         mat.rotateX(rot.pitch);
+        mat.rotateY(rot.yaw);
+        mat.rotateZ(rot.reversed? rot.roll : -rot.roll);
 
         pos.add(0, -eyeHeight, 0);
         Vector3f ep = mat.transform(new Vector3f(0, eyeHeight, 0));
