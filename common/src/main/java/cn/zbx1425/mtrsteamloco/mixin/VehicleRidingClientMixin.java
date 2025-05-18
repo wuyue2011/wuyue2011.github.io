@@ -133,6 +133,8 @@ public abstract class VehicleRidingClientMixin implements VehicleRidingClientExt
 
 	@Inject(method = "setOffsets", at = @At("HEAD"), remap = false, cancellable = true)
 	public void setOffsets(UUID uuid, double x, double y, double z, float yaw, float pitch, double length, int width, boolean doorLeftOpen, boolean doorRightOpen, boolean hasPitchAscending, boolean hasPitchDescending, float riderOffset, float riderOffsetDismounting, boolean shouldSetOffset, boolean shouldSetYaw, Runnable clientPlayerCallback, CallbackInfo ci) {
+		if (positions == null) return;
+
 		prevYaw.put(uuid, yaw);
 		prevPitch.put(uuid, pitch);
 
@@ -237,7 +239,9 @@ public abstract class VehicleRidingClientMixin implements VehicleRidingClientExt
 		ci.cancel();
 	}
 
-	private void renderRidingPlayer(Vec3 viewOffset, UUID playerId, Vec3 playerPositionOffset) {
+	@Inject(method = "renderRidingPlayer", at = @At("HEAD"), remap = false, cancellable = true)
+	private void onRenderRidingPlayer(Vec3 viewOffset, UUID playerId, Vec3 playerPositionOffset, CallbackInfo ci) {
+		if (positions == null) return;
 		final BlockPos posAverage = TrainRendererBaseAccessor.invokeApplyAverageTransform(viewOffset, playerPositionOffset.x, playerPositionOffset.y, playerPositionOffset.z);
 		if (posAverage == null) {
 			return;
@@ -270,5 +274,6 @@ public abstract class VehicleRidingClientMixin implements VehicleRidingClientExt
 			matrices.popPose();
 		}
 		matrices.popPose();
+		ci.cancel();
 	}
 }
