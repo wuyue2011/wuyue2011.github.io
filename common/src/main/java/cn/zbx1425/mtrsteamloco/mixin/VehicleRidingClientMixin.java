@@ -98,6 +98,8 @@ public abstract class VehicleRidingClientMixin implements VehicleRidingClientExt
 
 	@Inject(method = "renderPlayerAndGetOffset", remap = false, at = @At("HEAD"), cancellable = true)
 	private void onRenderPlayerAndGetOffset(CallbackInfoReturnable<Vec3> cir) {
+		if (position == null) return;
+
 		final boolean noOffset = offset.isEmpty();
 		final LocalPlayer clientPlayer = Minecraft.getInstance().player;
 
@@ -239,8 +241,7 @@ public abstract class VehicleRidingClientMixin implements VehicleRidingClientExt
 		ci.cancel();
 	}
 
-	@Inject(method = "renderRidingPlayer", at = @At("HEAD"), remap = false, cancellable = true)
-	private void onRenderRidingPlayer(Vec3 viewOffset, UUID playerId, Vec3 playerPositionOffset, CallbackInfo ci) {
+	private void renderRidingPlayer(Vec3 viewOffset, UUID playerId, Vec3 playerPositionOffset) {
 		if (positions == null) return;
 		final BlockPos posAverage = TrainRendererBaseAccessor.invokeApplyAverageTransform(viewOffset, playerPositionOffset.x, playerPositionOffset.y, playerPositionOffset.z);
 		if (posAverage == null) {
@@ -274,6 +275,5 @@ public abstract class VehicleRidingClientMixin implements VehicleRidingClientExt
 			matrices.popPose();
 		}
 		matrices.popPose();
-		ci.cancel();
 	}
 }
