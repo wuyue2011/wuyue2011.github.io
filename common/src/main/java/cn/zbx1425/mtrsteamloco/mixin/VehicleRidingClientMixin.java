@@ -98,7 +98,7 @@ public abstract class VehicleRidingClientMixin implements VehicleRidingClientExt
 
 	@Inject(method = "renderPlayerAndGetOffset", remap = false, at = @At("HEAD"), cancellable = true)
 	private void onRenderPlayerAndGetOffset(CallbackInfoReturnable<Vec3> cir) {
-		if (position == null) return;
+		if (positions == null) return;
 
 		final boolean noOffset = offset.isEmpty();
 		final LocalPlayer clientPlayer = Minecraft.getInstance().player;
