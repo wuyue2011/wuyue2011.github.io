@@ -82,6 +82,8 @@
     "gui.mtrsteamloco.config.client.shaderactive": "因其与 Optifine 冲突，立体轨道功能及渲染优化现无法使用。",
     "gui.mtrsteamloco.config.client.shadercompat": "使用渲染优化",
     "gui.mtrsteamloco.config.client.rail3d": "立体轨道模型",
+    "gui.mtrsteamloco.config.client.rail_deform": "轨道变形",
+    "gui.mtrsteamloco.config.client.rail_deform.description": "仅开启立体轨道模型时可用\n会优化计算方式避免轨道出现缝隙或挤压, 但会降低性能",
     "gui.mtrsteamloco.config.client.slider": "使用滑块调整姿态",
     "gui.mtrsteamloco.config.client.rail3d.description": "关闭立体轨道可使 WorldEdit 复制已连接的轨道节点造成的不可见的轨道节点可见。",
     "gui.mtrsteamloco.config.client.slsmoke": "显示蒸汽机车的烟雾",

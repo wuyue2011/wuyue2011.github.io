@@ -314,8 +314,9 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             final Matrix4f matrix = new Matrix4f();
             BlockPos pos = getWorldPos();
             matrix.translate(pos.getX() + 0.5F + translateX, pos.getY() + translateY, pos.getZ() + 0.5F + translateZ);
+            matrix.rotateY((float) Math.toRadians(180F - facing.toYRot()));
             matrix.rotateX(rotateX);
-            matrix.rotateY(rotateY + (float) Math.toRadians(180F - facing.toYRot()));
+            matrix.rotateY(rotateY);
             matrix.rotateZ(rotateZ);
             matrix.scale(scaleX, scaleY, scaleZ);
             return matrix;
