@@ -64,7 +64,13 @@ public interface IScreen {
         return Minecraft.getInstance().getWindow().getGuiScaledWidth();
     }
 
-    public static class WithTextrue extends Screen {
+    public static class WithTextrue extends WithTexture {
+        public WithTextrue(Component title) {
+            super(title);
+        }
+    }
+
+    public static class WithTexture extends Screen {
         public GraphicsTexture texture;
         public Scriptable state = new NativeObject();
 
@@ -72,9 +78,9 @@ public interface IScreen {
         public KeyPressResponder keyPressResponder = (screen, p_96552_, p_96553_, p_96554_) -> false;
         public InsertTextFunction insertTextFunction = (screen, text, p_96588_) -> {};
         public RenderFunction renderFunction = (screen, mouseX, mouseY, delta) -> {};
-        public Consumer<WithTextrue> tickFunction = screen -> {};
-        public BiConsumer<WithTextrue, List<Path>> onFilesDropFunction = (screen, paths) -> {};
-        public Consumer<WithTextrue> onCloseFunction = screen -> Minecraft.getInstance().setScreen(null);
+        public Consumer<WithTexture> tickFunction = screen -> {};
+        public BiConsumer<WithTexture, List<Path>> onFilesDropFunction = (screen, paths) -> {};
+        public Consumer<WithTexture> onCloseFunction = screen -> Minecraft.getInstance().setScreen(null);
         public MouseClickedFunction mouseClickedFunction = (screen, p_94695_, p_94696_, p_94697_) -> false;
         public MouseMovedFunction mouseMovedFunction = (screen, p_94758_, p_94759_) -> {};
         public IsMouseOverFunction isMouseOverFunction = (screen, p_94748_, p_94749_) -> false;
@@ -85,7 +91,7 @@ public interface IScreen {
         public MouseReleasedFunction mouseReleasedFunction = (screen, p_94742_, p_94743_, p_94744_) -> false;
         public boolean isPauseScreen = false;
 
-        public WithTextrue(Component title) {
+        public WithTexture(Component title) {
             super(title);
         }
 
@@ -327,51 +333,51 @@ public interface IScreen {
         }
 
         public interface InitFunction {
-            void init(WithTextrue screen, int width, int height);
+            void init(WithTexture screen, int width, int height);
         }
 
         public interface KeyPressResponder {
-            boolean keyPressed(WithTextrue screen, int p_96552_, int p_96553_, int p_96554_);
+            boolean keyPressed(WithTexture screen, int p_96552_, int p_96553_, int p_96554_);
         }
 
         public interface RenderFunction {
-            void render(WithTextrue screen, int mouseX, int mouseY, float delta);
+            void render(WithTexture screen, int mouseX, int mouseY, float delta);
         }
 
         public interface InsertTextFunction {
-            void insertText(WithTextrue screen, String text, boolean p_96588_);
+            void insertText(WithTexture screen, String text, boolean p_96588_);
         }
 
         public interface MouseClickedFunction {
-            boolean mouseClicked(WithTextrue screen, double p_94695_, double p_94696_, int p_94697_);
+            boolean mouseClicked(WithTexture screen, double p_94695_, double p_94696_, int p_94697_);
         }
 
         public interface MouseMovedFunction {
-            void mouseMoved(WithTextrue screen, double p_94758_, double p_94759_);
+            void mouseMoved(WithTexture screen, double p_94758_, double p_94759_);
         }
 
         public interface MouseReleasedFunction {
-            boolean mouseReleased(WithTextrue screen, double p_94753_, double p_94754_, int p_94755_);
+            boolean mouseReleased(WithTexture screen, double p_94753_, double p_94754_, int p_94755_);
         }
 
         public interface MouseDraggedFunction {
-            boolean mouseDragged(WithTextrue screen, double p_94740_, double p_94741_, int p_94742_, double p_94743_, double p_94744_);
+            boolean mouseDragged(WithTexture screen, double p_94740_, double p_94741_, int p_94742_, double p_94743_, double p_94744_);
         }
 
         public interface MouseScrolledFunction {
-            boolean mouseScrolled(WithTextrue screen, double p_94734_, double p_94735_, double p_94736_);
+            boolean mouseScrolled(WithTexture screen, double p_94734_, double p_94735_, double p_94736_);
         }
 
         public interface KeyReleasedFunction {
-            boolean keyReleased(WithTextrue screen, int p_94750_, int p_94751_, int p_94752_);
+            boolean keyReleased(WithTexture screen, int p_94750_, int p_94751_, int p_94752_);
         }
 
         public interface CharTypedFunction {
-            boolean charTyped(WithTextrue screen, char p_94732_, int p_94733_);
+            boolean charTyped(WithTexture screen, char p_94732_, int p_94733_);
         }
 
         public interface IsMouseOverFunction {
-            boolean isMouseOver(WithTextrue screen, double p_94748_, double p_94749_);
+            boolean isMouseOver(WithTexture screen, double p_94748_, double p_94749_);
         }
 
 

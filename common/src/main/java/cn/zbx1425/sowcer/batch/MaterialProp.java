@@ -26,7 +26,7 @@ import java.util.function.Function;
 public class MaterialProp {
 
     /** Name of the shader program. Must be loaded in ShaderManager. */
-    public String shaderName;
+    public String shaderName = "";
     /** The texture to use. Null disables texture. */
     public ResourceLocation texture;
 

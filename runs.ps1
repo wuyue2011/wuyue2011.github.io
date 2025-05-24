@@ -1,4 +1,4 @@
-$bf = "F:\mtr-ante\build"
+$bf = ".\build"
 $dp = "F:\mc\server\1.18.2_fabric\mods"
 $ep = "F:\mc\server\1.18.2_fabric\run.bat"
 

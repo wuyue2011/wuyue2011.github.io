@@ -512,103 +512,103 @@ const result = ComponentUtil.getString(component);// 转换为 String
   这是 `ANTE` 添加的 ListEntry，用于创建按钮列表。
   创建一个 `ButtonListEntry`，`tooltipSupplier` 可以为 `null`，表示没有提示。
 
-### IScreen.WithTextrue
+### IScreen.WithTexture
 
-通过 `WithTextrue` 您可以高度自定义一个 `Screen`，它向您提供了一个 [`GraphicsTexture`](js-dynamic-texture.md) 实例，您可以用他来绘制自己屏幕。以下用 `WithTextrue` 指代 `IScreen.WithTextrue`：
+通过 `WithTexture` 您可以高度自定义一个 `Screen`，它向您提供了一个 [`GraphicsTexture`](js-dynamic-texture.md) 实例，您可以用他来绘制自己屏幕。以下用 `WithTexture` 指代 `IScreen.WithTexture`：
 
-`WithTextrue` 继承自 `Screen` 类，但是由于 `Screen` 类被混淆了，所以如果您不去查映射表的话，您无法使用 `Screen` 类的方法。
+`WithTexture` 继承自 `Screen` 类，但是由于 `Screen` 类被混淆了，所以如果您不去查映射表的话，您无法使用 `Screen` 类的方法。
 
-`WithTextrue` 提供了以下几个属性：
+`WithTexture` 提供了以下几个属性：
 
-- `new WithTextrue(title: Component)`
+- `new WithTexture(title: Component)`
 
-  创建一个 `WithTextrue`。
+  创建一个 `WithTexture`。
 
-- `WithTextrue.texture: GraphicsTexture`
+- `WithTexture.texture: GraphicsTexture`
 
   一个 `GraphicsTexture` 实例，您可以用它来绘制自己屏幕。
   请注意，`GraphicsTexture` 的宽高是实际屏幕的宽高，其他地方的宽高是被缩放后的。
   可能您需要进行转换。
 
-- `WithTextrue.state: Object`
+- `WithTexture.state: Object`
 
   一个对象，您可以用它来存储一些状态。
 
-- `WithTextrue.isPauseScreen: boolean`
+- `WithTexture.isPauseScreen: boolean`
 
   一个布尔值，表示当前是否是暂停界面。
 
-- `WithTextrue.initFunction: InitFunction`
+- `WithTexture.initFunction: InitFunction`
 
-  一个初始化函数，它会在 `WithTextrue` 被创建时或者调整窗口大小时被调用。
-InitFunction: (screen: WithTextrue, width: int, height: int) => void
+  一个初始化函数，它会在 `WithTexture` 被创建时或者调整窗口大小时被调用。
+InitFunction: (screen: WithTexture, width: int, height: int) => void
 
-- `WithTextrue.keyPressResponder: KeyPressResponder`
+- `WithTexture.keyPressResponder: KeyPressResponder`
 
   一个键盘按下响应器，它会在用户按下某个键时被调用。
-KeyPressResponder: (screen: WithTextrue, i1: int, i2: int, i3: int) -> boolean
+KeyPressResponder: (screen: WithTexture, i1: int, i2: int, i3: int) -> boolean
 
-- `WithTextrue.insertTextFunction: InsertTextFunction`
+- `WithTexture.insertTextFunction: InsertTextFunction`
 
   一个插入文本函数，它会在用户输入文本时被调用。
-InsertTextFunction: (screen: WithTextrue, text: String, i1: int) -> void
+InsertTextFunction: (screen: WithTexture, text: String, i1: int) -> void
 
-- `WithTextrue.renderFunction: RenderFunction`
+- `WithTexture.renderFunction: RenderFunction`
 
   一个渲染函数，它会在屏幕渲染时被调用。
-RenderFunction: (screen: WithTextrue, mouseX: int, mouseY: int, delta: float) -> void
+RenderFunction: (screen: WithTexture, mouseX: int, mouseY: int, delta: float) -> void
 
-- `WithTextrue.tickFunction: Consumer<WithTextrue>`
+- `WithTexture.tickFunction: Consumer<WithTexture>`
 
   一个 tick 函数，它会在每一帧被调用。
 
-- `WithTextrue.onFilesDropFunction: BiConsumer<WithTextrue, List<Path>>`
+- `WithTexture.onFilesDropFunction: BiConsumer<WithTexture, List<Path>>`
 
   一个文件拖放函数，它会在用户拖放文件时被调用。
 
-- `WithTextrue.onCloseFunction: Consumer<WithTextrue>`
+- `WithTexture.onCloseFunction: Consumer<WithTexture>`
 
   一个关闭函数，它会在用户关闭窗口时被调用。
 
-- `WithTextrue.mouseClickedFunction: MouseClickedFunction`
+- `WithTexture.mouseClickedFunction: MouseClickedFunction`
 
   一个鼠标点击函数，它会在用户点击鼠标时被调用。
-MouseClickedFunction: (screen: WithTextrue, x: double, y: double, i: int) -> boolean
+MouseClickedFunction: (screen: WithTexture, x: double, y: double, i: int) -> boolean
 
-- `WithTextrue.mouseMovedFunction: MouseMovedFunction`
+- `WithTexture.mouseMovedFunction: MouseMovedFunction`
 
   一个鼠标移动函数，它会在鼠标移动时被调用。
-MouseMovedFunction: (screen: WithTextrue, x: double, y: double) -> void
+MouseMovedFunction: (screen: WithTexture, x: double, y: double) -> void
 
-- `WithTextrue.isMouseOverFunction: IsMouseOverFunction`
+- `WithTexture.isMouseOverFunction: IsMouseOverFunction`
 
   一个鼠标是否在某个组件上函数，它会在鼠标移动时被调用。
-IsMouseOverFunction: (screen: WithTextrue, x: double, y: double) -> boolean
+IsMouseOverFunction: (screen: WithTexture, x: double, y: double) -> boolean
 
-- `WithTextrue.charTypedFunction: CharTypedFunction`
+- `WithTexture.charTypedFunction: CharTypedFunction`
 
   一个字符输入函数，它会在用户输入字符时被调用。
-CharTypedFunction: (screen: WithTextrue, p_94732_: char, p_94733_: int) -> boolean
+CharTypedFunction: (screen: WithTexture, p_94732_: char, p_94733_: int) -> boolean
 
-- `WithTextrue.keyReleasedFunction: KeyReleasedFunction`
+- `WithTexture.keyReleasedFunction: KeyReleasedFunction`
 
   一个键盘释放函数，它会在用户释放某个键时被调用。
-KeyReleasedFunction: (screen: WithTextrue, p_94750_: int, p_94751_: int, p_94752_: int) -> void
+KeyReleasedFunction: (screen: WithTexture, p_94750_: int, p_94751_: int, p_94752_: int) -> void
 
-- `WithTextrue.mouseScrolledFunction: MouseScrolledFunction`
+- `WithTexture.mouseScrolledFunction: MouseScrolledFunction`
 
   一个鼠标滚动函数，它会在用户滚动鼠标时被调用。
-MouseScrolledFunction: (screen: WithTextrue, x: double, y: double, value: double) -> boolean
+MouseScrolledFunction: (screen: WithTexture, x: double, y: double, value: double) -> boolean
 
-- `WithTextrue.mouseDraggedFunction: MouseDraggedFunction`
+- `WithTexture.mouseDraggedFunction: MouseDraggedFunction`
 
   一个鼠标拖拽函数，它会在用户拖拽鼠标时被调用。
-MouseDraggedFunction: (screen: WithTextrue, sx: double, sy: double, ex: double, ey: double, i: int) -> void
+MouseDraggedFunction: (screen: WithTexture, sx: double, sy: double, ex: double, ey: double, i: int) -> void
 
-- `WithTextrue.mouseReleasedFunction: MouseReleasedFunction`
+- `WithTexture.mouseReleasedFunction: MouseReleasedFunction`
 
   一个鼠标释放函数，它会在用户释放鼠标时被调用。
-MouseReleasedFunction: (screen: WithTextrue, x: double, y: double, i: int) -> void
+MouseReleasedFunction: (screen: WithTexture, x: double, y: double, i: int) -> void
 
 #### 示例
 
@@ -621,7 +621,7 @@ let font = new Font("宋体", Font.PLAIN, 200);
 let str = "";
 
 function use(ctx, state, entity, player) {
-  const screen = new IScreen.WithTextrue(ComponentUtil.literal("screen"));
+  const screen = new IScreen.WithTexture(ComponentUtil.literal("screen"));
   screen.initFunction = (screen, w, h) => {
       let state = screen.state;
       if (state.str == null) state.str = "";
