@@ -18,17 +18,22 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.HitResult;
 import cn.zbx1425.mtrsteamloco.Main;
 import cn.zbx1425.mtrsteamloco.data.RailAngleExtra;
 import mtr.data.RailType;
 import mtr.data.Rail;
 import mtr.packet.PacketTrainDataGuiServer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import cn.zbx1425.mtrsteamloco.data.RailExtraSupplier;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -42,9 +47,32 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ItemRailModifier.class)
-public abstract class ItemRailModifierMixin {
+public abstract class ItemRailModifierMixin extends Item{
+	public ItemRailModifierMixin() {
+		super(null);
+	}
+
+	
     @Shadow(remap = false) RailType railType;
     @Shadow(remap = false) boolean isOneWay;
+
+	@Override
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+		HitResult hitResult = player.pick(20.0, 0.0f, false);
+		ItemStack stack = player.getItemInHand(hand);
+        if (hitResult.getType() == HitResult.Type.BLOCK) return InteractionResultHolder.pass(stack);
+		CompoundTag compoundTag = stack.getOrCreateTag();
+		int pathMode = compoundTag.getInt("path_mode");
+		pathMode = (pathMode + 1) % 2;
+		compoundTag.putInt("path_mode", pathMode);
+		Component comp;
+		switch (pathMode) {
+			case 1: comp = Text.translatable("tooltip.mtrsteamloco.rail.path_mode.bezier"); break;
+			default: comp = Text.translatable("tooltip.mtrsteamloco.rail.path_mode.original");
+		}
+		player.displayClientMessage(comp, true);
+		return InteractionResultHolder.success(stack);
+	}
 
     protected void onConnect(Level world, ItemStack stack, TransportMode transportMode, BlockState stateStart, BlockState stateEnd, BlockPos posStart, BlockPos posEnd, RailAngle facingStart, RailAngle facingEnd, Player player, RailwayData railwayData) {
 		if (railType.hasSavedRail && (railwayData.hasSavedRail(posStart) || railwayData.hasSavedRail(posEnd))) {
@@ -90,6 +118,11 @@ public abstract class ItemRailModifierMixin {
 			final boolean isValid = rail1.isValid() && rail2.isValid();
 
 			if (goodRadius && isValid && isValidContinuousMovement) {
+				int pathMode = stack.getOrCreateTag().getInt("path_mode");
+				if (pathMode != 0) {
+					((RailExtraSupplier) (Object) rail1).changePathMode(pathMode);
+					((RailExtraSupplier) (Object) rail2).changePathMode(pathMode);
+				}
 				railwayData.addRail(player, transportMode, posStart, posEnd, rail1, false);
 				final long newId = railwayData.addRail(player, transportMode, posEnd, posStart, rail2, true);
 				world.setBlockAndUpdate(posStart, stateStart.setValue(BlockNode.IS_CONNECTED, true));

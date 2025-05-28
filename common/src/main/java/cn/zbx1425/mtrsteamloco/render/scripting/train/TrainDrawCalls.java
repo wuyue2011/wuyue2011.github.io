@@ -1,7 +1,7 @@
 package cn.zbx1425.mtrsteamloco.render.scripting.train;
 
 import cn.zbx1425.mtrsteamloco.render.scripting.AbstractDrawCalls;
-import cn.zbx1425.mtrsteamloco.render.scripting.util.DynamicModelHolder;
+import cn.zbx1425.mtrsteamloco.render.scripting.util.client.DynamicModelHolder;
 import cn.zbx1425.sowcer.math.Matrix4f;
 import cn.zbx1425.sowcer.math.Vector3f;
 import cn.zbx1425.sowcerext.model.ModelCluster;

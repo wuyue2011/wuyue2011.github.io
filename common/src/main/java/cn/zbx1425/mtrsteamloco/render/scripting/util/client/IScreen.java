@@ -1,4 +1,4 @@
-package cn.zbx1425.mtrsteamloco.render.scripting.util;
+package cn.zbx1425.mtrsteamloco.render.scripting.util.client;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;

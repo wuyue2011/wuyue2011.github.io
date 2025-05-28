@@ -40,7 +40,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.InteractionHand;
 import cn.zbx1425.mtrsteamloco.render.scripting.rail.RailScriptContext;
-import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolder;
 import cn.zbx1425.mtrsteamloco.data.RailModelProperties;
 import cn.zbx1425.mtrsteamloco.data.RailModelRegistry;
 import mtr.item.ItemWithCreativeTabBase;

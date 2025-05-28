@@ -8,6 +8,7 @@ import mtr.data.TrainClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.entity.player.Player;
+import cn.zbx1425.mtrsteamloco.render.scripting.util.TimingUtil;
 
 public class RenderUtil {
 
@@ -24,6 +25,7 @@ public class RenderUtil {
         lastRenderedTick = MTRClient.getGameTick();
         frameSeconds = (double)ticksElapsed / 20.0;
         runningSeconds += frameSeconds;
+        TimingUtil.runningSeconds = runningSeconds;
     }
 
     public static boolean shouldSkipRenderTrain(TrainClient train) {

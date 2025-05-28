@@ -128,7 +128,7 @@ public class RollAnglesListEntry extends TooltipListEntry<String> implements Con
         ClientConfig.EntryGroup e0 = ClientConfig.rollAnglesListEntryGroup;
         ClientConfig.Entry e = e0.entries[0], e1 = e0.entries[1];
 
-        System.out.println("RollingOffset: " + supplier.getRollingOffset());
+        // System.out.println("RollingOffset: " + supplier.getRollingOffset());
 
         offsetInput = new SliderTextFieldGroup(
             e1.min, e1.max, e1.step, e1.modes[0],

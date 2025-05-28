@@ -207,6 +207,10 @@ public class Vector3f {
         return x() * x() + y() * y() + z() * z();
     }
 
+    public void add(double x, double y, double z) {
+        add((float) x, (float) y, (float) z);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

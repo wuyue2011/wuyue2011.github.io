@@ -1,4 +1,4 @@
-package cn.zbx1425.mtrsteamloco.render.scripting.util;
+package cn.zbx1425.mtrsteamloco.render.scripting.util.client;
 
 import cn.zbx1425.sowcer.util.GlStateTracker;
 import cn.zbx1425.sowcerext.model.ModelCluster;

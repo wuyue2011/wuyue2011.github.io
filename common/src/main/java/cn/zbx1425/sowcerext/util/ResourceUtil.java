@@ -2,7 +2,6 @@ package cn.zbx1425.sowcerext.util;
 
 import cn.zbx1425.sowcer.batch.MaterialProp;
 import mtr.mappings.Utilities;
-import mtr.mappings.UtilitiesClient;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -20,7 +19,7 @@ import java.util.Locale;
 public class ResourceUtil {
 
     public static String readResource(ResourceManager manager, ResourceLocation location) throws IOException {
-        final List<Resource> resources = UtilitiesClient.getResources(manager, location);
+        final List<Resource> resources = manager.getResources(location);
         if (resources.isEmpty()) return "";
         return IOUtils.toString(new BOMInputStream(Utilities.getInputStream(resources.get(0))), StandardCharsets.UTF_8);
     }

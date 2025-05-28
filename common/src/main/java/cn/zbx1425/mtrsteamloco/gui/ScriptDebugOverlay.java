@@ -3,8 +3,8 @@ package cn.zbx1425.mtrsteamloco.gui;
 import cn.zbx1425.mtrsteamloco.ClientConfig;
 import cn.zbx1425.mtrsteamloco.render.scripting.AbstractScriptContext;
 import cn.zbx1425.mtrsteamloco.render.scripting.ScriptContextManager;
-import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolder;
-import cn.zbx1425.mtrsteamloco.render.scripting.util.GraphicsTexture;
+import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolderBase;
+import cn.zbx1425.mtrsteamloco.render.scripting.util.client.GraphicsTexture;
 import com.google.common.base.Splitter;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -41,16 +41,16 @@ public class ScriptDebugOverlay {
         matrices.pushPose();
         matrices.translate(10, 10, 0);
 
-        Map<ScriptHolder, List<AbstractScriptContext>> contexts = new HashMap<>();
-        for (Map.Entry<AbstractScriptContext, ScriptHolder> entry : ScriptContextManager.livingContexts.entrySet()) {
+        Map<ScriptHolderBase, List<AbstractScriptContext>> contexts = new HashMap<>();
+        for (Map.Entry<AbstractScriptContext, ScriptHolderBase> entry : ScriptContextManager.livingContexts.entrySet()) {
             contexts.computeIfAbsent(entry.getValue(), k -> new java.util.ArrayList<>()).add(entry.getKey());
         }
 
         int y = 0;
         Font font = Minecraft.getInstance().font;
         int lineHeight = Mth.ceil(font.lineHeight * 1.2f);
-        for (Map.Entry<ScriptHolder, List<AbstractScriptContext>> entry : contexts.entrySet()) {
-            ScriptHolder holder = entry.getKey();
+        for (Map.Entry<ScriptHolderBase, List<AbstractScriptContext>> entry : contexts.entrySet()) {
+            ScriptHolderBase holder = entry.getKey();
             if (holder.failTime > 0) {
                 y = drawText(vdStuff, font, holder.name + " FAILED", 0, y, 0xFFFF0000);
                 if (holder.failException != null) {

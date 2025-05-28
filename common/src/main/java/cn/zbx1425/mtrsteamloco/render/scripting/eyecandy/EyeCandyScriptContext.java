@@ -2,7 +2,7 @@ package cn.zbx1425.mtrsteamloco.render.scripting.eyecandy;
 
 import cn.zbx1425.mtrsteamloco.block.BlockEyeCandy;
 import cn.zbx1425.mtrsteamloco.render.scripting.AbstractScriptContext;
-import cn.zbx1425.mtrsteamloco.render.scripting.util.DynamicModelHolder;
+import cn.zbx1425.mtrsteamloco.render.scripting.util.client.DynamicModelHolder;
 import cn.zbx1425.sowcer.math.Matrices;
 import cn.zbx1425.sowcer.math.Matrix4f;
 import cn.zbx1425.sowcerext.model.ModelCluster;

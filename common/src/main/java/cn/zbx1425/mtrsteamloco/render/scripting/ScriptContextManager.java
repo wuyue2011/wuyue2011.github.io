@@ -4,9 +4,9 @@ import java.util.*;
 
 public class ScriptContextManager {
 
-    public static final Map<AbstractScriptContext, ScriptHolder> livingContexts = new HashMap<>();
+    public static final Map<AbstractScriptContext, ScriptHolderBase> livingContexts = new HashMap<>();
 
-    public static void trackContext(AbstractScriptContext context, ScriptHolder scriptHolder) {
+    public static void trackContext(AbstractScriptContext context, ScriptHolderBase scriptHolder) {
         synchronized (livingContexts) {
             livingContexts.put(context, scriptHolder);
         }
@@ -14,8 +14,8 @@ public class ScriptContextManager {
 
     public static void disposeDeadContexts() {
         synchronized (livingContexts) {
-            for (Iterator<Map.Entry<AbstractScriptContext, ScriptHolder>> it = livingContexts.entrySet().iterator(); it.hasNext(); ) {
-                Map.Entry<AbstractScriptContext, ScriptHolder> entry = it.next();
+            for (Iterator<Map.Entry<AbstractScriptContext, ScriptHolderBase>> it = livingContexts.entrySet().iterator(); it.hasNext(); ) {
+                Map.Entry<AbstractScriptContext, ScriptHolderBase> entry = it.next();
                 if (!entry.getKey().isBearerAlive() || entry.getKey().disposed) {
                     if (entry.getKey().created) {
                         entry.getValue().tryCallDisposeFunctionAsync(entry.getKey());

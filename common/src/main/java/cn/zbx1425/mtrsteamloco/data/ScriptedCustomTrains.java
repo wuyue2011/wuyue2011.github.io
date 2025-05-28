@@ -3,7 +3,8 @@ package cn.zbx1425.mtrsteamloco.data;
 import cn.zbx1425.mtrsteamloco.Main;
 import cn.zbx1425.mtrsteamloco.render.integration.MtrModelRegistryUtil;
 import cn.zbx1425.mtrsteamloco.render.scripting.train.ScriptedTrainRenderer;
-import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolder;
+import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolderBase;
+import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolderClient;
 import cn.zbx1425.sowcerext.util.ResourceUtil;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -42,7 +43,7 @@ public class ScriptedCustomTrains implements IResourcePackCreatorProperties, ICu
                         final boolean isJacobsBogie = getOrDefault(jsonObject, "is_jacobs_bogie", prevTrainProp.isJacobsBogie, JsonElement::getAsBoolean);
                         final float bogiePosition = getOrDefault(jsonObject, "bogie_position", prevTrainProp.bogiePosition, JsonElement::getAsFloat);
 
-                        ScriptHolder scriptContext = new ScriptHolder();
+                        ScriptHolderBase scriptContext = new ScriptHolderClient();
                         Map<ResourceLocation, String> scripts = new Object2ObjectArrayMap<>();
                         if (jsonObject.has("script_texts")) {
                             JsonArray scriptTexts = jsonObject.get("script_texts").getAsJsonArray();
@@ -58,7 +59,7 @@ public class ScriptedCustomTrains implements IResourcePackCreatorProperties, ICu
                                 scripts.put(scriptLocation, null);
                             }
                         }
-                        scriptContext.load("Train " + entry.getKey(), "Train", resourceManager, scripts, jsonObject, entry.getKey());
+                        scriptContext.load("Train " + entry.getKey(), "Train", resourceManager, scripts, jsonObject, entry.getKey(), "create", "render", "dispose");
 
                         boolean dummyBaseTrain = jsonObject.has("base_type");
                         String baseTrainType = dummyBaseTrain ? jsonObject.get("base_type").getAsString() : prevTrainProp.baseTrainType;

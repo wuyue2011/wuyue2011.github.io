@@ -127,5 +127,7 @@
     "gui.mtrsteamloco.direct_node.success_bind": "直线节点绑定成功",
     "gui.mtrsteamloco.direct_node.unbind": "解除绑定",
     "tooltip.mtrsteamloco.direct_node.bound": "§b已绑定: %s°",
-    "tooltip.mtrsteamloco.direct_node.unbound": "未绑定"
+    "tooltip.mtrsteamloco.direct_node.unbound": "未绑定",
+    "tooltip.mtrsteamloco.rail.path_mode.bezier": "路径模式: 贝塞尔曲线",
+    "tooltip.mtrsteamloco.rail.path_mode.original": "路径模式: 原版"
 }

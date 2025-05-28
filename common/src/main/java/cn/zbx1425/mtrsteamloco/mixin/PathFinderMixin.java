@@ -22,14 +22,14 @@ public abstract class PathFinderMixin {
 
     @Inject(method = "findPath", at = @At("HEAD"), cancellable = true, remap = false)
     private static void findPath(List<PathData> path, Map<BlockPos, Map<BlockPos, Rail>> rails, List<SavedRailBase> savedRailBases, int stopIndexOffset, int cruisingAltitude, boolean useFastSpeed, CallbackInfoReturnable<Integer> cir) {
-        System.out.println("Mixin findPath");
+        // System.out.println("Mixin findPath");
         cir.setReturnValue(BetterPathFinder.findPath(path, rails, savedRailBases, stopIndexOffset, cruisingAltitude, useFastSpeed));
         cir.cancel();
     }
 
     @Inject(method = "appendPath", at = @At("HEAD"), cancellable = true, remap = false)
     private static void appendPath(List<PathData> path, List<PathData> partialPath, CallbackInfo ci) {
-        System.out.println("Mixin appendPath");
+        // System.out.println("Mixin appendPath");
         BetterPathFinder.appendPath(path, partialPath);
         ci.cancel();
     }

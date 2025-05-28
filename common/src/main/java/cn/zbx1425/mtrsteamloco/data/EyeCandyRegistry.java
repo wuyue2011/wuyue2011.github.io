@@ -3,7 +3,8 @@ package cn.zbx1425.mtrsteamloco.data;
 import cn.zbx1425.mtrsteamloco.Main;
 import cn.zbx1425.mtrsteamloco.MainClient;
 import cn.zbx1425.mtrsteamloco.render.integration.MtrModelRegistryUtil;
-import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolder;
+import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolderBase;
+import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolderClient;
 import cn.zbx1425.sowcer.math.Vector3f;
 import cn.zbx1425.sowcerext.model.ModelCluster;
 import cn.zbx1425.sowcerext.model.RawModel;
@@ -120,9 +121,9 @@ public class EyeCandyRegistry {
 
             cluster = MainClient.modelManager.uploadVertArrays(rawModel);
         }
-        ScriptHolder script = null;
+        ScriptHolderBase script = null;
         if (obj.has("scriptFiles")) {
-            script = new ScriptHolder();
+            script = new ScriptHolderClient();
             Map<ResourceLocation, String> scripts = new Object2ObjectArrayMap<>();
             if (obj.has("scriptTexts")) {
                 JsonArray scriptTexts = obj.get("scriptTexts").getAsJsonArray();
@@ -136,7 +137,7 @@ public class EyeCandyRegistry {
                 ResourceLocation scriptLocation = new ResourceLocation(scriptFiles.get(i).getAsString());
                 scripts.put(scriptLocation, ResourceUtil.readResource(resourceManager, scriptLocation));
             }
-            script.load("EyeCandy " + key, "Block", resourceManager, scripts, obj, key);
+            script.load("EyeCandy " + key, "Block", resourceManager, scripts, obj, key, "create", "render", "dispose", "use");
         }
         String shape = obj.has("shape")? obj.get("shape").getAsString() : "0, 0, 0, 16, 16, 16";
         String collisionShape = obj.has("collisionShape") ? obj.get("collisionShape").getAsString() : "0, 0, 0, 0, 0, 0";

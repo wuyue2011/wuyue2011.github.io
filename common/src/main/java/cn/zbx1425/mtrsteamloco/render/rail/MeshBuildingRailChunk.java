@@ -20,6 +20,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import cn.zbx1425.mtrsteamloco.data.RailModelProperties;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mtr.data.Rail;
 import net.minecraft.world.level.LightLayer;
 import cn.zbx1425.sowcerext.reuse.DrawScheduler;
@@ -62,12 +63,17 @@ public class MeshBuildingRailChunk extends RailChunkBase {
         super.rebuildBuffer(world);
         if (railModel == null) return;
 
-        RawModel combinedModel = ClientConfig.enableRailDeform ? transformModelDeform(world) : transformModel(world);
-        if (vertArrays != null) vertArrays.close();
-        if (uploadedCombinedModel != null) uploadedCombinedModel.close();
-        uploadedCombinedModel = combinedModel.upload(RAIL_MAPPING);
-        vertArrays = VertArrays.createAll(uploadedCombinedModel, RAIL_MAPPING, null);
-        checkBoundingBox();
+        EXECUTOR.execute(() -> {
+            RawModel combinedModel = ClientConfig.enableRailDeform ? transformModelDeform(world) : transformModel(world);
+            checkBoundingBox();
+            
+            if (vertArrays != null) vertArrays.close();
+            if (uploadedCombinedModel != null) uploadedCombinedModel.close();
+            UPLOAD_QUEUE.offer(() -> {
+                uploadedCombinedModel = combinedModel.upload(RAIL_MAPPING);
+                vertArrays = VertArrays.createAll(uploadedCombinedModel, RAIL_MAPPING, null);
+            });
+        });
     }
 
     private RawModel transformModel(Level world) {
@@ -171,5 +177,7 @@ public class MeshBuildingRailChunk extends RailChunkBase {
     public void close() {
         if (vertArrays != null) vertArrays.close();
         if (uploadedCombinedModel != null) uploadedCombinedModel.close();
+        vertArrays = null;
+        uploadedCombinedModel = null;
     }
 }

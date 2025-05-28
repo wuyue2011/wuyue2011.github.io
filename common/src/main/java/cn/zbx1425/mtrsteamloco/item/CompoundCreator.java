@@ -39,7 +39,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.InteractionHand;
 import cn.zbx1425.mtrsteamloco.render.scripting.rail.RailScriptContext;
-import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolder;
+import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolderBase;
 import cn.zbx1425.mtrsteamloco.data.RailModelProperties;
 import cn.zbx1425.mtrsteamloco.data.RailModelRegistry;
 
@@ -514,9 +514,9 @@ public class CompoundCreator extends ItemNodeModifierBase {
             if (prop == null) return;
             if (prop.script == null) return;
             RailScriptContext ctx = new RailScriptContext(rail);
-            ScriptHolder script = prop.script;
-            script.callFunctionAsync(script.createFunctions, ctx, () -> {
-                script.callFunctionAsync(script.disposeFunctions, ctx, () -> {
+            ScriptHolderBase script = prop.script;
+            script.callFunctionAsync(script.functions.get("create"), ctx, () -> {
+                script.callFunctionAsync(script.functions.get("dispose"), ctx, () -> {
                     ctx.created = false;
                 });
             });

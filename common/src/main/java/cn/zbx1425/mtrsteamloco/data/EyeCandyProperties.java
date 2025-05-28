@@ -1,6 +1,6 @@
 package cn.zbx1425.mtrsteamloco.data;
 
-import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolder;
+import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolderBase;
 import cn.zbx1425.sowcerext.model.ModelCluster;
 import net.minecraft.network.chat.Component;
 import mtr.mappings.Text;
@@ -15,7 +15,7 @@ public class EyeCandyProperties implements Closeable {
     public Component name;
 
     public ModelCluster model;
-    public ScriptHolder script;
+    public ScriptHolderBase script;
     public String shape;
     public String collisionShape;
     public boolean fixedMatrix;
@@ -24,7 +24,7 @@ public class EyeCandyProperties implements Closeable {
     public boolean isEntrance;
     public boolean asPlatform;
 
-    public EyeCandyProperties(Component name, ModelCluster model, ScriptHolder script, String shape, String collisionShape, boolean fixedMatrix, int lightLevel, boolean isTicketBarrier, boolean isEntrance, boolean asPlatform) {
+    public EyeCandyProperties(Component name, ModelCluster model, ScriptHolderBase script, String shape, String collisionShape, boolean fixedMatrix, int lightLevel, boolean isTicketBarrier, boolean isEntrance, boolean asPlatform) {
         this.name = name;
         this.model = model;
         this.script = script;

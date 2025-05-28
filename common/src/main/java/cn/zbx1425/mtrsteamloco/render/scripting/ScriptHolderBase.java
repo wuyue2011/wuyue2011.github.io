@@ -1,19 +1,9 @@
 package cn.zbx1425.mtrsteamloco.render.scripting;
 
 import cn.zbx1425.mtrsteamloco.Main;
-import cn.zbx1425.mtrsteamloco.MainClient;
 import cn.zbx1425.mtrsteamloco.render.scripting.util.*;
-import cn.zbx1425.sowcer.math.Matrices;
-import mtr.mappings.UtilitiesClient;
-import cn.zbx1425.sowcer.math.Matrix4f;
-import cn.zbx1425.sowcer.math.Vector3f;
-import cn.zbx1425.sowcerext.model.RawMesh;
-import mtr.client.IDrawing;
-import cn.zbx1425.sowcerext.model.RawModel;
-import cn.zbx1425.sowcerext.model.ModelCluster;
-import cn.zbx1425.sowcerext.model.integration.RawMeshBuilder;
+import cn.zbx1425.sowcer.math.*;
 import cn.zbx1425.sowcerext.util.ResourceUtil;
-import mtr.client.ClientData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -21,33 +11,27 @@ import vendor.cn.zbx1425.mtrsteamloco.org.mozilla.javascript.*;
 import mtr.block.IBlock;
 import net.minecraft.world.entity.player.Player;
 import cn.zbx1425.mtrsteamloco.render.scripting.util.WrappedEntity;
-import cn.zbx1425.mtrsteamloco.render.scripting.AbstractDrawCalls;
-import cn.zbx1425.mtrsteamloco.ClientConfig;
 import cn.zbx1425.mtrsteamloco.data.ShapeSerializer;
-import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
 import net.minecraft.network.chat.Component;
-import cn.zbx1425.mtrsteamloco.render.scripting.rail.RailDrawCalls.*;
 import com.google.gson.JsonObject;
-import cn.zbx1425.mtrsteamloco.CustomResources;
 import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class ScriptHolder {
+public abstract class ScriptHolderBase {
 
     private static ExecutorService SCRIPT_THREAD = Executors.newSingleThreadExecutor();
 
+    public final String side;
     private Scriptable scope;
-    public final List<Function> createFunctions = new ArrayList<>();
-    public final List<Function> renderFunctions = new ArrayList<>();
-    public final List<Function> disposeFunctions = new ArrayList<>();
-    public final List<Function> useFunctions = new ArrayList<>();
+    public final Map<String, List<Function>> functions = new HashMap<>();
 
     public long failTime = 0;
     public Exception failException = null;
@@ -59,14 +43,15 @@ public class ScriptHolder {
     private JsonObject config;
     private String key;
 
-    public void load(String name, String contextTypeName, ResourceManager resourceManager, Map<ResourceLocation, String> scripts, JsonObject config, String key) throws Exception {
+    public ScriptHolderBase(String side) {
+        this.side = side;
+    }
+
+    public void load(String name, String contextTypeName, ResourceManager resourceManager, Map<ResourceLocation, String> scripts, JsonObject config, String key, String... functionNames) throws Exception {
         this.name = name;
         this.contextTypeName = contextTypeName;
         this.scripts = scripts;
-        this.createFunctions.clear();
-        this.renderFunctions.clear();
-        this.disposeFunctions.clear();
-        this.useFunctions.clear();
+        functions.clear();
         this.failTime = 0;
         this.failException = null;
         this.config = config;
@@ -76,6 +61,7 @@ public class ScriptHolder {
         rhinoCtx.setLanguageVersion(Context.VERSION_ES6);
         try {
             scope = createImporter(rhinoCtx, config, key);
+            appendImporter(scope, rhinoCtx);
 
             // Run scripts
             ScriptResourceUtil.activeContext = rhinoCtx;
@@ -84,14 +70,10 @@ public class ScriptHolder {
                 String scriptStr = entry.getValue() == null
                         ? ResourceUtil.readResource(resourceManager, entry.getKey()) : entry.getValue();
                 ScriptResourceUtil.executeScript(rhinoCtx, scope, entry.getKey(), scriptStr);
-                acquireFunction("create", createFunctions);
-                acquireFunction("create" + contextTypeName, createFunctions);
-                acquireFunction("render", renderFunctions);
-                acquireFunction("render" + contextTypeName, renderFunctions);
-                acquireFunction("dispose", disposeFunctions);
-                acquireFunction("dispose" + contextTypeName, disposeFunctions);
-                acquireFunction("use", useFunctions);
-                acquireFunction("use" + contextTypeName, useFunctions);
+                for (String functionName : functionNames) {
+                    acquireFunction(functionName, functionName);
+                    acquireFunction(functionName + contextTypeName, functionName);
+                }
             }
             ScriptResourceUtil.activeContext = null;
             ScriptResourceUtil.activeScope = null;
@@ -100,8 +82,12 @@ public class ScriptHolder {
         }
     }
 
-    private static ImporterTopLevel createImporter(Context rhinoCtx, JsonObject config, String key) throws Exception {
+    protected abstract void appendImporter(Scriptable scope, Context rhinoCtx);
+
+    private ImporterTopLevel createImporter(Context rhinoCtx, JsonObject config, String key) throws Exception {
         ImporterTopLevel scope = new ImporterTopLevel(rhinoCtx);
+
+        scope.put("SIDE", scope, side);
 
         // Populate Scope with global functions
         scope.put("include", scope, new NativeJavaMethod(
@@ -111,49 +97,22 @@ public class ScriptHolder {
         scope.put("asJavaArray", scope, new NativeJavaMethod(
                 JsFriendlyJavaUtils.class.getMethod("asJavaArray", List.class, Class.class), "asJavaArray"));
 
-        scope.put("Resources", scope, new NativeJavaClass(scope, ScriptResourceUtil.class));
-        scope.put("GraphicsTexture", scope, new NativeJavaClass(scope, GraphicsTexture.class));
+        // scope.put("Resources", scope, new NativeJavaClass(scope, ScriptResourceUtil.class));
         scope.put("Timing", scope, new NativeJavaClass(scope, TimingUtil.class));
         scope.put("StateTracker", scope, new NativeJavaClass(scope, StateTracker.class));
         scope.put("CycleTracker", scope, new NativeJavaClass(scope, CycleTracker.class));
         scope.put("RateLimit", scope, new NativeJavaClass(scope, RateLimit.class));
         scope.put("TextUtil", scope, new NativeJavaClass(scope, TextUtil.class));
-        scope.put("SoundHelper", scope, new NativeJavaClass(scope, SoundHelper.class));
-        scope.put("ParticleHelper", scope, new NativeJavaClass(scope, ParticleHelper.class));
-        scope.put("TickableSound", scope, new NativeJavaClass(scope, TickableSound.class));
         scope.put("GlobalRegister", scope, new NativeJavaClass(scope, GlobalRegister.class));
         scope.put("WrappedEntity", scope, new NativeJavaClass(scope, WrappedEntity.class));
         scope.put("ComponentUtil", scope, new NativeJavaClass(scope, ComponentUtil.class));
-        scope.put("IScreen", scope, new NativeJavaClass(scope, IScreen.class));
         scope.put("OrderedMap", scope, new NativeJavaClass(scope, OrderedMap.class));   
         scope.put("PlacementOrder", scope, new NativeJavaClass(scope, OrderedMap.PlacementOrder.class));
         scope.put("ShapeSerializer", scope, new NativeJavaClass(scope, ShapeSerializer.class));
-        scope.put("ConfigResponder", scope, new NativeJavaClass(scope, ConfigResponder.class));
-        scope.put("ClientConfig", scope, new NativeJavaClass(scope, ClientConfig.class));
-        scope.put("MinecraftClient", scope, new NativeJavaClass(scope, MinecraftClientUtil.class));
-
-        scope.put("DrawCall", scope, new NativeJavaClass(scope, AbstractDrawCalls.DrawCall.class));
-        scope.put("ClusterDrawCall", scope, new NativeJavaClass(scope, AbstractDrawCalls.ClusterDrawCall.class));
-        scope.put("WorldDrawCall", scope, new NativeJavaClass(scope, AbstractDrawCalls.WorldDrawCall.class));
-        scope.put("RailDrawCall", scope, new NativeJavaClass(scope, RailDrawCall.class));
-        scope.put("SimpleRailDrawCall", scope, new NativeJavaClass(scope, SimpleRailDrawCall.class));
-
-        scope.put("ModelManager", scope, Context.toObject(MainClient.modelManager, scope));
-        scope.put("RawModel", scope, new NativeJavaClass(scope, RawModel.class));
-        scope.put("RawMesh", scope, new NativeJavaClass(scope, RawMesh.class));
-        scope.put("RawMeshBuilder", scope, new NativeJavaClass(scope, RawMeshBuilder.class));
-        scope.put("ModelCluster", scope, new NativeJavaClass(scope, ModelCluster.class));
-        scope.put("DynamicModelHolder", scope, new NativeJavaClass(scope, DynamicModelHolder.class));
 
         scope.put("Matrices", scope, new NativeJavaClass(scope, Matrices.class));
         scope.put("Matrix4f", scope, new NativeJavaClass(scope, Matrix4f.class));
         scope.put("Vector3f", scope, new NativeJavaClass(scope, Vector3f.class));   
-        
-        
-        scope.put("MTRClientData", scope, new NativeJavaClass(scope, ClientData.class));
-        scope.put("IBlock", scope, new NativeJavaClass(scope, IBlock.class));
-        scope.put("UtilitiesClient", scope, new NativeJavaClass(scope, UtilitiesClient.class));
-        scope.put("IDrawing", scope, new NativeJavaClass(scope, IDrawing.class));
         
         scope.put("Component", scope, new NativeJavaClass(scope, Component.class));
         
@@ -165,27 +124,8 @@ public class ScriptHolder {
         scope.put("CONFIG_INFO", scope, jsonStr);
         String code = "CONFIG_INFO = JSON.parse(CONFIG_INFO);";
         rhinoCtx.evaluateString(scope, code, "parse CONFIG_INFO", 1, null);
-
-        try {
-            String[] classesToLoad = {
-                    "util.AddParticleHelper",
-                    "particle.MadParticleOption",
-                    "particle.SpriteFrom",
-                    "command.inheritable.InheritableBoolean",
-                    "particle.ParticleRenderTypes",
-                    "particle.ChangeMode"
-            };
-            for (String classToLoad : classesToLoad) {
-                Class<?> classToLoadClass = Class.forName("cn.ussshenzhou.madparticle." + classToLoad);
-                scope.put(classToLoad.substring(classToLoad.lastIndexOf(".") + 1), scope,
-                        new NativeJavaClass(scope, classToLoadClass));
-            }
-            scope.put("foundMadParticle", scope, true);
-        } catch (ClassNotFoundException ignored) {
-            // Main.LOGGER.warn("MadParticle", ignored);
-            scope.put("foundMadParticle", scope, false);
-        }
         scope.put("CompoundTag", scope, new NativeJavaClass(scope, CompoundTag.class));
+        
         rhinoCtx.evaluateString(scope, "\"use strict\"", "", 1, null);
 
         return scope;
@@ -195,17 +135,23 @@ public class ScriptHolder {
         load(name, contextTypeName, resourceManager, scripts, config, key);
     }
 
-    private void acquireFunction(String functionName, List<Function> target) {
+    private void acquireFunction(String functionName, String dest) {
         Object jsFunction = scope.get(functionName, scope);
         if (jsFunction != Scriptable.NOT_FOUND) {
             if (jsFunction instanceof Function) {
-                target.add((Function)jsFunction);
+                List<Function> functions = this.functions.get(functionName);
+                if (functions == null) {
+                    functions = new ArrayList<>();
+                    this.functions.put(functionName, functions);
+                }
+                functions.add((Function)jsFunction);
             }
             scope.delete(functionName);
         }
     }
 
     public Future<?> callFunctionAsync(List<Function> functions, AbstractScriptContext scriptCtx, Runnable finishCallback, Object... args) {
+        if (functions == null) return null;
         if (duringFailTimeout()) return null;
         failTime = 0;
         return SCRIPT_THREAD.submit(() -> {
@@ -237,37 +183,30 @@ public class ScriptHolder {
         });
     }
 
-    public void tryCallRenderFunctionAsync(AbstractScriptContext scriptCtx) {
+    public void tryCallFunctionAsync(String function, AbstractScriptContext scriptCtx, Runnable callback, Object... args) {
         if (!(scriptCtx.scriptStatus == null || scriptCtx.scriptStatus.isDone())) return;
         if (scriptCtx.disposed) return;
+        List<Function> functions = this.functions.get(function);
+        if (functions == null) return;
+        scriptCtx.scriptStatus = callFunctionAsync(functions, scriptCtx, callback, args);
+    }
+
+    public void tryCallRenderFunctionAsync(AbstractScriptContext scriptCtx) {
+        ScriptContextManager.trackContext(scriptCtx, this);
         if (!scriptCtx.created) {
-            ScriptContextManager.trackContext(scriptCtx, this);
-            scriptCtx.scriptStatus = callFunctionAsync(createFunctions, scriptCtx, () -> {
-                scriptCtx.created = true;
-            });
-            return;
-        }
-        if (scriptCtx.scriptStatus == null || scriptCtx.scriptStatus.isDone()) {
-            scriptCtx.scriptStatus = callFunctionAsync(renderFunctions, scriptCtx, scriptCtx::renderFunctionFinished);
+            tryCallFunctionAsync("create", scriptCtx, () -> scriptCtx.created = true, true);
+        } else {
+            tryCallFunctionAsync("render", scriptCtx, null, true);
         }
     }
 
     public void tryCallDisposeFunctionAsync(AbstractScriptContext scriptCtx) {
-        if (!(scriptCtx.scriptStatus == null || scriptCtx.scriptStatus.isDone())) return;
         scriptCtx.disposed = true;
-        if (scriptCtx.created) {
-            scriptCtx.scriptStatus = callFunctionAsync(disposeFunctions, scriptCtx, () -> {
-                scriptCtx.created = false;
-            });
-        }
+        tryCallFunctionAsync("dispose", scriptCtx, () -> scriptCtx.created = false, false);
     }
 
-    public void tryCallBeClickedFunctionAsync(AbstractScriptContext scriptCtx, Player player) {
-        if (!(scriptCtx.scriptStatus == null || scriptCtx.scriptStatus.isDone())) return;
-        if (scriptCtx.disposed) return;
-        if (scriptCtx.created) {
-            scriptCtx.scriptStatus = callFunctionAsync(useFunctions, scriptCtx, null, new WrappedEntity(player));
-        }
+    public void tryCallUseFunctionAsync(AbstractScriptContext scriptCtx, Player player) {
+        tryCallFunctionAsync("use", scriptCtx, null, true, new WrappedEntity(player));
     }
 
     private boolean duringFailTimeout() {

@@ -2,14 +2,12 @@ package cn.zbx1425.mtrsteamloco.render.scripting;
 
 import cn.zbx1425.mtrsteamloco.BuildConfig;
 import cn.zbx1425.mtrsteamloco.Main;
-import cn.zbx1425.mtrsteamloco.mixin.ClientCacheAccessor;
 import cn.zbx1425.mtrsteamloco.render.integration.MtrModelRegistryUtil;
-import cn.zbx1425.mtrsteamloco.render.scripting.util.GraphicsTexture;
+import cn.zbx1425.mtrsteamloco.render.scripting.util.client.GraphicsTexture;
 import cn.zbx1425.sowcerext.util.ResourceUtil;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import mtr.client.ClientData;
 import mtr.mappings.Utilities;
-import mtr.mappings.UtilitiesClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleType;
 #if MC_VERSION >= "11903"
@@ -53,10 +51,6 @@ public class ScriptResourceUtil {
 
     static {
         Main.LOGGER.info("NTE version: " + getNTEVersion() + " (int " + getNTEVersionInt() + ") (protocol " + getNTEProtoVersion() + ")");
-    }
-
-    public static void init(ResourceManager resourceManager) {
-        hasNotoSansCjk = UtilitiesClient.hasResource(NOTO_SANS_CJK_LOCATION);
     }
 
     public static void executeScript(Context rhinoCtx, Scriptable scope, ResourceLocation scriptLocation, String script) {
@@ -116,13 +110,13 @@ public class ScriptResourceUtil {
     }
 
     public static InputStream readStream(ResourceLocation identifier) throws IOException {
-        final List<Resource> resources = UtilitiesClient.getResources(manager(), identifier);
+        final List<Resource> resources = manager().getResources(identifier);
         if (resources.isEmpty()) throw new FileNotFoundException(identifier.toString());
         return Utilities.getInputStream(resources.get(0));
     }
 
     public static boolean hasResource(ResourceLocation identifier) {
-        return UtilitiesClient.hasResource(identifier);
+        return manager().hasResource(identifier);
     }
 
     public static String readString(ResourceLocation identifier) {
@@ -130,56 +124,6 @@ public class ScriptResourceUtil {
             return ResourceUtil.readResource(manager(), identifier);
         } catch (IOException e) {
             return null;
-        }
-    }
-
-    private static final ResourceLocation NOTO_SANS_CJK_LOCATION = new ResourceLocation(mtr.MTR.MOD_ID, "font/noto-sans-cjk-tc-medium.otf");
-    private static final ResourceLocation NOTO_SANS_LOCATION = new ResourceLocation(mtr.MTR.MOD_ID, "font/noto-sans-semibold.ttf");
-    private static final ResourceLocation NOTO_SERIF_LOCATION = new ResourceLocation(mtr.MTR.MOD_ID, "font/noto-serif-cjk-tc-semibold.ttf");
-    private static boolean hasNotoSansCjk = false;
-    private static Font NOTO_SANS_MAYBE_CJK;
-
-    public static Font getSystemFont(String fontName) {
-        ClientCacheAccessor clientCache = (ClientCacheAccessor) ClientData.DATA_CACHE;
-        ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
-        switch (fontName) {
-            case "Noto Sans" -> {
-                if (NOTO_SANS_MAYBE_CJK == null) {
-                    if (hasNotoSansCjk) {
-                        try {
-                            NOTO_SANS_MAYBE_CJK = Font.createFont(Font.TRUETYPE_FONT,
-                                    Utilities.getInputStream(resourceManager.getResource(NOTO_SANS_CJK_LOCATION)));
-                        } catch (Exception ex) {
-                            Main.LOGGER.warn("Failed loading font", ex);
-                        }
-                    } else {
-                        if (clientCache.getFont() == null) {
-                            try {
-                                clientCache.setFont(Font.createFont(Font.TRUETYPE_FONT,
-                                        Utilities.getInputStream(resourceManager.getResource(NOTO_SANS_LOCATION))));
-                            } catch (Exception ex) {
-                                Main.LOGGER.warn("Failed loading font", ex);
-                            }
-                        }
-                        NOTO_SANS_MAYBE_CJK = clientCache.getFont();
-                    }
-                }
-                return NOTO_SANS_MAYBE_CJK;
-            }
-            case "Noto Serif" -> {
-                if (clientCache.getFontCjk() == null) {
-                    try {
-                        clientCache.setFontCjk(Font.createFont(Font.TRUETYPE_FONT,
-                                Utilities.getInputStream(resourceManager.getResource(NOTO_SERIF_LOCATION))));
-                    } catch (Exception ex) {
-                        Main.LOGGER.warn("Failed loading font", ex);
-                    }
-                }
-                return clientCache.getFontCjk();
-            }
-            default -> {
-                return new Font(fontName, Font.PLAIN, 1);
-            }
         }
     }
 

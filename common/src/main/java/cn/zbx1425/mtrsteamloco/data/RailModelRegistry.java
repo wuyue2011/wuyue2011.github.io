@@ -18,7 +18,8 @@ import mtr.mappings.Utilities;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
-import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolder;
+import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolderBase;
+import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolderClient;
 import net.minecraft.server.packs.resources.ResourceManager;
 import cn.zbx1425.sowcerext.util.ResourceUtil;
 import org.apache.commons.io.FilenameUtils;
@@ -120,9 +121,9 @@ public class RailModelRegistry {
         float yOffset = obj.has("yOffset") ? obj.get("yOffset").getAsFloat() : 0f;
 
 
-        ScriptHolder script = null;
+        ScriptHolderBase script = null;
         if (obj.has("scriptFiles")) {
-            script = new ScriptHolder();
+            script = new ScriptHolderClient();
             Map<ResourceLocation, String> scripts = new Object2ObjectArrayMap<>();
             if (obj.has("scriptTexts")) {
                 JsonArray scriptTexts = obj.get("scriptTexts").getAsJsonArray();
@@ -136,7 +137,7 @@ public class RailModelRegistry {
                 ResourceLocation scriptLocation = new ResourceLocation(scriptFiles.get(i).getAsString());
                 scripts.put(scriptLocation, ResourceUtil.readResource(resourceManager, scriptLocation));
             }
-            script.load("Rail " + key, "Rail", resourceManager, scripts, obj, key);
+            script.load("Rail " + key, "Rail", resourceManager, scripts, obj, key, "create", "render", "dispose");
         }
 
         return new RailModelProperties(Text.translatable(obj.get("name").getAsString()), rawModel, repeatInterval, yOffset, script);

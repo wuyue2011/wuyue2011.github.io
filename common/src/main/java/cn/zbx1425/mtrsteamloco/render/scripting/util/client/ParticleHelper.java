@@ -1,4 +1,4 @@
-package cn.zbx1425.mtrsteamloco.render.scripting.util;
+package cn.zbx1425.mtrsteamloco.render.scripting.util.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;

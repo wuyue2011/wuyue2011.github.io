@@ -3,7 +3,7 @@ package cn.zbx1425.mtrsteamloco.render.scripting.train;
 import cn.zbx1425.mtrsteamloco.MainClient;
 import cn.zbx1425.mtrsteamloco.render.RenderUtil;
 import cn.zbx1425.mtrsteamloco.render.scripting.ScriptContextManager;
-import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolder;
+import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolderBase;
 import cn.zbx1425.sowcer.math.Matrix4f;
 import cn.zbx1425.sowcer.math.PoseStackUtil;
 import cn.zbx1425.sowcer.math.Vector3f;
@@ -26,13 +26,13 @@ import java.util.Map;
 
 public class ScriptedTrainRenderer extends TrainRendererBase {
 
-    public final ScriptHolder typeScripting;
+    public final ScriptHolderBase typeScripting;
     public final TrainRendererBase baseRenderer;
 
     private final TrainClient train;
     private final TrainScriptContext trainScripting;
 
-    public ScriptedTrainRenderer(ScriptHolder typeScripting, TrainRendererBase baseRenderer) {
+    public ScriptedTrainRenderer(ScriptHolderBase typeScripting, TrainRendererBase baseRenderer) {
         this.typeScripting = typeScripting;
         this.baseRenderer = baseRenderer;
         this.train = null;

@@ -9,18 +9,24 @@ import mtr.data.RailAngle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
-import cn.zbx1425.mtrsteamloco.render.scripting.util.DynamicModelHolder;
+import cn.zbx1425.mtrsteamloco.render.scripting.util.client.DynamicModelHolder;
 import cn.zbx1425.sowcerext.reuse.DrawScheduler;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public abstract class RailChunkBase implements Closeable {
+
+    protected static ExecutorService EXECUTOR = Executors.newCachedThreadPool();
+    protected static ConcurrentLinkedQueue<Runnable> UPLOAD_QUEUE = new ConcurrentLinkedQueue<>();
 
     public Long chunkId;
     public AABB boundingBox;
@@ -85,6 +91,13 @@ public abstract class RailChunkBase implements Closeable {
         bufferBuilt = true;
     }
     public abstract void enqueue(BatchManager batchManager, ShaderProp shaderProp);
+
+    public static void uploadAll() {
+        long start = System.currentTimeMillis();
+        while (System.currentTimeMillis() - start < 3 && !UPLOAD_QUEUE.isEmpty()) {
+            UPLOAD_QUEUE.poll().run();
+        }
+    }
 
     @Override
     public void close() {

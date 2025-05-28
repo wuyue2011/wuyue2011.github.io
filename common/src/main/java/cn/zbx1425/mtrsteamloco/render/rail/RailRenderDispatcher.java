@@ -162,6 +162,7 @@ public class RailRenderDispatcher {
 
         int maxRailDistance = MTRClient.isReplayMod() ? 64 * 16 : UtilitiesClient.getRenderDistance() * 16;
         boolean isOutsideRenderDistance = false;
+
         for (Iterator<RailChunkBase> it = railChunkList.iterator(); it.hasNext(); ) {
             RailChunkBase chunk = it.next();
             if (chunk.containingRails.isEmpty()) {
@@ -199,6 +200,8 @@ public class RailRenderDispatcher {
             prop.script.tryCallRenderFunctionAsync(rail.scriptContext);
             rail.scriptContext.commit(drawScheduler, viewMatrix, cullingFrustum, cameraPos, maxRailDistance);
         }
+
+        RailChunkBase.uploadAll();
     }
 
     public void drawRailNodes(Level level, DrawScheduler drawScheduler, Matrix4f viewMatrix) {

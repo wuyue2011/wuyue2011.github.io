@@ -54,7 +54,7 @@ import net.minecraft.world.phys.Vec3;
 import mtr.mappings.Utilities;
 import mtr.SoundEvents;
 import cn.zbx1425.mtrsteamloco.data.EyeCandyRegistry;
-import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolder;
+import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolderBase;
 import cn.zbx1425.mtrsteamloco.data.EyeCandyProperties;
 import cn.zbx1425.mtrsteamloco.data.ShapeSerializer;
 import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
@@ -117,7 +117,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
                 BlockEntity blockEntity = level.getBlockEntity(pos);
                 if (blockEntity instanceof BlockEntityEyeCandy) {
                     BlockEntityEyeCandy blockEntityEyeCandy = (BlockEntityEyeCandy) blockEntity;
-                    blockEntityEyeCandy.tryCallBeClickedFunctionAsync(player);
+                    blockEntityEyeCandy.tryCallUseFunctionAsync(player);
                 } else {
                     Main.LOGGER.warn("BlockEntityEyeCandy not found at " + pos + ", " + level);
                     return InteractionResult.PASS;
@@ -463,13 +463,13 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             return property != null ? property : EyeCandyProperties.DEFAULT;
         }
 
-        public void tryCallBeClickedFunctionAsync(Player player) {
+        public void tryCallUseFunctionAsync(Player player) {
             if (scriptContext == null) return;
             EyeCandyProperties prop = getProperties();
             if (prop == null) return;
-            ScriptHolder scriptHolder = prop.script;
+            ScriptHolderBase scriptHolder = prop.script;
             if (scriptHolder == null) return;
-            scriptHolder.tryCallBeClickedFunctionAsync(scriptContext, player);
+            scriptHolder.tryCallUseFunctionAsync(scriptContext, player);
         }
 
         public Map<String, String> getCustomConfigs() {

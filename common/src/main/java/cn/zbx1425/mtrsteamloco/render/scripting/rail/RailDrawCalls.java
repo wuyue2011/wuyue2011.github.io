@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import cn.zbx1425.sowcerext.model.ModelCluster;
-import cn.zbx1425.mtrsteamloco.render.scripting.util.DynamicModelHolder;
+import cn.zbx1425.mtrsteamloco.render.scripting.util.client.DynamicModelHolder;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.world.phys.AABB;

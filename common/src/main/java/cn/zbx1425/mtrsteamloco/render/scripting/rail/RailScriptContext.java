@@ -9,7 +9,7 @@ import cn.zbx1425.sowcer.math.Matrix4f;
 import cn.zbx1425.sowcer.math.Vector3f;
 import cn.zbx1425.sowcer.math.Matrices;
 import cn.zbx1425.sowcerext.model.ModelCluster;
-import cn.zbx1425.mtrsteamloco.render.scripting.util.DynamicModelHolder;
+import cn.zbx1425.mtrsteamloco.render.scripting.util.client.DynamicModelHolder;
 import static cn.zbx1425.mtrsteamloco.render.scripting.rail.RailDrawCalls.*;
 
 import java.util.HashMap;

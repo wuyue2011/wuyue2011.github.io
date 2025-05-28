@@ -55,6 +55,12 @@ public interface RailExtraSupplier {
 
     boolean isStraightOnly();
 
+    void changePathMode(int mode);
+
+    int getPathMode();
+
+    boolean isBetween(double x, double y, double z, double radius);
+
     static float getVTheta(Rail rail, double verticalCurveRadius) {
         double H = Math.abs(((RailExtraSupplier) rail).getHeight());
         double L = rail.getLength();

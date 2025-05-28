@@ -1,4 +1,4 @@
-package cn.zbx1425.mtrsteamloco.render.scripting.util;
+package cn.zbx1425.mtrsteamloco.render.scripting.util.client;
 
 import cn.zbx1425.mtrsteamloco.Main;
 import cn.zbx1425.mtrsteamloco.mixin.NativeImageAccessor;

@@ -6,7 +6,7 @@ import cn.zbx1425.mtrsteamloco.data.EyeCandyProperties;
 import cn.zbx1425.mtrsteamloco.data.EyeCandyRegistry;
 import cn.zbx1425.mtrsteamloco.gui.ErrorScreen;
 import cn.zbx1425.mtrsteamloco.render.integration.MtrModelRegistryUtil;
-import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolder;
+import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolderBase;
 import cn.zbx1425.mtrsteamloco.render.scripting.train.ScriptedTrainRenderer;
 import cn.zbx1425.sowcer.util.GlStateTracker;
 import mtr.client.TrainClientRegistry;
@@ -35,7 +35,7 @@ public class KeyboardHandlerMixin {
                 GlStateTracker.capture();
                 MtrModelRegistryUtil.loadingErrorList.clear();
                 MtrModelRegistryUtil.resourceManager = minecraft.getResourceManager();
-                // ScriptHolder.resetRunner();
+                ScriptHolderBase.resetRunner();
 
                 for (TransportMode transportMode : TransportMode.values()) {
                     TrainClientRegistry.forEach(transportMode, (id, prop) -> {
