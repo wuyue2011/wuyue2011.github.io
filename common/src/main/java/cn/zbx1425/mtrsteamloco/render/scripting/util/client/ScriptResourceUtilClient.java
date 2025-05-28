@@ -51,7 +51,7 @@ public class ScriptResourceUtilClient extends ScriptResourceUtil {
     private static final ResourceLocation NOTO_SERIF_LOCATION = new ResourceLocation(mtr.MTR.MOD_ID, "font/noto-serif-cjk-tc-semibold.ttf");
 
     public static void init(ResourceManager resourceManager) {
-        hasNotoSansCjk = resourceManager.hasResource(NOTO_SANS_CJK_LOCATION);
+        hasNotoSansCjk = hasResource(NOTO_SANS_CJK_LOCATION);
     }
     public static Font getSystemFont(String fontName) {
         ClientCacheAccessor clientCache = (ClientCacheAccessor) ClientData.DATA_CACHE;

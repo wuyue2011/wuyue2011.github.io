@@ -293,7 +293,7 @@ public abstract class RailMixin implements RailExtraSupplier {
     }
 
     private BlockPos round(Vec3 pos) {
-        return new BlockPos(Math.floor(pos.x), Math.floor(pos.y), Math.floor(pos.z));
+        return new BlockPos((int) Math.floor(pos.x), (int) Math.floor(pos.y), (int) Math.floor(pos.z));
     }
 
     private void genForBezier() {

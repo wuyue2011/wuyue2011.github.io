@@ -110,13 +110,22 @@ public class ScriptResourceUtil {
     }
 
     public static InputStream readStream(ResourceLocation identifier) throws IOException {
+#if MC_VERSION >= "11903"
+        final List<Resource> resources = manager().getResourceStack(identifier);
+#else
         final List<Resource> resources = manager().getResources(identifier);
+#endif
         if (resources.isEmpty()) throw new FileNotFoundException(identifier.toString());
         return Utilities.getInputStream(resources.get(0));
     }
 
     public static boolean hasResource(ResourceLocation identifier) {
+#if MC_VERSION >= "11903"
+        final List<Resource> resources = manager().getResourceStack(identifier);
+        return  resources != null && resources.size() > 0;
+#else
         return manager().hasResource(identifier);
+#endif
     }
 
     public static String readString(ResourceLocation identifier) {
