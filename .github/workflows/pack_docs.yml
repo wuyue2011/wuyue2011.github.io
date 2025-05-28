@@ -1,6 +1,6 @@
 name: Pack Documentation
 
-on: [push]
+on: [workflow_dispatch]
 
 jobs:
   pack:
