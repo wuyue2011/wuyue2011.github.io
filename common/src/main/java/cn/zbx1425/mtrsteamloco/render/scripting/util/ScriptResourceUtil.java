@@ -110,7 +110,7 @@ public class ScriptResourceUtil {
     }
 
     public static InputStream readStream(ResourceLocation identifier) throws IOException {
-#if MC_VERSION >= "11903"
+#if MC_VERSION >= "11902"
         final List<Resource> resources = manager().getResourceStack(identifier);
 #else
         final List<Resource> resources = manager().getResources(identifier);
@@ -120,7 +120,7 @@ public class ScriptResourceUtil {
     }
 
     public static boolean hasResource(ResourceLocation identifier) {
-#if MC_VERSION >= "11903"
+#if MC_VERSION >= "11902"
         final List<Resource> resources = manager().getResourceStack(identifier);
         return  resources != null && resources.size() > 0;
 #else

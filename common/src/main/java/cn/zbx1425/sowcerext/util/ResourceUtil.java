@@ -19,7 +19,7 @@ import java.util.Locale;
 public class ResourceUtil {
 
     public static String readResource(ResourceManager manager, ResourceLocation location) throws IOException {
-#if MC_VERSION >= "11903"
+#if MC_VERSION >= "11902"
         final List<Resource> resources = manager.getResourceStack(location);
 #else
         final List<Resource> resources = manager.getResources(location);
