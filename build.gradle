@@ -32,6 +32,7 @@ configure(subprojects.findAll {it.name != 'rhino'}) {
 
 	dependencies {
 		compileOnly("com.github.stuxuhai:jpinyin:1.1.7")
+		implementation 'org.joml:joml:+'
 		compileOnly("me.shedaniel.cloth:basic-math:+")
 		annotationProcessor 'systems.manifold:manifold-preprocessor:+'
 		minecraft "com.mojang:minecraft:${minecraft_version}"
@@ -98,18 +99,17 @@ build {
 		}
 
 		ant.delete(dir: "common/src/main/java/cn/zbx1425/mtrsteamloco/mappings")
+	}
+	copy {
+		outputs.upToDateWhen { false }
+		from "checkouts/mtr-fabric.jar"
+		into "fabric/run/mods"
+	}
 
-		copy {
-			// outputs.upToDateWhen { false }
-			from "checkouts/mtr-fabric.jar"
-			into "fabric/run/mods"
-		}
-
-		copy {
-			// outputs.upToDateWhen { false }
-			from "checkouts/mtr-forge.jar"
-			into "forge/run/mods"
-		}
+	copy {
+		outputs.upToDateWhen { false }
+		from "checkouts/mtr-forge.jar"
+		into "forge/run/mods"
 	}
 }
 

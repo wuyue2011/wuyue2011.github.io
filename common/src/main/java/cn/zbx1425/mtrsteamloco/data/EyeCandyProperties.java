@@ -2,6 +2,7 @@ package cn.zbx1425.mtrsteamloco.data;
 
 import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolderBase;
 import cn.zbx1425.sowcerext.model.ModelCluster;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Component;
 import mtr.mappings.Text;
 
@@ -10,9 +11,10 @@ import java.io.IOException;
 
 public class EyeCandyProperties implements Closeable {
 
-    public static final EyeCandyProperties DEFAULT = new EyeCandyProperties(Text.literal(""), null, null, "0, 0, 0, 16, 16, 16", "0, 0, 0, 0, 0, 0", true, 0, false, false, false);
+    public static final EyeCandyProperties DEFAULT = new EyeCandyProperties("default_key", Text.literal(""), null, null, "0, 0, 0, 16, 16, 16", "0, 0, 0, 0, 0, 0", true, 0, false, false, false, "ANTE");
 
-    public Component name;
+    public String key;
+    public MutableComponent name;
 
     public ModelCluster model;
     public ScriptHolderBase script;
@@ -23,8 +25,11 @@ public class EyeCandyProperties implements Closeable {
     public boolean isTicketBarrier;
     public boolean isEntrance;
     public boolean asPlatform;
+    public String group;
+    public String path;
 
-    public EyeCandyProperties(Component name, ModelCluster model, ScriptHolderBase script, String shape, String collisionShape, boolean fixedMatrix, int lightLevel, boolean isTicketBarrier, boolean isEntrance, boolean asPlatform) {
+    public EyeCandyProperties(String key, MutableComponent name, ModelCluster model, ScriptHolderBase script, String shape, String collisionShape, boolean fixedMatrix, int lightLevel, boolean isTicketBarrier, boolean isEntrance, boolean asPlatform, String group) {
+        this.key = key;
         this.name = name;
         this.model = model;
         this.script = script;
@@ -35,6 +40,8 @@ public class EyeCandyProperties implements Closeable {
         this.isTicketBarrier = isTicketBarrier;
         this.isEntrance = isEntrance;
         this.asPlatform = asPlatform;
+        this.group = group;
+        this.path = group + "/" + key;
     }
 
     @Override

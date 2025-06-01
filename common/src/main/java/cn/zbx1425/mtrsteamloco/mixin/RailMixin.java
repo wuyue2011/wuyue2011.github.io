@@ -1,49 +1,44 @@
 package cn.zbx1425.mtrsteamloco.mixin;
 
-import cn.zbx1425.mtrsteamloco.ClientConfig;
-import cn.zbx1425.mtrsteamloco.Main;
-import cn.zbx1425.mtrsteamloco.data.RailExtraSupplier;
-import cn.zbx1425.mtrsteamloco.data.RailModelRegistry;
-import net.minecraft.core.BlockPos;
-import cn.zbx1425.mtrsteamloco.render.rail.RailRenderDispatcher;
-import io.netty.buffer.Unpooled;
-import mtr.data.MessagePackHelper;
-import mtr.data.Rail;
-import mtr.data.Rail.*;
-import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
-import cn.zbx1425.mtrsteamloco.network.util.StringMapSerializer;
-import cn.zbx1425.mtrsteamloco.network.util.DoubleFloatMapSerializer;
-import net.minecraft.world.phys.Vec3;
-import cn.zbx1425.mtrsteamloco.data.RailCalculator.Vec2;
-import mtr.data.RailType;
-import net.minecraft.network.FriendlyByteBuf;
-import cn.zbx1425.mtrsteamloco.data.RailCalculator;
-import net.minecraft.util.Mth;
-import mtr.data.RailAngle;
-import mtr.data.TransportMode;
-import cn.zbx1425.mtrsteamloco.block.BlockDirectNode.BlockEntityDirectNode;
-import cn.zbx1425.mtrsteamloco.data.RailAngleExtra;
-import cn.zbx1425.mtrsteamloco.data.BezierCurve;
-import cn.zbx1425.mtrsteamloco.render.rail.BakedRail;
-import cn.zbx1425.sowcer.math.*;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.msgpack.core.MessagePacker;
 import org.msgpack.value.Value;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.HashMap;
+import cn.zbx1425.mtrsteamloco.Main;
+import cn.zbx1425.mtrsteamloco.data.BezierCurve;
+import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
+import cn.zbx1425.mtrsteamloco.data.RailAngleExtra;
+import cn.zbx1425.mtrsteamloco.data.RailCalculator;
+import cn.zbx1425.mtrsteamloco.data.RailCalculator.Vec2;
+import cn.zbx1425.mtrsteamloco.data.RailExtraSupplier;
+import cn.zbx1425.mtrsteamloco.network.util.DoubleFloatMapSerializer;
+import cn.zbx1425.mtrsteamloco.network.util.StringMapSerializer;
+import cn.zbx1425.mtrsteamloco.render.rail.BakedRail;
+import cn.zbx1425.sowcer.math.Matrix4f;
+import cn.zbx1425.sowcer.math.Vector3f;
+import io.netty.buffer.Unpooled;
+import mtr.data.MessagePackHelper;
+import mtr.data.Rail;
+import mtr.data.Rail.RenderRail;
+import mtr.data.RailAngle;
+import mtr.data.RailType;
+import mtr.data.TransportMode;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 
 @Mixin(value = Rail.class, priority = 1425)
 public abstract class RailMixin implements RailExtraSupplier {
@@ -57,21 +52,6 @@ public abstract class RailMixin implements RailExtraSupplier {
 	@Shadow(remap = false) @Final @Mutable private double h2, k2, r2, tStart2, tEnd2;
 	@Shadow(remap = false) @Final @Mutable private int yStart, yEnd;
 	@Shadow(remap = false) @Final @Mutable private boolean reverseT1, isStraight1, reverseT2, isStraight2;
-    
-	private static double getTBounds(double x, double h, double z, double k, double r) {
-		return Mth.atan2(z - k, x - h) * r;
-	}
-
-	private static double getTBounds(double x, double h, double z, double k, double r, double tStart, boolean reverse) {
-		final double t = getTBounds(x, h, z, k, r);
-		if (t < tStart && !reverse) {
-			return t + 2 * Math.PI * r;
-		} else if (t > tStart && reverse) {
-			return t - 2 * Math.PI * r;
-		} else {
-			return t;
-		}
-	}
 
     private String modelKey = "";
     private boolean isSecondaryDir = false;
@@ -303,8 +283,8 @@ public abstract class RailMixin implements RailExtraSupplier {
         double length = Math.pow(posStart.x - posEnd.x, 2) + Math.pow(posStart.z - posEnd.z, 2);
         length = Math.sqrt(length);
 
-        Vec3 p1 = getCtrlPoint(facingStart.angleRadians, posStart, length / 2);
-        Vec3 p2 = getCtrlPoint(facingEnd.angleRadians, posEnd, length / 2);
+        Vec3 p1 = getCtrlPoint(facingStart.angleRadians, posStart, length / 2, 0);
+        Vec3 p2 = getCtrlPoint(facingEnd.angleRadians, posEnd, length / 2, 0);
 
         bezier = new BezierCurve(
             0.1, posStart, p1, p2, posEnd
@@ -314,8 +294,8 @@ public abstract class RailMixin implements RailExtraSupplier {
         refreshRailAngle();
     }
 
-    private Vec3 getCtrlPoint(double rad, Vec3 base, double t) {
-        Vec3 ad = new Vec3(0, 0, t).yRot((float) (Math.PI / 2 - rad)).add(base);
+    private Vec3 getCtrlPoint(double rad, Vec3 base, double t, float elevationAngle) {
+        Vec3 ad = new Vec3(0, 0, t).yRot((float) (Math.PI / 2 - rad)).xRot(elevationAngle).add(base);
         return ad;
     }
 

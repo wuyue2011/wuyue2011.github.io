@@ -312,6 +312,8 @@ public class RailCalculator {
         float endAngle = -135;
 
         Group group = calculate(startX, startZ, endX, endZ, startAngle, endAngle);
+
+        System.out.println(group);
     }
 
     public static Group calculate(double startX, double startZ, double endX, double endZ, double startAngle, double endAngle) {
@@ -338,14 +340,14 @@ public class RailCalculator {
         double beta = endAngle;
         // pl ("S " + S + " alpha " + alpha + " E " + E + " beta " + beta);
 
-        if (false) {
-            Vec2 temp = S;
-            S = E;
-            E = temp;
-            double temp2 = alpha;
-            alpha = beta;
-            beta = temp2;
-        }
+        // if (false) {
+        //     Vec2 temp = S;
+        //     S = E;
+        //     E = temp;
+        //     double temp2 = alpha;
+        //     alpha = beta;
+        //     beta = temp2;
+        // }
 
         Vec2 vSS1 = new Vec2(1, 0).rotateRad(alpha);
         Vec2 S1 = S.add(vSS1);

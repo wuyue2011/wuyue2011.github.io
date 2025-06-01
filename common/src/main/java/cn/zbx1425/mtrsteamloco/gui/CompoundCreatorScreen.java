@@ -593,7 +593,7 @@ public class CompoundCreatorScreen extends Screen {
         RailExtraSupplier extra = (RailExtraSupplier) rail;
 
         String modelKey = extra.getModelKey();
-        RailModelProperties properties = RailModelRegistry.elements.get(modelKey);
+        RailModelProperties properties = RailModelRegistry.ELEMENTS.get(modelKey);
         Button btnEnterSelect = UtilitiesClient.newButton(Text.translatable("gui.mtrsteamloco.brush_edit_rail.present", (properties != null ? (properties.name.getString()) : (modelKey + " (???)"))), btn -> {
             Minecraft.getInstance().setScreen(new SelectScreen(task, () -> {
                 task0.copyFrom(task);
@@ -731,7 +731,7 @@ public class CompoundCreatorScreen extends Screen {
 
         @Override
         protected List<Pair<String, String>> getRegistryEntries() {
-            return new HashSet<>(RailModelRegistry.elements.entrySet()).stream()
+            return new HashSet<>(RailModelRegistry.ELEMENTS.entrySet()).stream()
                     .filter(e -> !e.getValue().name.getString().isEmpty())
                     .map(e -> new Pair<>(e.getKey(), e.getValue().name.getString()))
                     .toList();

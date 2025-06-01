@@ -106,7 +106,7 @@ public class RailRenderDispatcher {
         }
         railChunkMap.clear();
         railChunkList.clear();
-        for (String key : RailModelRegistry.elements.keySet()) {
+        for (String key : RailModelRegistry.ELEMENTS.keySet()) {
             railChunkMap.put(key, new HashMap<>());
         }
     }
@@ -129,7 +129,7 @@ public class RailRenderDispatcher {
             isHoldingRailItem = RenderTrains.isHoldingRailRelated(Minecraft.getInstance().player);
             isHoldingBrush = Utilities.isHolding(Minecraft.getInstance().player, (item) -> item.equals(mtr.Items.BRUSH.get())) ||
                 Utilities.isHolding(Minecraft.getInstance().player, (item) -> item.equals(Main.COMPOUND_CREATOR.get())) ||
-                Utilities.isHolding(Minecraft.getInstance().player, (item) -> item.equals(Main.DISPLACEMENT_TOOL.get()));
+                Utilities.isHolding(Minecraft.getInstance().player, (item) -> item.equals(Main.DISPLACEMENT_TOOL.get())) || Utilities.isHolding(Minecraft.getInstance().player, (item) -> item.equals(Main.RAIL_PATH_EDITOR.get()));
             isHoldingRailItemOrBrush = isHoldingRailItem || isHoldingBrush;
         } else {
             isHoldingRailItem = false;
@@ -235,7 +235,7 @@ public class RailRenderDispatcher {
     // "null": hidden, "": use MTR's default pipeline
     public static String getModelKeyForRender(Rail rail) {
         String customModelKey = ((RailExtraSupplier)rail).getModelKey();
-        if (customModelKey.equals("") || !RailModelRegistry.elements.containsKey(customModelKey)) {
+        if (customModelKey.equals("") || !RailModelRegistry.ELEMENTS.containsKey(customModelKey)) {
             if (rail.transportMode == TransportMode.TRAIN) {
                 if (rail.railType == RailType.SIDING) {
                     return "nte_builtin_depot";

@@ -10,7 +10,6 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import vendor.cn.zbx1425.mtrsteamloco.org.mozilla.javascript.*;
 import mtr.block.IBlock;
 import net.minecraft.world.entity.player.Player;
-import cn.zbx1425.mtrsteamloco.render.scripting.util.WrappedEntity;
 import cn.zbx1425.mtrsteamloco.data.ShapeSerializer;
 import net.minecraft.network.chat.Component;
 import com.google.gson.JsonObject;
@@ -194,9 +193,9 @@ public abstract class ScriptHolderBase {
     public void tryCallRenderFunctionAsync(AbstractScriptContext scriptCtx) {
         ScriptContextManager.trackContext(scriptCtx, this);
         if (!scriptCtx.created) {
-            tryCallFunctionAsync("create", scriptCtx, () -> scriptCtx.created = true, true);
+            tryCallFunctionAsync("create", scriptCtx, () -> scriptCtx.created = true);
         } else {
-            tryCallFunctionAsync("render", scriptCtx, null, true);
+            tryCallFunctionAsync("render", scriptCtx, () -> scriptCtx.renderFunctionFinished(), true);
         }
     }
 

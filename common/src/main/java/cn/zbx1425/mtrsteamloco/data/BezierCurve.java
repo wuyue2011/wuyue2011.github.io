@@ -12,12 +12,12 @@ public class BezierCurve {
     public static void main(String[] args) {
         long nano = System.nanoTime();
         BezierCurve curve = new BezierCurve(
+            0.1,
             10000, 0, -1,
             0, 0, 0,
             15, 20, 0,
-            -1, 0, -500
+            -1, 0, -50000
         );
-        double l = curve.getLength();
         nano = System.nanoTime() - nano;
         Runtime.getRuntime().gc();
         pl("Elapsed time", "gen " + nano / 1e9 + 's');
@@ -40,7 +40,7 @@ public class BezierCurve {
 
 
     private static final int STEP = 3;
-    private static double epsilon = 1e-1;
+    private double epsilon = 1e-1;
     private double length = 0;
     private List<Vec3> points = new ArrayList<>();
     private List<Double> TMapping = new ArrayList<>(), SMapping = new ArrayList<>();
@@ -120,7 +120,6 @@ public class BezierCurve {
     }
 
     private void mapping() { // F1
-        System.out.println("epsilon " + epsilon);
 
         Queue<Double> startQueue = new ArrayDeque<>();
         Queue<Double> endQueue = new ArrayDeque<>();
@@ -167,11 +166,9 @@ public class BezierCurve {
             SMapping.add(length);
             prev = curr;
         }
-
-        System.out.println("BezierCurve mapping done" + TMapping.size() + " length " + length);
     }
 
-    private void mapping(boolean f2) { // F2
+    /* private void mapping(boolean f2) { // F2
         TMapping.clear();
         SMapping.clear();
         TMapping.add(0.0);
@@ -202,7 +199,7 @@ public class BezierCurve {
             }
             prev = curr;
         }
-    }
+    } */
 
 
     private Vec3 bezier(double t) {

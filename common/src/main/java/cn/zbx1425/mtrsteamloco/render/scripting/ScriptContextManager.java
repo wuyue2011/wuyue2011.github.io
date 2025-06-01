@@ -19,11 +19,21 @@ public class ScriptContextManager {
                 if (!entry.getKey().isBearerAlive() || entry.getKey().disposed) {
                     if (entry.getKey().created) {
                         entry.getValue().tryCallDisposeFunctionAsync(entry.getKey());
-                    } else {
-                        it.remove();
                     }
+                    it.remove();
                 }
             }
+        }
+    }
+
+    public static void disposeAllContexts() {
+        synchronized (livingContexts) {
+            for (Map.Entry<AbstractScriptContext, ScriptHolderBase> entry : livingContexts.entrySet()) {
+                if (entry.getKey().created) {
+                    entry.getValue().tryCallDisposeFunctionAsync(entry.getKey());
+                }
+            }
+            livingContexts.clear();
         }
     }
 

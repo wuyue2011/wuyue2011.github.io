@@ -8,6 +8,7 @@
     "item.mtrsteamloco.bridge_creator_1": "桥梁创建器",
     "item.mtrsteamloco.compound_creator": "复合创建器",
     "item.mtrsteamloco.displacement_tool": "位移工具",
+    "item.mtrsteamloco.rail_path_editor": "铁轨路径编辑器",
     "train.mtrsteamloco.d51": "日本国铁 D51 型蒸汽机车",
     "train.mtrsteamloco.dk3": "DK3 (北京地铁二号线涂装)",
     "train.mtrsteamloco.dk3_mini": "DK3 (北京地铁二号线涂装, 迷你)",
@@ -19,6 +20,8 @@
     "rail.mtrsteamloco.builtin_concrete_sleeper": "ANTE 内置 (混凝土轨枕)",
     "rail.mtrsteamloco.builtin_depot": "ANTE 内置 (车厂)",
     "rail.mtrsteamloco.builtin_flat": "ANTE 内置 (平面)",
+    "rail.mtrsteamloco.type": "轨道",
+    "group.mtrsteamloco.builtin": "ANTE 内置",
     "gui.mtrsteamloco.adjust_settings": "调整设置",
     "gui.mtrsteamloco.translation.min": "平移: 最小值",
     "gui.mtrsteamloco.translation.max": "平移: 最大值",
@@ -126,8 +129,14 @@
     "gui.mtrsteamloco.direct_node.unbound": "直线节点未绑定",
     "gui.mtrsteamloco.direct_node.success_bind": "直线节点绑定成功",
     "gui.mtrsteamloco.direct_node.unbind": "解除绑定",
+    "gui.mtrsteamloco.select_screen.merged": "§b已合并的 ",
+    "gui.mtrsteamloco.select_screen.merge": "合并",
+    "tooltip.mtrsteamloco.select_screen.info": "点击查看更多信息",
     "tooltip.mtrsteamloco.direct_node.bound": "§b已绑定: %s°",
     "tooltip.mtrsteamloco.direct_node.unbound": "未绑定",
     "tooltip.mtrsteamloco.rail.path_mode.bezier": "路径模式: 贝塞尔曲线",
-    "tooltip.mtrsteamloco.rail.path_mode.original": "路径模式: 原版"
+    "tooltip.mtrsteamloco.rail.path_mode.original": "路径模式: 原版",
+    "tooltip.mtrsteamloco.rail_path_editor.success_update": "轨道更新成功: (%s, %s, %s) -> (%s, %s, %s)",
+    "tooltip.mtrsteamloco.rail_path_editor.data_not_found": "未找到数据",
+    "tooltip.mtrsteamloco.rail_path_editor.no_data": "无数据"
 }

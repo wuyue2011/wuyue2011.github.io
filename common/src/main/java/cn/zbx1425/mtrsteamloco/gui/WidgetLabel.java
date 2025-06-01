@@ -16,6 +16,7 @@ import net.minecraft.network.chat.Component;
 public class WidgetLabel extends AbstractWidget {
 
     public boolean alignR = false;
+    public boolean centre = true;
 
     private final Runnable onClick;
 
@@ -43,10 +44,10 @@ public class WidgetLabel extends AbstractWidget {
         for (int i = 0; i < lines.length; ++i) {
             int textWidth = Minecraft.getInstance().font.width(lines[i]);
 #if MC_VERSION >= "11903"
-            int x = alignR ? this.getX() + this.getWidth() - textWidth : this.getX();
+            int x = centre ?  this.getX() + (this.getWidth() - textWidth) / 2 : alignR ? this.getX() + this.getWidth() - textWidth : this.getX();
             int y = this.getY() + 10 * i;
 #else
-            int x = alignR ? this.getX() + this.width - textWidth : this.getX();
+            int x = centre ?  this.getX() + (this.getWidth() - textWidth) / 2 : alignR ? this.getX() + this.width - textWidth : this.getX();
             int y = this.getY() + 10 * i;
 #endif
             if (textWidth > this.width) {

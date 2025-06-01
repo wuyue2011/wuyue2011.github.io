@@ -35,21 +35,27 @@ import java.util.Map;
 
 public class RailModelRegistry {
 
-    public static Map<String, RailModelProperties> elements = new HashMap<>();
+    public static Map<String, RailModelProperties> ELEMENTS = new HashMap<>();
+    public static final Map<String, RailModelProperties> PATH_MAP = new HashMap<>();
+    public static Tree.Root<RailModelProperties> TREE = new Tree.Root<>("rail.mtrsteamloco.type");
 
     public static ModelCluster railNodeModel;
-
+    
     public static void register(String key, RailModelProperties properties) {
-        elements.put(key, properties);
+        if (properties == null) return;
+        ELEMENTS.put(key, properties);
+        PATH_MAP.put(properties.path, properties);
     }
 
     public static void reload(ResourceManager resourceManager) {
-        elements.clear();
+        ELEMENTS.clear();
+        PATH_MAP.clear();
+        TREE = new Tree.Root<>("rail.mtrsteamloco.type");
 
         //
-        register("", new RailModelProperties(Text.translatable("rail.mtrsteamloco.default"), null, 1f, 0f, null));
+        register("", new RailModelProperties("", Text.translatable("rail.mtrsteamloco.default"), null, 1f, 0f, null, "group.mtrsteamloco.builtin"));
         // This is pulled from registry and shouldn't be shown
-        register("null", new RailModelProperties(Text.translatable("rail.mtrsteamloco.hidden"), null, Float.MAX_VALUE, 0f, null));
+        register("null", new RailModelProperties("null", Text.translatable("rail.mtrsteamloco.hidden"), null, Float.MAX_VALUE, 0f, null, "group.mtrsteamloco.builtin"));
 
         try {
             RawModel railNodeRawModel = MainClient.modelManager.loadRawModel(resourceManager,
@@ -66,14 +72,16 @@ public class RailModelRegistry {
             try {
                 try (InputStream is = Utilities.getInputStream(pair.getSecond())) {
                     JsonObject rootObj = (new JsonParser()).parse(IOUtils.toString(is, StandardCharsets.UTF_8)).getAsJsonObject();
+                    String baseGroup = rootObj.has("group") ? rootObj.get("group").getAsString() : pair.getSecond().getSourceName() + '/' + pair.getSecond().getLocation().getPath().replaceAll("rails/", "").replaceAll(".json", "");
                     if (rootObj.has("model")) {
                         String key = FilenameUtils.getBaseName(pair.getFirst().getPath());
-                        register(key, loadFromJson(resourceManager, key, rootObj));
+                        register(key, loadFromJson(resourceManager, key, rootObj, baseGroup));
                     } else {
                         for (Map.Entry<String, JsonElement> entry : rootObj.entrySet()) {
+                            if (!entry.getValue().isJsonObject()) continue;
                             JsonObject obj = entry.getValue().getAsJsonObject();
                             String key = entry.getKey().toLowerCase(Locale.ROOT);
-                            register(key, loadFromJson(resourceManager, key, obj));
+                            register(key, loadFromJson(resourceManager, key, obj, baseGroup));
                         }
                     }
                 }
@@ -84,17 +92,18 @@ public class RailModelRegistry {
         }
 
         MainClient.railRenderDispatcher.clearRail();
+        TREE = Tree.loadTree("rail.mtrsteamloco.type", PATH_MAP, t -> t.name.getString());
     }
 
     private static final RailModelProperties EMPTY_PROPERTY = new RailModelProperties(
-            Text.literal(""), null, 1f, 0, null
+            "null", Text.literal(""), null, 1f, 0, null, "group.mtrsteamloco.builtin"
     );
 
     public static RailModelProperties getProperty(String key) {
-        return elements.getOrDefault(key, EMPTY_PROPERTY);
+        return ELEMENTS.getOrDefault(key, EMPTY_PROPERTY);
     }
 
-    private static RailModelProperties loadFromJson(ResourceManager resourceManager, String key, JsonObject obj) throws Exception {
+    private static RailModelProperties loadFromJson(ResourceManager resourceManager, String key, JsonObject obj, String baseGroup) throws Exception {
         if (obj.has("atlasIndex")) {
             MainClient.atlasManager.load(
                     MtrModelRegistryUtil.resourceManager,  new ResourceLocation(obj.get("atlasIndex").getAsString())
@@ -139,7 +148,8 @@ public class RailModelRegistry {
             }
             script.load("Rail " + key, "Rail", resourceManager, scripts, obj, key, "create", "render", "dispose");
         }
+        String group = obj.has("group") ? obj.get("group").getAsString() : baseGroup;
 
-        return new RailModelProperties(Text.translatable(obj.get("name").getAsString()), rawModel, repeatInterval, yOffset, script);
+        return new RailModelProperties(key, Text.translatable(obj.get("name").getAsString()), rawModel, repeatInterval, yOffset, script, group);
     }
 }

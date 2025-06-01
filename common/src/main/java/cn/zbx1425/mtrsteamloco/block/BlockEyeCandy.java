@@ -35,7 +35,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import mtr.block.IBlock;
-import mtr.MTRClient;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -331,7 +330,7 @@ public class BlockEyeCandy extends BlockDirectionalMapper implements EntityBlock
             prefabId = new1;
             if ((old == null && prefabId != null) || (old != null && !old.equals(prefabId))) {
                 restore();
-            } else if (getProperties() != null && scriptContext == null) {
+            } else if (getProperties().script != null && scriptContext == null) {
                 scriptContext = new EyeCandyScriptContext(this);
             }
         }

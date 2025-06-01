@@ -3,13 +3,11 @@ package cn.zbx1425.mtrsteamloco.render.rail;
 import cn.zbx1425.mtrsteamloco.data.RailExtraSupplier;
 import cn.zbx1425.mtrsteamloco.data.RailModelRegistry;
 import cn.zbx1425.sowcer.math.Matrix4f;
-import cn.zbx1425.sowcer.math.Vector3f;
 import cn.zbx1425.sowcer.util.AttrUtil;
 import net.minecraft.world.phys.Vec3;
 import mtr.data.Rail;
 import cn.zbx1425.mtrsteamloco.data.RailModelProperties;
 import net.minecraft.util.Mth;
-import cn.zbx1425.mtrsteamloco.Main;
 
 import java.util.ArrayList;
 import java.util.HashMap;

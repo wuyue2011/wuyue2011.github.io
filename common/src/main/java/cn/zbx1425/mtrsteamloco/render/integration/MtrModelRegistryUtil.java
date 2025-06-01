@@ -22,12 +22,7 @@ public class MtrModelRegistryUtil {
 
     public static ResourceManager resourceManager;
 
-    public static final List<String> loadingErrorList = new ArrayList<>();
-
-    public static final ResourceLocation PLACEHOLDER_TILE_TEXTURE_LOCATION = new ResourceLocation("mtrsteamloco:textures/misc/nte_tile_faded.png");
-
-    public static void recordLoadingError(String context, Exception ex) {
-        final String[] uselessPrefixes = {
+    private static final String[] uselessPrefixes = {
                 "at " + CompletableFuture.class.getName(),
                 "at java.base/" + CompletableFuture.class.getName(),
                 "at " + SimpleReloadInstance.class.getName(),
@@ -38,6 +33,12 @@ public class MtrModelRegistryUtil {
                 "at mtr.MTRForge",
                 "at java.base/jdk.internal"
         };
+
+    public static final List<String> loadingErrorList = new ArrayList<>();
+
+    public static final ResourceLocation PLACEHOLDER_TILE_TEXTURE_LOCATION = new ResourceLocation("mtrsteamloco:textures/misc/nte_tile_faded.png");
+
+    public static void recordLoadingError(String context, Exception ex) {
         String cleanedStackTrace = Arrays.stream(ExceptionUtils.getStackTrace(ex).split("\n"))
                 .map(l -> l.replace("\t", "  ").replace("\r", ""))
                 .filter(l -> Arrays.stream(uselessPrefixes).noneMatch(p -> l.trim().startsWith(p)))

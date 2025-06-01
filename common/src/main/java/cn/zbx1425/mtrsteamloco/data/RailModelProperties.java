@@ -8,6 +8,7 @@ import cn.zbx1425.sowcerext.model.RawMesh;
 import cn.zbx1425.sowcerext.model.RawModel;
 import cn.zbx1425.sowcerext.model.Vertex;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolderBase;
 
 import java.io.Closeable;
@@ -15,7 +16,10 @@ import java.io.IOException;
 
 public class RailModelProperties {
 
-    public Component name;
+    public MutableComponent name;
+    public String key;
+    public String group;
+    public String path;
 
     public ScriptHolderBase script;
 
@@ -27,8 +31,11 @@ public class RailModelProperties {
 
     public float yOffset;
 
-    public RailModelProperties(Component name, RawModel rawModel, float repeatInterval, float yOffset, ScriptHolderBase script) {
+    public RailModelProperties(String key, MutableComponent name, RawModel rawModel, float repeatInterval, float yOffset, ScriptHolderBase script, String group) {
         this.name = name;
+        this.key = key;
+        this.group = group;
+        this.path = group + "/" + key;
 
         this.yOffset = yOffset;
         this.script = script;

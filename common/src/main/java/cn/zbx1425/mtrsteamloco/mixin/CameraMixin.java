@@ -1,3 +1,5 @@
+
+/* eslint-disable*/
 package cn.zbx1425.mtrsteamloco.mixin;
 
 import net.minecraft.client.Camera;

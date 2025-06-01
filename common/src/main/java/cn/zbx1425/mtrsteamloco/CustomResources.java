@@ -118,7 +118,7 @@ public class CustomResources {
             }
         }
 
-        ScriptContextManager.disposeDeadContexts();
+        ScriptContextManager.disposeAllContexts();
 
         ClientData.TRAINS.forEach(train -> {
             train.isRemoved = false;

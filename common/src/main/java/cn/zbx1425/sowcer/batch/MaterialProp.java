@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.opengl.GL33;
 import cn.zbx1425.sowcer.math.Matrix4f;
-import cn.zbx1425.sowcer.vertex.VertAttrState;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

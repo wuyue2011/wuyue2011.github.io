@@ -48,7 +48,7 @@ public class KeyboardHandlerMixin {
                         }
                     });
                 }
-                for (Map.Entry<String, EyeCandyProperties> entry : EyeCandyRegistry.elements.entrySet()) {
+                for (Map.Entry<String, EyeCandyProperties> entry : EyeCandyRegistry.ELEMENTS.entrySet()) {
                     if (entry.getValue().script != null) {
                         try {
                             entry.getValue().script.reload(minecraft.getResourceManager());

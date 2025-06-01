@@ -22,6 +22,8 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import cn.zbx1425.mtrsteamloco.BuildConfig;
 
 import java.io.IOException;
@@ -31,28 +33,34 @@ import java.util.*;
 
 public class EyeCandyRegistry {
 
-    public static Map<String, EyeCandyProperties> elements = new HashMap<>();
+    public static final Map<String, EyeCandyProperties> ELEMENTS = new HashMap<>();
+    public static final Map<String, EyeCandyProperties> PATH_MAP = new HashMap<>();
+    public static Tree.Root<EyeCandyProperties> TREE = new Tree.Root<>("block.mtrsteamloco.eye_candy");
 
     public static void register(String key, EyeCandyProperties properties) {
-        elements.put(key, properties);
+        ELEMENTS.put(key, properties);
+        PATH_MAP.put(properties.path, properties);
     }
 
     public static void reload(ResourceManager resourceManager) {
-        elements.clear();
+        ELEMENTS.clear();
+        PATH_MAP.clear();
         List<Pair<ResourceLocation, Resource>> resources =
                 MtrModelRegistryUtil.listResources(resourceManager, "mtrsteamloco", "eyecandies", ".json");
         for (Pair<ResourceLocation, Resource> pair : resources) {
             try {
                 try (InputStream is = Utilities.getInputStream(pair.getSecond())) {
                     JsonObject rootObj = (new JsonParser()).parse(IOUtils.toString(is, StandardCharsets.UTF_8)).getAsJsonObject();
+                    String baseGroup = rootObj.has("group") ? rootObj.get("group").getAsString() : pair.getSecond().getSourceName() + '/' + pair.getSecond().getLocation().getPath().replaceAll("eyecandies/", "").replaceAll(".json", "");
                     if (rootObj.has("model")) {
                         String key = FilenameUtils.getBaseName(pair.getFirst().getPath());
-                        register(key, loadFromJson(resourceManager, key, rootObj));
+                        register(key, loadFromJson(resourceManager, key, rootObj, baseGroup));
                     } else {
                         for (Map.Entry<String, JsonElement> entry : rootObj.entrySet()) {
+                            if (!entry.getValue().isJsonObject()) continue;
                             JsonObject obj = entry.getValue().getAsJsonObject();
                             String key = entry.getKey().toLowerCase(Locale.ROOT);
-                            register(key, loadFromJson(resourceManager, key, obj));
+                            register(key, loadFromJson(resourceManager, key, obj, baseGroup));
                         }
                     }
                 }
@@ -61,15 +69,21 @@ public class EyeCandyRegistry {
                 MtrModelRegistryUtil.recordLoadingError("Failed loading Eye-candy " + pair.getFirst().toString(), ex);
             }
         }
+
+        TREE = Tree.loadTree("block.mtrsteamloco.eye_candy", PATH_MAP, t -> t.name.getString());
     }
 
     public static EyeCandyProperties getProperty(String key) {
-        return elements.getOrDefault(key, null);
+        return ELEMENTS.getOrDefault(key, null);
     }
 
-    private static EyeCandyProperties loadFromJson(ResourceManager resourceManager, String key, JsonObject obj) throws Exception {
+    private static EyeCandyProperties loadFromJson(ResourceManager resourceManager, String key, JsonObject obj, String group) throws Exception {
         if (key.isEmpty()) {
             throw new IllegalArgumentException("Invalid eye-candy key: " + key + " (empty)");
+        }
+
+        if (key.contains("/")) {
+            throw new IllegalArgumentException("Invalid eye-candy key: " + key + " (contains /)");
         }
 
         if (obj.has("atlasIndex")) {
@@ -145,10 +159,11 @@ public class EyeCandyRegistry {
         boolean isTicketBarrier = obj.has("isTicketBarrier") ? obj.get("isTicketBarrier").getAsBoolean() : false;
         boolean isEntrance = obj.has("isEntrance") ? obj.get("isEntrance").getAsBoolean() : false;
         boolean asPlatform = obj.has("asPlatform") ? obj.get("asPlatform").getAsBoolean() : false;
+        group = obj.has("group") ? obj.get("group").getAsString() : group;
         if (cluster == null && script == null) {
             throw new IllegalArgumentException("Invalid eye-candy json: " + key);
         } else {
-            return new EyeCandyProperties(Text.translatable(obj.get("name").getAsString()), cluster, script, shape, collisionShape, fixedMatrix, lightLevel, isTicketBarrier, isEntrance, asPlatform);
+            return new EyeCandyProperties(key, Text.translatable(obj.get("name").getAsString()), cluster, script, shape, collisionShape, fixedMatrix, lightLevel, isTicketBarrier, isEntrance, asPlatform, group);
         }
     }
 }
