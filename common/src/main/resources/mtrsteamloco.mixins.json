@@ -30,6 +30,7 @@
     "TrainRendererBaseAccessor",
     "VehicleRidingClientMixin",
     "CameraMixin",
+    "SidingScreenMixin",
     "RenderTrainsAccessor"
   ],
   "injectors": {
@@ -46,7 +47,6 @@
     "SidingMixin",
     "RailwayDataRailActionsModuleMixin",
     "RailTypeMixin",
-    "SidingScreenMixin",
     "RailAngleMixin",
     "ItemNodeModifierBaseMixin",
     "PathFinderMixin",
