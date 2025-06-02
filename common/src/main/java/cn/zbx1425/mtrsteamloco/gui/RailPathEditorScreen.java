@@ -1,5 +1,9 @@
 package cn.zbx1425.mtrsteamloco.gui;
 
+#if MC_VERSION >= "12000"
+import net.minecraft.client.gui.GuiGraphics;
+#endif
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.MutableComponent;
 import mtr.client.IDrawing;
