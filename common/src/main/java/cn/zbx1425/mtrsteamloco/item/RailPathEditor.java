@@ -19,6 +19,7 @@ import cn.zbx1425.mtrsteamloco.mixin.RailwayDataAccessor;
 import cn.zbx1425.mtrsteamloco.network.PacketScreen;
 import mtr.CreativeModeTabs;
 import mtr.data.Rail;
+import mtr.data.RailType;
 import mtr.data.RailwayData;
 import mtr.item.ItemWithCreativeTabBase;
 import mtr.mappings.Text;
@@ -75,17 +76,23 @@ public class RailPathEditor extends ItemWithCreativeTabBase {
         if (ctx.getLevel().isClientSide) return true;
         final RailwayData railwayData = RailwayData.getInstance(ctx.getLevel());
         if (railwayData == null) return false;
-        BlockPos posStart = ctx.getClickedPos();
-        Map<BlockPos, Rail> map = ((RailwayDataAccessor) (Object) railwayData).getRails().get(posStart);
+        BlockPos rPosStart = ctx.getClickedPos();
+        Map<BlockPos, Rail> map = ((RailwayDataAccessor) (Object) railwayData).getRails().get(rPosStart);
         if (map == null) return false;
         
         Player player = ctx.getPlayer();
         if (player == null) return false;
         Optional<Map.Entry<BlockPos, Rail>> closestEntry = map.entrySet().stream().min(Comparator.comparingDouble(entry ->
-                Mth.degreesDifferenceAbs((float) -Math.toDegrees(Math.atan2(entry.getKey().getX() - posStart.getX(), entry.getKey().getZ() - posStart.getZ())), player.getYRot())
+                Mth.degreesDifferenceAbs((float) -Math.toDegrees(Math.atan2(entry.getKey().getX() - rPosStart.getX(), entry.getKey().getZ() - rPosStart.getZ())), player.getYRot())
         ));
         if (closestEntry.isEmpty()) return false;
         BlockPos posEnd = closestEntry.get().getKey();
+        Rail rail = closestEntry.get().getValue();
+        BlockPos posStart = rPosStart;
+        if (rail.railType == RailType.NONE) {
+            posStart = posEnd;
+            posEnd = rPosStart;
+        }
         ItemStack itemStack = ctx.getItemInHand();
         CompoundTag tag = itemStack.getOrCreateTag();
         tag.putLong("start", posStart.asLong());

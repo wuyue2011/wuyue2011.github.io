@@ -136,7 +136,8 @@
     "tooltip.mtrsteamloco.direct_node.unbound": "未绑定",
     "tooltip.mtrsteamloco.rail.path_mode.bezier": "路径模式: 贝塞尔曲线",
     "tooltip.mtrsteamloco.rail.path_mode.original": "路径模式: 原版",
-    "tooltip.mtrsteamloco.rail_path_editor.success_update": "轨道更新成功: (%s, %s, %s) -> (%s, %s, %s)",
+    "tooltip.mtrsteamloco.rail.path_mode.unknown": "路径模式: 未知",
+    "tooltip.mtrsteamloco.rail_path_editor.success_update": "路径更新成功: (%s, %s, %s) <-> (%s, %s, %s)",
     "tooltip.mtrsteamloco.rail_path_editor.data_not_found": "未找到数据",
     "tooltip.mtrsteamloco.rail_path_editor.no_data": "无数据"
 }

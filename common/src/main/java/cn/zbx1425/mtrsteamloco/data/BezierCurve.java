@@ -46,6 +46,21 @@ public class BezierCurve {
     private List<Double> TMapping = new ArrayList<>(), SMapping = new ArrayList<>();
     private Vec3 max = new Vec3(0, 0, 0), min = new Vec3(0, 0, 0);
 
+    public BezierCurve(BezierCurve curve) {
+        this.epsilon = curve.epsilon;
+        this.points = new ArrayList<>(curve.points);
+        this.TMapping = new ArrayList<>(curve.TMapping);
+        this.SMapping = new ArrayList<>(curve.SMapping);
+        this.max = new Vec3(curve.max);
+        this.min = new Vec3(curve.min);
+    }
+
+    public BezierCurve(double epsilon, List<Vec3> points) {
+        this.epsilon = epsilon;
+        this.points = points;
+        mapping();
+    }
+
     public BezierCurve(double epsilon, net.minecraft.world.phys.Vec3... ctrls) {
         this.epsilon = epsilon;
         for (net.minecraft.world.phys.Vec3 ctrl : ctrls) {
@@ -168,39 +183,6 @@ public class BezierCurve {
         }
     }
 
-    /* private void mapping(boolean f2) { // F2
-        TMapping.clear();
-        SMapping.clear();
-        TMapping.add(0.0);
-        SMapping.add(0.0);
-        mapping(0, 1);
-    }
-
-    private void mapping(double tStart, double tEnd) { // F2
-        Vec3 start = bezier(tStart);
-        Vec3 end = bezier(tEnd);
-        double target = start.distanceTo(end) / STEP;
-        double tDiff = (tEnd - tStart) / STEP;
-        
-        double t = tStart;
-        Vec3 prev = bezier(t);
-        for (int i = 0; i < STEP; i++) {
-            t += tDiff;
-            Vec3 curr = bezier(t);
-            double dist = prev.distanceTo(curr);
-            if (Math.abs(dist - target) < epsilon) {
-                TMapping.add(t);
-                length += dist;
-                SMapping.add(length);
-                max = max.max(curr);
-                min = min.min(curr);
-            } else {
-                mapping(t - tDiff, t);
-            }
-            prev = curr;
-        }
-    } */
-
 
     private Vec3 bezier(double t) {
         if (points.size() == 4) {
@@ -261,6 +243,16 @@ public class BezierCurve {
         mapping();
     }
 
+    public BezierCurve copy() {
+        return new BezierCurve(this);
+    }
+
+    public BezierCurve getTransposition() {
+        List<Vec3> newPoints = new ArrayList<>(points);
+        Collections.reverse(newPoints);
+        return new BezierCurve(epsilon, newPoints);
+    }
+
     public String toString() {
         return String.format("BezierCurve{length=%.2f, MappingSize=%d}", length, TMapping.size());
     }
@@ -272,6 +264,12 @@ public class BezierCurve {
             this.x = x;
             this.y = y;
             this.z = z;
+        }
+
+        public Vec3(Vec3 other) {
+            this.x = other.x;
+            this.y = other.y;
+            this.z = other.z;
         }
 
         public Vec3 add(Vec3 other) {

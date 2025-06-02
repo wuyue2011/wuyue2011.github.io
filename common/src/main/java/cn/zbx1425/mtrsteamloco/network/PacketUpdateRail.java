@@ -46,8 +46,8 @@ public class PacketUpdateRail {
 #endif
         BlockPos posStart = packet.readBlockPos();
         BlockPos posEnd = packet.readBlockPos();
-        Rail target = new Rail(packet);
-        RailExtraSupplier extraTarget = (RailExtraSupplier)(target);
+        Rail forward = new Rail(packet);
+        RailExtraSupplier extraTarget = (RailExtraSupplier)(forward);
         server.execute(() -> {
             ServerLevel level = server.getLevel(levelKey);
             if (level == null) return;
@@ -57,27 +57,13 @@ public class PacketUpdateRail {
             Rail railForward = rails.get(posStart).get(posEnd);
             Rail railBackward = rails.get(posEnd).get(posStart);
             if (railForward == null || railBackward == null) return;
-            RailExtraSupplier extraForward = (RailExtraSupplier) railForward;
-            RailExtraSupplier extraBackward = (RailExtraSupplier) railBackward;
 
-            extraForward.partialCopyFrom(target);
-            extraBackward.partialCopyFrom(target);
-            extraForward.setRenderReversed(extraTarget.getRenderReversed());
-            extraBackward.setRenderReversed(!extraTarget.getRenderReversed());
-            extraForward.setRailType(target.railType);
-            if (railBackward.railType != RailType.NONE) extraBackward.setRailType(target.railType);
+            Rail backward = ((RailExtraSupplier) (Object) forward).getTransposition(railBackward.railType);
 
-            final FriendlyByteBuf outboundPacket = new FriendlyByteBuf(Unpooled.buffer());
-            outboundPacket.writeUtf(railForward.transportMode.toString());
-            outboundPacket.writeBlockPos(posStart);
-            outboundPacket.writeBlockPos(posEnd);
-            railForward.writePacket(outboundPacket);
-            railBackward.writePacket(outboundPacket);
-            outboundPacket.writeLong(0); // We're actually updating instead of creating, so don't create saved rail
-
-            for (ServerPlayer levelPlayer : level.players()) {
-                Registry.sendToPlayer(levelPlayer, IPacket.PACKET_CREATE_RAIL, outboundPacket);
-            }
+            railwayData.addRail(null, forward.transportMode, posStart, posEnd, forward, false);
+            railwayData.addRail(null, backward.transportMode, posEnd, posStart, backward, false);
+            PacketTrainDataGuiServer.createRailS2C(level, forward.transportMode, posStart, posEnd, forward, backward, 0);
+            ((RailwayDataAccessor) railwayData)._validateData();
         });
     }
 }

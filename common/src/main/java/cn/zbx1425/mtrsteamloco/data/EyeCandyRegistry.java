@@ -51,7 +51,11 @@ public class EyeCandyRegistry {
             try {
                 try (InputStream is = Utilities.getInputStream(pair.getSecond())) {
                     JsonObject rootObj = (new JsonParser()).parse(IOUtils.toString(is, StandardCharsets.UTF_8)).getAsJsonObject();
+                #if MC_VERSION >= "11902"
+                    String baseGroup = rootObj.has("group") ? rootObj.get("group").getAsString() : pair.getSecond().sourcePackId() + '/' + pair.getFirst().getPath().replaceAll("eyecandies/", "").replaceAll(".json", "");
+                #else
                     String baseGroup = rootObj.has("group") ? rootObj.get("group").getAsString() : pair.getSecond().getSourceName() + '/' + pair.getSecond().getLocation().getPath().replaceAll("eyecandies/", "").replaceAll(".json", "");
+                #endif
                     if (rootObj.has("model")) {
                         String key = FilenameUtils.getBaseName(pair.getFirst().getPath());
                         register(key, loadFromJson(resourceManager, key, rootObj, baseGroup));

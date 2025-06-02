@@ -23,6 +23,9 @@ import java.util.function.Supplier;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+#if MC_VERSION >= "12000"
+import net.minecraft.client.gui.GuiGraphics;
+#endif
 
 import cn.zbx1425.mtrsteamloco.gui.CompoundCreatorScreen.SliceTaskScreen.Square;
 import cn.zbx1425.mtrsteamloco.util.PinyinUtils;

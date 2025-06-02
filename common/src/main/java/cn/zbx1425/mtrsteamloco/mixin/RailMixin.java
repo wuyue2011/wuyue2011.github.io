@@ -213,6 +213,12 @@ public abstract class RailMixin implements RailExtraSupplier {
     }
 
     @Override
+    public void setBezier(BezierCurve bezier) {
+        this.bezier = bezier;
+        pathMode = 1;
+    }
+
+    @Override
     public boolean isBetween(double x, double y, double z, double radius) {
         if (pathMode == 1) {
             return bezier.isBetween(x, y, z, radius);
@@ -223,6 +229,25 @@ public abstract class RailMixin implements RailExtraSupplier {
             Vec3 min = min(start, end).add(-radius, -radius, -radius);
             return x >= min.x && x <= max.x && y >= min.y && y <= max.y && z >= min.z && z <= max.z;
         }
+    }
+
+    @Override
+    public Rail getTransposition(RailType railType) {
+        if (railType != RailType.NONE) railType = this.railType;
+        Rail result = new Rail(round(getPosition(getLength())), getRailAngle(true), round(getPosition(0)), getRailAngle(false), railType, transportMode);
+        RailExtraSupplier extra = (RailExtraSupplier) (Object) result;
+        extra.setModelKey(modelKey);
+        extra.setRenderReversed(!isSecondaryDir);
+        extra.setVerticalCurveRadius(verticalCurveRadius);
+        extra.setCustomConfigs(customConfigs);
+        extra.setRollAngleMap(rollAngleMap);
+        extra.setOpeningDirection(openingDirection);
+        extra.setRollingOffset(rollingOffset);
+        if (pathMode == 1) {
+            if (bezier == null) genForBezier();
+            extra.setBezier(bezier.getTransposition());
+        }
+        return result;
     }
 
     private Vec3 max(Vec3 a, Vec3 b) {

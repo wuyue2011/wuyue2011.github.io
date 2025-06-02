@@ -61,6 +61,10 @@ public interface RailExtraSupplier {
 
     boolean isBetween(double x, double y, double z, double radius);
 
+    Rail getTransposition(RailType railType);
+
+    void setBezier(BezierCurve bezier);
+
     static float getVTheta(Rail rail, double verticalCurveRadius) {
         double H = Math.abs(((RailExtraSupplier) rail).getHeight());
         double L = rail.getLength();
