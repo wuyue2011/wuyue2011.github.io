@@ -39,7 +39,7 @@ jobs:
           echo "MOD_VERSION=$MOD_VERSION" >> $GITHUB_ENV
       - name: Transfer artifacts
         run: |
-          mkdir ./artifacts/${{ matrix.minecraft }}
+          mkdir ./artifacts/${{ matrix.minecraft }}/
           cp ./build/*.jar ./artifacts/${{ matrix.minecraft }}/
       - name: Capture release artifacts individually
         uses: actions/upload-artifact@v4
@@ -121,6 +121,7 @@ jobs:
         run: echo "CUR_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
       - name: Release
+        if: !startsWith(github.event.head_commit.message, 'rel -t')
         uses: softprops/action-gh-release@v2
         with:
           files: artifacts/*.jar
@@ -140,7 +141,7 @@ jobs:
           prerelease: false
           tag_name: ${{ env.MOD_VERSION }}
   modrinth-publish:
-    if: startsWith(github.event.head_commit.message, 'rel -m') || startsWith(github.event.head_commit.message, 'rel -a')
+    if: startsWith(github.event.head_commit.message, 'rel -m') || startsWith(github.event.head_commit.message, 'rel -a') || startsWith(github.event.head_commit.message, 'rel -t')
     strategy:
       fail-fast: false
       matrix:
@@ -176,6 +177,7 @@ jobs:
         run: echo "artifacts/MTR-ANTE-${{ env.MOD_VERSION }}+${{ matrix.minecraft }}.jar"
       - name: Modrinth Publish
         uses: Kir-Antipov/mc-publish@v3.3
+        if: !startsWith(github.event.head_commit.message, 'rel -t')
         with:
           modrinth-id: ybOYitTg
           modrinth-featured: true
