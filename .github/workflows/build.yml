@@ -121,7 +121,7 @@ jobs:
         run: echo "CUR_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
       - name: Release
-        if: !startsWith(github.event.head_commit.message, 'rel -t')
+        if: ${{ !startsWith(github.event.head_commit.message, 'rel -t') }}
         uses: softprops/action-gh-release@v2
         with:
           files: artifacts/*.jar
@@ -177,7 +177,7 @@ jobs:
         run: echo "artifacts/MTR-ANTE-${{ env.MOD_VERSION }}+${{ matrix.minecraft }}.jar"
       - name: Modrinth Publish
         uses: Kir-Antipov/mc-publish@v3.3
-        if: !startsWith(github.event.head_commit.message, 'rel -t')
+        if: ${{ !startsWith(github.event.head_commit.message, 'rel -t') }}
         with:
           modrinth-id: ybOYitTg
           modrinth-featured: true
