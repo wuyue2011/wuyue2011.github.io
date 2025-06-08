@@ -192,7 +192,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Download current artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: ./docs/artifacts
           merge-multiple: true
