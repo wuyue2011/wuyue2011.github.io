@@ -37,11 +37,15 @@ jobs:
           MOD_VERSION=$(grep "mod_version=" gradle.properties | cut -d'=' -f2)
           echo "MOD_VERSION=$MOD_VERSION"
           echo "MOD_VERSION=$MOD_VERSION" >> $GITHUB_ENV
+      - name: Transfer artifacts
+        run: |
+          mkdir ./artifacts/${{ matrix.minecraft }}
+          cp ./build/*.jar ./artifacts/${{ matrix.minecraft }}/
       - name: Capture release artifacts individually
         uses: actions/upload-artifact@v4
         with:
           name: MTR-ANTE-${{ steps.vars.outputs.sha_short }}-${{ env.MOD_VERSION }}+${{ matrix.minecraft }}
-          path: build/*.jar
+          path: artifacts/
           compression-level: 9
   upload-collectively:
     needs: build
