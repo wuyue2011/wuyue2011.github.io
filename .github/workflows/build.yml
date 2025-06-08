@@ -79,7 +79,7 @@ jobs:
           path: artifacts/*.jar
           compression-level: 9
   github-release:
-    if: startsWith(github.event.head_commit.message, 'rel -g') || startsWith(github.event.head_commit.message, 'rel -a')
+    if: startsWith(github.event.head_commit.message, 'rel -g') || startsWith(github.event.head_commit.message, 'rel -a') || startsWith(github.event.head_commit.message, 'rel -t')
     runs-on: ubuntu-latest
     needs: upload-collectively
     steps:
@@ -168,7 +168,7 @@ jobs:
       - name: Download release artifacts
         uses: actions/download-artifact@v4
         with:
-          name: MTR-ANTE-${{ steps.vars.outputs.sha_short }}-${{ env.MOD_VERSION }}+${{ matrix.minecraft }}
+          name: MTR-ANTE-${{ steps.vars.outputs.sha_short }}-${{ env.MOD_VERSION }}
           path: artifacts
           merge-multiple: true
       - name: Show structure of downloaded files
