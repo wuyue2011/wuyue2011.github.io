@@ -181,7 +181,7 @@ jobs:
           dependencies: |
             MTR-3.2.2(required){modrinth:XKPAmI6u}
           changelog-file: extracted_changelog.md
-  deploy docs:
+  deploy-docs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
