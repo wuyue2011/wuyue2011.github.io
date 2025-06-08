@@ -7,8 +7,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.lwjgl.system.CallbackI.J;
-
 public class JsonStringTagVisitor implements TagVisitor {
     private static final Pattern SIMPLE_VALUE = Pattern.compile("[A-Za-z0-9._+-]+");
     private final StringBuilder builder = new StringBuilder();
