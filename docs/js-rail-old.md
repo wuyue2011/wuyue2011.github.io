@@ -1,4 +1,4 @@
-# JavaScript 轨道相关
+# ~~JavaScript 轨道相关 已过时~~
 
 ANTE 支持通过 JavaScript 控制轨道的渲染。既可以完全用 JavaScript 控制所有的渲染，也可以在默认的基础上叠加用 JavaScript 控制的显示内容。
 依靠 JavaScript 现在您可以用轨道做桥、做接触网或者什么其他的东西。

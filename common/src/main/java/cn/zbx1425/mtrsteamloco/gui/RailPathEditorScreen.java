@@ -39,6 +39,7 @@ public class RailPathEditorScreen extends Screen implements IGraphics{
     protected final BlockPos posStart;
     protected final BlockPos posEnd;
     protected final Rail rail;
+    protected final RailExtraSupplier extra;
     protected Supplier<Screen> parent;
     protected final Button btnChangePathMode;
 
@@ -48,8 +49,10 @@ public class RailPathEditorScreen extends Screen implements IGraphics{
         this.posStart = posStart;
         this.posEnd = posEnd;
         this.rail = rail;
+        this.extra = (RailExtraSupplier) (Object) rail;
         this.parent = parent == null ? () -> null : parent;
         btnChangePathMode = UtilitiesClient.newButton(getModeTextComponent(), btn -> changeMode());
+        btnChangePathMode.active = extra.couldSwitchModeTo(extra.getPathMode());
     }
 
     @Override

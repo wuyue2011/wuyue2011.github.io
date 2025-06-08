@@ -319,13 +319,15 @@ public class RailCalculator {
     public static Group calculate(double startX, double startZ, double endX, double endZ, double startAngle, double endAngle) {
         Group group = _calculate(startX, startZ, endX, endZ, startAngle, endAngle);
 
-        if (group == null) return Group.EMPTY;
-        if (group.first.isValid() && group.second.isValid()) {
-            // pl(group.first.getLength() + " " + group.second.getLength());
-            return group;
-        }
-        // pl("无效的section");
-        return Group.EMPTY;
+        return group;
+
+        // if (group == null) return Group.EMPTY;
+        // if (group.first.isValid() && group.second.isValid()) {
+        //     // pl(group.first.getLength() + " " + group.second.getLength());
+        //     return group;
+        // }
+        // // pl("无效的section");
+        // return Group.EMPTY;
     }
 
     public static Group segment(double startX, double startZ, double endX, double endZ) {

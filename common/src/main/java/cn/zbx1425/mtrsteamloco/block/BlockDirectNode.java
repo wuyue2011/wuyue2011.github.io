@@ -121,8 +121,12 @@ public class BlockDirectNode extends BlockNode implements EntityBlockMapper {
                 if (angleTarget == null) continue;
 
                 Rail railForward = newRail(from, angleFrom, target, angleTarget, forward);
+                ((RailExtraSupplier) (Object) railForward).partialCopyFrom(forward);
+                ((RailExtraSupplier) (Object) railForward).changePathMode(((RailExtraSupplier) (Object) forward).getPathMode());
                 Rail railBackward = newRail(target, angleTarget, from, angleFrom, backward);
-                
+                ((RailExtraSupplier) (Object) railBackward).partialCopyFrom(backward);
+                ((RailExtraSupplier) (Object) railBackward).changePathMode(((RailExtraSupplier) (Object) backward).getPathMode());
+
                 railwayData.addRail(null, forward.transportMode, from, target, railForward, false);
                 railwayData.addRail(null, backward.transportMode, target, from, railBackward, false);
                 PacketTrainDataGuiServer.createRailS2C(world, forward.transportMode, from, target, railForward, railBackward, 0);

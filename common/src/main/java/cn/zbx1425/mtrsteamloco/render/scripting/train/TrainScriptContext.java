@@ -17,7 +17,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import cn.zbx1425.sowcerext.reuse.DrawScheduler;
 import cn.zbx1425.sowcer.math.Matrix4f;
-import cn.zbx1425.mtrsteamloco.render.scripting.AbstractDrawCalls.DrawCall;
+import cn.zbx1425.mtrsteamloco.render.scripting.AbstractDrawCalls.DrawCallMap;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +32,7 @@ public class TrainScriptContext extends AbstractScriptContext {
 
     public TrainDrawCalls scriptResult;
     private TrainDrawCalls scriptResultWriting;
-    public Map<Object, DrawCall>[] drawCalls;
+    public DrawCallMap[] drawCalls;
 
     public TrainScriptContext(TrainClient train) {
         scriptResult = new TrainDrawCalls(train.trainCars);
@@ -40,17 +40,14 @@ public class TrainScriptContext extends AbstractScriptContext {
         this.train = train;
         trainExtra = new TrainWrapper(train);
         trainExtraWriting = new TrainWrapper(train);
-        drawCalls = new Map[train.trainCars];
+        drawCalls = new DrawCallMap[train.trainCars];
         for (int i = 0; i < train.trainCars; i++) {
-            drawCalls[i] = new HashMap<>();
+            drawCalls[i] = new DrawCallMap();
         }
     }
 
     public void commitCar(int car, DrawScheduler drawScheduler, Matrix4f basePose, Matrix4f worldPose, int light) {
-        Collection<DrawCall> calls = drawCalls[car].values();
-        for (DrawCall entry : calls) {
-            entry.commit(drawScheduler, basePose, worldPose, light);
-        }
+        drawCalls[car].commit(drawScheduler, basePose, worldPose, light);
         scriptResult.commitCar(car, drawScheduler, basePose, worldPose, light);
     }
 

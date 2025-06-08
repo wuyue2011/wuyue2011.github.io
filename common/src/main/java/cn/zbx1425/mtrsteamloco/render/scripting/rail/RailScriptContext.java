@@ -8,9 +8,8 @@ import cn.zbx1425.sowcerext.reuse.DrawScheduler;
 import cn.zbx1425.sowcer.math.Matrix4f;
 import cn.zbx1425.sowcer.math.Vector3f;
 import cn.zbx1425.sowcer.math.Matrices;
-import cn.zbx1425.sowcerext.model.ModelCluster;
-import cn.zbx1425.mtrsteamloco.render.scripting.util.client.DynamicModelHolder;
-import static cn.zbx1425.mtrsteamloco.render.scripting.rail.RailDrawCalls.*;
+import cn.zbx1425.mtrsteamloco.render.rail.RailChunkBase;
+import cn.zbx1425.mtrsteamloco.render.rail.BakedRail;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,35 +20,23 @@ import java.util.Collection;
 
 public class RailScriptContext extends AbstractScriptContext {
 
-    public final RailWrapper rail;
-    public final Map<Object, RailDrawCall> drawCalls = new HashMap<>();
-    public List<RailDrawCall> scriptResult = new ArrayList<>();
-    public List<RailDrawCall> scriptResultWriting = new ArrayList<>();
+    public final BakedRail bakedRail;
+    public final Map<Object, RailChunkBase> chunks = new HashMap<>();
     public boolean living = true;
 
-    public RailScriptContext(Rail rail) {
-        this.rail = new RailWrapper(rail);
-    }
-
-    public void commit(DrawScheduler drawScheduler, Matrix4f world, Frustum frustum, Vector3f cameraPos, int maxRailDistance) {
-        for (RailDrawCall drawCall : scriptResult) {
-            drawCall.commit(drawScheduler, world, frustum, cameraPos, maxRailDistance);
-        }
-        Collection<RailDrawCall> set = drawCalls.values();
-        for (RailDrawCall drawCall : set) {
-            drawCall.commit(drawScheduler, world, frustum, cameraPos, maxRailDistance);
-        }
+    public RailScriptContext(BakedRail bakedRail) {
+        this.bakedRail = bakedRail;
     }
 
     @Override
     public void renderFunctionFinished() {
-        scriptResult = scriptResultWriting;
-        scriptResultWriting = new ArrayList<>();
+        // 不会每次都渲染的 所以不用管
+        // 动态逻辑需要自己实现 RailChunkBase
     }
 
     @Override
     public Object getWrapperObject() {
-        return rail;
+        return bakedRail;
     }
 
     public void dispose() {
@@ -61,12 +48,7 @@ public class RailScriptContext extends AbstractScriptContext {
         return living && !disposed;
     }
 
-    public void drawModel(ModelCluster model, Matrices matrices) {
-        scriptResultWriting.add(new SimpleRailDrawCall(model, matrices.last()));
+    public void addChunk(Object key, RailChunkBase chunk) {
+        chunks.put(key, chunk);
     }
-
-    public void drawModel(DynamicModelHolder model, Matrices matrices) {
-        scriptResultWriting.add(new SimpleRailDrawCall(model, matrices.last()));
-    }
-
 }

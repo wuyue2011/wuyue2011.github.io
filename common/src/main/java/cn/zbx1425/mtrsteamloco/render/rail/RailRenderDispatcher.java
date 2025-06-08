@@ -29,6 +29,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import cn.zbx1425.mtrsteamloco.data.RailModelProperties;
 import cn.zbx1425.mtrsteamloco.gui.DirectNodeScreen;
@@ -154,13 +155,22 @@ public class RailRenderDispatcher {
 
         Vec3 cameraBlockPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
         Vector3f cameraPos = new Vector3f(cameraBlockPos);
+        List<RailChunkBase> railChunkList = new ArrayList<>(this.railChunkList);
+        for (BakedRail rail : railRefMap.values()) {
+            if (rail.scriptContext == null) continue;
+            RailModelProperties properties = rail.getProperties();
+            if (properties == null) continue;
+            if (properties.script == null) continue;
+            properties.script.tryCallRenderFunctionAsync(rail.scriptContext);
+            railChunkList.addAll(rail.scriptContext.chunks.values());
+        }
         railChunkList.sort(Comparator.comparingDouble(chunk -> chunk.getCameraDistManhattanXZ(cameraBlockPos)));
 
         int buffersRebuilt = 0;
         Frustum cullingFrustum = ((LevelRendererAccessor)Minecraft.getInstance().levelRenderer).getCullingFrustum();
         ShaderProp shaderProp = new ShaderProp().setViewMatrix(viewMatrix);
 
-        int maxRailDistance = MTRClient.isReplayMod() ? 64 * 16 : UtilitiesClient.getRenderDistance() * 16;
+        int maxRailDistance = MTRClient.isReplayMod() ? 64 * 16 : (UtilitiesClient.getRenderDistance() + 1) * 16;
         boolean isOutsideRenderDistance = false;
 
         for (Iterator<RailChunkBase> it = railChunkList.iterator(); it.hasNext(); ) {
@@ -189,18 +199,7 @@ public class RailRenderDispatcher {
                 chunk.enqueue(batchManager, shaderProp);
             }
         }
-
-        Collection<BakedRail> bakedRails = railRefMap.values();
-        for (BakedRail rail : bakedRails) {
-            RailModelProperties prop = rail.getProperties();
-            if (prop == null) {
-                if (prop.script == null) continue;
-            }
-            if (rail.scriptContext == null) continue;
-            prop.script.tryCallRenderFunctionAsync(rail.scriptContext);
-            rail.scriptContext.commit(drawScheduler, viewMatrix, cullingFrustum, cameraPos, maxRailDistance);
-        }
-
+        
         RailChunkBase.uploadAll();
     }
 

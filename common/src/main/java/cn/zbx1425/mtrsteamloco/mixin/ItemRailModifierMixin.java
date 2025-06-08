@@ -115,14 +115,14 @@ public abstract class ItemRailModifierMixin extends Item{
             }
 
 			final boolean goodRadius = rail1.goodRadius() && rail2.goodRadius();
+			int pathMode = stack.getOrCreateTag().getInt("path_mode");
+			if (pathMode != 0) {
+				((RailExtraSupplier) (Object) rail1).changePathMode(pathMode);
+				((RailExtraSupplier) (Object) rail2).changePathMode(pathMode);
+			}
 			final boolean isValid = rail1.isValid() && rail2.isValid();
 
 			if (goodRadius && isValid && isValidContinuousMovement) {
-				int pathMode = stack.getOrCreateTag().getInt("path_mode");
-				if (pathMode != 0) {
-					((RailExtraSupplier) (Object) rail1).changePathMode(pathMode);
-					((RailExtraSupplier) (Object) rail2).changePathMode(pathMode);
-				}
 				railwayData.addRail(player, transportMode, posStart, posEnd, rail1, false);
 				final long newId = railwayData.addRail(player, transportMode, posEnd, posStart, rail2, true);
 				world.setBlockAndUpdate(posStart, stateStart.setValue(BlockNode.IS_CONNECTED, true));

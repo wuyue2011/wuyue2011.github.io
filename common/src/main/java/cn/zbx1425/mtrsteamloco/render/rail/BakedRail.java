@@ -28,15 +28,20 @@ public class BakedRail {
     public RailScriptContext scriptContext;
 
     public BakedRail(Rail rail) {
+        this(rail, true);
+    }
+
+    public BakedRail(Rail rail, boolean genChunkMap) {
         this.rail = rail;
         modelKey = RailRenderDispatcher.getModelKeyForRender(rail);
         RailModelProperties prop = getProperties();
         color = AttrUtil.argbToBgr(rail.railType.color | 0xFF000000);
 
         if (prop.script != null) {
-            scriptContext = new RailScriptContext(rail);
+            scriptContext = new RailScriptContext(this);
         }
 
+        if (!genChunkMap) return; 
         if (!modelKey.equals("null")) {
             RailExtraSupplier supplier = (RailExtraSupplier) rail;
             final boolean reverse = supplier.getRenderReversed();

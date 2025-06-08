@@ -218,6 +218,10 @@ public abstract class TrainClientMixin extends Train implements IGui{
 		if (ridingCar > 0) {
 			float roll = TrainExtraSupplier.getRollAngleAt((Train) (Object) this, ridingCar);
             float preRoll = TrainExtraSupplier.getRollAngleAt((Train) (Object) this, ridingCar - 1);
+			if (reversed) {
+				roll = -roll;
+				preRoll = -preRoll;
+			}
 
             Matrices pre = new Matrices();
             pre.translate(prevCarX - offset.x, prevCarY - offset.y, prevCarZ - offset.z);

@@ -65,6 +65,10 @@ public interface RailExtraSupplier {
 
     void setBezier(BezierCurve bezier);
 
+    boolean couldSwitchModeTo(int mode);
+
+    void sendUpdateC2S();
+
     static float getVTheta(Rail rail, double verticalCurveRadius) {
         double H = Math.abs(((RailExtraSupplier) rail).getHeight());
         double L = rail.getLength();

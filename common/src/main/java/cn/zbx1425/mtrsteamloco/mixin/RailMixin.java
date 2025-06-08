@@ -28,6 +28,7 @@ import cn.zbx1425.mtrsteamloco.network.util.StringMapSerializer;
 import cn.zbx1425.mtrsteamloco.render.rail.BakedRail;
 import cn.zbx1425.sowcer.math.Matrix4f;
 import cn.zbx1425.sowcer.math.Vector3f;
+import cn.zbx1425.mtrsteamloco.network.PacketUpdateRail;
 import io.netty.buffer.Unpooled;
 import mtr.data.MessagePackHelper;
 import mtr.data.Rail;
@@ -64,6 +65,8 @@ public abstract class RailMixin implements RailExtraSupplier {
     private int pathMode = 0;
     // 0: 曲线 + 直线(原版模式) 1: 贝塞尔曲线
     private BezierCurve bezier = null;
+    private BlockPos posStart, posEnd;
+    private RailAngle railAngleStart, railAngleEnd;
 
     @Override
     public String getModelKey() {
@@ -130,6 +133,7 @@ public abstract class RailMixin implements RailExtraSupplier {
         this.customResponders = customResponders;
     }
 
+    @Override
     public void setOpeningDirectionRaw(int direction) {
         this.openingDirection = direction;
     }
@@ -234,7 +238,7 @@ public abstract class RailMixin implements RailExtraSupplier {
     @Override
     public Rail getTransposition(RailType railType) {
         if (railType != RailType.NONE) railType = this.railType;
-        Rail result = new Rail(round(getPosition(getLength())), getRailAngle(true), round(getPosition(0)), getRailAngle(false), railType, transportMode);
+        Rail result = new Rail(posEnd, facingEnd, posStart, facingStart, railType, transportMode);
         RailExtraSupplier extra = (RailExtraSupplier) (Object) result;
         extra.setModelKey(modelKey);
         extra.setRenderReversed(!isSecondaryDir);
@@ -250,6 +254,29 @@ public abstract class RailMixin implements RailExtraSupplier {
         return result;
     }
 
+    @Override
+    public boolean couldSwitchModeTo(int mode) {
+        switch(mode) {
+            case 0: {
+                final int xStart = posStart.getX();
+                final int zStart = posStart.getZ();
+                final int xEnd = posEnd.getX();
+                final int zEnd = posEnd.getZ();
+
+                RailCalculator.Group group = RailCalculator.calculate(xStart, zStart, xEnd, zEnd, facingStart.angleRadians, facingEnd.angleRadians);
+                if (group == null) return false;
+                return true;
+            }
+            case 1: return true;
+            default: return false;
+        }
+    }
+
+    @Override
+    public void sendUpdateC2S() {
+        PacketUpdateRail.sendUpdateC2S((Rail) (Object) this, posStart, posEnd);
+    }
+
     private Vec3 max(Vec3 a, Vec3 b) {
         return new Vec3(Math.max(a.x, b.x), Math.max(a.y, b.y), Math.max(a.z, b.z));
     }
@@ -260,15 +287,17 @@ public abstract class RailMixin implements RailExtraSupplier {
 
     @Inject(method = "<init>(Lnet/minecraft/core/BlockPos;Lmtr/data/RailAngle;Lnet/minecraft/core/BlockPos;Lmtr/data/RailAngle;Lmtr/data/RailType;Lmtr/data/TransportMode;)V", at = @At("TAIL"))
     private void onCreate(BlockPos posStart, RailAngle facingStart, BlockPos posEnd, RailAngle facingEnd, RailType railType, TransportMode transportMode, CallbackInfo ci) {
+        this.facingStart = facingStart;
+        this.facingEnd = facingEnd;
+        this.posStart = posStart;
+        this.posEnd = posEnd;
+
         if (transportMode == TransportMode.TRAIN) {
             genForSegmentsAndArcs();
         }
     }
 
     private void genForSegmentsAndArcs() {
-        BlockPos posStart = round(getPosition(0));
-        BlockPos posEnd = round(getPosition(getLength()));
-
         pathMode = 0;
 
         final int xStart = posStart.getX();
@@ -302,8 +331,8 @@ public abstract class RailMixin implements RailExtraSupplier {
     }
 
     private void genForBezier() {
-        Vec3 posStart = getPosition(0).add(-0.5, 0, -0.5);
-        Vec3 posEnd = getPosition(getLength()).add(-0.5, 0, -0.5);
+        Vec3 posStart = Vec3.atLowerCornerOf(this.posStart);
+        Vec3 posEnd = Vec3.atLowerCornerOf(this.posEnd);
 
         double length = Math.pow(posStart.x - posEnd.x, 2) + Math.pow(posStart.z - posEnd.z, 2);
         length = Math.sqrt(length);
@@ -363,7 +392,7 @@ public abstract class RailMixin implements RailExtraSupplier {
 
     @Inject(method = "isValid", at = @At("HEAD"), cancellable = true, remap = false)
     private void isValid(CallbackInfoReturnable<Boolean> cir) {
-        boolean b1 = (h1 != 0 || k1 != 0 || h2 != 0 || k2 != 0 || r1 != 0 || r2 != 0 || tStart1 != 0 || tStart2 != 0 || tEnd1 != 0 || tEnd2 != 0);
+        boolean b1 = (h1 != 0 || k1 != 0 || h2 != 0 || k2 != 0 || r1 != 0 || r2 != 0 || tStart1 != 0 || tStart2 != 0 || tEnd1 != 0 || tEnd2 != 0 || (bezier != null && pathMode == 1));
         RailAngle f1 = getRailAngle(false);
         RailAngle f2 = getRailAngle(true);
         boolean b2 = false;
@@ -375,7 +404,6 @@ public abstract class RailMixin implements RailExtraSupplier {
         if (f3 < 0.3 || f3 > 179.7) b2 = true;
         if (f4 < 0.3 || f4 > 179.7) b3 = true;
         b2 = b2 && b3;
-        // Main.LOGGER.info("isValid: " + b1 + " " + b2 + " "+ f1 + " " + f2 + " * " + facingStart + " " + facingEnd + " ** " + f3 + " " + f4);
         cir.setReturnValue(b1 && b2);
         cir.cancel();
         return;
@@ -408,6 +436,15 @@ public abstract class RailMixin implements RailExtraSupplier {
             bezier = new BezierCurve(map);
             refreshRailAngle();
         }
+        if (!map.containsKey("pos_start") ||!map.containsKey("facing_start") ||!map.containsKey("pos_end") ||!map.containsKey("facing_end")) {
+            posStart = round(getPosition(0));
+            posEnd = round(getPosition(getLength()));
+            return;
+        }
+        posStart = BlockPos.of(messagePackHelper.getLong("pos_start"));
+        facingStart = RailAngleExtra.fromRadians(messagePackHelper.getDouble("facing_start"));
+        posEnd = BlockPos.of(messagePackHelper.getLong("pos_end"));
+        facingEnd = RailAngleExtra.fromRadians(messagePackHelper.getDouble("facing_end"));
     }
 
     @Inject(method = "toMessagePack", at = @At("TAIL"), remap = false)
@@ -435,11 +472,15 @@ public abstract class RailMixin implements RailExtraSupplier {
         if (pathMode == 1 && bezier != null) {
             bezier.save(messagePacker);
         }
+        messagePacker.packString("pos_start").packLong(posStart.asLong());
+        messagePacker.packString("facing_start").packDouble(facingStart.angleRadians);
+        messagePacker.packString("pos_end").packLong(posEnd.asLong());
+        messagePacker.packString("facing_end").packDouble(facingEnd.angleRadians);
     }
 
     @Inject(method = "messagePackLength", at = @At("TAIL"), cancellable = true, remap = false)
     private void messagePackLength(CallbackInfoReturnable<Integer> cir) {
-        cir.setReturnValue(cir.getReturnValue() + 8 + (pathMode == 0 ? 0 : 1));
+        cir.setReturnValue(cir.getReturnValue() + 12 + (pathMode == 0 ? 0 : 1));
     }
 
     private final int NTE_PACKET_EXTRA_MAGIC = 0x25141425;
@@ -472,6 +513,10 @@ public abstract class RailMixin implements RailExtraSupplier {
             bezier = new BezierCurve(packet);
             refreshRailAngle();
         }
+        posStart = packet.readBlockPos();
+        facingStart = RailAngleExtra.fromRadians(packet.readDouble());
+        posEnd = packet.readBlockPos();
+        facingEnd = RailAngleExtra.fromRadians(packet.readDouble());
     }
 
     @Inject(method = "writePacket", at = @At("TAIL"))
@@ -501,6 +546,10 @@ public abstract class RailMixin implements RailExtraSupplier {
         if (pathMode == 1 && bezier != null) {
             bezier.save(packet);
         }
+        packet.writeBlockPos(posStart);
+        packet.writeDouble(facingStart.angleRadians);
+        packet.writeBlockPos(posEnd);
+        packet.writeDouble(facingEnd.angleRadians);
     }
 
     // @Redirect(method = "renderSegment", remap = false, at = @At(value = "INVOKE", target = "Ljava/lang/Math;round(D)J"))

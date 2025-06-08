@@ -44,7 +44,7 @@ ANTE 允许您自己实现 `DrawCall` 接口，可以使用自己的变化逻辑
 ```javascript
     let drawCalls;// java.util.Map<Object, DrawCall>
     let model, pose, key;
-    drawCalls.put(key, (drawScheduler, basePose, worldPose, light) => {
+    drawCalls.put(key, function (drawScheduler, basePose, worldPose, light) {
         let finalPose = worldPose.copy();
         finalPose.multiply(pose);
         // ···

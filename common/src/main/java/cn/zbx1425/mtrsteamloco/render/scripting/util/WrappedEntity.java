@@ -1,6 +1,7 @@
 package cn.zbx1425.mtrsteamloco.render.scripting.util;
 
 import net.minecraft.world.entity.Entity;
+import net.minecraft.nbt.CompoundTag;
 import cn.zbx1425.sowcer.math.Vector3f;
 
 public class WrappedEntity {
@@ -32,5 +33,11 @@ public class WrappedEntity {
 
     public boolean isShiftKeyDown() {
         return entity.isShiftKeyDown();
+    }
+
+    public String getNBT() {
+        CompoundTag tag = new CompoundTag();
+        entity.saveWithoutId(tag);
+        return (new JsonStringTagVisitor()).visit(tag);
     }
 }

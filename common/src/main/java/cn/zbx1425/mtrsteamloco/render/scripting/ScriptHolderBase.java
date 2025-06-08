@@ -186,7 +186,7 @@ public abstract class ScriptHolderBase {
         if (!(scriptCtx.scriptStatus == null || scriptCtx.scriptStatus.isDone())) return;
         if (scriptCtx.disposed) return;
         List<Function> functions = this.functions.get(function);
-        if (functions == null) return;
+        if (functions == null) functions = new ArrayList<>();
         scriptCtx.scriptStatus = callFunctionAsync(functions, scriptCtx, callback, args);
     }
 

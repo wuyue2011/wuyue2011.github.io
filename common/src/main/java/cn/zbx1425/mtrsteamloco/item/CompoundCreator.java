@@ -39,6 +39,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.InteractionHand;
 import cn.zbx1425.mtrsteamloco.render.scripting.rail.RailScriptContext;
+import cn.zbx1425.mtrsteamloco.render.rail.BakedRail;
 import cn.zbx1425.mtrsteamloco.render.scripting.ScriptHolderBase;
 import cn.zbx1425.mtrsteamloco.data.RailModelProperties;
 import cn.zbx1425.mtrsteamloco.data.RailModelRegistry;
@@ -513,7 +514,7 @@ public class CompoundCreator extends ItemNodeModifierBase {
             RailModelProperties prop = RailModelRegistry.getProperty(((RailExtraSupplier) rail).getModelKey());
             if (prop == null) return;
             if (prop.script == null) return;
-            RailScriptContext ctx = new RailScriptContext(rail);
+            RailScriptContext ctx = new RailScriptContext(new BakedRail(rail, false));
             ScriptHolderBase script = prop.script;
             script.callFunctionAsync(script.functions.get("create"), ctx, () -> {
                 script.callFunctionAsync(script.functions.get("dispose"), ctx, () -> {

@@ -8,8 +8,13 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import org.lwjgl.opengl.GL33;
 
 import java.io.Closeable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class VertArray implements Closeable {
+
+    private static final ScheduledExecutorService EXECTOR = Executors.newScheduledThreadPool(1);
 
     public int id;
     public MaterialProp materialProp;
@@ -71,11 +76,15 @@ public class VertArray implements Closeable {
 
     @Override
     public void close() {
+        EXECTOR.schedule(() -> _close(), 40, TimeUnit.SECONDS);
+    }
+
+    private void _close() {
         if (RenderSystem.isOnRenderThread()) {
             GL33.glDeleteVertexArrays(id);
             id = 0;
         } else {
-            RenderSystem.recordRenderCall(this::close);
+            RenderSystem.recordRenderCall(this::_close);
         }
     }
 }

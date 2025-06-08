@@ -26,7 +26,6 @@ import cn.zbx1425.mtrsteamloco.ClientConfig;
 import cn.zbx1425.mtrsteamloco.data.ShapeSerializer;
 import cn.zbx1425.mtrsteamloco.data.ConfigResponder;
 import net.minecraft.network.chat.Component;
-import cn.zbx1425.mtrsteamloco.render.scripting.rail.RailDrawCalls.*;
 import com.google.gson.JsonObject;
 import cn.zbx1425.mtrsteamloco.CustomResources;
 import com.google.gson.GsonBuilder;
@@ -58,8 +57,6 @@ public class ScriptHolderClient extends ScriptHolderBase {
         scope.put("DrawCall", scope, new NativeJavaClass(scope, AbstractDrawCalls.DrawCall.class));
         scope.put("ClusterDrawCall", scope, new NativeJavaClass(scope, AbstractDrawCalls.ClusterDrawCall.class));
         scope.put("WorldDrawCall", scope, new NativeJavaClass(scope, AbstractDrawCalls.WorldDrawCall.class));
-        scope.put("RailDrawCall", scope, new NativeJavaClass(scope, RailDrawCall.class));
-        scope.put("SimpleRailDrawCall", scope, new NativeJavaClass(scope, SimpleRailDrawCall.class));
 
         scope.put("ModelManager", scope, Context.toObject(MainClient.modelManager, scope));
         scope.put("RawModel", scope, new NativeJavaClass(scope, RawModel.class));

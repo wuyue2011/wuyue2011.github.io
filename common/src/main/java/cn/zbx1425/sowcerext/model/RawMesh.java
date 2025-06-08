@@ -360,6 +360,8 @@ public class RawMesh {
                 materialProp.translucent = true;
                 materialProp.writeDepthBuf = false;
                 break;
+            default:
+                throw new IllegalArgumentException("Invalid render type: " + type);
         }
     }
 

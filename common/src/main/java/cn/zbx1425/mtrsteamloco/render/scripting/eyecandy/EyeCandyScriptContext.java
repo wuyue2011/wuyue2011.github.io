@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import cn.zbx1425.sowcerext.reuse.DrawScheduler;
 import cn.zbx1425.sowcer.math.Matrix4f;
-import cn.zbx1425.mtrsteamloco.render.scripting.AbstractDrawCalls.DrawCall;
+import cn.zbx1425.mtrsteamloco.render.scripting.AbstractDrawCalls.DrawCallMap;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +23,7 @@ public class EyeCandyScriptContext extends AbstractScriptContext {
     public EyeCandyDrawCalls scriptResult;
     private EyeCandyDrawCalls scriptResultWriting;
 
-    public Map<Object, DrawCall> drawCalls = new HashMap<>();
+    public DrawCallMap drawCalls = new DrawCallMap();
     
     public EyeCandyScriptContext(BlockEyeCandy.BlockEntityEyeCandy entity) {
         scriptResult = new EyeCandyDrawCalls();
@@ -32,11 +32,7 @@ public class EyeCandyScriptContext extends AbstractScriptContext {
     }
 
     public void commit(DrawScheduler drawScheduler, Matrix4f basePose, Matrix4f worldPose, int light) {
-        Collection<DrawCall> calls = drawCalls.values();
-        for (DrawCall entry : calls) {
-            entry.commit(drawScheduler, basePose, worldPose, light);
-        }
-        scriptResult.commit(drawScheduler, basePose, worldPose, light);
+        drawCalls.commit(drawScheduler, basePose, worldPose, light);
     }
 
     @Override

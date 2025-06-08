@@ -41,7 +41,6 @@ public class SelectScreen extends Screen {
     protected int realityMaxScroll = 0;
     protected TreeMap<String, Button> buttons = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     protected TreeMap<String, Button> filteredButtons = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    protected List<AbstractWidget> widgets = new ArrayList<>();
     protected Supplier<String> getSelected;
     protected MutableComponent screenKey;
     protected Button btnReturn = UtilitiesClient.newButton(20, Text.literal("X"), btn -> onClose());
@@ -49,6 +48,7 @@ public class SelectScreen extends Screen {
     protected Button btnMerge = UtilitiesClient.newButton(20, Text.translatable("gui.mtrsteamloco.select_screen.merge"), btn -> merge());
     protected EditBox searchField = new EditBox(Minecraft.getInstance().font, 0, 0, width / 3, 20, Text.literal(""));
     protected WidgetLabel lblInstruction;
+    protected float alpha = 0.6F;
 
     public SelectScreen(Supplier<Screen> parent, MutableComponent screenKey, Map<String, String> map, Supplier<String> getSelected, SelectedCallback onSelected, String instructionLink) {
         super(Text.literal("SelectScreen"));
@@ -59,7 +59,6 @@ public class SelectScreen extends Screen {
             final String value = entry.getValue();
             Button button = UtilitiesClient.newButton(20, Text.translatable(value), btn -> onSelected.accept(minecraft, this, key));
             buttons.put(key, button);
-            widgets.add(button);
         }
         scrolling = SCROLLING_MAP.getOrDefault(screenKey.getString(), 0);
         searchField.setResponder(this::filter);
@@ -84,7 +83,6 @@ public class SelectScreen extends Screen {
         for (String value : list) {
             Button button = UtilitiesClient.newButton(20, Text.translatable(value), btn -> onSelected.accept(minecraft, this, value));
             buttons.put(value, button);
-            widgets.add(button);
         }
         scrolling = SCROLLING_MAP.getOrDefault(screenKey.getString(), 0);
         searchField.setResponder(this::filter);
@@ -106,7 +104,6 @@ public class SelectScreen extends Screen {
         this.parent = parent;
         this.screenKey = Text.literal(tree.getPathKey());
         for (Tree.Node<T> node : tree.getNodes().values()) {
-            System.out.println(node.key);
             Button button = null;
             if (node instanceof Tree.Data data) {
                 button = UtilitiesClient.newButton(20, data.name, btn -> onSelected.accept(minecraft, this, data.key));
@@ -117,7 +114,6 @@ public class SelectScreen extends Screen {
             }
             if (button == null) continue;
             buttons.put(node.key, button);
-            widgets.add(button);
         }
         scrolling = SCROLLING_MAP.getOrDefault(screenKey.getString(), 0);
         searchField.setResponder(this::filter);
@@ -231,14 +227,22 @@ public class SelectScreen extends Screen {
         for (Button button : filteredButtons.values()) {
             IDrawing.setPositionAndWidth(button, 0, y, w);
             button.render(in, mouseX, mouseY, partialTick);
+            button.setAlpha(alpha);
             y += 20;
         }
         RenderSystem.disableScissor();
 
+        btnReturn.setAlpha(alpha);
+        searchField.setAlpha(alpha);
+        btnMerge.setAlpha(alpha);
+        lblInstruction.setAlpha(alpha);
         btnReturn.render(in, mouseX, mouseY, partialTick);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
         searchField.render(in, mouseX, mouseY, partialTick);
         btnMerge.render(in, mouseX, mouseY, partialTick);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
         lblInstruction.render(in, mouseX, mouseY, partialTick);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     public static void vcEnableScissor(int x1, int y1, int x2, int y2) {

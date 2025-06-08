@@ -9,8 +9,11 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 
+import java.util.*;
+
 public abstract class AbstractDrawCalls {
 
+    @FunctionalInterface
     public static interface DrawCall {
         public void commit(DrawScheduler drawScheduler, Matrix4f basePose, Matrix4f worldPose, int light);
     }
@@ -96,6 +99,73 @@ public abstract class AbstractDrawCalls {
             level.playLocalSound(worldPos.x(), worldPos.y(), worldPos.z(),
                     sound, SoundSource.BLOCKS,
                     volume, pitch, false);
+        }
+    }
+
+    public static class DrawCallMap implements DrawCall, Map<Object, DrawCall> {
+        private final Map<Object, DrawCall> map = new HashMap<>();
+
+        public DrawCallMap() {
+
+        }
+
+        public DrawCall put(Object key, DrawCall value) {
+            return map.put(key, value);
+        }
+
+        public DrawCall get(Object key) {
+            return map.get(key);
+        }
+
+        public DrawCall remove(Object key) {
+            return map.remove(key);
+        }
+
+        public void clear() {
+            map.clear();
+        }
+
+        public boolean containsKey(Object key) {
+            return map.containsKey(key);
+        }
+
+        public boolean containsValue(Object value) {
+            return map.containsValue(value);
+        }
+
+        public boolean isEmpty() {
+            return map.isEmpty();
+        }
+
+        public Set<Object> keySet() {
+            return map.keySet();
+        }
+
+        public Collection<DrawCall> values() {
+            return map.values();
+        }
+
+        public Set<Map.Entry<Object, DrawCall>> entrySet() {
+            return map.entrySet();
+        }
+
+        public int hashCode() {
+            return map.hashCode();
+        }
+
+        public int size() {
+            return map.size();
+        }
+
+        public void putAll(Map<? extends Object,? extends DrawCall> map) {
+            this.map.putAll(map);
+        }
+
+        @Override
+        public void commit(DrawScheduler drawScheduler, Matrix4f basePose, Matrix4f worldPose, int light) {
+            for (DrawCall call : map.values()) {
+                call.commit(drawScheduler, basePose, worldPose, light);
+            }
         }
     }
 }

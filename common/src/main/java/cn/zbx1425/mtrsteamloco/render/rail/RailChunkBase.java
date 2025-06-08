@@ -100,7 +100,5 @@ public abstract class RailChunkBase implements Closeable {
     }
 
     @Override
-    public void close() {
-
-    }
+    public abstract void close();
 }
