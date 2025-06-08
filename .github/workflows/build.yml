@@ -39,7 +39,7 @@ jobs:
           echo "MOD_VERSION=$MOD_VERSION" >> $GITHUB_ENV
       - name: Transfer artifacts
         run: |
-          mkdir ./artifacts/${{ matrix.minecraft }}/
+          mkdir -p ./artifacts/${{ matrix.minecraft }}/
           cp ./build/*.jar ./artifacts/${{ matrix.minecraft }}/
       - name: Capture release artifacts individually
         uses: actions/upload-artifact@v4
