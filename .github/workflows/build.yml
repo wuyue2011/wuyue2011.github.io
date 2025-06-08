@@ -39,15 +39,11 @@ jobs:
           MOD_VERSION=$(grep "mod_version=" gradle.properties | cut -d'=' -f2)
           echo "MOD_VERSION=$MOD_VERSION"
           echo "MOD_VERSION=$MOD_VERSION" >> $GITHUB_ENV
-      - name: Transfer artifacts
-        run: |
-          mkdir -p ./artifacts/${{ matrix.minecraft }}/
-          cp ./build/*.jar ./artifacts/${{ matrix.minecraft }}/
       - name: Capture release artifacts individually
         uses: actions/upload-artifact@v4
         with:
           name: MTR-ANTE-${{ steps.vars.outputs.sha_short }}-${{ env.MOD_VERSION }}+${{ matrix.minecraft }}
-          path: artifacts/
+          path: build/*.jar
           compression-level: 9
   upload-collectively:
     needs: build
@@ -62,10 +58,6 @@ jobs:
         with:
           path: artifacts
           merge-multiple: true
-      - name: Transfer artifacts collectively
-        run: |
-          mv ./artifacts/*/*.jar ./artifacts/
-          rm -rf ./artifacts/*/
       - name: Display structure of downloaded files
         run: ls -R artifacts
       - name: Get commit SHA
@@ -152,7 +144,7 @@ jobs:
         minecraft: [ 1.17.1, 1.18.2, 1.19.2, 1.19.3, 1.19.4, 1.20.1 ]
     runs-on: ubuntu-latest
     environment: modrinth
-    needs: upload-collectively
+    needs: build
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -172,7 +164,7 @@ jobs:
       - name: Download release artifacts
         uses: actions/download-artifact@v4
         with:
-          name: MTR-ANTE-${{ steps.vars.outputs.sha_short }}-${{ env.MOD_VERSION }}
+          name: MTR-ANTE-${{ steps.vars.outputs.sha_short }}-${{ env.MOD_VERSION }}+${{ matrix.minecraft }}
           path: artifacts
           merge-multiple: true
       - name: Show structure of downloaded files
@@ -216,6 +208,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: ./docs/artifacts
+          merge-multiple: true
       - name: Display structure
         run: ls -R ./docs/
       - name: Setup Pages
